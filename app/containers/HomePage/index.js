@@ -5,205 +5,174 @@
  *
  */
 
-import React from 'react';
-import styled from 'styled-components';
+import React, { Component } from 'react';
+import axios from 'axios';
+import {API_URL} from '../App/constants';
+import { Redirect } from 'react-router-dom'
+import {Helmet} from "react-helmet";
+import { toast } from 'react-toastify';
 
+import Wrapper from 'components/Wrapper';
+import CircularLogo from 'components/CircularLogo';
+import Title from 'components/Title';
+import SubTitle from 'components/SubTitle';
+import BigLeftSection from 'components/BigLeftSection';
+import BigRightSection from 'components/BigRightSection';
+import LoginHeader from 'components/LoginHeader';
+import FrontFormTitle from 'components/FrontFormTitle';
+import FrontFormSubTitle from 'components/FrontFormSubTitle';
+import InputsWrap from 'components/InputsWrap';
+import FormGroup from 'components/FormGroup';
+import TextInput from 'components/TextInput';
+import PrimaryBtn from 'components/PrimaryBtn';
+import Row from 'components/Row';
+import Col from 'components/Col';
 
-const Wrapper = styled.div `
-  width:100%;
-`;
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure({
+  position: "bottom-right",
+  autoClose: 4000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true
+});
 
-const Title = styled.h1 `
-  font-size: 100px;
-  text-align:center;
-  color:white;
-  margin-top:0;
-  margin-bottom:72px;
-`;
+  const token = localStorage.getItem("logged");
 
-const SubTitle = styled.h2 `
-  font-size: 30px;
-  text-align:center;
-  color:white;
-  margin-top:0;
-  margin-bottom:0;
-  max-width:512px;
-  font-weight: normal;
-`;
-
-const BigLeftSection = styled.section`
-  background-image: ${props => props.theme.vGradient};
-  width: 50%;
-  position:absolute;
-  top:0;
-  left:0;
-  height:100%;
-  display:flex;
-  flex-direction: column;
-  align-items:center;
-  justify-content:center;
-`;
-
-const BigRightSection = styled.section`
-  background: white;
-  width: 50%;
-  padding: 27px 93px;
-  box-sizing:border-box;
-  position:absolute;
-  top:0;
-  right:0;
-  height:100%;
-`;
-
-const LoginHeader = styled.header `
-  background:white;
-  color: ${props => props.theme.primary};
-  font-size: 32px;
-  font-weight:bold;
-`;
-
-const FrontFormTitle = styled.h3 `
-  font-weight: normal;
-  margin:0;
-  font-size: 24px;
-  color: #212529;
-  margin-top: 127px;
-`;
-
-const FrontFormSubTitle = styled.h4 `
-  font-weight:normal;
-  font-size: 14px;
-  color: #9ea0a5;
-  margin:0;
-  margin-top: 7px;
-`;
-
-const InputsWrap = styled.div `
-  margin: 43px 0 25px;
-`;
-
-const FormGroup = styled.div`
-  display: block;
-  position:relative;
-  > label{
-    position:absolute;
-    top:13px;
-    left:13px;
-    z-index:0;
-  }
-  > label.focused{
-    top: -7px;
-    left: 15px;
-    color: ${props => props.theme.primary};
-    background: #fff;
-    display: block;
-    font-size: 10px;
-    padding: 0 5px;
-    z-index: 2;
-  }
-`;
-
-const TextInput = styled.input `
-  width: 100%;
-  position:relative;
-  z-index: 1;
-  background: transparent;
-  box-sizing:border-box;
-  padding:13px;
-  border: solid 2px rgba(0, 0, 0, 0.32);
-  border-radius: 4px;
-  display:block;
-  margin-bottom: 18px;
-  outline:0;
-  &:focus{
-    border: solid 2px ${props => props.theme.primary};
-  }
-`;
-
-const PrimaryBtn = styled.button `
-  width: 100%;
-  box-sizing:border-box;
-  padding:8px;
-  background-color: ${props => props.theme.primary};
-  color: white;
-  border:0;
-  border-radius: 4px;
-  display:block;
-  outline:0;
-  text-transform: uppercase;
-  font-weight:bold;
-  font-size: 20px;
-`;
-
-const Row = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: 50% 50%;
-  box-sizing:border-box;
-  grid-gap: 5px;
-  margin-top:24px;
-`;
-
-const Col = styled.div `
-  text-align: ${props => props.textRight ? 'right' : 'left' };
-`;
-
-
-export default function HomePage() {
-  
-
-  function inputFocus(e) {
-    let target = e.target;
-   target.parentElement.querySelector("label").classList.add("focused");
-  }
-  
-  function inputBlur(e) {
-    let target = e.target;
-    if(target.value == ''){
-      target.parentElement.querySelector("label").classList.remove("focused");
+  export default class HomePage extends Component {
+    
+    constructor() {
+      super();
+      this.state = {
+        username: "",
+        password: "",
+        notification: "",
+        loading: true,
+        redirect: false,
+      }
+     this.error = this.error.bind(this);
     }
-  }
 
+    success = () => toast.success(this.state.notification);
+    error = () => toast.error(this.state.notification);
+    warn = () => toast.warn(this.state.notification);
+
+    handleInputChange = (event) => {
+      const { value, name } = event.target;
+      this.setState({
+        [name]: value
+      });
+    }
+
+    loginRequest = (event) => {
+      event.preventDefault();
+      axios.post(API_URL+'/login', this.state)
+      .then(res => {
+        if(res.status == 200){
+          localStorage.setItem("logged", res.data.token);
+          localStorage.setItem("name", res.data.name);
+          this.props.history.push('/dashboard');
+        }else{
+          throw res.data.error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification:  (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+    }
+    componentDidMount() {
+      if(token !== undefined && token !== null){
+        this.setState({ loading:false, redirect: true });
+      }else{
+        console.log("2");
+        this.setState({ loading: false });
+      }
+    }
+  render() {
+
+    function inputFocus(e){
+      let target = e.target;
+     target.parentElement.querySelector("label").classList.add("focused");
+    }
+    
+    function inputBlur(e){
+      let target = e.target;
+      if(target.value == ''){
+        target.parentElement.querySelector("label").classList.remove("focused");
+      }
+    }
+
+  const { loading, redirect } = this.state;
+  if (loading) {
+    return <p>sdf</p>;
+  }
+  if (redirect) {
+    return <Redirect to="/dashboard" />;
+  }
   return (
       <Wrapper>
+        <Helmet>
+                <meta charSet="utf-8" />
+                <title>E-WALLET | INFRA | HOME</title>
+          </Helmet>
         <BigLeftSection>
+          <CircularLogo>Infra</CircularLogo>
           <Title>E-WALLET</Title>
-          <SubTitle>Welcome to the E-wallet<br />Create your wallet for easy trasferring<br />money to your freinds and family</SubTitle>
+          <SubTitle>Welcome to the E-wallet<br />Create your wallet for easy transferring<br />money to your freinds and family</SubTitle>
         </BigLeftSection>
         <BigRightSection>
           <LoginHeader>
-             Sign In
+             Sign In <p>{this.state.message}</p>  
           </LoginHeader>
           <FrontFormTitle>
-            Log In to your account
+            Log in to your account
           </FrontFormTitle>
           <FrontFormSubTitle>
-            Use your Mobile number to Log in
+            Use your mobile number to log in
           </FrontFormSubTitle>
-          <form action="" method="get">
+          <form action="" method="POST" onSubmit={this.loginRequest} >
           <InputsWrap>
             <FormGroup>
               <label>Number</label>
-              <TextInput type="text"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
+              <TextInput
+                type="text" 
+                name="username"
+                onFocus={inputFocus} onBlur={inputBlur} 
+                value={this.state.username}
+                onChange={this.handleInputChange}
+                required
+              ></TextInput>
             </FormGroup>
             <FormGroup>
               <label>Password</label>
-              <TextInput type="password"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
+              <TextInput
+                type="password" 
+                name="password"
+                onFocus={inputFocus} onBlur={inputBlur} 
+                value={this.state.password}
+                onChange={this.handleInputChange}
+                required
+              ></TextInput>
             </FormGroup>
           </InputsWrap>
           <PrimaryBtn>
             Sign In
           </PrimaryBtn>
           </form>
-          <Row>
+          <Row marginTop>
             <Col>
-              <a href="/signup"><span>Do not have an account? </span> Sign Up</a>
             </Col>
             <Col textRight>
               <a href="/forgot-password" >Forgot Password?</a>
             </Col>
           </Row>
+          
         </BigRightSection>
       </Wrapper>
   );
+  }
 }

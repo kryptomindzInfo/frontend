@@ -9,10 +9,14 @@
 
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 import HomePage from 'containers/HomePage/Loadable';
 import SignupPage from 'containers/SignupPage/Loadable';
 import ForgotPasswordPage from 'containers/ForgotPasswordPage/Loadable';
 import OTPPage from 'containers/OTPPage/Loadable';
+import DashboardPage from 'containers/DashboardPage/Loadable';
+import BankPage from 'containers/BankPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import {ThemeProvider} from 'styled-components';
 import GlobalStyle from '../../global-styles';
@@ -27,17 +31,21 @@ const theme = {
   fontSize: '14px',
 };
 
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure();
 
 export default function App() {
-  
+  const notify = () => toast("Wow so easy !");
   return (
     <ThemeProvider theme={theme}>
       <div>
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <Route exact path="/" component={HomePage} notify={notify} />
         <Route exact path="/signup" component={SignupPage} />
         <Route exact path="/forgot-password" component={ForgotPasswordPage} />
         <Route exact path="/otp" component={OTPPage} />
+        <Route exact path="/dashboard" component={DashboardPage} />
+        <Route exact path="/bank" component={BankPage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
