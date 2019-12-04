@@ -26,7 +26,7 @@ class Nav extends Component {
       <React.Fragment>
         <NavTag>
           <Link href="/dashboard"  active={dashboard} > Dashboard </Link>
-          <Link href="/bank" active={bank}> Bank </Link>
+          <Link href="/banks" active={bank}> Bank </Link>
           <Link href="/merchants" active={merchants}> Merchants </Link>
           <Link href="/reports" active={reports}> Reports </Link>
         </NavTag>

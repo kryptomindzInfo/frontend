@@ -18,6 +18,12 @@ import OTPPage from 'containers/OTPPage/Loadable';
 import DashboardPage from 'containers/DashboardPage/Loadable';
 import BankPage from 'containers/BankPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
+
+import BankLoginPage from 'containers/BankLoginPage/Loadable';
+import BankForgotPasswordPage from 'containers/BankForgotPasswordPage/Loadable';
+import BankOTPPage from 'containers/BankOTPPage/Loadable';
+import BankSetupPage from 'containers/BankSetupPage/Loadable';
+
 import {ThemeProvider} from 'styled-components';
 import GlobalStyle from '../../global-styles';
 
@@ -45,7 +51,11 @@ export default function App() {
         <Route exact path="/forgot-password" component={ForgotPasswordPage} />
         <Route exact path="/otp" component={OTPPage} />
         <Route exact path="/dashboard" component={DashboardPage} />
-        <Route exact path="/bank" component={BankPage} />
+        <Route exact path="/banks" component={BankPage} />
+        <Route exact path="/bank" component={BankLoginPage} />
+        <Route exact path="/bank/setup" component={BankSetupPage} />
+        <Route exact path="/bank/forgot-password" component={BankForgotPasswordPage} />
+        <Route exact path="/bank/otp" component={BankOTPPage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />

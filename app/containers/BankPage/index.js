@@ -308,14 +308,13 @@ export default class BankPage extends Component {
                 </thead>
                 <tbody>
                   {
-                    this.state.banks && this.state.banks.length > 0 ?
+                    this.state.banks && this.state.banks.length > 0 
                       ? this.state.banks.map(function(b) {
                         return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td  className="tac">0</td><td className="tac bold">0 <a href="javascript: ;" className="material-icons absoluteRight primary">more_vert</a></td></tr>
                       })
                       :
                       null
                   }
-                        })
                 </tbody>
               </Table>
             </div>
@@ -396,7 +395,7 @@ export default class BankPage extends Component {
                     <i className="material-icons">cloud_upload</i>
                     <label>Upload Logo </label>
                   </UploadArea>
-                )}
+                  }
               </FormGroup>
 
               <FormGroup>
@@ -408,7 +407,7 @@ export default class BankPage extends Component {
                   <i className="material-icons">cloud_upload</i>
                     <label>Contract </label>
                 </UploadArea>
-                )}
+                }
               </FormGroup>
 
               <Button filledBtn marginTop="50px">

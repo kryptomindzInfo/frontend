@@ -134,7 +134,7 @@ render(){
             </Sidebar>
             <Main>
               <div className="clr">
-                <a href="/bank">
+                <a href="/banks">
                 <Card horizontalMargin="7px" cardWidth="160px" textAlign="center" col >
                   <h4>Total Banks</h4>
                   <div className="cardValue">{this.state.totalBanks}</div>

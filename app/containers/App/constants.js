@@ -9,8 +9,8 @@
  * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
  */
 export const DEFAULT_LOCALE = 'en';
-export const API_URL = 'http://35.204.144.169/api';
-export const STATIC_URL = 'http://35.204.144.169/api/uploads/';
+export const API_URL = 'http://localhost:3001/api';
+export const STATIC_URL = 'http://localhost:3001/uploads/';
 export const CHANGE_USERNAME = 'CHANGE_USERNAME';
 export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
 export const SET_AUTH = 'SET_AUTH';
