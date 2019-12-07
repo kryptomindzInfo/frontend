@@ -5,9 +5,9 @@
  *
  */
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
-import {Helmet} from "react-helmet";
+import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import Wrapper from 'components/Wrapper';
@@ -27,7 +27,7 @@ import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import UploadArea from 'components/UploadArea';
 import UploadedFile from 'components/UploadedFile';
-import {API_URL, STATIC_URL} from '../App/constants';
+import { API_URL, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -45,28 +45,27 @@ export default class BankPage extends Component {
   constructor() {
     super();
     this.state = {
-      name : '',
-      address1 : '',
-      address2 : '',
-      mobile : '',
-      email : '',
+      name: '',
+      address1: '',
+      address2: '',
+      mobile: '',
+      email: '',
       logo: null,
       contract: null,
       loading: true,
       redirect: false,
       totalBanks: 0,
-      notification: "Welcome",
+      notification: 'Welcome',
       popup: false,
       user_id: token,
-      banks : []
+      banks: [],
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
 
     this.onChange = this.onChange.bind(this);
-    this.fileUpload = this.fileUpload.bind(this)
-
+    this.fileUpload = this.fileUpload.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -104,8 +103,8 @@ export default class BankPage extends Component {
     // axios.post(API_URL+'/logout', {token: token})
     // .then(res => {
     //    if(res.status == 200){
-  localStorage.removeItem("logged");
-  localStorage.removeItem("name");
+    localStorage.removeItem("logged");
+    localStorage.removeItem("name");
     this.setState({ redirect: true });
     //     }else{
     //       const error = new Error(res.data.error);
@@ -121,7 +120,7 @@ export default class BankPage extends Component {
   addBank = event => {
     event.preventDefault();
     axios
-      .post(API_URL + '/addBank', {
+      .post(`${API_URL  }/addBank`, {
         name: this.state.name,
         address1: this.state.address1,
         address2: this.state.address2,
@@ -129,32 +128,32 @@ export default class BankPage extends Component {
         mobile: this.state.mobile,
         logo: this.state.logo,
         contract: this.state.contract,
-        token: token,
+        token,
       })
       .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
+        if(res.status == 200){
+          if(res.data.error){
             console.log(res.data.error);
-          throw "Mobile number / email id already exist!";
-        }else{
+            throw "Mobile number / email id already exist!";
+          }else{
             this.setState({
-            notification: "Bank added successfully!",
+              notification: "Bank added successfully!",
             });
             this.success();
-          this.closePopup();
-          this.getBanks();
-        }
-      }else{
+            this.closePopup();
+            this.getBanks();
+          }
+        }else{
           const error = new Error(res.data.error);
-        throw error;
-      }
-    })
+          throw error;
+        }
+      })
       .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
         });
-      this.error();
-    });
+        this.error();
+      });
   };
 
   removeFile = key => {
@@ -164,56 +163,56 @@ export default class BankPage extends Component {
   };
 
   triggerBrowse = inp => {
-    let input = document.getElementById(inp);
+    const input = document.getElementById(inp);
     input.click();
   };
 
   onChange(e) {
     if (e.target.files && e.target.files[0] != null) {
-    this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
+      this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
     }
   }
 
   fileUpload(file, key) {
     const formData = new FormData();
-  //  formData.append('token',token);
+    //  formData.append('token',token);
     formData.append('file', file);
     const config = {
-    headers: {
-      'content-type': 'multipart/form-data'
-    },
+      headers: {
+        'content-type': 'multipart/form-data'
+      },
     };
 
     axios
-      .post(API_URL + '/fileUpload?token=' + token, formData, config)
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-          throw "File upload error";
-        }else{
+      .post(`${API_URL  }/fileUpload?token=${  token}`, formData, config)
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw "File upload error";
+          }else{
             this.setState({
-            [key] : res.data.name
+              [key] : res.data.name
             });
-        }
-      }else{
+          }
+        }else{
           throw res.data.error;
-      }
+        }
       })
-    .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
         });
         this.error();
-    });
+      });
   }
 
   getBanks = () => {
     axios
-      .post(API_URL + '/getBanks', { token: token })
+      .post(`${API_URL  }/getBanks`, { token })
       .then(res => {
-      if(res.status == 200){
-        this.setState({ loading: false, banks: res.data.banks });
-      }
+        if(res.status == 200){
+          this.setState({ loading: false, banks: res.data.banks });
+        }
       })
       .catch(err => {
         console.log(err);
@@ -232,12 +231,12 @@ export default class BankPage extends Component {
 
   render() {
     function inputFocus(e) {
-      const {target} = e;
-    target.parentElement.querySelector("label").classList.add("focused");
+      const { target } = e;
+      target.parentElement.querySelector("label").classList.add("focused");
     }
 
     function inputBlur(e) {
-      let {target} = e;
+      const { target } = e;
       if (target.value == '') {
         target.parentElement.querySelector('label').classList.remove('focused');
       }
@@ -251,80 +250,80 @@ export default class BankPage extends Component {
       return <Redirect to="/" />;
     }
     return (
-    <Wrapper>
-      <Helmet>
+      <Wrapper>
+        <Helmet>
           <meta charSet="utf-8" />
-        <title>Banks | INFRA | E-WALLET</title>
-      </Helmet>
+          <title>Banks | INFRA | E-WALLET</title>
+        </Helmet>
         <TopBar>
-        <Container>
+          <Container>
             <a href="/dashboard">
               <Logo>E-WALLET</Logo>
-          </a>
-          <Nav active="bank"></Nav>
-          <Welcome></Welcome>
+            </a>
+            <Nav active="bank"></Nav>
+            <Welcome></Welcome>
           </Container>
         </TopBar>
-      <Container verticalMargin>
-        <Sidebar marginRight>
-          <Card marginBottom="68px" buttonMarginTop="36px" bigPadding>
-            <h3>Operational Wallet</h3>
+        <Container verticalMargin>
+          <Sidebar marginRight>
+            <Card marginBottom="68px" buttonMarginTop="36px" bigPadding>
+              <h3>Operational Wallet</h3>
               <h5>Available</h5>
-            <div className="cardValue">$0.00</div>
-            <button><i className="material-icons">send</i> Send Money</button>
-          </Card>
-          <Card buttonMarginTop="36px" bigPadding> 
-            <h3>Master Wallet</h3>
+              <div className="cardValue">$0.00</div>
+              <button><i className="material-icons">send</i> Send Money</button>
+            </Card>
+            <Card buttonMarginTop="36px" bigPadding> 
+              <h3>Master Wallet</h3>
               <h5>Available</h5>
-            <div className="cardValue">$0.00</div>
-            <button><i className="material-icons">send</i> Send Money</button>
-          </Card>
-        </Sidebar>
+              <div className="cardValue">$0.00</div>
+              <button><i className="material-icons">send</i> Send Money</button>
+            </Card>
+          </Sidebar>
           <Main>
-          <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-            <div className="iconedInput fl">
+            <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
+              <div className="iconedInput fl">
                 <i className="material-icons">search</i>
-              <input type="text" placeholder="Search" />
+                <input type="text" placeholder="Search" />
               </div>
-            <Button className="fr" flex onClick={this.showPopup}>
-              <i className="material-icons">add</i>
+              <Button className="fr" flex onClick={this.showPopup}>
+                <i className="material-icons">add</i>
                 <span>Add Bank</span>
-            </Button>
+              </Button>
             </ActionBar>
             <Card bigPadding>
-            <div className="cardHeader" >
+              <div className="cardHeader" >
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>
-              </div>
+                </div>
                 <div className="cardHeaderRight">
-                <h3>Bank List</h3>
+                  <h3>Bank List</h3>
                   <h5>Your friends and family</h5>
+                </div>
               </div>
-            </div>
               <div className="cardBody">
-              <Table marginTop="38px">
+                <Table marginTop="38px">
                   <thead>
-                  <tr><th>Bank Name</th><th>Total Branches</th><th>Total Partners</th><th>Total Cashier</th><th>Transaction Count</th></tr>
-                </thead>
-                <tbody>
-                  {
-                    this.state.banks && this.state.banks.length > 0 
-                      ? this.state.banks.map(function(b) {
-                        return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td  className="tac">0</td><td className="tac bold">0 <a href="javascript: ;" className="material-icons absoluteRight primary">more_vert</a></td></tr>
-                      })
-                      :
-                      null
-                  }
-                </tbody>
-              </Table>
-            </div>
+                    <tr><th>Bank Name</th><th>Total Branches</th><th>Total Partners</th><th>Total Cashier</th><th>Transaction Count</th></tr>
+                  </thead>
+                  <tbody>
+                    {
+                      this.state.banks && this.state.banks.length > 0 
+                        ? this.state.banks.map(function(b) {
+                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td  className="tac">0</td><td className="tac bold">0 <a href="javascript: ;" className="material-icons absoluteRight primary">more_vert</a></td></tr>
+                        })
+                        :
+                        null
+                    }
+                  </tbody>
+                </Table>
+              </div>
             </Card>
-        </Main>
+          </Main>
         </Container>
-      { this.state.popup ? 
-        <Popup close={this.closePopup.bind(this)}>
-          <h1>Add Bank</h1>
-          <form action="" method="post" onSubmit={this.addBank}>
+        { this.state.popup ? 
+          <Popup close={this.closePopup.bind(this)}>
+            <h1>Add Bank</h1>
+            <form action="" method="post" onSubmit={this.addBank}>
               <FormGroup>
                 <label>Name</label>
                 <TextInput
@@ -387,35 +386,35 @@ export default class BankPage extends Component {
               </FormGroup>
 
               <FormGroup>
-              { this.state.logo ? 
-                <UploadedFile><a href={STATIC_URL+ this.state.logo } target="_BLANK">{this.state.logo}</a> <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i></UploadedFile>
-                :
+                { this.state.logo ? 
+                  <UploadedFile><a href={STATIC_URL+ this.state.logo } target="_BLANK">{this.state.logo}</a> <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i></UploadedFile>
+                  :
                   <UploadArea onClick={() => this.triggerBrowse('logo')}>
-                  <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
+                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
                     <i className="material-icons">cloud_upload</i>
                     <label>Upload Logo </label>
                   </UploadArea>
-                  }
+                }
               </FormGroup>
 
               <FormGroup>
-              { this.state.contract ? 
-                <UploadedFile><a href={STATIC_URL+ this.state.contract } target="_BLANK">{this.state.contract}</a> <i className="material-icons" onClick={() => this.removeFile('contract')}>close</i></UploadedFile>
-                :
+                { this.state.contract ? 
+                  <UploadedFile><a href={STATIC_URL+ this.state.contract } target="_BLANK">{this.state.contract}</a> <i className="material-icons" onClick={() => this.removeFile('contract')}>close</i></UploadedFile>
+                  :
                   <UploadArea onClick={() => this.triggerBrowse('contract')}>
-                  <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
-                  <i className="material-icons">cloud_upload</i>
+                    <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
+                    <i className="material-icons">cloud_upload</i>
                     <label>Contract </label>
-                </UploadArea>
-                }
+                  </UploadArea>
+                )}
               </FormGroup>
 
               <Button filledBtn marginTop="50px">
                 <span>Add Bank</span>
               </Button>
-          </form>
-        </Popup>
-        : null }
+            </form>
+          </Popup>
+          : null }
       </Wrapper>
     );
   }

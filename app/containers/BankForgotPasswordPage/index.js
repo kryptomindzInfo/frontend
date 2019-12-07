@@ -5,7 +5,7 @@
  *
  */
 import React from 'react';
-import {Helmet} from 'react-helmet';
+import { Helmet } from 'react-helmet';
 
 import Wrapper from 'components/Wrapper';
 import CircularLogo from 'components/CircularLogo';
@@ -23,47 +23,57 @@ import BackBtn from 'components/BackBtn';
 
 export default function BankForgotPasswordPage() {
   function inputFocus(e) {
-    let target = e.target;
-   target.parentElement.querySelector("label").classList.add("focused");
+    const { target } = e;
+    target.parentElement.querySelector('label').classList.add('focused');
   }
-  
+
   function inputBlur(e) {
-    let target = e.target;
-    if(target.value == ''){
-      target.parentElement.querySelector("label").classList.remove("focused");
+    const { target } = e;
+    if (target.value == '') {
+      target.parentElement.querySelector('label').classList.remove('focused');
     }
   }
-  
+
   return (
-      <Wrapper>
-        <Helmet>
-                <meta charSet="utf-8" />
-                <title>Forgot Password | BANK | E-WALLET</title>
-          </Helmet>
-        <BigLeftSection>
-            <CircularLogo>Bank</CircularLogo>
-          <Title>E-WALLET</Title>
-          <SubTitle>Welcome to the E-wallet<br />Create your wallet for easy transferring<br />money to your freinds and family</SubTitle>
-        </BigLeftSection>
-        <BigRightSection>
-          <LoginHeader>
-            <BackBtn href="/bank" className="material-icons">keyboard_backspace</BackBtn> Forgot Password
-          </LoginHeader>
-          <FrontFormTitle>
-            Enter your mobile number
-          </FrontFormTitle>
-          <form action="/bank/otp" method="get">
+    <Wrapper>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Forgot Password | BANK | E-WALLET</title>
+      </Helmet>
+      <BigLeftSection>
+        <CircularLogo>Bank</CircularLogo>
+        <Title>E-WALLET</Title>
+        <SubTitle>
+          Welcome to the E-wallet
+          <br />
+          Create your wallet for easy transferring
+          <br />
+          money to your freinds and family
+        </SubTitle>
+      </BigLeftSection>
+      <BigRightSection>
+        <LoginHeader>
+          <BackBtn href="/bank" className="material-icons">
+            keyboard_backspace
+          </BackBtn>{' '}
+          Forgot Password
+        </LoginHeader>
+        <FrontFormTitle>Enter your mobile number</FrontFormTitle>
+        <form action="/bank/otp" method="get">
           <InputsWrap>
-              <FormGroup>
-                <label>Mobile Number</label>
-                <TextInput type="text"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
-              </FormGroup>
+            <FormGroup>
+              <label>Mobile Number</label>
+              <TextInput
+                type="text"
+                required
+                onFocus={inputFocus}
+                onBlur={inputBlur}
+              />
+            </FormGroup>
           </InputsWrap>
-          <PrimaryBtn>
-            Get OTP
-          </PrimaryBtn>
-          </form>
-        </BigRightSection>
-      </Wrapper>
+          <PrimaryBtn>Get OTP</PrimaryBtn>
+        </form>
+      </BigRightSection>
+    </Wrapper>
   );
 }

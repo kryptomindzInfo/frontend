@@ -44,7 +44,7 @@ export default class BankSetupPage extends Component {
   constructor() {
     super();
     this.state = {
-      username: username,
+      username,
       password: '',
       confirm: '',
       notification: '',
@@ -81,7 +81,7 @@ export default class BankSetupPage extends Component {
     //       }else{
     //         this.props.history.push('/bank/setup');
     //       }
-          
+
     //     } else {
     //       throw res.data.error;
     //     }
@@ -98,9 +98,9 @@ export default class BankSetupPage extends Component {
     // if (token !== undefined && token !== null) {
     //   this.setState({ loading: false, redirect: true });
     // } else {
-      this.setState({ loading: false });
-    //}
-    document.getElementById("username").focus();
+    this.setState({ loading: false });
+    // }
+    document.getElementById('username').focus();
   }
 
   render() {
@@ -118,7 +118,6 @@ export default class BankSetupPage extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      
     }
     if (redirect) {
       return <Redirect to="/bank/dashboard" />;
@@ -141,16 +140,14 @@ export default class BankSetupPage extends Component {
           </SubTitle>
         </BigLeftSection>
         <BigRightSection>
-          <LoginHeader>
-            Change User Id / Password
-          </LoginHeader>
+          <LoginHeader>Change User Id / Password</LoginHeader>
           <FrontFormTitle>Type your user id and password</FrontFormTitle>
           <form action="" method="POST" onSubmit={this.setupUpdate}>
             <InputsWrap>
               <FormGroup>
                 <label>User Id</label>
                 <TextInput
-                id="username"
+                  id="username"
                   type="text"
                   name="username"
                   onFocus={inputFocus}

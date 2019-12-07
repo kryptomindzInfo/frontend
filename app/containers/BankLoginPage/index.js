@@ -72,15 +72,14 @@ export default class BankLoginPage extends Component {
       .post(`${API_URL}/bankLogin`, this.state)
       .then(res => {
         if (res.status == 200) {
-            localStorage.setItem('bankLogged', res.data.token);
-            localStorage.setItem('bankName', res.data.name);
-            localStorage.setItem('bankUserName', res.data.username);
-          if(res.data.initial_setup){
+          localStorage.setItem('bankLogged', res.data.token);
+          localStorage.setItem('bankName', res.data.name);
+          localStorage.setItem('bankUserName', res.data.username);
+          if (res.data.initial_setup) {
             this.props.history.push('/bank/dashboard');
-          }else{
+          } else {
             this.props.history.push('/bank/setup');
           }
-          
         } else {
           throw res.data.error;
         }
