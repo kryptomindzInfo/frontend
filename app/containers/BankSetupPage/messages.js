@@ -5,11 +5,36 @@
  */
 import { defineMessages } from 'react-intl';
 
-export const scope = 'app.containers.HomePage';
+export const scope0 = 'boilerplate.containers.All';
+export const scope = 'boilerplate.containers.BankSetup';
 
 export default defineMessages({
-  header: {
-    id: `${scope}.header`,
-    defaultMessage: 'This is the HomePage container!',
+  pagetitle: {
+    id: `${scope}.pagetitle`,
+    defaultMessage: 'Sign In',
+  },
+  title: {
+    id: `${scope}.title`,
+    defaultMessage: '',
+  },
+  userid: {
+    id: `${scope}.userid`,
+    defaultMessage: '',
+  },
+  newpass: {
+    id: `${scope}.newpass`,
+    defaultMessage: '',
+  },
+  confirm: {
+    id: `${scope}.confirm`,
+    defaultMessage: '',
+  },
+  forgotpassword: {
+    id: `${scope}.forgotpassword`,
+    defaultMessage: '',
+  },
+  update: {
+    id: `${scope0}.update`,
+    defaultMessage: '',
   },
 });

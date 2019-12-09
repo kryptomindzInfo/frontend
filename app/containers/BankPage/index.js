@@ -5,18 +5,21 @@
  *
  */
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom'
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
-import {Helmet} from "react-helmet";
+import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
+
 import Wrapper from 'components/Wrapper';
-import TopBar from 'components/TopBar';
+import TopBar from 'components/Header/TopBar';
 import Container from 'components/Container';
-import Logo from 'components/Logo';
-import Nav from 'components/Nav';
-import Welcome from 'components/Welcome';
-import Sidebar from 'components/Sidebar';
+import Logo from 'components/Header/Logo';
+import Nav from 'components/Header/Nav';
+import Welcome from 'components/Header/Welcome';
+import SidebarOne from 'components/Sidebar/SidebarOne';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
@@ -26,8 +29,10 @@ import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import UploadArea from 'components/UploadArea';
-import UploadedFile from 'components/UploadedFile';
-import {API_URL, STATIC_URL} from '../App/constants';
+import Row from 'components/Row';
+import Col from 'components/Col';
+
+import { API_URL, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -45,28 +50,32 @@ export default class BankPage extends Component {
   constructor() {
     super();
     this.state = {
-      name : '',
-      address1 : '',
-      address2 : '',
-      mobile : '',
-      email : '',
+      name: '',
+      address1: '',
+      state: '',
+      zip: '',
+      country: '',
+      ccode: '',
+      mobile: '',
+      email: '',
       logo: null,
       contract: null,
       loading: true,
       redirect: false,
       totalBanks: 0,
-      notification: "Welcome",
+      notification: 'Welcome',
       popup: false,
       user_id: token,
-      banks : []
+      banks: [],
+      otp: '',
+      showOtp: false
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
 
     this.onChange = this.onChange.bind(this);
-    this.fileUpload = this.fileUpload.bind(this)
-
+    this.fileUpload = this.fileUpload.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -91,11 +100,16 @@ export default class BankPage extends Component {
       popup: false,
       name: '',
       address1: '',
-      address2: '',
+      state: '',
+      zip: '',
+      ccode: '',
+      country: '',
       email: '',
       mobile: '',
       logo: null,
       contract: null,
+      otp: '',
+      showOtp: false
     });
   };
 
@@ -104,8 +118,8 @@ export default class BankPage extends Component {
     // axios.post(API_URL+'/logout', {token: token})
     // .then(res => {
     //    if(res.status == 200){
-  localStorage.removeItem("logged");
-  localStorage.removeItem("name");
+    localStorage.removeItem("logged");
+    localStorage.removeItem("name");
     this.setState({ redirect: true });
     //     }else{
     //       const error = new Error(res.data.error);
@@ -121,41 +135,78 @@ export default class BankPage extends Component {
   addBank = event => {
     event.preventDefault();
     axios
-      .post(API_URL + '/addBank', {
+      .post(`${API_URL  }/generateOTP`, {
+        name: this.state.name,
+        mobile: this.state.mobile,
+        page: 'addBank',
+        token,
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              showOtp: true,
+              notification: 'OTP Sent'
+            });
+            this.success();
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+  };
+
+  verifyOTP = event => {
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/addBank`, {
         name: this.state.name,
         address1: this.state.address1,
-        address2: this.state.address2,
+        state: this.state.state,
+        zip: this.state.zip,
+        country: this.state.country,
+        ccode: this.state.ccode,
         email: this.state.email,
         mobile: this.state.mobile,
         logo: this.state.logo,
         contract: this.state.contract,
-        token: token,
+        otp: this.state.otp,
+        token,
       })
       .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-            console.log(res.data.error);
-          throw "Mobile number / email id already exist!";
-        }else{
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
             this.setState({
-            notification: "Bank added successfully!",
+              notification: "Bank added successfully!",
             });
             this.success();
-          this.closePopup();
-          this.getBanks();
-        }
-      }else{
+            this.closePopup();
+            this.getBanks();
+          }
+        }else{
           const error = new Error(res.data.error);
-        throw error;
-      }
-    })
+          throw error;
+        }
+      })
       .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
         });
-      this.error();
-    });
+        this.error();
+      });
   };
+
 
   removeFile = key => {
     this.setState({
@@ -164,56 +215,56 @@ export default class BankPage extends Component {
   };
 
   triggerBrowse = inp => {
-    let input = document.getElementById(inp);
+    const input = document.getElementById(inp);
     input.click();
   };
 
   onChange(e) {
     if (e.target.files && e.target.files[0] != null) {
-    this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
+      this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
     }
   }
 
   fileUpload(file, key) {
     const formData = new FormData();
-  //  formData.append('token',token);
+    //  formData.append('token',token);
     formData.append('file', file);
     const config = {
-    headers: {
-      'content-type': 'multipart/form-data'
-    },
+      headers: {
+        'content-type': 'multipart/form-data'
+      },
     };
 
     axios
-      .post(API_URL + '/fileUpload?token=' + token, formData, config)
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-          throw "File upload error";
-        }else{
+      .post(`${API_URL  }/fileUpload?token=${  token}`, formData, config)
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw "File upload error";
+          }else{
             this.setState({
-            [key] : res.data.name
+              [key] : res.data.name
             });
-        }
-      }else{
+          }
+        }else{
           throw res.data.error;
-      }
+        }
       })
-    .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
         });
         this.error();
-    });
+      });
   }
 
   getBanks = () => {
     axios
-      .post(API_URL + '/getBanks', { token: token })
+      .post(`${API_URL  }/getBanks`, { token })
       .then(res => {
-      if(res.status == 200){
-        this.setState({ loading: false, banks: res.data.banks });
-      }
+        if(res.status == 200){
+          this.setState({ loading: false, banks: res.data.banks });
+        }
       })
       .catch(err => {
         console.log(err);
@@ -225,19 +276,19 @@ export default class BankPage extends Component {
       this.setState({ loading: false });
       this.getBanks();
     } else {
-      alert('Login to continue');
-      this.setState({ redirect: true });
+      // alert('Login to continue');
+      // this.setState({loading: false, redirect: true });
     }
   }
 
   render() {
     function inputFocus(e) {
-      const {target} = e;
-    target.parentElement.querySelector("label").classList.add("focused");
+      const { target } = e;
+      target.parentElement.querySelector("label").classList.add("focused");
     }
 
     function inputBlur(e) {
-      let {target} = e;
+      const { target } = e;
       if (target.value == '') {
         target.parentElement.querySelector('label').classList.remove('focused');
       }
@@ -248,85 +299,109 @@ export default class BankPage extends Component {
       return null;
     }
     if (redirect) {
-      return <Redirect to="/" />;
+      return <Redirect to="/" />
     }
+    
     return (
-    <Wrapper>
-      <Helmet>
+      <Wrapper>
+        <Helmet>
           <meta charSet="utf-8" />
-        <title>Banks | INFRA | E-WALLET</title>
-      </Helmet>
+          <title>Banks | INFRA | E-WALLET</title>
+        </Helmet>
         <TopBar>
-        <Container>
+        <Welcome />
+          <Container>
             <a href="/dashboard">
               <Logo>E-WALLET</Logo>
-          </a>
-          <Nav active="bank"></Nav>
-          <Welcome></Welcome>
+            </a>
+            <Nav active="bank"></Nav>
           </Container>
         </TopBar>
-      <Container verticalMargin>
-        <Sidebar marginRight>
-          <Card marginBottom="68px" buttonMarginTop="36px" bigPadding>
-            <h3>Operational Wallet</h3>
-              <h5>Available</h5>
-            <div className="cardValue">$0.00</div>
-            <button><i className="material-icons">send</i> Send Money</button>
-          </Card>
-          <Card buttonMarginTop="36px" bigPadding> 
-            <h3>Master Wallet</h3>
-              <h5>Available</h5>
-            <div className="cardValue">$0.00</div>
-            <button><i className="material-icons">send</i> Send Money</button>
-          </Card>
-        </Sidebar>
+        <Container verticalMargin>
+          <SidebarOne />
           <Main>
-          <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-            <div className="iconedInput fl">
+            <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
+              <div className="iconedInput fl">
                 <i className="material-icons">search</i>
-              <input type="text" placeholder="Search" />
+                <input type="text" placeholder="Search" />
               </div>
-            <Button className="fr" flex onClick={this.showPopup}>
-              <i className="material-icons">add</i>
-                <span>Add Bank</span>
-            </Button>
+              <Button className="fr" flex onClick={this.showPopup}>
+                <i className="material-icons">add</i>
+                <span><FormattedMessage {...messages.addbank} /></span>
+              </Button>
             </ActionBar>
             <Card bigPadding>
-            <div className="cardHeader" >
+              <div className="cardHeader" >
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>
-              </div>
+                </div>
                 <div className="cardHeaderRight">
-                <h3>Bank List</h3>
-                  <h5>Your friends and family</h5>
+                  <h3><FormattedMessage {...messages.title} /></h3>
+                  <h5><FormattedMessage {...messages.subtitle} /></h5>
+                </div>
               </div>
-            </div>
               <div className="cardBody">
-              <Table marginTop="38px">
+                <Table marginTop="34px">
                   <thead>
-                  <tr><th>Bank Name</th><th>Total Branches</th><th>Total Partners</th><th>Total Cashier</th><th>Transaction Count</th></tr>
-                </thead>
-                <tbody>
-                  {
-                    this.state.banks && this.state.banks.length > 0 
-                      ? this.state.banks.map(function(b) {
-                        return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td  className="tac">0</td><td className="tac bold">0 <a href="javascript: ;" className="material-icons absoluteRight primary">more_vert</a></td></tr>
-                      })
-                      :
-                      null
-                  }
-                </tbody>
-              </Table>
-            </div>
+                    <tr>
+                      <th><FormattedMessage {...messages.th1} /></th>
+                      <th><FormattedMessage {...messages.th2} /></th>
+                      <th><FormattedMessage {...messages.th3} /></th>
+                      <th><FormattedMessage {...messages.th4} /></th>
+                      <th><FormattedMessage {...messages.th5} /></th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {
+                      this.state.banks && this.state.banks.length > 0 
+                        ? this.state.banks.map(function(b) {
+                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td  className="tac">0</td>
+                          <td className="tac bold">0 <span className="absoluteRight primary popMenuTrigger"><i className="material-icons ">more_vert</i> 
+                          <div className="popMenu">
+                            <a href="/bankInfo"><FormattedMessage {...messages.menu1} /></a>
+                            <a href="/documents"><FormattedMessage {...messages.menu2} /></a>
+                            <a href="/fee"><FormattedMessage {...messages.menu3} /></a>
+                            </div></span></td></tr>
+                        })
+                        :
+                        null
+                    }
+                  </tbody>
+                </Table>
+              </div>
             </Card>
-        </Main>
+          </Main>
         </Container>
-      { this.state.popup ? 
-        <Popup close={this.closePopup.bind(this)}>
-          <h1>Add Bank</h1>
-          <form action="" method="post" onSubmit={this.addBank}>
+        { this.state.popup ? 
+          <Popup close={this.closePopup.bind(this)}>
+            {
+              this.state.showOtp ?
+              <div>
+              <h1><FormattedMessage {...messages.verify} /></h1>
+            <form action="" method="post" onSubmit={this.verifyOTP} >
               <FormGroup>
-                <label>Name</label>
+                <label><FormattedMessage {...messages.otp} /></label>
+                <TextInput
+                  type="text"
+                  name="otp"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.otp}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <Button filledBtn marginTop="50px">
+                <span><FormattedMessage {...messages.verify} /></span>
+              </Button>
+              </form>
+              </div>
+              :
+              <div>
+            <h1><FormattedMessage {...messages.addbank} /></h1>
+            <form action="" method="post" onSubmit={this.addBank}>
+              <FormGroup>
+                <label><FormattedMessage {...messages.popup1} /></label>
                 <TextInput
                   type="text"
                   name="name"
@@ -338,7 +413,7 @@ export default class BankPage extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>Address line - 1</label>
+                <label><FormattedMessage {...messages.popup2} /></label>
                 <TextInput
                   type="text"
                   name="address1"
@@ -349,73 +424,159 @@ export default class BankPage extends Component {
                   required
                 />
               </FormGroup>
-              <FormGroup>
-                <label>Address line - 2</label>
-                <TextInput
-                  type="text"
-                  name="address2"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.address2}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Authorized mobile number</label>
-                <TextInput
-                  type="text"
-                  name="mobile"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.mobile}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Authorized email id</label>
-                <TextInput
-                  type="text"
-                  name="email"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.email}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
+              
+                <Row>
+                  <Col>
+                  <FormGroup>
+                  <label><FormattedMessage {...messages.popup3} /></label>
+                  <TextInput
+                    type="text"
+                    name="state"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.state}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                  <Col>
+                  <FormGroup>
+                  <label><FormattedMessage {...messages.popup4} /></label>
+                  <TextInput
+                    type="text"
+                    name="zip"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.zip}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                  <FormGroup>
+                  <label><FormattedMessage {...messages.popup5} /></label>
+                  <TextInput
+                    type="text"
+                    name="country"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.country}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                  <Col>
+                  <FormGroup>
+                  <label><FormattedMessage {...messages.popup6} /></label>
+                  <TextInput
+                    type="text"
+                    name="ccode"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.ccode}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                </Row>  
+                <Row>
+                  <Col>
+                  <FormGroup>
+                  <label><FormattedMessage {...messages.popup7} /></label>
+                  <TextInput
+                    type="text"
+                    name="mobile"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.mobile}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                  <Col>
+                  <FormGroup>
+                  <label><FormattedMessage {...messages.popup8} /></label>
+                  <TextInput
+                    type="text"
+                    name="email"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.email}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                </Row>
+              
 
               <FormGroup>
-              { this.state.logo ? 
-                <UploadedFile><a href={STATIC_URL+ this.state.logo } target="_BLANK">{this.state.logo}</a> <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i></UploadedFile>
-                :
-                  <UploadArea onClick={() => this.triggerBrowse('logo')}>
-                  <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
+                
+                  {/* <UploadedFile>
+                    
+                      <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
+                    </UploadedFile>
+                  : */}
+                  <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
+                    { 
+                    this.state.logo ? 
+                    <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
+                    </a> 
+                    :
+                    ' '
+                    }
+                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
+                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
+                    { 
+                    !this.state.logo ? 
                     <i className="material-icons">cloud_upload</i>
-                    <label>Upload Logo </label>
+                    :
+                    ' '
+                    }
+                    <label><FormattedMessage {...messages.popup9} /> </label>
+                    </div>
                   </UploadArea>
-                  }
+                
               </FormGroup>
 
               <FormGroup>
-              { this.state.contract ? 
-                <UploadedFile><a href={STATIC_URL+ this.state.contract } target="_BLANK">{this.state.contract}</a> <i className="material-icons" onClick={() => this.removeFile('contract')}>close</i></UploadedFile>
-                :
-                  <UploadArea onClick={() => this.triggerBrowse('contract')}>
-                  <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
-                  <i className="material-icons">cloud_upload</i>
-                    <label>Contract </label>
-                </UploadArea>
-                }
+              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
+                    { 
+                    this.state.contract ? 
+                    <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
+                    </a> 
+                    :
+                    ' '
+                    }
+                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
+                    <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
+                    { 
+                    !this.state.contract ? 
+                    <i className="material-icons">cloud_upload</i>
+                    :
+                    ' '
+                    }
+                    
+                    <label><FormattedMessage {...messages.popup10} /> </label>
+                    </div>
+                  </UploadArea>
               </FormGroup>
 
               <Button filledBtn marginTop="50px">
-                <span>Add Bank</span>
+                <span><FormattedMessage {...messages.addbank} /></span>
               </Button>
-          </form>
-        </Popup>
-        : null }
+            </form>
+            </div>
+            }
+          </Popup>
+          : null }
       </Wrapper>
     );
   }

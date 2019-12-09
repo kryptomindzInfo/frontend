@@ -4,7 +4,7 @@ const FormGroup = styled.div`
   position:relative;
   > label{
     position:absolute;
-    top:13px;
+    top:11px;
     left:13px;
     z-index:0;
   }

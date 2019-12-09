@@ -11,12 +11,12 @@ import { Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
+import { FormattedMessage } from 'react-intl';
+import messages from '../HomePage/messages';
+
 import Wrapper from 'components/Wrapper';
-import CircularLogo from 'components/CircularLogo';
-import Title from 'components/Title';
-import SubTitle from 'components/SubTitle';
-import BigLeftSection from 'components/BigLeftSection';
-import BigRightSection from 'components/BigRightSection';
+import FrontLeftSection from 'components/FrontLeftSection';
+import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
 import FrontFormTitle from 'components/FrontFormTitle';
 import FrontFormSubTitle from 'components/FrontFormSubTitle';
@@ -72,15 +72,14 @@ export default class BankLoginPage extends Component {
       .post(`${API_URL}/bankLogin`, this.state)
       .then(res => {
         if (res.status == 200) {
-            localStorage.setItem('bankLogged', res.data.token);
-            localStorage.setItem('bankName', res.data.name);
-            localStorage.setItem('bankUserName', res.data.username);
-          if(res.data.initial_setup){
+          localStorage.setItem('bankLogged', res.data.token);
+          localStorage.setItem('bankName', res.data.name);
+          localStorage.setItem('bankUserName', res.data.username);
+          if (res.data.initial_setup) {
             this.props.history.push('/bank/dashboard');
-          }else{
+          } else {
             this.props.history.push('/bank/setup');
           }
-          
         } else {
           throw res.data.error;
         }
@@ -128,27 +127,17 @@ export default class BankLoginPage extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | BANK | HOME</title>
         </Helmet>
-        <BigLeftSection>
-          <CircularLogo>Bank</CircularLogo>
-          <Title>E-WALLET</Title>
-          <SubTitle>
-            Welcome to the E-wallet
-            <br />
-            Create your wallet for easy transferring
-            <br />
-            money to your freinds and family
-          </SubTitle>
-        </BigLeftSection>
-        <BigRightSection>
+        <FrontLeftSection from="bank"></FrontLeftSection>
+        <FrontRightSection>
           <LoginHeader>
-            Sign In <p>{this.state.message}</p>
+          <FormattedMessage {...messages.pagetitle} />
           </LoginHeader>
-          <FrontFormTitle>Log in to your account</FrontFormTitle>
-          <FrontFormSubTitle>Use your username to log in</FrontFormSubTitle>
+          <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
+          <FrontFormSubTitle><FormattedMessage {...messages.subtitle2} /></FrontFormSubTitle>
           <form action="" method="POST" onSubmit={this.loginRequest}>
             <InputsWrap>
               <FormGroup>
-                <label>User Id</label>
+                <label><FormattedMessage {...messages.userid} /></label>
                 <TextInput
                   type="text"
                   name="username"
@@ -160,7 +149,7 @@ export default class BankLoginPage extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>Password</label>
+                <label><FormattedMessage {...messages.password} /></label>
                 <TextInput
                   type="password"
                   name="password"
@@ -172,15 +161,15 @@ export default class BankLoginPage extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            <PrimaryBtn>Sign In</PrimaryBtn>
+            <PrimaryBtn><FormattedMessage {...messages.pagetitle} /></PrimaryBtn>
           </form>
           <Row marginTop>
             <Col />
             <Col textRight>
-              <a href="/bank/forgot-password">Forgot Password?</a>
+              <a href="/bank/forgot-password"><FormattedMessage {...messages.forgotpassword} /></a>
             </Col>
           </Row>
-        </BigRightSection>
+        </FrontRightSection>
       </Wrapper>
     );
   }

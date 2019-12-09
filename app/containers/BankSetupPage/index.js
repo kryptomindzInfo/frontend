@@ -11,15 +11,14 @@ import { Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
+
 import Wrapper from 'components/Wrapper';
-import CircularLogo from 'components/CircularLogo';
-import Title from 'components/Title';
-import SubTitle from 'components/SubTitle';
-import BigLeftSection from 'components/BigLeftSection';
-import BigRightSection from 'components/BigRightSection';
+import FrontLeftSection from 'components/FrontLeftSection';
+import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
 import FrontFormTitle from 'components/FrontFormTitle';
-import FrontFormSubTitle from 'components/FrontFormSubTitle';
 import InputsWrap from 'components/InputsWrap';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
@@ -44,12 +43,13 @@ export default class BankSetupPage extends Component {
   constructor() {
     super();
     this.state = {
-      username: username,
+      username,
       password: '',
       confirm: '',
       notification: '',
       loading: true,
       redirect: false,
+      token: token
     };
     this.error = this.error.bind(this);
   }
@@ -69,38 +69,51 @@ export default class BankSetupPage extends Component {
 
   setupUpdate = event => {
     event.preventDefault();
-    // axios
-    //   .post(`${API_URL}/bankLogin`, this.state)
-    //   .then(res => {
-    //     if (res.status == 200) {
-    //         localStorage.setItem('bankLogged', res.data.token);
-    //         localStorage.setItem('bankName', res.data.name);
-    //         localStorage.setItem('bankUserName', res.data.username);
-    //       if(res.data.initial_setup){
-    //         this.props.history.push('/bank/dashboard');
-    //       }else{
-    //         this.props.history.push('/bank/setup');
-    //       }
-          
-    //     } else {
-    //       throw res.data.error;
-    //     }
-    //   })
-    //   .catch(err => {
-    //     this.setState({
-    //       notification: err.response ? err.response.data.error : err.toString(),
-    //     });
-    //     this.error();
-    //   });
+    if(this.state.password != this.state.confirm){
+      this.setState({
+        notification: 'Passwords do not match'
+      }, () => {
+        this.error();
+    });
+      
+    }else{
+    axios
+      .post(`${API_URL}/bankSetupUpdate`, this.state )
+      .then(res => {
+        if (res.status == 200) {
+            localStorage.removeItem('bankLogged');
+            localStorage.removeItem('bankName');
+            localStorage.removeItem('bankUserName');
+            this.setState({
+              notification: 'Details updated, you will be redirected to the login screen'
+            }, () => {
+              this.error();
+              let history = this.props.history;
+              setTimeout(function(){
+                history.push('/bank');
+              }, 3000);
+          });
+        } else {
+          throw res.data.error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+        }, () => {
+          this.error();
+      });
+      });
+    }
   };
 
   componentDidMount() {
     // if (token !== undefined && token !== null) {
     //   this.setState({ loading: false, redirect: true });
     // } else {
-      this.setState({ loading: false });
-    //}
-    document.getElementById("username").focus();
+    this.setState({ loading: false });
+    // }
+    document.getElementById('username').focus();
   }
 
   render() {
@@ -118,7 +131,6 @@ export default class BankSetupPage extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      
     }
     if (redirect) {
       return <Redirect to="/bank/dashboard" />;
@@ -129,28 +141,17 @@ export default class BankSetupPage extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | BANK | HOME</title>
         </Helmet>
-        <BigLeftSection>
-          <CircularLogo>Bank</CircularLogo>
-          <Title>E-WALLET</Title>
-          <SubTitle>
-            Welcome to the E-wallet
-            <br />
-            Create your wallet for easy transferring
-            <br />
-            money to your freinds and family
-          </SubTitle>
-        </BigLeftSection>
-        <BigRightSection>
-          <LoginHeader>
-            Change User Id / Password
-          </LoginHeader>
-          <FrontFormTitle>Type your user id and password</FrontFormTitle>
+        <FrontLeftSection from="bank">
+        </FrontLeftSection>
+        <FrontRightSection>
+          <LoginHeader><FormattedMessage {...messages.pagetitle} /></LoginHeader>
+          <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
           <form action="" method="POST" onSubmit={this.setupUpdate}>
             <InputsWrap>
               <FormGroup>
-                <label>User Id</label>
+                <label><FormattedMessage {...messages.userid} /></label>
                 <TextInput
-                id="username"
+                  id="username"
                   type="text"
                   name="username"
                   onFocus={inputFocus}
@@ -161,7 +162,7 @@ export default class BankSetupPage extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>New Password </label>
+                <label><FormattedMessage {...messages.newpass} /></label>
                 <TextInput
                   type="password"
                   name="password"
@@ -174,7 +175,7 @@ export default class BankSetupPage extends Component {
               </FormGroup>
 
               <FormGroup>
-                <label>Confirm Password </label>
+                <label><FormattedMessage {...messages.confirm} /></label>
                 <TextInput
                   type="password"
                   name="confirm"
@@ -186,15 +187,15 @@ export default class BankSetupPage extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            <PrimaryBtn>Sign In</PrimaryBtn>
+            <PrimaryBtn><FormattedMessage {...messages.update} /></PrimaryBtn>
           </form>
           <Row marginTop>
             <Col />
             <Col textRight>
-              <a href="/bank/forgot-password">Forgot Password?</a>
+              <a href="/bank/forgot-password"><FormattedMessage {...messages.forgotpassword} /></a>
             </Col>
           </Row>
-        </BigRightSection>
+        </FrontRightSection>
       </Wrapper>
     );
   }

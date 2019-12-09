@@ -5,14 +5,14 @@
  *
  */
 import React from 'react';
-import {Helmet} from 'react-helmet';
+import { Helmet } from 'react-helmet';
+
+import { FormattedMessage } from 'react-intl';
+import messages from '../ForgotPasswordPage/messages';
 
 import Wrapper from 'components/Wrapper';
-import CircularLogo from 'components/CircularLogo';
-import Title from 'components/Title';
-import SubTitle from 'components/SubTitle';
-import BigLeftSection from 'components/BigLeftSection';
-import BigRightSection from 'components/BigRightSection';
+import FrontLeftSection from 'components/FrontLeftSection';
+import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
 import FrontFormTitle from 'components/FrontFormTitle';
 import InputsWrap from 'components/InputsWrap';
@@ -23,47 +23,48 @@ import BackBtn from 'components/BackBtn';
 
 export default function BankForgotPasswordPage() {
   function inputFocus(e) {
-    let target = e.target;
-   target.parentElement.querySelector("label").classList.add("focused");
+    const { target } = e;
+    target.parentElement.querySelector('label').classList.add('focused');
   }
-  
+
   function inputBlur(e) {
-    let target = e.target;
-    if(target.value == ''){
-      target.parentElement.querySelector("label").classList.remove("focused");
+    const { target } = e;
+    if (target.value == '') {
+      target.parentElement.querySelector('label').classList.remove('focused');
     }
   }
-  
+
   return (
-      <Wrapper>
-        <Helmet>
-                <meta charSet="utf-8" />
-                <title>Forgot Password | BANK | E-WALLET</title>
-          </Helmet>
-        <BigLeftSection>
-            <CircularLogo>Bank</CircularLogo>
-          <Title>E-WALLET</Title>
-          <SubTitle>Welcome to the E-wallet<br />Create your wallet for easy transferring<br />money to your freinds and family</SubTitle>
-        </BigLeftSection>
-        <BigRightSection>
-          <LoginHeader>
-            <BackBtn href="/bank" className="material-icons">keyboard_backspace</BackBtn> Forgot Password
-          </LoginHeader>
-          <FrontFormTitle>
-            Enter your mobile number
-          </FrontFormTitle>
-          <form action="/bank/otp" method="get">
+    <Wrapper>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>Forgot Password | BANK | E-WALLET</title>
+      </Helmet>
+      <FrontLeftSection from="bank">
+      </FrontLeftSection>
+      <FrontRightSection>
+        <LoginHeader>
+          <BackBtn href="/bank" className="material-icons">
+            keyboard_backspace
+          </BackBtn>
+          <FormattedMessage {...messages.pagetitle} />
+        </LoginHeader>
+        <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
+        <form action="/bank/otp" method="get">
           <InputsWrap>
-              <FormGroup>
-                <label>Mobile Number</label>
-                <TextInput type="text"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
-              </FormGroup>
+            <FormGroup>
+              <label><FormattedMessage {...messages.mobile} /></label>
+              <TextInput
+                type="text"
+                required
+                onFocus={inputFocus}
+                onBlur={inputBlur}
+              />
+            </FormGroup>
           </InputsWrap>
-          <PrimaryBtn>
-            Get OTP
-          </PrimaryBtn>
-          </form>
-        </BigRightSection>
-      </Wrapper>
+          <PrimaryBtn><FormattedMessage {...messages.getotp} /></PrimaryBtn>
+        </form>
+      </FrontRightSection>
+    </Wrapper>
   );
 }

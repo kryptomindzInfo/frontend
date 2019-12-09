@@ -3,10 +3,10 @@ import styled from 'styled-components';
 const TopBar = styled.header `
 background:${props => props.theme.hGradient};
 color: white;
-font-size: 20px;
-height: 79px;
+font-size: 18px;
+height: 63px;
 box-sizing: border-box;
-padding: 20px;
+padding: 11px 30px;
 > a {
     color: #fff;
 }

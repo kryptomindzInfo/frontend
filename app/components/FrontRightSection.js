@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-const BigRightSection = styled.section`
+const FrontRightSection = styled.section`
   background: white;
   width: 50%;
   padding: 27px 93px 125px 93px;
@@ -10,4 +10,4 @@ const BigRightSection = styled.section`
   height:100%;
   overflow-y:auto;
 `;
-export default BigRightSection;
+export default FrontRightSection;

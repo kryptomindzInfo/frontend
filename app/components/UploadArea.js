@@ -1,12 +1,26 @@
 import styled from 'styled-components';
-
 const UploadArea = styled.div `
+position:relative;
+> .uploadedImg{
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    border-radius: 50%;
+    display: block;
+    float: left;
+    top: 14px;
+    left: 40px;
+    background-image: url('${props => props.bgImg ? props.bgImg : '' }');
+    background-size: cover;
+}
+
+.uploadTrigger{
 width: 100%;
 background:#fff;
 cursor:pointer;
 border-radius: 7.5px;
 border: dashed 1.5px #417505;
-padding: 18px 40px;
+padding: 16px 40px;
 margin-bottom: 20px; 
 
 &:after{
@@ -14,6 +28,7 @@ margin-bottom: 20px;
     display: block;
     clear:both;
 }
+
 > .uploaded {
     font-size: 12px;
     color: #417505;
@@ -35,7 +50,7 @@ margin-bottom: 20px;
     display:none;
 }
 > i {
-    font-size: 80px;
+    font-size: 60px;
     line-height: 56px;
     display: block;
     float: left;
@@ -48,6 +63,7 @@ margin-bottom: 20px;
     color: #43434a;
     float:right;
     cursor:pointer;
+}
 }
 `;
 export default UploadArea;

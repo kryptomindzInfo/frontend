@@ -6,13 +6,13 @@ const PrimaryBtn = styled.button `
   padding:8px;
   background-color: ${props => props.theme.primary};
   color: white;
-  border:0;
+  border: 0;
   border-radius: 4px;
-  display:block;
-  outline:0;
+  display: block;
+  outline: 0;
   text-transform: uppercase;
-  font-weight:bold;
-  font-size: 20px;
+  font-weight: bold;
+  font-size: 18px;
 `;
 
 export default PrimaryBtn;
