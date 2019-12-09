@@ -31,7 +31,7 @@ const GlobalStyle = createGlobalStyle`
     font-weight: bold;
     font-size: 14px;
   }
-  a >  span {
+  a >  span > span {
     color: ${props => props.theme.light};
   }
 

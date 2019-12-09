@@ -18,6 +18,7 @@ import OTPPage from 'containers/OTPPage/Loadable';
 import DashboardPage from 'containers/DashboardPage/Loadable';
 import BankPage from 'containers/BankPage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
+import LocaleToggle from 'containers/LocaleToggle/index';
 
 import BankLoginPage from 'containers/BankLoginPage/Loadable';
 import BankForgotPasswordPage from 'containers/BankForgotPasswordPage/Loadable';
@@ -47,6 +48,7 @@ export default function App() {
       <div>
         <Switch>
           <Route exact path="/" component={HomePage} notify={notify} />
+          <Route exact path="/lang" component={LocaleToggle} />
           <Route exact path="/signup" component={SignupPage} />
           <Route exact path="/forgot-password" component={ForgotPasswordPage} />
           <Route exact path="/otp" component={OTPPage} />

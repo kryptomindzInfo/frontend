@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
 
 const NavTag = styled.nav`
   float: left;
@@ -8,7 +10,7 @@ const NavTag = styled.nav`
 
 const Link = styled.a`
   color: #fff;
-  font-size: 20px;
+  font-size: 18px;
   margin: 0 12px;
   padding-bottom: 7px;
   font-weight: normal;
@@ -26,20 +28,16 @@ class Nav extends Component {
       <React.Fragment>
         <NavTag>
           <Link href="/dashboard" active={dashboard}>
-            {' '}
-            Dashboard{' '}
+          <FormattedMessage {...messages.menu1} /> 
           </Link>
           <Link href="/banks" active={bank}>
-            {' '}
-            Bank{' '}
+          <FormattedMessage {...messages.menu2} /> 
           </Link>
           <Link href="/merchants" active={merchants}>
-            {' '}
-            Merchants{' '}
+          <FormattedMessage {...messages.menu3} /> 
           </Link>
           <Link href="/reports" active={reports}>
-            {' '}
-            Reports{' '}
+          <FormattedMessage {...messages.menu4} /> 
           </Link>
         </NavTag>
       </React.Fragment>

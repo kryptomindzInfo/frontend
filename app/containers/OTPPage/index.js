@@ -7,12 +7,12 @@
 import React from 'react';
 import {Helmet} from 'react-helmet';
 
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
+
 import Wrapper from 'components/Wrapper';
-import CircularLogo from 'components/CircularLogo';
-import Title from 'components/Title';
-import SubTitle from 'components/SubTitle';
-import BigLeftSection from 'components/BigLeftSection';
-import BigRightSection from 'components/BigRightSection';
+import FrontLeftSection from 'components/FrontLeftSection';
+import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
 import FrontFormTitle from 'components/FrontFormTitle';
 import InputsWrap from 'components/InputsWrap';
@@ -41,30 +41,27 @@ export default function OTPPage() {
                 <meta charSet="utf-8" />
                 <title>Verify OTP | INFRA | E-WALLET</title>
           </Helmet>
-        <BigLeftSection>
-          <CircularLogo>Infra</CircularLogo>
-          <Title>E-WALLET</Title>
-          <SubTitle>Welcome to the E-wallet<br />Create your wallet for easy transferring<br />money to your freinds and family</SubTitle>
-        </BigLeftSection>
-        <BigRightSection>
+        <FrontLeftSection from="infra">
+        </FrontLeftSection>
+        <FrontRightSection>
           <LoginHeader>
-            <BackBtn href="/forgot-password" className="material-icons">keyboard_backspace</BackBtn> OTP
+            <BackBtn href="/forgot-password" className="material-icons">keyboard_backspace</BackBtn> <FormattedMessage {...messages.pagetitle} />
           </LoginHeader>
           <FrontFormTitle>
-            Enter OTP for 0741600000
+          <FormattedMessage {...messages.title} /> 0741600000
           </FrontFormTitle>
           <form action="" method="get">
           <InputsWrap>
           <FormGroup>
-              <label>OTP</label>
+              <label><FormattedMessage {...messages.pagetitle} /></label>
               <TextInput type="text"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
           </InputsWrap>
           <PrimaryBtn>
-            Submit
+          <FormattedMessage {...messages.submit} />
           </PrimaryBtn>
           </form>
-        </BigRightSection>
+        </FrontRightSection>
       </Wrapper>
   );
 }

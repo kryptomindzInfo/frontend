@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 const SubTitle = styled.h2 `
-  font-size: 30px;
+  font-size: 24px;
   text-align:center;
   color:white;
   margin-top:0;

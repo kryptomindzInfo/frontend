@@ -26,10 +26,10 @@ const PopupBody = styled.div`
   border-radius: 4px;
   width: 90%;
   max-width: 648px;
-  padding: 28px;
+  padding: 20px;
   margin: 100px auto;
 
-  > h1 {
+  h1 {
     text-align: center;
     font-size: 40px;
     font-weight: normal;

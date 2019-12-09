@@ -7,10 +7,8 @@
 import React from 'react';
 
 import Wrapper from 'components/Wrapper';
-import Title from 'components/Title';
-import SubTitle from 'components/SubTitle';
-import BigLeftSection from 'components/BigLeftSection';
-import BigRightSection from 'components/BigRightSection';
+import FrontLeftSection from 'components/FrontLeftSection';
+import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
 import FrontFormTitle from 'components/FrontFormTitle';
 import FrontFormSubTitle from 'components/FrontFormSubTitle';
@@ -41,11 +39,9 @@ export default function SignupPage() {
 
   return (
       <Wrapper>
-        <BigLeftSection>
-          <Title>E-WALLET</Title>
-          <SubTitle>Welcome to the E-wallet<br />Create your wallet for easy trasferring<br />money to your freinds and family</SubTitle>
-        </BigLeftSection>
-        <BigRightSection>
+        <FrontLeftSection from="user">
+        </FrontLeftSection>
+        <FrontRightSection>
           <LoginHeader>
             <BackBtn href="/" className="material-icons">keyboard_backspace</BackBtn> Sign Up
           </LoginHeader>
@@ -93,7 +89,7 @@ export default function SignupPage() {
               <a href="/forgot-password" >Forgot Password?</a>
             </Col>
           </Row>
-        </BigRightSection>
+        </FrontRightSection>
       </Wrapper>
   );
 }

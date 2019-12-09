@@ -11,12 +11,12 @@ import { Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
+
 import Wrapper from 'components/Wrapper';
-import CircularLogo from 'components/CircularLogo';
-import Title from 'components/Title';
-import SubTitle from 'components/SubTitle';
-import BigLeftSection from 'components/BigLeftSection';
-import BigRightSection from 'components/BigRightSection';
+import FrontLeftSection from 'components/FrontLeftSection/index';
+import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
 import FrontFormTitle from 'components/FrontFormTitle';
 import FrontFormSubTitle from 'components/FrontFormSubTitle';
@@ -91,7 +91,6 @@ export default class HomePage extends Component {
     if (token !== undefined && token !== null) {
       this.setState({ loading: false, redirect: true });
     } else {
-      console.log('2');
       this.setState({ loading: false });
     }
   }
@@ -122,27 +121,18 @@ export default class HomePage extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | INFRA | HOME</title>
         </Helmet>
-        <BigLeftSection>
-          <CircularLogo>Infra</CircularLogo>
-          <Title>E-WALLET</Title>
-          <SubTitle>
-            Welcome to the E-wallet
-            <br />
-            Create your wallet for easy transferring
-            <br />
-            money to your freinds and family
-          </SubTitle>
-        </BigLeftSection>
-        <BigRightSection>
+        <FrontLeftSection from="infra">
+        </FrontLeftSection>
+        <FrontRightSection>
           <LoginHeader>
-            Sign In <p>{this.state.message}</p>
+            <FormattedMessage {...messages.pagetitle} />
           </LoginHeader>
-          <FrontFormTitle>Log in to your account</FrontFormTitle>
-          <FrontFormSubTitle>Use your email id to log in</FrontFormSubTitle>
+          <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
+          <FrontFormSubTitle><FormattedMessage {...messages.subtitle} /></FrontFormSubTitle>
           <form action="" method="POST" onSubmit={this.loginRequest}>
             <InputsWrap>
               <FormGroup>
-                <label>Email</label>
+                <label><FormattedMessage {...messages.email} /></label>
                 <TextInput
                   type="email"
                   name="username"
@@ -154,7 +144,7 @@ export default class HomePage extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>Password</label>
+                <label><FormattedMessage {...messages.password} /></label>
                 <TextInput
                   type="password"
                   name="password"
@@ -166,15 +156,17 @@ export default class HomePage extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            <PrimaryBtn>Sign In</PrimaryBtn>
+            <PrimaryBtn>
+              <FormattedMessage {...messages.pagetitle} />
+            </PrimaryBtn>
           </form>
           <Row marginTop>
             <Col />
             <Col textRight>
-              <a href="/forgot-password">Forgot Password?</a>
+              <a href="/forgot-password"><FormattedMessage {...messages.forgotpassword} /></a>
             </Col>
           </Row>
-        </BigRightSection>
+        </FrontRightSection>
       </Wrapper>
     );
   }

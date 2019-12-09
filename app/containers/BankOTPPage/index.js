@@ -7,12 +7,12 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
+import { FormattedMessage } from 'react-intl';
+import messages from '../OTPPage/messages';
+
 import Wrapper from 'components/Wrapper';
-import CircularLogo from 'components/CircularLogo';
-import Title from 'components/Title';
-import SubTitle from 'components/SubTitle';
-import BigLeftSection from 'components/BigLeftSection';
-import BigRightSection from 'components/BigRightSection';
+import FrontLeftSection from 'components/FrontLeftSection';
+import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
 import FrontFormTitle from 'components/FrontFormTitle';
 import InputsWrap from 'components/InputsWrap';
@@ -40,29 +40,21 @@ export default function BankOTPPage() {
         <meta charSet="utf-8" />
         <title>Verify OTP | BANK | E-WALLET</title>
       </Helmet>
-      <BigLeftSection>
-        <CircularLogo>Bank</CircularLogo>
-        <Title>E-WALLET</Title>
-        <SubTitle>
-          Welcome to the E-wallet
-          <br />
-          Create your wallet for easy transferring
-          <br />
-          money to your freinds and family
-        </SubTitle>
-      </BigLeftSection>
-      <BigRightSection>
+      <FrontLeftSection from="bank">
+        
+      </FrontLeftSection>
+      <FrontRightSection>
         <LoginHeader>
           <BackBtn href="/bank/forgot-password" className="material-icons">
             keyboard_backspace
           </BackBtn>{' '}
-          OTP
+          <FormattedMessage {...messages.pagetitle} />
         </LoginHeader>
-        <FrontFormTitle>Enter OTP for 0741600000</FrontFormTitle>
+        <FrontFormTitle><FormattedMessage {...messages.title} /> 0741600000</FrontFormTitle>
         <form action="" method="get">
           <InputsWrap>
             <FormGroup>
-              <label>OTP</label>
+              <label><FormattedMessage {...messages.pagetitle} /></label>
               <TextInput
                 type="text"
                 required
@@ -71,9 +63,9 @@ export default function BankOTPPage() {
               />
             </FormGroup>
           </InputsWrap>
-          <PrimaryBtn>Submit</PrimaryBtn>
+          <PrimaryBtn><FormattedMessage {...messages.submit} /></PrimaryBtn>
         </form>
-      </BigRightSection>
+      </FrontRightSection>
     </Wrapper>
   );
 }

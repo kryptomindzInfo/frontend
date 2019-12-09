@@ -7,12 +7,12 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 
+import { FormattedMessage } from 'react-intl';
+import messages from '../ForgotPasswordPage/messages';
+
 import Wrapper from 'components/Wrapper';
-import CircularLogo from 'components/CircularLogo';
-import Title from 'components/Title';
-import SubTitle from 'components/SubTitle';
-import BigLeftSection from 'components/BigLeftSection';
-import BigRightSection from 'components/BigRightSection';
+import FrontLeftSection from 'components/FrontLeftSection';
+import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
 import FrontFormTitle from 'components/FrontFormTitle';
 import InputsWrap from 'components/InputsWrap';
@@ -40,29 +40,20 @@ export default function BankForgotPasswordPage() {
         <meta charSet="utf-8" />
         <title>Forgot Password | BANK | E-WALLET</title>
       </Helmet>
-      <BigLeftSection>
-        <CircularLogo>Bank</CircularLogo>
-        <Title>E-WALLET</Title>
-        <SubTitle>
-          Welcome to the E-wallet
-          <br />
-          Create your wallet for easy transferring
-          <br />
-          money to your freinds and family
-        </SubTitle>
-      </BigLeftSection>
-      <BigRightSection>
+      <FrontLeftSection from="bank">
+      </FrontLeftSection>
+      <FrontRightSection>
         <LoginHeader>
           <BackBtn href="/bank" className="material-icons">
             keyboard_backspace
-          </BackBtn>{' '}
-          Forgot Password
+          </BackBtn>
+          <FormattedMessage {...messages.pagetitle} />
         </LoginHeader>
-        <FrontFormTitle>Enter your mobile number</FrontFormTitle>
+        <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
         <form action="/bank/otp" method="get">
           <InputsWrap>
             <FormGroup>
-              <label>Mobile Number</label>
+              <label><FormattedMessage {...messages.mobile} /></label>
               <TextInput
                 type="text"
                 required
@@ -71,9 +62,9 @@ export default function BankForgotPasswordPage() {
               />
             </FormGroup>
           </InputsWrap>
-          <PrimaryBtn>Get OTP</PrimaryBtn>
+          <PrimaryBtn><FormattedMessage {...messages.getotp} /></PrimaryBtn>
         </form>
-      </BigRightSection>
+      </FrontRightSection>
     </Wrapper>
   );
 }

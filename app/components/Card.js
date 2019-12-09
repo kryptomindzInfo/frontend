@@ -19,7 +19,7 @@ float: ${props => props.col ? 'left' : 'none' };
 }
 > .cardHeader > .cardHeaderRight > h3, > h3{
     color: #323c47;
-    font-size: 28px;
+    font-size: 24px;
     font-weight: normal;
     margin-top:0;
     margin-bottom: 20px;
@@ -40,12 +40,12 @@ float: ${props => props.col ? 'left' : 'none' };
     background: transparent;
     border-radius: 50%;
     margin: 3px 17px;
-    font-size: 50px;
+    font-size: 40px;
     padding: 0;
     line-height: 46px;
 }
 >h4{
-    font-size: ${props => props.h4FontSize ? props.h4FontSize : '20px' };
+    font-size: ${props => props.h4FontSize ? props.h4FontSize : '18px' };
     font-weight: normal;
     color: #323c47;
     margin-top:0;
@@ -60,7 +60,7 @@ float: ${props => props.col ? 'left' : 'none' };
 }
 
 > .cardValue{
-    font-size: 36px;
+    font-size: 32px;
     font-weight: bold;
     color: #417505;
 }
@@ -70,14 +70,14 @@ float: ${props => props.col ? 'left' : 'none' };
     border-radius: 2px;
     border: solid 1px #417505;
     color: #417505;
-    font-size: 13px;
+    font-size: 11px;
     font-weight: bold;
     background: #fff;
     margin-top: ${props => props.buttonMarginTop ? props.buttonMarginTop : '0'};
 
     >i{
         margin-right:5px;
-        font-size: 13px;
+        font-size: 11px;
     }
 }
 

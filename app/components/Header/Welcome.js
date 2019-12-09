@@ -1,12 +1,15 @@
 import React, { Component } from "react";
 import styled from 'styled-components';
+import LanguageSwitch from 'components/LanguageSwitch';
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
 
 const WelcomeWrap = styled.a `
     float: right;
     margin: 7px 0;
     display: block;
     color: #fff;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: normal;
     line-height: 26px;
 `;
@@ -27,7 +30,8 @@ class Welcome extends Component {
     return (
         <WelcomeWrap className="clr" href="#">
             <Icon className="material-icons fl">settings</Icon>
-            <Name>Welcome {name}</Name>
+            <Name><FormattedMessage {...messages.welcome} /> {name}</Name>
+            <LanguageSwitch></LanguageSwitch>
         </WelcomeWrap>
     );
   }

@@ -10,15 +10,17 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
+import { FormattedMessage } from 'react-intl';
+import messages from './messages';
+
 import Wrapper from 'components/Wrapper';
-import TopBar from 'components/TopBar';
+import Header from 'components/Header/index';
 import Container from 'components/Container';
-import Logo from 'components/Logo';
-import Nav from 'components/Nav';
-import Welcome from 'components/Welcome';
 import Sidebar from 'components/Sidebar';
 import Main from 'components/Main';
 import Card from 'components/Card';
+import OperationalWallet from 'components/Sidebar/OperationalWallet';
+import MasterWallet from 'components/Sidebar/MasterWallet';
 import { API_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -83,6 +85,7 @@ export default class DashboardPage extends Component {
             this.setState({ loading: false, totalBanks: res.data.totalBanks });
           } else {
             this.setState({ loading: false, redirect: true });
+            //this.setState({ loading: false, totalBanks: res.data.totalBanks });
           }
         })
         .catch(err => {
@@ -97,6 +100,7 @@ export default class DashboardPage extends Component {
       alert('Login to continue');
       this.setState({ loading: false, redirect: true });
     }
+    //this.setState({ loading: false });
   }
 
   render() {
@@ -113,72 +117,50 @@ export default class DashboardPage extends Component {
           <meta charSet="utf-8" />
           <title>Dashboard | INFRA | E-WALLET</title>
         </Helmet>
-        <TopBar>
-          <Container>
-            <a href="/dashboard">
-              <Logo>E-WALLET</Logo>
-            </a>
-            <Nav active="dashboard" />
-            <Welcome />
-          </Container>
-        </TopBar>
+        <Header />
         <Container verticalMargin>
           <Sidebar marginRight>
-            <Card marginBottom="68px" buttonMarginTop="36px" bigPadding>
-              <h3>Operational Wallet</h3>
-              <h5>Available</h5>
-              <div className="cardValue">$0.00</div>
-              <button>
-                <i className="material-icons">send</i> Send Money
-              </button>
-            </Card>
-            <Card buttonMarginTop="36px" bigPadding>
-              <h3>Master Wallet</h3>
-              <h5>Available</h5>
-              <div className="cardValue">$0.00</div>
-              <button>
-                <i className="material-icons">send</i> Send Money
-              </button>
-            </Card>
+            <OperationalWallet />
+            <MasterWallet />
           </Sidebar>
           <Main>
             <div className="clr">
               <a href="/banks">
                 <Card
                   horizontalMargin="7px"
-                  cardWidth="160px"
+                  cardWidth="151px"
                   textAlign="center"
                   col
                 >
-                  <h4>Total Banks</h4>
+                  <h4><FormattedMessage {...messages.box1} /></h4>
                   <div className="cardValue">{this.state.totalBanks}</div>
                 </Card>
               </a>
               <Card
                 horizontalMargin="7px"
-                cardWidth="160px"
+                cardWidth="151px"
                 textAlign="center"
                 col
               >
-                <h4>Total Merchants</h4>
+                <h4><FormattedMessage {...messages.box2} /></h4>
                 <div className="cardValue">0</div>
               </Card>
               <Card
                 horizontalMargin="7px"
-                cardWidth="160px"
+                cardWidth="151px"
                 textAlign="center"
                 col
               >
-                > ><h4>Total Users</h4>
+                <h4><FormattedMessage {...messages.box3} /></h4>
                 <div className="cardValue">0</div>
               </Card>
               <Card
                 horizontalMargin="7px"
-                cardWidth="160px"
+                cardWidth="151px"
                 textAlign="center"
                 col
               >
-                <h4>Total Cashier</h4>
+                <h4><FormattedMessage {...messages.box4} /></h4>
                 <div className="cardValue">0</div>
               </Card>
             </div>
@@ -186,57 +168,49 @@ export default class DashboardPage extends Component {
             <div className="clr mt10">
               <Card
                 horizontalMargin="7px"
-                cardWidth="160px"
+                cardWidth="151px"
                 h4FontSize="16px"
                 textAlign="center"
                 col
               >
                 <h4>
-                  Total Bank
-                  <br />
-                  Branches
+                <FormattedMessage {...messages.box5} />
                 </h4>
                 <div className="cardValue">0</div>
               </Card>
               <Card
                 horizontalMargin="7px"
-                cardWidth="160px"
+                cardWidth="151px"
                 h4FontSize="16px"
                 textAlign="center"
                 col
               >
                 <h4>
-                  Total Merchant
-                  <br />
-                  Branches
+                <FormattedMessage {...messages.box6} />
                 </h4>
                 <div className="cardValue">0</div>
               </Card>
               <Card
                 horizontalMargin="7px"
-                cardWidth="160px"
+                cardWidth="151px"
                 h4FontSize="16px"
                 textAlign="center"
                 col
               >
                 <h4>
-                  Total Bank
-                  <br />
-                  Partners
+                <FormattedMessage {...messages.box7} />
                 </h4>
                 <div className="cardValue">0</div>
               </Card>
               <Card
                 horizontalMargin="7px"
-                cardWidth="160px"
+                cardWidth="151px"
                 h4FontSize="16px"
                 textAlign="center"
                 col
               >
                 <h4>
-                  Total Merchant
-                  <br />
-                  Partners
+                <FormattedMessage {...messages.box8} />
                 </h4>
                 <div className="cardValue">0</div>
               </Card>
