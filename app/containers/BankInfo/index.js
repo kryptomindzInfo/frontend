@@ -346,7 +346,7 @@ export default class BankInfo extends Component {
             
           </Container>
         </TopBar>
-        <Container verticalMargin big>
+        <Container verticalMargin>
           <SidebarTwo />
           <Main big>
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">

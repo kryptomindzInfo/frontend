@@ -14,7 +14,7 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
-import TopBar from 'components/Header/TopBar';
+import Header from 'components/Header/index';
 import Container from 'components/Container';
 import Logo from 'components/Header/Logo';
 import Nav from 'components/Header/Nav';
@@ -308,15 +308,7 @@ export default class BankPage extends Component {
           <meta charSet="utf-8" />
           <title>Banks | INFRA | E-WALLET</title>
         </Helmet>
-        <TopBar>
-        <Welcome />
-          <Container>
-            <a href="/dashboard">
-              <Logo>E-WALLET</Logo>
-            </a>
-            <Nav active="bank"></Nav>
-          </Container>
-        </TopBar>
+        <Header />
         <Container verticalMargin>
           <SidebarOne />
           <Main>

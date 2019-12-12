@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import LanguageSwitch from 'components/LanguageSwitch';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
-
 import SubNav from './SubNav';
 
 const WelcomeWrap = styled.div `
@@ -14,12 +13,6 @@ const WelcomeWrap = styled.div `
     font-size: 18px;
     font-weight: normal;
     line-height: 26px;
-    .infraSubNav{
-      display: ${props => props.from == 'infra' ? 'block' : 'none'};
-    }
-    .bankSubNav{
-      display: ${props => props.from == 'bank' ? 'block' : 'none'};
-    }
 `;
 
 const Name = styled.div `
@@ -67,15 +60,18 @@ class Welcome extends Component {
               <Name>
                   <FormattedMessage {...messages.welcome} /> {name}
               </Name>
-
+              {
+                this.props.infraNav ?
                 <SubNav className="infraSubNav">
-                    <a onClick={this.logoutInfra}>Logout</a>
+                    <a onClick={this.logoutInfra} href="#">Logout</a>
                 </SubNav>
-
+                :
                 <SubNav className="bankSubNav">
                     <a href="/bank/info">Settings</a>
-                    <a onClick={this.logoutBank}>Logout</a>
+                    <a onClick={this.logoutBank} href="#">Logout</a>
                 </SubNav>
+              }
+                
 
               </div>
             <LanguageSwitch></LanguageSwitch>

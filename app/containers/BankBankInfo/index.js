@@ -421,9 +421,9 @@ export default class BankBankInfo extends Component {
           <title>Banks | INFRA | E-WALLET</title>
         </Helmet>
         <BankHeader />
-        <Container verticalMargin big>
+        <Container verticalMargin>
           <BankSidebarTwo />
-          <Main big>
+          <Main>
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
               <div className="clr">
                 <Tab>Bank and Infra</Tab>

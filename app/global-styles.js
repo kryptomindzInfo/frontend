@@ -5,6 +5,7 @@ const GlobalStyle = createGlobalStyle`
   box-sizing:border-box;
   outline:0;
 }
+
 .clr:after{
   content:'';
   display:block;
