@@ -74,7 +74,7 @@ export default class BankActivate extends Component {
       .then(res => {
         if (res.status == 200) {
             this.setState({
-              notification: 'Account activated!'
+              notification: 'Account activated!' + res.data.walletStatus
             }, () => {
               this.success();
               let history = this.props.history;
