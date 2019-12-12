@@ -5,7 +5,7 @@ width:100%;
 margin-top: ${props => props.marginTop ? props.marginTop : '0' };
 
 > thead > tr > th{
-    font-size:16px;
+    font-size:14px;
     font-weight:bold;
     padding: 8px;
     text-align:center;
@@ -17,9 +17,15 @@ margin-top: ${props => props.marginTop ? props.marginTop : '0' };
     font-size: 16px;
     font-weight: 300;
     color: #4a4a4a;
-    padding: 14px 22px;
+    padding: ${props => props.smallTd ? '10px' : '14px 22px' };
     background-color: rgba(81, 111, 10, 0.01);
     position:relative;
+    &.green{
+        color: #417505;
+    }
+    > a{
+        font-size: 12px;
+    }
 }
 td > .material-icons{
     font-size: 19px;

@@ -18,5 +18,17 @@ const FormGroup = styled.div`
     padding: 0 5px;
     z-index: 2;
   }
+  &.checkbox{
+    font-size: 12px;
+    color: #9ea0a5;
+    margin-top: 20px;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    > input{
+      margin-right: 10px;
+    }
+  }
 `;
 export default FormGroup;

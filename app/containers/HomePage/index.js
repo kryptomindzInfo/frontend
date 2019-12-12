@@ -74,7 +74,12 @@ export default class HomePage extends Component {
         if (res.status == 200) {
           localStorage.setItem('logged', res.data.token);
           localStorage.setItem('name', res.data.name);
-          this.props.history.push('/dashboard');
+          if(res.data.initial_setup){
+            this.props.history.push('/dashboard');
+          }else{
+            this.props.history.push('/setup');
+          }
+          
         } else {
           throw res.data.error;
         }
@@ -134,7 +139,7 @@ export default class HomePage extends Component {
               <FormGroup>
                 <label><FormattedMessage {...messages.email} /></label>
                 <TextInput
-                  type="email"
+                  type="text"
                   name="username"
                   onFocus={inputFocus}
                   onBlur={inputBlur}

@@ -34,9 +34,15 @@ const PopupBody = styled.div`
     font-size: 40px;
     font-weight: normal;
     letter-spacing: 0.02px;
-    color: #000000;
+    color: #ffffff;
     margin-top: 0;
+    background-color: #f5a623;
+    margin-left: -20px;
+    margin-top: -20px;
+    margin-right: -20px;
+    padding: 10px;
   }
+  
 `;
 
 class Popup extends Component {

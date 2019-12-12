@@ -10,6 +10,26 @@ const GlobalStyle = createGlobalStyle`
   display:block;
   clear:both;
 }
+.hide{
+  display:none;
+}
+.text-accent{
+  color: #f5a623;
+}
+.text-light{
+  color: #9b9b9b;
+}
+.fullWidth{
+  width: 100%;
+  box-sizing:border-box;
+}
+.dropdown{
+  position:relative;
+  padding-bottom: 10px;
+}
+.dropdown:hover > .subNav{
+  display:block !important;
+}
 .fl{float:left;}
 .fr{float:right;}
   @import url('https://fonts.googleapis.com/css?family=Roboto|Material+Icons&display=swap');

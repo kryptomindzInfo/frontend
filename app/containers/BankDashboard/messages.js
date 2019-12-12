@@ -6,6 +6,7 @@
 import { defineMessages } from 'react-intl';
 
 export const scope = 'boilerplate.containers.DashboardPage';
+export const scope2 = 'boilerplate.containers.BankDashboardPage';
 
 export default defineMessages({
   box1: {
@@ -38,6 +39,15 @@ export default defineMessages({
   },
   box8: {
     id: `${scope}.box8`,
+    defaultMessage: '',
+  },
+
+  bbox1: {
+    id: `${scope2}.box1`,
+    defaultMessage: '',
+  },
+  bbox5: {
+    id: `${scope2}.box5`,
     defaultMessage: '',
   },
 });

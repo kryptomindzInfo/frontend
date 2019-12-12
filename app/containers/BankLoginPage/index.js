@@ -75,10 +75,16 @@ export default class BankLoginPage extends Component {
           localStorage.setItem('bankLogged', res.data.token);
           localStorage.setItem('bankName', res.data.name);
           localStorage.setItem('bankUserName', res.data.username);
-          if (res.data.initial_setup) {
-            this.props.history.push('/bank/dashboard');
-          } else {
+          localStorage.setItem('bankContract', res.data.contract);
+          localStorage.setItem('bankId', res.data.id);
+          if (!res.data.initial_setup) {
             this.props.history.push('/bank/setup');
+          } 
+          else if (!res.data.status || res.data.status == 0 || res.data.status == '') {
+            this.props.history.push('/bank/activate');
+          } 
+          else {
+            this.props.history.push('/bank/dashboard');
           }
         } else {
           throw res.data.error;
