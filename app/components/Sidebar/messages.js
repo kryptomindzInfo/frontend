@@ -24,4 +24,12 @@ export default defineMessages({
     id: `${scope}.master`,
     defaultMessage: '',
   },
+  escrow: {
+    id: `${scope}.escrow`,
+    defaultMessage: '',
+  },
+  activate: {
+    id: `${scope}.activate`,
+    defaultMessage: '',
+  },
 });

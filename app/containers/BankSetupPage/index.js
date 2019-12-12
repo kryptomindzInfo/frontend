@@ -87,7 +87,7 @@ export default class BankSetupPage extends Component {
             this.setState({
               notification: 'Details updated, you will be redirected to the login screen'
             }, () => {
-              this.error();
+              this.success();
               let history = this.props.history;
               setTimeout(function(){
                 history.push('/bank');

@@ -6,6 +6,7 @@
 import { defineMessages } from 'react-intl';
 
 export const scope = 'boilerplate.components.Header';
+export const scope2 = 'boilerplate.components.BankHeader';
 
 export default defineMessages({
   logo: {
@@ -26,6 +27,18 @@ export default defineMessages({
   },
   menu4: {
     id: `${scope}.menu4`,
+    defaultMessage: '',
+  },
+  bmenu1: {
+    id: `${scope2}.menu1`,
+    defaultMessage: '',
+  },
+  bmenu2: {
+    id: `${scope2}.menu2`,
+    defaultMessage: '',
+  },
+  bmenu3: {
+    id: `${scope2}.menu3`,
     defaultMessage: '',
   },
   welcome: {

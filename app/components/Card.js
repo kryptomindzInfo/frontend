@@ -7,11 +7,34 @@ margin-left: ${props => props.horizontalMargin ? props.horizontalMargin : '0' };
 margin-right: ${props => props.horizontalMargin ? props.horizontalMargin : '0' };
 padding:  ${props => props.bigPadding ? '18px 30px' : '12px 6px' };
 box-shadow: 0 4px 9px 0 rgba(0, 0, 0, 0.02);
-background-color: #ffffff;
+background-color: ${props => props.selected ? '#6cac69' : '#fff' };
+color: ${props => props.selected ? '#fff' : '#323c47' };
+border-radius: ${props => props.rounded ? '5px' : '0' };
 margin-bottom: ${props => props.marginBottom ? props.marginBottom : '0' };
 text-align: ${props => props.textAlign ? props.textAlign : 'left'};
 float: ${props => props.col ? 'left' : 'none' };
-
+&.sideNav{
+    padding: 15px 10px;
+    display:flex;
+    flex-direction: row;
+    align-items:center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+    border: solid 1px #e9eff4;
+    box-shaddow: none;
+    i{
+        margin-right:10px;
+        margin-top:0;
+        color: #4da1ff;
+        background-color: ${props => props.selected ? '#fff' : 'transparent' };
+    }
+    h3{
+        font-size: 13px;
+        font-weight:bold;
+        margin:0;
+        color: ${props => props.selected ? '#fff' : '#323c47' };
+    }
+}
 > .cardHeader:after{
     content: '';
     display:block;
@@ -29,6 +52,20 @@ float: ${props => props.col ? 'left' : 'none' };
 }
 > .cardHeader  > .cardHeaderLeft{
     float:left;
+    &.flex{
+        display:flex;
+        align-items:center;
+        justify-content: flex-start;
+        flex-direction: row;
+        h3{
+            font-size: 28px;
+        }
+        i{
+            background: #417505;
+            color: #fff;
+            
+        }
+    }
 }
 > .cardHeader  > .cardHeaderRight{
     float:left;

@@ -15,5 +15,33 @@ padding: 11px 30px;
     display:block;
     clear:both;
 }
+.bankLogo{
+    height: 39px;
+    width: 39px;
+    float:left;
+    margin-left: 100px;
+    background:#fff;
+    img{
+        max-width: 100%;
+        max-height: 100%;
+    }
+}
+h2{
+    font-size: 24px;
+    font-wight:normal;
+    color: #fff;
+    float: left;
+    margin: 7px 15px;
+}
+.headerNavDash{
+    min-width: 214px;
+    text-align:center;
+    border: 2px solid #fff;
+    float:left;
+    color: #fff;
+    padding: 8px;
+    border-radius:8px;
+    font-size: 18px;
+}
 `;
 export default TopBar;

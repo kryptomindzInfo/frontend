@@ -28,6 +28,10 @@
     "boilerplate.components.Header.menu4": "Reports",
     "boilerplate.components.Header.welcome": "Welcome",
 
+    "boilerplate.components.BankHeader.menu1": "Branches",
+    "boilerplate.components.BankHeader.menu2": "Partners",
+    "boilerplate.components.BankHeader.menu3": "Users",
+
     "boilerplate.containers.ForgotPage.pagetitle": "Forgot Password",
     "boilerplate.containers.ForgotPage.title": "Enter your mobile number",
     "boilerplate.containers.ForgotPage.mobile": "Mobile Number",
@@ -41,6 +45,8 @@
     "boilerplate.components.Sidebar.available": "Available",
     "boilerplate.components.Sidebar.sendmoney": "Send Money",
     "boilerplate.components.Sidebar.master": "Master Wallet",
+    "boilerplate.components.Sidebar.escrow": "Escrow Wallet",
+    "boilerplate.components.Sidebar.activate": "Activate",
 
     "boilerplate.containers.DashboardPage.box1": "Total Banks",
     "boilerplate.containers.DashboardPage.box2": "Total Merchants",
@@ -50,6 +56,9 @@
     "boilerplate.containers.DashboardPage.box6": "Total Merchant Branches",
     "boilerplate.containers.DashboardPage.box7": "Total Bank Partners",
     "boilerplate.containers.DashboardPage.box8": "Total Merchant Partners",
+
+    "boilerplate.containers.BankDashboardPage.box1": "Total Branches",
+    "boilerplate.containers.BankDashboardPage.box5": "Total Partners",
 
     "boilerplate.containers.BankPage.addbank": "Add Bank",
     "boilerplate.containers.BankPage.title": "Bank List",
@@ -80,6 +89,12 @@
     "boilerplate.containers.BankSetup.userid": "User Id",
     "boilerplate.containers.BankSetup.newpass": "New Password",
     "boilerplate.containers.BankSetup.confirm": "Confirm Password",
-    "boilerplate.containers.BankSetup.forgotpassword": "Forgot Password?"
+    "boilerplate.containers.BankSetup.forgotpassword": "Forgot Password?",
+
+    "boilerplate.containers.BankActivate.pagetitle": "Contract with Infra",
+    "boilerplate.containers.BankActivate.title": "Please review the bellow contract submmited by Infra",
+    "boilerplate.containers.BankActivate.confirm": "Agree to the contract",
+    "boilerplate.containers.BankActivate.btn1": "Download",
+    "boilerplate.containers.BankActivate.btn2": "Activate my account"
     
 }

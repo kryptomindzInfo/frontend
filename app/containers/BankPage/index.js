@@ -358,7 +358,7 @@ export default class BankPage extends Component {
                           return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td  className="tac">0</td>
                           <td className="tac bold">0 <span className="absoluteRight primary popMenuTrigger"><i className="material-icons ">more_vert</i> 
                           <div className="popMenu">
-                            <a href="/bankInfo"><FormattedMessage {...messages.menu1} /></a>
+                            <a href={"/banks/"+b._id}><FormattedMessage {...messages.menu1} /></a>
                             <a href="/documents"><FormattedMessage {...messages.menu2} /></a>
                             <a href="/fee"><FormattedMessage {...messages.menu3} /></a>
                             </div></span></td></tr>
@@ -373,11 +373,11 @@ export default class BankPage extends Component {
           </Main>
         </Container>
         { this.state.popup ? 
-          <Popup close={this.closePopup.bind(this)}>
+          <Popup close={this.closePopup.bind(this)} accentedH1>
             {
               this.state.showOtp ?
               <div>
-              <h1><FormattedMessage {...messages.verify} /></h1>
+              <h1 ><FormattedMessage {...messages.verify} /></h1>
             <form action="" method="post" onSubmit={this.verifyOTP} >
               <FormGroup>
                 <label><FormattedMessage {...messages.otp} /></label>
@@ -398,7 +398,7 @@ export default class BankPage extends Component {
               </div>
               :
               <div>
-            <h1><FormattedMessage {...messages.addbank} /></h1>
+            <h1 ><FormattedMessage {...messages.addbank} /></h1>
             <form action="" method="post" onSubmit={this.addBank}>
               <FormGroup>
                 <label><FormattedMessage {...messages.popup1} /></label>

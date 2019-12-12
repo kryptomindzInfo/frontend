@@ -14,13 +14,12 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
-import Header from 'components/Header';
+import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
 import Sidebar from 'components/Sidebar';
 import Main from 'components/Main';
 import Card from 'components/Card';
-import OperationalWallet from 'components/Sidebar/OperationalWallet';
-import MasterWallet from 'components/Sidebar/MasterWallet';
+import SidebarBank from 'components/Sidebar/SidebarBank';
 import { API_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,7 +32,7 @@ toast.configure({
   draggable: true,
 });
 
-const token = localStorage.getItem('logged');
+const token = localStorage.getItem('bankLogged');
 
 export default class BankDashboard extends Component {
   constructor() {
@@ -78,24 +77,25 @@ export default class BankDashboard extends Component {
 
   componentDidMount() {
     if (token !== undefined && token !== null) {
-      axios
-        .post(`${API_URL}/getDashStats`, { token })
-        .then(res => {
-          if (res.status == 200) {
-            this.setState({ loading: false, totalBanks: res.data.totalBanks });
-          } else {
-            this.setState({ loading: false, redirect: true });
-            //this.setState({ loading: false, totalBanks: res.data.totalBanks });
-          }
-        })
-        .catch(err => {
-          this.setState({
-            notification: err.response
-              ? err.response.data.error
-              : err.toString(),
-          });
-          this.error();
-        });
+      // axios
+      //   .post(`${API_URL}/getDashStats`, { token })
+      //   .then(res => {
+      //     if (res.status == 200) {
+      //       this.setState({ loading: false, totalBanks: res.data.totalBanks });
+      //     } else {
+      //       this.setState({ loading: false, redirect: true });
+      //       //this.setState({ loading: false, totalBanks: res.data.totalBanks });
+      //     }
+      //   })
+      //   .catch(err => {
+      //     this.setState({
+      //       notification: err.response
+      //         ? err.response.data.error
+      //         : err.toString(),
+      //     });
+      //     this.error();
+      //   });
+      this.setState({ loading: false });
     } else {
       alert('Login to continue');
       this.setState({ loading: false, redirect: true });
@@ -109,20 +109,17 @@ export default class BankDashboard extends Component {
       return null;
     }
     if (redirect) {
-      return <Redirect to="/" />;
+      return <Redirect to="/bank" />;
     }
     return (
-      <Wrapper>
+      <Wrapper from="bank">
         <Helmet>
           <meta charSet="utf-8" />
           <title>Dashboard | INFRA | E-WALLET</title>
         </Helmet>
-        <Header />
+        <BankHeader />
         <Container verticalMargin>
-          <Sidebar marginRight>
-            <OperationalWallet />
-            <MasterWallet />
-          </Sidebar>
+          <SidebarBank />
           <Main>
             <div className="clr">
               <a href="/banks">
@@ -132,7 +129,7 @@ export default class BankDashboard extends Component {
                   textAlign="center"
                   col
                 >
-                  <h4><FormattedMessage {...messages.box1} /></h4>
+                  <h4><FormattedMessage {...messages.bbox1} /></h4>
                   <div className="cardValue">{this.state.totalBanks}</div>
                 </Card>
               </a>
@@ -174,7 +171,9 @@ export default class BankDashboard extends Component {
                 col
               >
                 <h4>
-                <FormattedMessage {...messages.box5} />
+                <FormattedMessage {...messages.bbox5} />
+                <br />
+                <span>&nbsp;</span>
                 </h4>
                 <div className="cardValue">0</div>
               </Card>

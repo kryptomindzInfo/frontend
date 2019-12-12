@@ -10,11 +10,20 @@ const LanguageWrap = styled.div`
         background: transparent;
         color: #f5a623;
         font-weight: bold;
-        padding: 0 !important;
+        padding-top: 0 !important;
+        padding-left: 0 !important;
+        padding-bottom: 0 !important;
+        padding-right: 10px;
         line-height: 18px;
         font-size: 18px;
         border: 0;
         float:left;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        text-indent: 1px;
+        text-overflow: '';
+        margin: 3px 0;
+        outline:0;
     }
     >select option{
         background: #1e3d1d;

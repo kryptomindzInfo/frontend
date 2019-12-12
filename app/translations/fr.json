@@ -28,6 +28,11 @@
     "boilerplate.components.Header.menu4": "frReports",
     "boilerplate.components.Header.welcome": "frWelcome",
 
+
+    "boilerplate.components.BankHeader.menu1": "frBranches",
+    "boilerplate.components.BankHeader.menu2": "frPartners",
+    "boilerplate.components.BankHeader.menu3": "frUsers",
+
     "boilerplate.containers.ForgotPage.pagetitle": "frForgot Password",
     "boilerplate.containers.ForgotPage.title": "frEnter your mobile number",
     "boilerplate.containers.ForgotPage.mobile": "frMobile Number",
@@ -41,6 +46,8 @@
     "boilerplate.components.Sidebar.available": "frAvailable",
     "boilerplate.components.Sidebar.sendmoney": "frSend Money",
     "boilerplate.components.Sidebar.master": "frMaster Wallet",
+    "boilerplate.components.Sidebar.escrow": "frEscrow Wallet",
+    "boilerplate.components.Sidebar.activate": "frActivate",
 
     "boilerplate.containers.DashboardPage.box1": "frTotal Banks",
     "boilerplate.containers.DashboardPage.box2": "frTotal Merchants",
@@ -50,6 +57,9 @@
     "boilerplate.containers.DashboardPage.box6": "frTotal Merchant Branches",
     "boilerplate.containers.DashboardPage.box7": "frTotal Bank Partners",
     "boilerplate.containers.DashboardPage.box8": "frTotal Merchant Partners",
+
+    "boilerplate.containers.BankDashboardPage.box1": "frTotal Branches",
+    "boilerplate.containers.BankDashboardPage.box5": "frTotal Partners",
 
     "boilerplate.containers.BankPage.addbank": "frAdd Bank",
     "boilerplate.containers.BankPage.title": "frBank List",
@@ -75,10 +85,9 @@
     "boilerplate.containers.BankPage.verify": "frVerify OTP",
     "boilerplate.containers.BankPage.otp": "frOTP",
 
-    "boilerplate.containers.BankSetup.pagetitle": "frChange User Id / Password",
-    "boilerplate.containers.BankSetup.title": "frType your user id and password",
-    "boilerplate.containers.BankSetup.userid": "frUser Id",
-    "boilerplate.containers.BankSetup.newpass": "frNew Password",
-    "boilerplate.containers.BankSetup.confirm": "frConfirm Password",
-    "boilerplate.containers.BankSetup.forgotpassword": "frForgot Password?"
+    "boilerplate.containers.BankActivate.pagetitle": "frContract with Infra",
+    "boilerplate.containers.BankActivate.title": "frPlease review the bellow contract submmited by Infra",
+    "boilerplate.containers.BankActivate.confirm": "frAgree to the contract",
+    "boilerplate.containers.BankActivate.btn1": "frDownload",
+    "boilerplate.containers.BankActivate.btn2": "frActivate my account"
 }
