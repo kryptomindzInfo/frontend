@@ -11,7 +11,7 @@ const PopupWrap = styled.div`
     left:0;
     &::-webkit-scrollbar { width: 0 !important }
     overflow: -moz-scrollbars-none;
--ms-overflow-style: none; 
+-ms-overflow-style: none;
     overflow-y:auto;
     form{
         display:block;
@@ -42,7 +42,7 @@ const PopupBody = styled.div`
     margin-right: -20px;
     padding: 10px;
   }
-  
+
 `;
 
 class Popup extends Component {
@@ -53,7 +53,6 @@ class Popup extends Component {
   };
 
   render() {
-    console.log(this.props);
     return (
       <PopupWrap className="popupwrap" onClick={this.sendCloseSignal}>
         <PopupBody id="popupBody">{this.props.children}</PopupBody>

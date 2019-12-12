@@ -6,7 +6,7 @@ import messages from './messages';
 
 import SubNav from './SubNav';
 
-const WelcomeWrap = styled.a `
+const WelcomeWrap = styled.div `
     float: right;
     margin: 7px 0;
     display: block;
@@ -14,6 +14,12 @@ const WelcomeWrap = styled.a `
     font-size: 18px;
     font-weight: normal;
     line-height: 26px;
+    .infraSubNav{
+      display: ${props => props.from == 'infra' ? 'block' : 'none'};
+    }
+    .bankSubNav{
+      display: ${props => props.from == 'bank' ? 'block' : 'none'};
+    }
 `;
 
 const Name = styled.div `
@@ -30,23 +36,16 @@ const Icon = styled.i `
 class Welcome extends Component {
 
 
-  logout = () => {
-    // event.preventDefault();
-    // axios.post(API_URL+'/logout', {token: token})
-    // .then(res => {
-    //    if(res.status == 200){
+  logoutInfra = () => {
+    localStorage.removeItem('logged');
+    localStorage.removeItem('name');
+    window.location.href = '/';
+  };
+
+  logoutBank = () => {
     localStorage.removeItem('bankLogged');
     localStorage.removeItem('bankName');
     window.location.href = '/bank';
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    // })
-    // .catch(err => {
-    //   alert('Login to continue');
-    //   this.setState({ redirect: true });
-    // });
   };
 
   render() {
@@ -57,8 +56,9 @@ class Welcome extends Component {
         name = localStorage.getItem("name");
       }
 
-      
+
     return (
+
         <WelcomeWrap className="clr" href="#">
             <div className="dropdown fl">
               <Icon className="material-icons fl">
@@ -67,15 +67,21 @@ class Welcome extends Component {
               <Name>
                   <FormattedMessage {...messages.welcome} /> {name}
               </Name>
-              <SubNav>
-                  <a href="/bank/info">Settings</a>
-                  <a onClick={this.logout}>Logout</a>
-              </SubNav>
+
+                <SubNav className="infraSubNav">
+                    <a onClick={this.logoutInfra}>Logout</a>
+                </SubNav>
+
+                <SubNav className="bankSubNav">
+                    <a href="/bank/info">Settings</a>
+                    <a onClick={this.logoutBank}>Logout</a>
+                </SubNav>
+
               </div>
             <LanguageSwitch></LanguageSwitch>
         </WelcomeWrap>
     );
   }
 }
- 
+
 export default Welcome;

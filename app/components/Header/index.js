@@ -13,7 +13,7 @@ class Header extends Component {
       const name = localStorage.getItem("name");
     return (
         <TopBar>
-          <Welcome />
+          <Welcome from="infra" />
           <Container>
             <a href="/dashboard">
               <Logo><FormattedMessage {...messages.logo} /></Logo>
@@ -24,5 +24,5 @@ class Header extends Component {
     );
   }
 }
- 
+
 export default Header;

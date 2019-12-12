@@ -58,8 +58,8 @@ export default class BankPage extends Component {
       ccode: '',
       mobile: '',
       email: '',
-      logo: null,
-      contract: null,
+      logo: '',
+      contract: '',
       loading: true,
       redirect: false,
       totalBanks: 0,
@@ -301,9 +301,9 @@ export default class BankPage extends Component {
     if (redirect) {
       return <Redirect to="/" />
     }
-    
+
     return (
-      <Wrapper>
+      <Wrapper from="infra">
         <Helmet>
           <meta charSet="utf-8" />
           <title>Banks | INFRA | E-WALLET</title>
@@ -353,15 +353,18 @@ export default class BankPage extends Component {
                   </thead>
                   <tbody>
                     {
-                      this.state.banks && this.state.banks.length > 0 
+                      this.state.banks && this.state.banks.length > 0
                         ? this.state.banks.map(function(b) {
                           return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td  className="tac">0</td>
-                          <td className="tac bold">0 <span className="absoluteRight primary popMenuTrigger"><i className="material-icons ">more_vert</i> 
+                          <td className="tac bold">0 <span className="absoluteRight primary popMenuTrigger"><i className="material-icons ">more_vert</i>
                           <div className="popMenu">
                             <a href={"/banks/"+b._id}><FormattedMessage {...messages.menu1} /></a>
                             <a href="/documents"><FormattedMessage {...messages.menu2} /></a>
                             <a href="/fee"><FormattedMessage {...messages.menu3} /></a>
-                            </div></span></td></tr>
+                          </div>
+                          </span>
+                          </td>
+                          </tr>
                         })
                         :
                         null
@@ -372,7 +375,7 @@ export default class BankPage extends Component {
             </Card>
           </Main>
         </Container>
-        { this.state.popup ? 
+        { this.state.popup ?
           <Popup close={this.closePopup.bind(this)} accentedH1>
             {
               this.state.showOtp ?
@@ -424,7 +427,7 @@ export default class BankPage extends Component {
                   required
                 />
               </FormGroup>
-              
+
                 <Row>
                   <Col>
                   <FormGroup>
@@ -484,7 +487,7 @@ export default class BankPage extends Component {
                   />
                   </FormGroup>
                   </Col>
-                </Row>  
+                </Row>
                 <Row>
                   <Col>
                   <FormGroup>
@@ -515,27 +518,27 @@ export default class BankPage extends Component {
                   </FormGroup>
                   </Col>
                 </Row>
-              
+
 
               <FormGroup>
-                
+
                   {/* <UploadedFile>
-                    
+
                       <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
                     </UploadedFile>
                   : */}
                   <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
-                    { 
-                    this.state.logo ? 
+                    {
+                    this.state.logo ?
                     <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
-                    </a> 
+                    </a>
                     :
                     ' '
                     }
                     <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
                     <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
-                    { 
-                    !this.state.logo ? 
+                    {
+                    !this.state.logo ?
                     <i className="material-icons">cloud_upload</i>
                     :
                     ' '
@@ -543,27 +546,27 @@ export default class BankPage extends Component {
                     <label><FormattedMessage {...messages.popup9} /> </label>
                     </div>
                   </UploadArea>
-                
+
               </FormGroup>
 
               <FormGroup>
               <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
-                    { 
-                    this.state.contract ? 
+                    {
+                    this.state.contract ?
                     <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
-                    </a> 
+                    </a>
                     :
                     ' '
                     }
                     <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
                     <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
-                    { 
-                    !this.state.contract ? 
+                    {
+                    !this.state.contract ?
                     <i className="material-icons">cloud_upload</i>
                     :
                     ' '
                     }
-                    
+
                     <label><FormattedMessage {...messages.popup10} /> </label>
                     </div>
                   </UploadArea>
