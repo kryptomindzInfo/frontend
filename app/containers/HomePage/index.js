@@ -137,7 +137,7 @@ export default class HomePage extends Component {
           <form action="" method="POST" onSubmit={this.loginRequest}>
             <InputsWrap>
               <FormGroup>
-                <label><FormattedMessage {...messages.email} /></label>
+                <label><FormattedMessage {...messages.userid} /></label>
                 <TextInput
                   type="text"
                   name="username"
