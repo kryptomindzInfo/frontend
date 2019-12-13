@@ -18,7 +18,7 @@ class Header extends Component {
             <a href="/dashboard">
               <Logo><FormattedMessage {...messages.logo} /></Logo>
             </a>
-            <Nav active="dashboard" />
+            <Nav active={this.props.active} />
           </Container>
         </TopBar>
     );

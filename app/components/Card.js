@@ -13,6 +13,15 @@ border-radius: ${props => props.rounded ? '5px' : '0' };
 margin-bottom: ${props => props.marginBottom ? props.marginBottom : '0' };
 text-align: ${props => props.textAlign ? props.textAlign : 'left'};
 float: ${props => props.col ? 'left' : 'none' };
+max-width: ${props => props.centerSmall ? '600px' : '100%' };
+margin: ${props => props.centerSmall ? '0 auto' : 'sdf' };
+position: relative;
+.history{
+    position: absolute;
+    right: 20px;
+    bottom: 25px;
+    color: ${props => props.theme.accent};
+}
 &.sideNav{
     padding: 15px 10px;
     display:flex;
@@ -60,7 +69,7 @@ float: ${props => props.col ? 'left' : 'none' };
         h3{
             font-size: 28px;
         }
-        i{
+        .material-icons{
             background: #417505;
             color: #fff;
             
@@ -70,7 +79,7 @@ float: ${props => props.col ? 'left' : 'none' };
 > .cardHeader  > .cardHeaderRight{
     float:left;
 }
-> .cardHeader > .cardHeaderLeft > i {
+> .cardHeader > .cardHeaderLeft > .material-icons {
     width: 46px;
     height: 46px;
     color: #417505;
@@ -87,6 +96,14 @@ float: ${props => props.col ? 'left' : 'none' };
     color: #323c47;
     margin-top:0;
     margin-bottom: 18px;
+}
+.menuTabs{
+    font-size: 20px;
+    color: #417505;
+    font-weight:bold;
+    float:left;
+    margin-top:20px;
+    margin-right: 30px;
 }
 > .cardHeader > .cardHeaderRight > h5,  > h5{
     font-size: 14px;

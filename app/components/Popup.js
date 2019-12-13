@@ -23,15 +23,23 @@ const PopupWrap = styled.div`
 
 const PopupBody = styled.div`
   background: #fff;
-  border-radius: 4px;
+  border-radius: 6px;
   width: 90%;
   max-width: 648px;
   padding: 20px;
   margin: 100px auto;
-
+  
+  .note{
+    color: #9b9b9b;
+    size: 12px;
+    a{
+      color: #56575a;
+      text-decoration:underline;
+    }
+  }
   h1 {
     text-align: center;
-    font-size: 40px;
+    font-size: 30px;
     font-weight: normal;
     letter-spacing: 0.02px;
     color: #ffffff;
@@ -41,6 +49,11 @@ const PopupBody = styled.div`
     margin-top: -20px;
     margin-right: -20px;
     padding: 10px;
+    &.normalH1{
+      background-color: transparent;
+      color:#111;
+      margin-top:5px;
+    }
   }
 
 `;

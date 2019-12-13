@@ -2,6 +2,11 @@ import styled from "styled-components";
 const FormGroup = styled.div`
   display: block;
   position:relative;
+  .bottomNote{
+    color: #9ea0a5;
+    font-size: 14px;
+    margin-bottom: 50px;
+  }
   > label{
     position:absolute;
     top:11px;

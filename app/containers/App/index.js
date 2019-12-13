@@ -29,7 +29,10 @@ import BankSetupPage from 'containers/BankSetupPage/Loadable';
 import BankDashboard from 'containers/BankDashboard/Loadable';
 import BankActivate from 'containers/BankActivate/Loadable';
 import SetupPage from 'containers/SetupPage/Loadable';
+import ForgotSetup from 'containers/ForgotSetup/Loadable';
 import BankBankInfo from 'containers/BankBankInfo/Loadable';
+import OperationalHistory from 'containers/OperationalHistory/Loadable';
+import MasterHistory from 'containers/MasterHistory/Loadable';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
@@ -63,10 +66,13 @@ export default function App() {
           <Route exact path="/bank" component={BankLoginPage} />
           <Route exact path="/" component={HomePage} notify={notify} />
           <Route exact path="/bank/setup" component={BankSetupPage} />
+          <Route exact path="/forgot-setup" component={ForgotSetup} />
           
-          <Route path="/banks/:bank?" component={BankInfo} />
+          <Route path="/fees/:bank?" component={BankInfo} />
           <Route path="/bank/info" component={BankBankInfo} />
           <Route path="/createfee/:bank?" component={CreateFee} />
+          <Route path="/operationalHistory/:bank?" component={OperationalHistory} />
+          <Route path="/masterHistory/:bank?" component={MasterHistory} />
           <Route
             exact
             path="/bank/forgot-password"

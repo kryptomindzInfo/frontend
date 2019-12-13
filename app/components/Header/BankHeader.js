@@ -18,7 +18,7 @@ class BankHeader extends Component {
             <a href="/dashboard">
               <Logo><FormattedMessage {...messages.logo} /></Logo>
             </a>
-            <BankNav active="dashboard" />
+            <BankNav active={this.props.active} />
           </Container>
         </TopBar>
     );

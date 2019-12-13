@@ -38,8 +38,7 @@ toast.configure({
   draggable: true,
 });
 
-const token = localStorage.getItem('logged');
-const username = localStorage.getItem('name');
+
 export default class SetupPage extends Component {
   constructor() {
     super();
@@ -51,8 +50,7 @@ export default class SetupPage extends Component {
       mobile: '',
       notification: '',
       loading: true,
-      redirect: false,
-      token: token
+      redirect: false
     };
     this.error = this.error.bind(this);
   }
@@ -84,8 +82,6 @@ export default class SetupPage extends Component {
       .post(`${API_URL}/setupUpdate`, this.state )
       .then(res => {
         if (res.status == 200) {
-            localStorage.removeItem('logged');
-            localStorage.removeItem('name');
             this.setState({
               notification: 'Details updated, you will be redirected to the login screen'
             }, () => {
@@ -93,7 +89,7 @@ export default class SetupPage extends Component {
               let history = this.props.history;
               setTimeout(function(){
                 history.push('/');
-              }, 3000);
+              }, 1000);
           });
         } else {
           throw res.data.error;
@@ -110,12 +106,7 @@ export default class SetupPage extends Component {
   };
 
   componentDidMount() {
-    // if (token !== undefined && token !== null) {
-    //   this.setState({ loading: false, redirect: true });
-    // } else {
     this.setState({ loading: false });
-    // }
-    //document.getElementById('username').focus();
   }
 
   render() {
@@ -151,7 +142,7 @@ export default class SetupPage extends Component {
           </LoginHeader>
           <FrontFormTitle>Setup your account</FrontFormTitle>
           <FrontFormSubTitle>Please fil the below information to begin witht th ewallet system</FrontFormSubTitle>
-          <form action="" method="POST" onSubmit={this.setupUpdate}>
+          <form action="" method="POST" onSubmit={this.setupUpdate} className="formWrap">
             <InputsWrap>
               <FormGroup>
                 <label><FormattedMessage {...messages.userid} /></label>
@@ -218,17 +209,14 @@ export default class SetupPage extends Component {
                   required
                 />
               </FormGroup>
+              <FormGroup>
+                <p className="bottomNote">Email ID and phone number will be used for sending all the communication related to the infa admin</p>
+              </FormGroup>
 
               
             </InputsWrap>
             <PrimaryBtn><FormattedMessage {...messages.update} /></PrimaryBtn>
           </form>
-          <Row marginTop>
-            <Col />
-            <Col textRight>
-              <a href="/bank/forgot-password"><FormattedMessage {...messages.forgotpassword} /></a>
-            </Col>
-          </Row>
         </FrontRightSection>
       </Wrapper>
     );

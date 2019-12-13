@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-const TextInput = styled.input `
+const TextArea = styled.textarea `
   width: 100%;
   position:relative;
   z-index: 1;
@@ -18,4 +18,4 @@ const TextInput = styled.input `
     border: solid 1px ${props => props.theme.primary};
   }
 `;
-export default TextInput;
+export default TextArea;

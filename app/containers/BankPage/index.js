@@ -66,6 +66,7 @@ export default class BankPage extends Component {
       notification: 'Welcome',
       popup: false,
       user_id: token,
+      otpId: '',
       banks: [],
       otp: '',
       showOtp: false
@@ -137,7 +138,6 @@ export default class BankPage extends Component {
     axios
       .post(`${API_URL  }/generateOTP`, {
         name: this.state.name,
-        mobile: this.state.mobile,
         page: 'addBank',
         token,
       })
@@ -147,6 +147,7 @@ export default class BankPage extends Component {
             throw res.data.error;
           }else{
             this.setState({
+              otpId: res.data.id,
               showOtp: true,
               notification: 'OTP Sent'
             });
@@ -180,6 +181,7 @@ export default class BankPage extends Component {
         logo: this.state.logo,
         contract: this.state.contract,
         otp: this.state.otp,
+        otp_id: this.state.otpId,
         token,
       })
       .then(res => {
@@ -308,10 +310,9 @@ export default class BankPage extends Component {
           <meta charSet="utf-8" />
           <title>Banks | INFRA | E-WALLET</title>
         </Helmet>
-        <Header />
+        <Header active="bank" />
         <Container verticalMargin>
-          <SidebarOne />
-          <Main>
+          <Main fullWidth>
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
@@ -351,8 +352,8 @@ export default class BankPage extends Component {
                           <td className="tac bold">0 <span className="absoluteRight primary popMenuTrigger"><i className="material-icons ">more_vert</i>
                           <div className="popMenu">
                             <a href={"/banks/"+b._id}><FormattedMessage {...messages.menu1} /></a>
-                            <a href="/documents"><FormattedMessage {...messages.menu2} /></a>
-                            <a href="/fee"><FormattedMessage {...messages.menu3} /></a>
+                            <a href={"/documents/"+b._id}><FormattedMessage {...messages.menu2} /></a>
+                            <a href={"/fees/"+b._id}><FormattedMessage {...messages.menu3} /></a>
                           </div>
                           </span>
                           </td>

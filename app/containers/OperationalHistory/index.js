@@ -19,7 +19,7 @@ import Container from 'components/Container';
 import Logo from 'components/Header/Logo';
 import Nav from 'components/Header/Nav';
 import Welcome from 'components/Header/Welcome';
-import SidebarTwo from 'components/Sidebar/SidebarTwo';
+import SidebarOne from 'components/Sidebar/SidebarOne';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
@@ -29,7 +29,7 @@ import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import SelectInput from 'components/SelectInput';
-import UploadArea from 'components/UploadArea';
+
 import Row from 'components/Row';
 import Col from 'components/Col';
 import styled from 'styled-components';
@@ -57,11 +57,12 @@ const token = localStorage.getItem('logged');
 
 
 
-export default class CreateFee extends Component {
+export default class OperationalHistory extends Component {
   constructor() {
     super();
     this.state = {
       bank_id: '',
+      bank: '',
       logo: null,
       contract: null,
       loading: true,
@@ -392,178 +393,57 @@ export default class CreateFee extends Component {
           </Container>
         </TopBar>
         <Container verticalMargin>
-          <SidebarTwo />
+        <SidebarOne bankId={this.state.bank}/>
           <Main>
-            <Card bigPadding centerSmall>
-              <div className="cardHeader" >
-                <div className="cardHeaderLeft flex">
-                  <a className="material-icons" href={"/fees/"+this.props.match.params.bank}>arrow_back</a>
-                  <h3>
-Create Revenue sharing Rules</h3>
+          <ActionBar marginBottom="33px" inputWidth="calc(100% - 344px)" className="clr">
+              <div className="iconedInput fl small">
+                <i className="material-icons">search</i>
+                <input type="text" placeholder="Search"  />
+              </div>
+              <TextInput
+              className="fr dateinput"
+              placeholder="To Date"
+              list="l1"
+              />
+              <datalist id="l1">
+                <option>Select</option>
+              </datalist>
+              <TextInput
+              className="fr dateinput"
+              placeholder="From Date"
+              list="l2"
+              />
+              <datalist id="l2">
+                <option>Select</option>
+              </datalist>
+
+            </ActionBar>
+            <Card bigPadding>
+            <div className="cardHeader" >
+                <div className="cardHeaderLeft">
+                  <i className="material-icons">playlist_add_check</i>
+                </div>
+                <div className="cardHeaderRight">
+                  <h3>Transactions</h3>
+                  <h5>E-wallet activity</h5>
                 </div>
               </div>
               <div className="cardBody">
-              <form action="" method="post" onSubmit={this.createRules}>
-              <FormGroup>
-                <label>Name</label>
-                <TextInput
-                  type="text"
-                  name="name"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label>Transaction Type</label>
-                  <TextInput
-                    type="text"
-                    name="trans_type"
-                    onFocus={inputFocus}
-                  onBlur={inputBlur}
-                    value={this.state.trans_type}
-                    onChange={this.handleInputChange.bind(this)}
-                    required
-                    list="ttype"
-                  >
-                  </TextInput>
-                  <datalist id="ttype">
-                  <option value="">Transaction Type</option>
-                    <option >Wallet to Wallet </option>
-                    <option >Sending Non Wallet to Non Wallet </option>
-                    <option >Receiving Non Wallet from Non Wallet</option>
-                    <option >Non Wallet to Wallet</option>
-                    <option >Wallet to Non Wallet</option>
-                    <option >Wallet to merchant</option>
-                    <option >Non Wallet to Merchant</option>
-                    <option >Wallet to Bank Account</option>
-                    <option >Bank Account to Wallet Request</option>
-                  </datalist>
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <TextInput
-                    type="text"
-                    name="active"
-                    value={this.state.active}
-                    onChange={this.handleInputChange}
-                    required
-                    list="act"
-                  >
-                  </TextInput>
-                  <datalist id="act">
-                  <option>Active</option>
-                    <option>Inactive </option>
-                  </datalist>
-                  </FormGroup>
-                  </Col>
-                </Row>
-                <H4>Transation amount Range <span className="small">(for example from 0$ to 100$)</span></H4>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label>From</label>
-                  <TextInput
-                    type="text"
-                    name="trans_from"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.trans_from}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label>To</label>
-                  <TextInput
-                    type="text"
-                    name="trans_to"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.trans_to}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>  
-
-                <H4>Transaction Count</H4>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label>From</label>
-                  <TextInput
-                    type="text"
-                    name="transcount_from"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.transcount_from}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label>To</label>
-                  <TextInput
-                    type="text"
-                    name="transcount_to"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.transcount_to}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>  
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label>Fixed Amount</label>
-                  <TextInput
-                    type="text"
-                    name="fixed_amount"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.fixed_amount}
-                    onChange={this.handleInputChange}
-                    
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label>Percentage</label>
-                  <TextInput
-                    type="text"
-                    name="percentage"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.percentage}
-                    onChange={this.handleInputChange}
-                    
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>
+                <div className="clr">
+                <div className="menuTabs">All</div>
+                <div className="menuTabs">Payment Sent</div>
+                <div className="menuTabs">Payment Recieved</div> 
+                </div>
+                <Table marginTop="34px" smallTd>
+                 <tbody>
+                   <tr>
+                     <td><div className="labelGrey">Nov 15, 2019</div></td>
+                    <td><div className="labelBlue">Transfered to Axis bank</div> <div className="labelSmallGrey">Completed</div></td>
+                    <td><div className="labelGrey">$400</div></td>
+                   </tr>
+                  </tbody>
+                </Table>
               
-
-
-              <Button filledBtn marginTop="50px">
-                <span>Create Rules</span>
-              </Button>
-            </form>
               </div>
             </Card>
           </Main>

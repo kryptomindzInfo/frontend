@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import OperationalWallet from './OperationalWallet';
+import MasterWallet from './MasterWallet';
 import Card from '../Card';
 import styled from 'styled-components';
 
@@ -16,7 +17,9 @@ font-size: 11px;
 `;
 
 class SidebarTwo extends Component {
+
   render() {
+    
     return (
         <Sidebar marginRight>
             <H3>SETTINGS</H3>
@@ -32,6 +35,8 @@ class SidebarTwo extends Component {
             <i className="material-icons">mobile_screen_share</i>
                 <h3>Fees</h3>
             </Card>
+            <OperationalWallet historyLink={this.props.bankId } />
+            <MasterWallet historyLink={this.props.bankId }  />
         </Sidebar>
     );
   }

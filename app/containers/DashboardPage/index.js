@@ -117,13 +117,13 @@ export default class DashboardPage extends Component {
           <meta charSet="utf-8" />
           <title>Dashboard | INFRA | E-WALLET</title>
         </Helmet>
-        <Header />
+        <Header active="dashboard" />
         <Container verticalMargin>
-          <Sidebar marginRight>
+          {/* <Sidebar marginRight>
             <OperationalWallet />
             <MasterWallet />
-          </Sidebar>
-          <Main>
+          </Sidebar> */}
+          <Main fullWidth>
             <div className="clr">
               <a href="/banks">
                 <Card

@@ -305,7 +305,7 @@ export default class BankInfo extends Component {
   }
 
   render() {
-    console.log(this.props);
+    
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector("label").classList.add("focused");
@@ -333,7 +333,7 @@ export default class BankInfo extends Component {
           <title>Banks | INFRA | E-WALLET</title>
         </Helmet>
         <TopBar>
-        <Welcome />
+        <Welcome infraNav/>
           <Container>
             <a href="/dashboard" className="headerNavDash">
               Main Dashboard
@@ -347,7 +347,7 @@ export default class BankInfo extends Component {
           </Container>
         </TopBar>
         <Container verticalMargin>
-          <SidebarTwo />
+          <SidebarTwo bankId={this.state.bank}/>
           <Main big>
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
               <div className="iconedInput fl">

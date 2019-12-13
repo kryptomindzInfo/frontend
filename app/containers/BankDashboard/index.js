@@ -117,7 +117,7 @@ export default class BankDashboard extends Component {
           <meta charSet="utf-8" />
           <title>Dashboard | INFRA | E-WALLET</title>
         </Helmet>
-        <BankHeader />
+        <BankHeader active="dashboard"/>
         <Container verticalMargin>
           <SidebarBank />
           <Main>

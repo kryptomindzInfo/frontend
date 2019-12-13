@@ -33,6 +33,10 @@ const GlobalStyle = createGlobalStyle`
 }
 .fl{float:left;}
 .fr{float:right;}
+
+.formWrap{
+  max-width: 445px;
+}
   @import url('https://fonts.googleapis.com/css?family=Roboto|Material+Icons&display=swap');
   html,
   body {

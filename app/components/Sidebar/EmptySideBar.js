@@ -1,23 +1,28 @@
 import React, { Component } from "react";
-import OperationalWallet from './OperationalWallet';
-import MasterWallet from './MasterWallet';
 import styled from 'styled-components';
 
 const Sidebar = styled.aside `
 width: 260px;
 float:left;
 margin-right: ${props => props.marginRight ? '33px' : '0' };
+>h3{
+    font-size: 11px;
+    font-weight: bold;
+    color: #323c47;
+}
 `;
 
-class SidebarOne extends Component {
+
+class EmptySideBar extends Component {
+
   render() {
+    
     return (
         <Sidebar marginRight>
-               <OperationalWallet historyLink={this.props.bankId } />
-            <MasterWallet historyLink={this.props.bankId }  />
+            {this.props.children}
         </Sidebar>
     );
   }
 }
  
-export default SidebarOne;
+export default EmptySideBar

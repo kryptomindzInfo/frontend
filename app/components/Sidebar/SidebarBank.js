@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import OperationalWallet from './OperationalWallet';
-import MasterWallet from './MasterWallet';
+import BankOperationalWallet from './BankOperationalWallet';
+import BankMasterWallet from './BankMasterWallet';
 import EscrowWallet from './EscrowWallet';
 import styled from 'styled-components';
 
@@ -14,9 +14,9 @@ class SidebarBank extends Component {
   render() {
     return (
         <Sidebar marginRight>
-            <OperationalWallet activateNeeded />
+            <BankOperationalWallet activateNeeded />
             <EscrowWallet activateNeeded />
-            <MasterWallet />
+            <BankMasterWallet />
         </Sidebar>
     );
   }

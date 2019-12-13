@@ -71,7 +71,7 @@
     "boilerplate.containers.BankPage.th5": "frTransaction Count",
     "boilerplate.containers.BankPage.menu1": "frBank Info",
     "boilerplate.containers.BankPage.menu2": "frDocuments",
-    "boilerplate.containers.BankPage.menu3": "frFee",
+    "boilerplate.containers.BankPage.menu3": "frRevenue Rules",
     "boilerplate.containers.BankPage.popup1": "frName",
     "boilerplate.containers.BankPage.popup2": "frAddress line - 1",
     "boilerplate.containers.BankPage.popup3": "frState",

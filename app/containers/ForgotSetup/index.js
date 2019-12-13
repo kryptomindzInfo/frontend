@@ -1,5 +1,5 @@
 /*
- * HomePage
+ * ForgotSetup
  *
  * This is the first thing users see of our App, at the '/' route
  *
@@ -13,13 +13,12 @@ import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
-
+import BackBtn from 'components/BackBtn';
 import Wrapper from 'components/Wrapper';
-import FrontLeftSection from 'components/FrontLeftSection/index';
+import FrontLeftSection from 'components/FrontLeftSection';
 import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
 import FrontFormTitle from 'components/FrontFormTitle';
-import FrontFormSubTitle from 'components/FrontFormSubTitle';
 import InputsWrap from 'components/InputsWrap';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
@@ -38,18 +37,19 @@ toast.configure({
   draggable: true,
 });
 
-localStorage.removeItem('logged');
 const token = localStorage.getItem('logged');
-
-export default class HomePage extends Component {
+const username = localStorage.getItem('username');
+export default class ForgotSetup extends Component {
   constructor() {
     super();
     this.state = {
-      username: '',
+      username,
       password: '',
+      confirm: '',
       notification: '',
       loading: true,
       redirect: false,
+      token: token
     };
     this.error = this.error.bind(this);
   }
@@ -67,17 +67,32 @@ export default class HomePage extends Component {
     });
   };
 
-  loginRequest = event => {
+  setupUpdate = event => {
     event.preventDefault();
+    if(this.state.password != this.state.confirm){
+      this.setState({
+        notification: 'Passwords do not match'
+      }, () => {
+        this.error();
+    });
+      
+    }else{
     axios
-      .post(`${API_URL}/login`, this.state)
+      .post(`${API_URL}/infraSetupUpdate`, this.state )
       .then(res => {
         if (res.status == 200) {
-          localStorage.setItem('logged', res.data.token);
-          localStorage.setItem('name', res.data.name);
-  
-            this.props.history.push('/dashboard');
-            
+            localStorage.removeItem('logged');
+            localStorage.removeItem('name');
+            localStorage.removeItem('username');
+            this.setState({
+              notification: 'Details updated, you will be redirected to the login screen'
+            }, () => {
+              this.success();
+              let history = this.props.history;
+              setTimeout(function(){
+              history.push('/');
+              }, 3000);
+          });
         } else {
           throw res.data.error;
         }
@@ -85,37 +100,20 @@ export default class HomePage extends Component {
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
+        }, () => {
+          this.error();
       });
+      });
+    }
   };
 
   componentDidMount() {
-    if (token !== undefined && token !== null) {
-      this.setState({ loading: false, redirect: true });
-    } else {
-      axios
-      .get(`${API_URL}/checkInfra`, {})
-      .then(res => {
-        if (res.status == 200) {
-          
-          if(res.data.infras <= 0){
-            console.log(res.data.infras);
-            this.props.history.push('/setup');
-          }
-          
-        } else {
-          throw res.data.error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
-      this.setState({ loading: false });
-    }
+    // if (token !== undefined && token !== null) {
+    //   this.setState({ loading: false, redirect: true });
+    // } else {
+    this.setState({ loading: false });
+    // }
+    document.getElementById('username').focus();
   }
 
   render() {
@@ -133,10 +131,9 @@ export default class HomePage extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return <p>sdf</p>;
     }
     if (redirect) {
-      return <Redirect to="/dashboard" />;
+      return <Redirect to="/bank/dashboard" />;
     }
     return (
       <Wrapper>
@@ -148,15 +145,17 @@ export default class HomePage extends Component {
         </FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
-            <FormattedMessage {...messages.pagetitle} />
-          </LoginHeader>
+          <BackBtn href="/forgot-password" className="material-icons">
+            keyboard_backspace
+          </BackBtn>
+            <FormattedMessage {...messages.pagetitle} /></LoginHeader>
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
-          <FrontFormSubTitle><FormattedMessage {...messages.subtitle} /></FrontFormSubTitle>
-          <form action="" method="POST" onSubmit={this.loginRequest}>
+          <form action="" method="POST" onSubmit={this.setupUpdate}>
             <InputsWrap>
               <FormGroup>
                 <label><FormattedMessage {...messages.userid} /></label>
                 <TextInput
+                  id="username"
                   type="text"
                   name="username"
                   onFocus={inputFocus}
@@ -167,7 +166,7 @@ export default class HomePage extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label><FormattedMessage {...messages.password} /></label>
+                <label><FormattedMessage {...messages.newpass} /></label>
                 <TextInput
                   type="password"
                   name="password"
@@ -178,17 +177,22 @@ export default class HomePage extends Component {
                   required
                 />
               </FormGroup>
+
+              <FormGroup>
+                <label><FormattedMessage {...messages.confirm} /></label>
+                <TextInput
+                  type="password"
+                  name="confirm"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.confirm}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
             </InputsWrap>
-            <PrimaryBtn>
-              <FormattedMessage {...messages.pagetitle} />
-            </PrimaryBtn>
+            <PrimaryBtn><FormattedMessage {...messages.update} /></PrimaryBtn>
           </form>
-          <Row marginTop>
-            <Col />
-            <Col textRight>
-              <a href="/forgot-password"><FormattedMessage {...messages.forgotpassword} /></a>
-            </Col>
-          </Row>
         </FrontRightSection>
       </Wrapper>
     );
