@@ -66,9 +66,7 @@ export default class ForgotPasswordPage extends Component {
         if (res.status == 200) {
           localStorage.setItem('phone', res.data.mobile);
           localStorage.setItem('username', res.data.username);
-          
-            this.props.history.push('/otp');
-          
+          this.props.history.push('/otp');
         } else {
           throw res.data.error;
         }

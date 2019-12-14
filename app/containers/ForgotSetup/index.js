@@ -113,7 +113,7 @@ export default class ForgotSetup extends Component {
     // } else {
     this.setState({ loading: false });
     // }
-    document.getElementById('username').focus();
+    // document.getElementById('username').focus();
   }
 
   render() {
@@ -152,7 +152,7 @@ export default class ForgotSetup extends Component {
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
           <form action="" method="POST" onSubmit={this.setupUpdate}>
             <InputsWrap>
-              <FormGroup>
+              {/* <FormGroup>
                 <label><FormattedMessage {...messages.userid} /></label>
                 <TextInput
                   id="username"
@@ -164,7 +164,7 @@ export default class ForgotSetup extends Component {
                   onChange={this.handleInputChange}
                   required
                 />
-              </FormGroup>
+              </FormGroup> */}
               <FormGroup>
                 <label><FormattedMessage {...messages.newpass} /></label>
                 <TextInput

@@ -114,7 +114,7 @@ render() {
       </FrontLeftSection>
       <FrontRightSection>
         <LoginHeader>
-          <BackBtn href="/orgot-password" className="material-icons">
+          <BackBtn href="/forgot-password" className="material-icons">
             keyboard_backspace
           </BackBtn>
           <FormattedMessage {...messages.pagetitle} />

@@ -27,7 +27,7 @@ const PopupBody = styled.div`
   width: 90%;
   max-width: 648px;
   padding: 20px;
-  margin: 100px auto;
+  margin: 50px auto;
   
   .note{
     color: #9b9b9b;
@@ -39,7 +39,7 @@ const PopupBody = styled.div`
   }
   h1 {
     text-align: center;
-    font-size: 30px;
+    font-size: 26px;
     font-weight: normal;
     letter-spacing: 0.02px;
     color: #ffffff;
@@ -48,7 +48,7 @@ const PopupBody = styled.div`
     margin-left: -20px;
     margin-top: -20px;
     margin-right: -20px;
-    padding: 10px;
+    padding: 6px;
     &.normalH1{
       background-color: transparent;
       color:#111;

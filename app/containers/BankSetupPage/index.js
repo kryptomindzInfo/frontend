@@ -23,6 +23,7 @@ import InputsWrap from 'components/InputsWrap';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
+import BackBtn from 'components/BackBtn';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import { API_URL } from '../App/constants';
@@ -113,7 +114,7 @@ export default class BankSetupPage extends Component {
     // } else {
     this.setState({ loading: false });
     // }
-    document.getElementById('username').focus();
+    // document.getElementById('username').focus();
   }
 
   render() {
@@ -144,11 +145,15 @@ export default class BankSetupPage extends Component {
         <FrontLeftSection from="bank">
         </FrontLeftSection>
         <FrontRightSection>
-          <LoginHeader><FormattedMessage {...messages.pagetitle} /></LoginHeader>
+          <LoginHeader>
+          <BackBtn href="/bank/forgot-password" className="material-icons">
+            keyboard_backspace
+          </BackBtn>
+            <FormattedMessage {...messages.pagetitle} /></LoginHeader>
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
           <form action="" method="POST" onSubmit={this.setupUpdate}>
             <InputsWrap>
-              <FormGroup>
+              {/* <FormGroup>
                 <label><FormattedMessage {...messages.userid} /></label>
                 <TextInput
                   id="username"
@@ -160,7 +165,7 @@ export default class BankSetupPage extends Component {
                   onChange={this.handleInputChange}
                   required
                 />
-              </FormGroup>
+              </FormGroup> */}
               <FormGroup>
                 <label><FormattedMessage {...messages.newpass} /></label>
                 <TextInput
@@ -188,14 +193,7 @@ export default class BankSetupPage extends Component {
               </FormGroup>
             </InputsWrap>
             <PrimaryBtn><FormattedMessage {...messages.update} /></PrimaryBtn>
-          </form>
-          <Row marginTop>
-            <Col />
-            <Col textRight>
-              <a href="/bank/forgot-password"><FormattedMessage {...messages.forgotpassword} /></a>
-            </Col>
-          </Row>
-        </FrontRightSection>
+          </form>       </FrontRightSection>
       </Wrapper>
     );
   }

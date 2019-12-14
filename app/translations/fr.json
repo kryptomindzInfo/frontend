@@ -85,6 +85,14 @@
     "boilerplate.containers.BankPage.verify": "frVerify OTP",
     "boilerplate.containers.BankPage.otp": "frOTP",
 
+
+    "boilerplate.containers.BankSetup.pagetitle": "frChange Password",
+    "boilerplate.containers.BankSetup.title": "frType your password",
+    "boilerplate.containers.BankSetup.userid": "frUser Id",
+    "boilerplate.containers.BankSetup.newpass": "frNew Password",
+    "boilerplate.containers.BankSetup.confirm": "frConfirm Password",
+    "boilerplate.containers.BankSetup.forgotpassword": "frForgot Password?",
+
     "boilerplate.containers.BankActivate.pagetitle": "frContract with Infra",
     "boilerplate.containers.BankActivate.title": "frPlease review the bellow contract submmited by Infra",
     "boilerplate.containers.BankActivate.confirm": "frAgree to the contract",

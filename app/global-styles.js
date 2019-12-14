@@ -5,7 +5,9 @@ const GlobalStyle = createGlobalStyle`
   box-sizing:border-box;
   outline:0;
 }
-
+body{
+  zoom: 0.9;
+}
 .clr:after{
   content:'';
   display:block;

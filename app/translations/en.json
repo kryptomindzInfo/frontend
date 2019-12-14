@@ -84,8 +84,8 @@
     "boilerplate.containers.BankPage.verify": "Verify OTP",
     "boilerplate.containers.BankPage.otp": "OTP",
 
-    "boilerplate.containers.BankSetup.pagetitle": "Change User Id / Password",
-    "boilerplate.containers.BankSetup.title": "Type your user id and password",
+    "boilerplate.containers.BankSetup.pagetitle": "Change Password",
+    "boilerplate.containers.BankSetup.title": "Type your password",
     "boilerplate.containers.BankSetup.userid": "User Id",
     "boilerplate.containers.BankSetup.newpass": "New Password",
     "boilerplate.containers.BankSetup.confirm": "Confirm Password",

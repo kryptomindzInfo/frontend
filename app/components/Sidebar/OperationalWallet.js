@@ -22,6 +22,7 @@ toast.configure({
   draggable: true,
 });
 const token = localStorage.getItem('logged');
+
 class OperationalWallet extends Component {
   constructor() {
     super();
@@ -32,6 +33,7 @@ class OperationalWallet extends Component {
       to: '',
       amount: '',
       notification: "",
+      balance: 0,
       note: '',
       token
     };
@@ -55,11 +57,9 @@ class OperationalWallet extends Component {
   };
   sendMoney = (e) => {
     e.preventDefault();
-    this.setState({
-      bank: this.props.historyLink
-    });
+ 
     axios
-    .post(`${API_URL  }/getWallets`, {
+    .post(`${API_URL  }/getWalletsOperational`, {
       bank_id : this.props.historyLink,
       token
     })
@@ -139,6 +139,7 @@ class OperationalWallet extends Component {
         name: this.state.name,
         address1: this.state.address1,
         state: this.state.state,
+        
         zip: this.state.zip,
         country: this.state.country,
         ccode: this.state.ccode,
@@ -174,6 +175,32 @@ class OperationalWallet extends Component {
       });
   };
 
+  componentDidMount() {
+    this.setState({
+      bank: this.props.historyLink
+    });
+    axios
+    .get(`${API_URL  }/getInfraOperationalBalance?bank=${this.props.historyLink}`)
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.error){
+          throw res.data.error;
+        }else{
+          this.setState({
+            balance: res.data.balance,
+          });
+        }
+      }
+    })
+    .catch(err => {
+      this.setState({
+        notification: (err.response) ? err.response.data.error : err.toString()
+      });
+      this.error();
+    });
+  }
+
+  
   render() {
     
     function inputFocus(e) {
@@ -191,7 +218,7 @@ class OperationalWallet extends Component {
         <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
             <h3><FormattedMessage {...messages.operational} /></h3>
             <h5><FormattedMessage {...messages.available} /></h5>
-            <div className="cardValue">$0.00</div>
+            <div className="cardValue">$ {this.state.balance}</div>
             {
               this.props.activateNeeded ?
               <button className="fullWidth">
@@ -212,6 +239,7 @@ class OperationalWallet extends Component {
               <FormGroup>
                 <label>From</label>
                 <TextInput
+                readOnly
                 id="popfrom"
                   type="text"
                   name="from"
@@ -225,6 +253,7 @@ class OperationalWallet extends Component {
               <FormGroup>
                 <label>To</label>
                 <TextInput
+                readOnly
                 id="popto"
                   type="text"
                   name="to"
@@ -247,7 +276,7 @@ class OperationalWallet extends Component {
                   required
                 />
               </FormGroup>
-              <p className="note">Total available $2000.00</p>
+              <p className="note">Total available $ {this.state.balance}</p>
               <FormGroup>
                 <label>Note</label>
                 <TextArea

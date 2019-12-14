@@ -536,7 +536,15 @@ export default class BankPage extends Component {
                     :
                     ' '
                     }
-                    <label><FormattedMessage {...messages.popup9} /> </label>
+                    <label>
+                      {
+                      this.state.logo == '' ? 
+                      <FormattedMessage {...messages.popup9} /> 
+                      :
+                      <span>Change Logo</span>
+                      }
+                      
+                      </label>
                     </div>
                   </UploadArea>
 
@@ -560,7 +568,14 @@ export default class BankPage extends Component {
                     ' '
                     }
 
-                    <label><FormattedMessage {...messages.popup10} /> </label>
+                    <label>
+                    {
+                      this.state.contract == '' ? 
+                      <FormattedMessage {...messages.popup10} /> 
+                      :
+                      <span>Change Contract</span>
+                      }
+                      </label>
                     </div>
                   </UploadArea>
               </FormGroup>

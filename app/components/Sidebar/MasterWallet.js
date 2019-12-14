@@ -32,6 +32,7 @@ class MasterWallet extends Component {
       to: '',
       amount: '',
       notification: "",
+      balance: 0,
       note: '',
       token
     };
@@ -39,6 +40,8 @@ class MasterWallet extends Component {
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
+
+    this.closePopup = this.closePopup.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -55,9 +58,7 @@ class MasterWallet extends Component {
   };
   sendMoney = (e) => {
     e.preventDefault();
-    this.setState({
-      bank: this.props.historyLink
-    });
+   
     axios
     .post(`${API_URL  }/getWalletsMaster`, {
       bank_id : this.props.historyLink,
@@ -92,44 +93,68 @@ class MasterWallet extends Component {
   
   };
 
+  submitMoney = (e) => {
+    e.preventDefault();
+    if(this.state.amount > this.state.balance){
+      this.setState({
+        notification: 'Insufficient Balance'
+      }, function(){
+        this.error();
+      });
+    }
+    else if(this.state.amount == ''){
+      this.setState({
+        notification: 'Invalid Amount'
+      }, function(){
+        this.error();
+      });
+    }
+    else{
+      axios
+    .post(`${API_URL  }/transferMoney`, {
+      from: this.state.from,
+      to: this.state.to,
+      amount: this.state.amount,
+      note: this.state.note,
+      auth: "infra",
+      token
+    })
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.error){
+          throw res.data.error;
+        }else{
+          this.setState({
+            balance: balance,
+            notification: "Successfully Transfered"
+          }, function(){
+            this.success();
+            this.closePopup();
+          });
+      }
+    }
+      else{
+        const error = new Error(res.data.error);
+        throw error;
+      }
+    })
+    .catch(err => {
+      this.setState({
+        notification: (err.response) ? err.response.data.error : err.toString()
+      });
+      this.error();
+    });
+    }
+    
+ 
+
+  
+  };
+
   closePopup = () => {
     this.setState({
       popup: false
     });
-  };
-
-
-  addBank = event => {
-    event.preventDefault();
-    // axios
-    //   .post(`${API_URL  }/generateOTP`, {
-    //     name: this.state.name,
-    //     mobile: this.state.mobile,
-    //     page: 'addBank',
-    //     token,
-    //   })
-    //   .then(res => {
-    //     if(res.status == 200){
-    //       if(res.data.error){
-    //         throw res.data.error;
-    //       }else{
-    //         this.setState({
-    //           showOtp: true,
-    //           notification: 'OTP Sent'
-    //         });
-    //         this.success();
-    //       }
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    //   })
-    //   .catch(err => {
-    //     this.setState({
-    //       notification: (err.response) ? err.response.data.error : err.toString()
-    //     });
-    //     this.error();
-    //   });
   };
 
   verifyOTP = event => {
@@ -174,6 +199,31 @@ class MasterWallet extends Component {
       });
   };
 
+  componentDidMount() {
+    this.setState({
+      bank: this.props.historyLink
+    });
+    axios
+    .get(`${API_URL  }/getInfraMasterBalance?bank=${this.props.historyLink}`)
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.error){
+          throw res.data.error;
+        }else{
+          this.setState({
+            balance: res.data.balance,
+          });
+        }
+      }
+    })
+    .catch(err => {
+      this.setState({
+        notification: (err.response) ? err.response.data.error : err.toString()
+      });
+      this.error();
+    });
+  }
+
   render() {
     
     function inputFocus(e) {
@@ -191,7 +241,7 @@ class MasterWallet extends Component {
         <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
             <h3><FormattedMessage {...messages.master} /></h3>
             <h5><FormattedMessage {...messages.available} /></h5>
-            <div className="cardValue">$0.00</div>
+            <div className="cardValue">$ {this.state.balance}</div>
             {
               this.props.activateNeeded ?
               <button className="fullWidth">
@@ -208,10 +258,11 @@ class MasterWallet extends Component {
              { this.state.popup ? 
           <Popup close={this.closePopup.bind(this)} roundedCorner>
           <h1 className="normalH1">Transfer the amount</h1>
-          <form action="" method="post" onSubmit={this.addBank}>
+          <form action="" method="post" onSubmit={this.submitMoney}>
               <FormGroup>
                 <label>From</label>
                 <TextInput
+                readOnly
                 id="popfrom"
                   type="text"
                   name="from"
@@ -225,6 +276,7 @@ class MasterWallet extends Component {
               <FormGroup>
                 <label>To</label>
                 <TextInput
+                readOnly
                 id="popto"
                   type="text"
                   name="to"
@@ -247,7 +299,7 @@ class MasterWallet extends Component {
                   required
                 />
               </FormGroup>
-              <p className="note">Total available $2000.00</p>
+              <p className="note">Total available $ {this.state.balance}</p>
               <FormGroup>
                 <label>Note</label>
                 <TextArea
