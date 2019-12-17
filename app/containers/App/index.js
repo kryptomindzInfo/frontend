@@ -31,13 +31,18 @@ import BankActivate from 'containers/BankActivate/Loadable';
 import SetupPage from 'containers/SetupPage/Loadable';
 import ForgotSetup from 'containers/ForgotSetup/Loadable';
 import BankBankInfo from 'containers/BankBankInfo/Loadable';
+import BankDocuments from 'containers/BankDocuments/Loadable';
+import UserPage from 'containers/UserPage/Loadable';
+import BankFees from 'containers/BankFees/Loadable';
+import Documents from 'containers/Documents/Loadable';
 import OperationalHistory from 'containers/OperationalHistory/Loadable';
 import MasterHistory from 'containers/MasterHistory/Loadable';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
 
-import 'react-toastify/dist/ReactToastify.css';const theme = {
+import 'react-toastify/dist/ReactToastify.css';import FeeList from '../FeeList';
+const theme = {
   primary: '#417505',
   secondary: '#6cac69',
   accent: '#f5a623',
@@ -63,24 +68,26 @@ export default function App() {
           <Route exact path="/otp" component={OTPPage} />
           <Route exact path="/dashboard" component={DashboardPage} />
           <Route exact path="/banks" component={BankPage} />
-          <Route exact path="/bank" component={BankLoginPage} />
+          <Route exact path="/user" component={UserPage} />
           <Route exact path="/" component={HomePage} notify={notify} />
-          <Route exact path="/bank/setup" component={BankSetupPage} />
           <Route exact path="/forgot-setup" component={ForgotSetup} />
-          
-          <Route path="/fees/:bank?" component={BankInfo} />
-          <Route path="/bank/info" component={BankBankInfo} />
+          <Route path="/fees/:bank?" component={FeeList} />
+          <Route path="/info/:bank?" component={BankInfo} />
+          <Route exact path="/bank" component={BankLoginPage} />
           <Route path="/createfee/:bank?" component={CreateFee} />
+          <Route path="/documents/:bank?" component={Documents} />
           <Route path="/operationalHistory/:bank?" component={OperationalHistory} />
           <Route path="/masterHistory/:bank?" component={MasterHistory} />
-          <Route
-            exact
-            path="/bank/forgot-password"
-            component={BankForgotPasswordPage}
-          />
+
+          <Route exact path="/bank/setup" component={BankSetupPage} />
+          <Route path="/bank/info" component={BankBankInfo} />
+          <Route path="/bank/fees" component={BankFees} />
+          <Route path="/bank/documents" component={BankDocuments} />
+          <Route exact path="/bank/forgot-password" component={BankForgotPasswordPage}/>
           <Route exact path="/bank/otp" component={BankOTPPage} />
           <Route exact path="/bank/activate" component={BankActivate} />
           <Route exact path="/bank/dashboard" component={BankDashboard} />
+          
           <Route component={NotFoundPage} />
         </Switch>
         <GlobalStyle />

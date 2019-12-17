@@ -24,7 +24,7 @@
     "boilerplate.components.Header.logo": "frE-WALLET",
     "boilerplate.components.Header.menu1": "frDashboard",
     "boilerplate.components.Header.menu2": "frBank",
-    "boilerplate.components.Header.menu3": "frMerchants",
+    "boilerplate.components.Header.menu3": "frMerchant",
     "boilerplate.components.Header.menu4": "frReports",
     "boilerplate.components.Header.welcome": "frWelcome",
 

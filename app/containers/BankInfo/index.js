@@ -268,7 +268,6 @@ export default class BankInfo extends Component {
       .post(`${API_URL  }/getBank`, { token:token, bank_id: this.props.match.params.bank })
       .then(res => {
         if(res.status == 200){
-          
           this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo });
         }
       })
@@ -277,27 +276,13 @@ export default class BankInfo extends Component {
       });
   };
 
-  getRules = () => {
-    axios
-      .post(`${API_URL  }/getRules`, { token:token, bank_id: this.props.match.params.bank })
-      .then(res => {
-        if(res.status == 200){
-          
-          this.setState({ loading: false, rules: res.data.rules });
-        }
-      })
-      .catch(err => {
-        
-      });
-  };
   
 
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      this.setState({ loading: false });      
       this.getBanks();
-      this.getRules();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -347,53 +332,99 @@ export default class BankInfo extends Component {
           </Container>
         </TopBar>
         <Container verticalMargin>
-          <SidebarTwo bankId={this.state.bank}/>
+          <SidebarTwo bankId={this.state.bank} active="info"/>
           <Main big>
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-              <div className="iconedInput fl">
-                <i className="material-icons">search</i>
-                <input type="text" placeholder="Search" />
-              </div>
-              <Button className="fr" flex onClick={this.showPopup}>
-                <i className="material-icons">add</i>
-                <span>Create Rules</span>
+            
+              <Button className="fr" flex>
+                <span>Edit</span>
               </Button>
             </ActionBar>
-            <Card bigPadding>
-              <div className="cardHeader" >
-                <div className="cardHeaderLeft">
-                  <i className="material-icons">supervised_user_circle</i>
-                </div>
-                <div className="cardHeaderRight">
-                  <h3>Revenue Sharing Rules</h3>
-                  <h5>Fees created by the infra</h5>
-                </div>
-              </div>
+            <Card bigPadding bordered>
+
               <div className="cardBody">
-                <Table marginTop="34px" smallTd>
-                  <thead>
-                    <tr>
-                     <th>Name</th>
-                     <th>Transaction Type</th>
-                     <th>Amount of Transaction</th>
-                     <th>Transaction Count</th>
-                     <th>Fixed Amount</th>
-                     <th>Percentage</th>
-                     <th></th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                  {
-                      this.state.rules && this.state.rules.length > 0 
-                        ? this.state.rules.map(function(b) {
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td><td className="tac green">$ {b.trans_from} - $ {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
-                          <td className="tac bold">{b.percentage} </td><td className="tac bold"><a>Edit</a></td></tr>
-                        })
-                        :
-                        null
-                    }
-                  </tbody>
-                </Table>
+                <Row>
+                  <Col className="infoLeft">
+                  Bank Name
+                  </Col>
+                  <Col className="infoRight">
+                  {this.state.banks.name}
+                  </Col>
+                </Row>
+                
+                <Row>
+                  <Col className="infoLeft">
+                  Bank Code
+                  </Col>
+                  <Col className="infoRight">
+                  
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col className="infoLeft">
+                  Address
+                  </Col>
+                  <Col className="infoRight">
+                  {this.state.banks.address1}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col className="infoLeft">
+                  State
+                  </Col>
+                  <Col className="infoRight">
+                  {this.state.banks.state}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col className="infoLeft">
+                  Zip Code
+                  </Col>
+                  <Col className="infoRight">
+                  {this.state.banks.zip}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col className="infoLeft">
+                  Country Code
+                  </Col>
+                  <Col className="infoRight">
+                  {this.state.banks.ccode}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col className="infoLeft">
+                  Country
+                  </Col>
+                  <Col className="infoRight">
+                  {this.state.banks.country}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col className="infoLeft">
+                  Email
+                  </Col>
+                  <Col className="infoRight">
+                  {this.state.banks.email}
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col className="infoLeft">
+                  Phone Number
+                  </Col>
+                  <Col className="infoRight">
+                  {this.state.banks.mobile}
+                  </Col>
+                </Row>
+
+
               </div>
             </Card>
           </Main>

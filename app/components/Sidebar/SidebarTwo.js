@@ -19,22 +19,33 @@ font-size: 11px;
 class SidebarTwo extends Component {
 
   render() {
-    
+    console.log(this.props.active);
+    const info = this.props.active == 'info' ? true : false;
+    const documents = this.props.active == 'documents' ? true : false;
+    const fees = this.props.active == 'fees' ? true : false;
+
+    console.log(this.props);
     return (
         <Sidebar marginRight>
             <H3>SETTINGS</H3>
-            <Card rounded className="sideNav">
+            <a href={"/info/"+this.props.bankId }>
+            <Card rounded  selected={info} className="sideNav">
                 <i className="material-icons">person_add</i>
                 <h3>Bank Info</h3>
             </Card >
-            <Card rounded className="sideNav">
+            </a>
+            <a href={"/documents/"+this.props.bankId }>
+            <Card rounded selected={documents} className="sideNav">
             <i className="material-icons">folder</i>
                 <h3>Documents</h3>
             </Card>
-            <Card selected rounded className="sideNav">
+            </a>
+            <a href={"/fees/"+this.props.bankId }>
+            <Card selected={fees} rounded className="sideNav">
             <i className="material-icons">mobile_screen_share</i>
                 <h3>Fees</h3>
             </Card>
+            </a>
             <OperationalWallet historyLink={this.props.bankId } />
             <MasterWallet historyLink={this.props.bankId }  />
         </Sidebar>

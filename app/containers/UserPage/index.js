@@ -14,12 +14,12 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
-import TopBar from 'components/Header/TopBar';
+import Header from 'components/Header';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
+import TabSwitch from 'components/TabSwitch';
 import Nav from 'components/Header/Nav';
 import Welcome from 'components/Header/Welcome';
-import SidebarTwo from 'components/Sidebar/SidebarTwo';
+import SidebarOne from 'components/Sidebar/SidebarOne';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
@@ -28,6 +28,7 @@ import Table from 'components/Table';
 import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
+import SelectInput from 'components/SelectInput';
 import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
@@ -35,6 +36,7 @@ import Col from 'components/Col';
 import { API_URL, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
+
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -44,33 +46,50 @@ toast.configure({
   draggable: true,
 });
 
+
+var options = {
+  'First': false,
+  'Second': false,
+  'Third': true
+};
 const token = localStorage.getItem('logged');
 
-
-
-export default class FeeList extends Component {
+export default class UserPage extends Component {
   constructor() {
     super();
     this.state = {
-      bank: '',
       name: '',
       address1: '',
       state: '',
       zip: '',
-      country: '',
-      ccode: '',
+      username: '',
+      password: '',
       mobile: '',
       email: '',
-      logo: null,
-      contract: null,
+      logo: '',
+      profile_id: '',
+      contract: '',
       loading: true,
       redirect: false,
       totalBanks: 0,
       notification: 'Welcome',
       popup: false,
+      profile_popup: false,
+      pro_name: '',
+      pro_description: '',
+      pro_permissions: {
+        'create_bank' : false,
+        'edit_bank' : false,
+        'create_fee' : false
+      },
+      create_bank: false,
+      edit_bank: false,
+      create_fee: false,
       user_id: token,
+      otpId: '',
       banks: [],
-      rules: [],
+      users: [],
+      profiles: [],
       otp: '',
       showOtp: false
     };
@@ -96,13 +115,20 @@ export default class FeeList extends Component {
   };
 
   showPopup = () => {
-    //this.setState({ popup: true });
-    this.props.history.push('/createfee/'+this.props.match.params.bank);
+    this.setState({ popup: true });
+  };
+
+  showProfilePopup = () => {
+    this.setState({ profile_popup: true });
   };
 
   closePopup = () => {
     this.setState({
       popup: false,
+      profile_popup: false,
+      pro_name: '',
+      pro_description: '',
+      pro_permissions: [],
       name: '',
       address1: '',
       state: '',
@@ -140,11 +166,15 @@ export default class FeeList extends Component {
   addBank = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/generateOTP`, {
+      .post(`${API_URL  }/addInfraUser`, {
         name: this.state.name,
+        email: this.state.email,
         mobile: this.state.mobile,
-        page: 'addBank',
-        token,
+        username: this.state.username,
+        password: this.state.password,
+        profile_id: this.state.profile_id,
+        logo: this.state.logo,
+        token
       })
       .then(res => {
         if(res.status == 200){
@@ -152,10 +182,13 @@ export default class FeeList extends Component {
             throw res.data.error;
           }else{
             this.setState({
-              showOtp: true,
-              notification: 'OTP Sent'
+              notification: "Infra User added successfully!",
+            }, function(){
+              window.location.reload();
             });
             this.success();
+            this.closePopup();
+            this.getBanks();
           }
         }else{
           const error = new Error(res.data.error);
@@ -168,6 +201,36 @@ export default class FeeList extends Component {
         });
         this.error();
       });
+    // event.preventDefault();
+    // axios
+    //   .post(`${API_URL  }/generateOTP`, {
+    //     name: this.state.name,
+    //     page: 'addBank',
+    //     token,
+    //   })
+    //   .then(res => {
+    //     if(res.status == 200){
+    //       if(res.data.error){
+    //         throw res.data.error;
+    //       }else{
+    //         this.setState({
+    //           otpId: res.data.id,
+    //           showOtp: true,
+    //           notification: 'OTP Sent'
+    //         });
+    //         this.success();
+    //       }
+    //     }else{
+    //       const error = new Error(res.data.error);
+    //       throw error;
+    //     }
+    //   })
+    //   .catch(err => {
+    //     this.setState({
+    //       notification: (err.response) ? err.response.data.error : err.toString()
+    //     });
+    //     this.error();
+    //   });
   };
 
   verifyOTP = event => {
@@ -185,6 +248,7 @@ export default class FeeList extends Component {
         logo: this.state.logo,
         contract: this.state.contract,
         otp: this.state.otp,
+        otp_id: this.state.otpId,
         token,
       })
       .then(res => {
@@ -211,6 +275,44 @@ export default class FeeList extends Component {
         this.error();
       });
   };
+
+  addProfile = event => {
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/addProfile`, {
+        pro_name: this.state.pro_name,
+        pro_description: this.state.pro_description,
+        create_bank: this.state.create_bank,
+        edit_bank: this.state.edit_bank,
+        create_fee: this.state.create_fee,
+        token,
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              notification: "Profile added successfully!",
+            });
+            window.location.reload();
+            this.success();
+            this.closePopup();
+            
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+  };
+  
 
 
   removeFile = key => {
@@ -265,39 +367,66 @@ export default class FeeList extends Component {
 
   getBanks = () => {
     axios
-      .post(`${API_URL  }/getBank`, { token:token, bank_id: this.props.match.params.bank })
+      .post(`${API_URL  }/getBanks`, { token })
       .then(res => {
         if(res.status == 200){
-          
-          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo });
+          this.setState({ loading: false, banks: res.data.banks });
         }
       })
       .catch(err => {
-        
+        console.log(err);
       });
   };
 
-  getRules = () => {
+  getUsers = () => {
     axios
-      .post(`${API_URL  }/getRules`, { token:token, bank_id: this.props.match.params.bank })
+      .post(`${API_URL  }/getInfraUsers`, { token })
       .then(res => {
         if(res.status == 200){
-          
-          this.setState({ loading: false, rules: res.data.rules });
+          this.setState({ loading: false, users: res.data.users });
         }
       })
       .catch(err => {
-        
+        console.log(err);
       });
   };
-  
+
+  getRoles = () => {
+    axios
+      .post(`${API_URL  }/getRoles`, { token })
+      .then(res => {
+        if(res.status == 200){
+          this.setState({ loading: false, roles: res.data.roles });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  checkBtn = (event) => {
+    const target = event.target;
+    const tid = target.getAttribute("data-id");
+    if(target.classList.contains("active")){
+      target.classList.remove("active");
+      this.setState({
+        [tid] : false
+      });
+    }else{
+      target.classList.add("active");
+      this.setState({
+        [tid] : true
+      });
+    }
+    
+    console.log();
+  };
 
   componentDidMount() {
-    this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
       this.setState({ loading: false });
-      this.getBanks();
-      this.getRules();
+      this.getUsers();
+      this.getRoles();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -305,7 +434,6 @@ export default class FeeList extends Component {
   }
 
   render() {
-    
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector("label").classList.add("focused");
@@ -325,69 +453,97 @@ export default class FeeList extends Component {
     if (redirect) {
       return <Redirect to="/" />
     }
-    
+
     return (
-      <Wrapper>
+      <Wrapper from="infra">
         <Helmet>
           <meta charSet="utf-8" />
           <title>Banks | INFRA | E-WALLET</title>
         </Helmet>
-        <TopBar>
-        <Welcome infraNav/>
-          <Container>
-            <a href="/dashboard" className="headerNavDash">
-              Main Dashboard
-            </a>
-            <div className="bankLogo">
-            <img src={STATIC_URL+this.state.logo}/>
-              </div>
-
-    <h2>{this.state.banks.name}</h2>
-            
-          </Container>
-        </TopBar>
+        <Header active="user" />
         <Container verticalMargin>
-          <SidebarTwo bankId={this.state.bank} active="fees"/>
-          <Main big>
-            <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
+          <Main fullWidth>
+            <TabSwitch tabs={[{ name: "My Users", target: "box1", active: "active"}, { name: "Profiles", target: "box2", active: ""}]}>
+              
+              <div className="tabBody">
+                <div id="box1" className="tabContent active">
+                <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
                 <input type="text" placeholder="Search" />
               </div>
               <Button className="fr" flex onClick={this.showPopup}>
                 <i className="material-icons">add</i>
-                <span>Create Rules</span>
+                <span>Add Infra User</span>
               </Button>
             </ActionBar>
+            <div className="cardBody clr">
+            {
+                      this.state.users && this.state.users.length > 0
+                        ? this.state.users.map(function(b) {
+                          if(b.name != "Infra Admin"){
+                          return <Card key={b._id} col horizontalMargin="10px" cardWidth="192px">
+                            <div className="profile">
+                              <img src={STATIC_URL+b.logo} />
+                              </div>
+                            <Row>
+                              <Col cW="80%">
+                              <h4 className="hh">{b.name}</h4>
+                              </Col>
+                              <Col cW="20%">
+                              <Button noMin className="fr">Edit</Button>
+                              </Col>
+                            </Row>
+                          </Card>
+                          }
+                        })
+                        :
+                        null
+                    }
+
+            </div>
+                </div>
+                <div id="box2" className="tabContent">
+              
             <Card bigPadding>
               <div className="cardHeader" >
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>
                 </div>
                 <div className="cardHeaderRight">
-                  <h3>Revenue Sharing Rules</h3>
-                  <h5>Fees created by the infra</h5>
+                  <h3>Profiles and Roles</h3>
+                  <h5>User Profiles created by Infra</h5>
                 </div>
+                
+                <Button className="fr" flex onClick={this.showProfilePopup}>
+                <i className="material-icons">add</i>
+                <span>Profile</span>
+              </Button>
+                
               </div>
               <div className="cardBody">
-                <Table marginTop="34px" smallTd>
+                <Table marginTop="34px">
                   <thead>
                     <tr>
-                     <th>Name</th>
-                     <th>Transaction Type</th>
-                     <th>Amount of Transaction</th>
-                     <th>Transaction Count</th>
-                     <th>Fixed Amount</th>
-                     <th>Percentage</th>
-                     <th></th>
+                      <th>Name</th>
+                      <th>Description</th>
+                      <th>Roles</th>
+                      <th></th>
                       </tr>
                   </thead>
                   <tbody>
-                  {
-                      this.state.rules && this.state.rules.length > 0 
-                        ? this.state.rules.map(function(b) {
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td><td className="tac green">$ {b.trans_from} - $ {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
-                          <td className="tac bold">{b.percentage} </td><td className="tac bold"><a>Edit</a></td></tr>
+                    {
+                      this.state.roles && this.state.roles.length > 0
+                        ? this.state.roles.map(function(b) {
+                          return <tr key={b._id} ><td>{b.name}</td>
+                          <td className="tac">{b.description}</td>
+                          <td className="tac green">{b.permissions}</td>
+                          <td className="tac bold">
+                           <span className="absoluteRight primary popMenuTrigger">
+                          <a>Edit</a>
+                          </span>
+                          </td>
+                          </tr>
                         })
                         :
                         null
@@ -396,14 +552,18 @@ export default class FeeList extends Component {
                 </Table>
               </div>
             </Card>
+                </div>
+              </div>
+            </TabSwitch>
+            
           </Main>
         </Container>
-        { this.state.popup ? 
-          <Popup close={this.closePopup.bind(this)}>
+        { this.state.popup ?
+          <Popup close={this.closePopup.bind(this)} accentedH1>
             {
               this.state.showOtp ?
               <div>
-              <h1><FormattedMessage {...messages.verify} /></h1>
+              <h1 ><FormattedMessage {...messages.verify} /></h1>
             <form action="" method="post" onSubmit={this.verifyOTP} >
               <FormGroup>
                 <label><FormattedMessage {...messages.otp} /></label>
@@ -424,7 +584,7 @@ export default class FeeList extends Component {
               </div>
               :
               <div>
-            <h1><FormattedMessage {...messages.addbank} /></h1>
+            <h1 >Create Infra User</h1>
             <form action="" method="post" onSubmit={this.addBank}>
               <FormGroup>
                 <label><FormattedMessage {...messages.popup1} /></label>
@@ -439,82 +599,20 @@ export default class FeeList extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup2} /></label>
+                <label>Email</label>
                 <TextInput
                   type="text"
-                  name="address1"
+                  name="email"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
-                  value={this.state.address1}
+                  value={this.state.email}
                   onChange={this.handleInputChange}
                   required
                 />
               </FormGroup>
-              
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup3} /></label>
-                  <TextInput
-                    type="text"
-                    name="state"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.state}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup4} /></label>
-                  <TextInput
-                    type="text"
-                    name="zip"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.zip}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup5} /></label>
-                  <TextInput
-                    type="text"
-                    name="country"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.country}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup6} /></label>
-                  <TextInput
-                    type="text"
-                    name="ccode"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.ccode}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>  
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} /></label>
+
+              <FormGroup>
+                  <label>Mobile Number</label>
                   <TextInput
                     type="text"
                     name="mobile"
@@ -525,75 +623,94 @@ export default class FeeList extends Component {
                     required
                   />
                   </FormGroup>
-                  </Col>
-                  <Col>
+
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup8} /></label>
+                  <label>User Id</label>
                   <TextInput
                     type="text"
-                    name="email"
+                    name="username"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
-                    value={this.state.email}
+                    value={this.state.username}
                     onChange={this.handleInputChange}
                     required
                   />
                   </FormGroup>
-                  </Col>
-                </Row>
-              
+
+                  <FormGroup>
+                  <label>Temporary Password</label>
+                  <TextInput
+                    type="text"
+                    name="password"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.password}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+
+                  <FormGroup>
+                  <SelectInput
+                    type="text"
+                    name="profile_id"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.profile_id}
+                    onChange={this.handleInputChange}
+                    required
+                  >
+                    <option value="">Select Profile</option>
+                    {
+                      this.state.roles && this.state.roles.length > 0
+                        ? this.state.roles.map(function(b) {
+                          return  <option value={b._id}>{b.name}</option>
+                        })
+                        :
+                        null
+                    }
+                    </SelectInput>
+                  </FormGroup>
+
+               
 
               <FormGroup>
-                
+
                   {/* <UploadedFile>
-                    
+
                       <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
                     </UploadedFile>
                   : */}
                   <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
-                    { 
-                    this.state.logo ? 
+                    {
+                    this.state.logo ?
                     <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
-                    </a> 
+                    </a>
                     :
                     ' '
                     }
                     <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
                     <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
-                    { 
-                    !this.state.logo ? 
+                    {
+                    !this.state.logo ?
                     <i className="material-icons">cloud_upload</i>
                     :
                     ' '
                     }
-                    <label><FormattedMessage {...messages.popup9} /> </label>
+                    <label>
+                      {
+                      this.state.logo == '' ? 
+                      <FormattedMessage {...messages.popup9} /> 
+                      :
+                      <span>Change Logo</span>
+                      }
+                      
+                      </label>
                     </div>
                   </UploadArea>
-                
+
               </FormGroup>
 
-              <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
-                    { 
-                    this.state.contract ? 
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
-                    </a> 
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
-                    <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
-                    { 
-                    !this.state.contract ? 
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
-                    
-                    <label><FormattedMessage {...messages.popup10} /> </label>
-                    </div>
-                  </UploadArea>
-              </FormGroup>
 
               <Button filledBtn marginTop="50px">
                 <span><FormattedMessage {...messages.addbank} /></span>
@@ -601,6 +718,57 @@ export default class FeeList extends Component {
             </form>
             </div>
             }
+          </Popup>
+          : null }
+
+{ this.state.profile_popup ?
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+           
+            <h1 >Create Profile</h1>
+            <form action="" method="post" onSubmit={this.addProfile}>
+              <FormGroup>
+                <label>Profile Name</label>
+                <TextInput
+                  type="text"
+                  name="pro_name"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.pro_name}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <label>Description</label>
+                <TextInput
+                  type="text"
+                  name="pro_description"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.pro_description}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+
+                <Row>
+                  <Col cW="33%">
+                  <Button type="button" className="toggle" onClick={this.checkBtn} data-id="create_bank">Create Bank</Button>
+                  </Col>
+                  <Col cW="33%">
+                  <Button  type="button" className="toggle" onClick={this.checkBtn} data-id="edit_bank">Edit Bank</Button>
+                  </Col>
+                  <Col cW="33%">
+                  <Button  type="button" className="toggle" onClick={this.checkBtn} data-id="create_fee">Create Fee</Button>          
+                  </Col>
+                </Row>
+                
+
+              <Button filledBtn marginTop="50px">
+                <span><FormattedMessage {...messages.addbank} /></span>
+              </Button>
+            </form>
+            
           </Popup>
           : null }
       </Wrapper>

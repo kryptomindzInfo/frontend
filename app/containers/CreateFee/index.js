@@ -55,7 +55,10 @@ toast.configure({
 
 const token = localStorage.getItem('logged');
 
-
+var permissions = localStorage.getItem('permissions');
+if(permissions != 'all' && permissions != ''){
+permissions = JSON.parse(permissions);
+}
 
 export default class CreateFee extends Component {
   constructor() {
@@ -81,7 +84,8 @@ export default class CreateFee extends Component {
       banks: [],
       otp: '',
       showOtp: false,
-      token: token
+      token: token,
+      permissions
     };
 
     this.success = this.success.bind(this);

@@ -75,7 +75,10 @@ export default class HomePage extends Component {
         if (res.status == 200) {
           localStorage.setItem('logged', res.data.token);
           localStorage.setItem('name', res.data.name);
-  
+          
+            localStorage.setItem('permissions', res.data.permissions);
+                    
+          
             this.props.history.push('/dashboard');
             
         } else {

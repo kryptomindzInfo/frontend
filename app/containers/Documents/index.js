@@ -48,7 +48,7 @@ const token = localStorage.getItem('logged');
 
 
 
-export default class FeeList extends Component {
+export default class Documents extends Component {
   constructor() {
     super();
     this.state = {
@@ -71,6 +71,7 @@ export default class FeeList extends Component {
       user_id: token,
       banks: [],
       rules: [],
+      docs: [],
       otp: '',
       showOtp: false
     };
@@ -290,6 +291,20 @@ export default class FeeList extends Component {
         
       });
   };
+
+  getDocs = () => {
+    axios
+      .post(`${API_URL  }/getDocs`, { token:token, bank_id: this.props.match.params.bank })
+      .then(res => {
+        if(res.status == 200){
+          console.log(res.data.docs);
+          this.setState({ loading: false, docs: res.data.docs });
+        }
+      })
+      .catch(err => {
+        
+      });
+  };
   
 
   componentDidMount() {
@@ -297,7 +312,7 @@ export default class FeeList extends Component {
     if (token !== undefined && token !== null) {
       this.setState({ loading: false });
       this.getBanks();
-      this.getRules();
+      this.getDocs();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -325,8 +340,9 @@ export default class FeeList extends Component {
     if (redirect) {
       return <Redirect to="/" />
     }
-    
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return (
+      
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
@@ -347,53 +363,47 @@ export default class FeeList extends Component {
           </Container>
         </TopBar>
         <Container verticalMargin>
-          <SidebarTwo bankId={this.state.bank} active="fees"/>
+          <SidebarTwo bankId={this.state.bank} active="documents" />
           <Main big>
-            <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-              <div className="iconedInput fl">
-                <i className="material-icons">search</i>
-                <input type="text" placeholder="Search" />
-              </div>
-              <Button className="fr" flex onClick={this.showPopup}>
-                <i className="material-icons">add</i>
-                <span>Create Rules</span>
-              </Button>
-            </ActionBar>
+            
             <Card bigPadding>
               <div className="cardHeader" >
-                <div className="cardHeaderLeft">
-                  <i className="material-icons">supervised_user_circle</i>
-                </div>
-                <div className="cardHeaderRight">
-                  <h3>Revenue Sharing Rules</h3>
-                  <h5>Fees created by the infra</h5>
-                </div>
+               
               </div>
-              <div className="cardBody">
-                <Table marginTop="34px" smallTd>
-                  <thead>
-                    <tr>
-                     <th>Name</th>
-                     <th>Transaction Type</th>
-                     <th>Amount of Transaction</th>
-                     <th>Transaction Count</th>
-                     <th>Fixed Amount</th>
-                     <th>Percentage</th>
-                     <th></th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                  {
-                      this.state.rules && this.state.rules.length > 0 
-                        ? this.state.rules.map(function(b) {
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td><td className="tac green">$ {b.trans_from} - $ {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
-                          <td className="tac bold">{b.percentage} </td><td className="tac bold"><a>Edit</a></td></tr>
+              <div className="cardBody clr">
+                <h3>FILES</h3>
+            
+                {
+                  
+                      this.state.docs && this.state.docs.length > 0
+                        ? this.state.docs.map(function(b) {
+                          var filename = b.contract.replace(/^.*[\\\/]/, '');
+                          var ext = b.contract.split('.').pop();
+                          var icon = (ext == 'pdf') ? STATIC_URL+'main/pdf-icon.png' : STATIC_URL+'main/doc-icon.png';
+                          var isoformat = b.created_at;
+                          var readable = new Date(isoformat);
+                          var m = readable.getMonth(); // returns 6
+                          var d = readable.getDay();  // returns 15
+                          var y = readable.getFullYear();
+                          var h = readable.getHours();
+                          var mi = readable.getMinutes();
+                          var mlong = months[m];
+                          var fulldate = d + " " + mlong + " " + y+ " " + h+ " " + mi;
+                          return <Card key={b._id} blueHover col horizontalMargin="10px" cardWidth="192px" className="doc">
+                            <a href={STATIC_URL+b.contract} target="_blank">
+                            <div className="profile">
+                              <img src={icon} />
+                              </div>
+                              <h4 className="hhh">{filename}</h4>
+                              <h4 className="hhhh">{fulldate}</h4>
+                              </a>
+                          </Card>
+                          
                         })
                         :
                         null
                     }
-                  </tbody>
-                </Table>
+                  
               </div>
             </Card>
           </Main>

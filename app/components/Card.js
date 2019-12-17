@@ -16,6 +16,31 @@ float: ${props => props.col ? 'left' : 'none' };
 max-width: ${props => props.centerSmall ? '600px' : '100%' };
 margin: ${props => props.centerSmall ? '0 auto' : 'sdf' };
 position: relative;
+border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
+&:hover{
+    border: ${props => props.blueHover ? '1px solid #4da1ff' : '' };
+}
+.infoLeft{
+    .        font-size: 20px;
+        font-weight: bold;
+        color: #4a4a4a;
+      margin-bottom: 20px;
+}
+.infoRight{
+    .        font-size: 20px;
+        font-weight: bold;
+        color: #000000;
+        text-align:right;
+        margin-bottom: 30px;
+}
+.profile{
+    img{
+        max-width: 100%;
+        max-height: 100px;
+    }
+    margin-bottom:20px;
+    text-align:center;
+}
 .history{
     position: absolute;
     right: 20px;
@@ -58,6 +83,31 @@ position: relative;
 }
 > .cardHeader > .cardHeaderRight > h3{
     margin-bottom:1px;
+}
+.doc{
+    border: solid 1px #e9eff4;
+    border-radius: 5px;
+    padding: 10px;
+}
+.hh{
+    margin-top:10px;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: #323c47;
+}
+.hhh{
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.11px;
+    color: #323c47;
+    text-align:center;
+}
+.hhhh{
+    font-size: 10px;
+    font-weight: bold;
+    text-align:center;
+        letter-spacing: 0.09px;
+    color: #9b9b9b;
 }
 > .cardHeader  > .cardHeaderLeft{
     float:left;

@@ -21,6 +21,7 @@ class Nav extends Component {
   render() {
     const dashboard = this.props.active == 'dashboard' ? 'true' : '';
     const bank = this.props.active == 'bank' ? 'true' : '';
+    const user = this.props.active == 'user' ? 'true' : '';
     const merchants = this.props.active == 'merchants' ? 'true' : '';
     const reports = this.props.active == 'reports' ? 'true' : '';
 
@@ -30,9 +31,13 @@ class Nav extends Component {
           <Link href="/dashboard" active={dashboard}>
           <FormattedMessage {...messages.menu1} /> 
           </Link>
+          <Link href="/user" active={user}>
+            Infra User
+          </Link>
           <Link href="/banks" active={bank}>
           <FormattedMessage {...messages.menu2} /> 
           </Link>
+          
           <Link href="/merchants" active={merchants}>
           <FormattedMessage {...messages.menu3} /> 
           </Link>

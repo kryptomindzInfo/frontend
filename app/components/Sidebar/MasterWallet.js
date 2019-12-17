@@ -125,11 +125,11 @@ class MasterWallet extends Component {
           throw res.data.error;
         }else{
           this.setState({
-            balance: balance,
-            notification: "Successfully Transfered"
+            balance: 900,
+            notification: "Successfully Transfered" + res.data.walletStatus
           }, function(){
             this.success();
-            this.closePopup();
+            //this.closePopup();
           });
       }
     }
@@ -248,7 +248,7 @@ class MasterWallet extends Component {
             <FormattedMessage {...messages.activate} />
             </button>
               :
-              <button onClick={this.sendMoney}>
+              <button >
             <i className="material-icons">send</i> <FormattedMessage {...messages.sendmoney} />
             </button>
             }
@@ -317,7 +317,7 @@ class MasterWallet extends Component {
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>
               </Button>
-              <p className="note">Total Fee $200 will be charges</p>
+              {/* <p className="note">Total Fee $200 will be charges</p> */}
             </form>
 
               </Popup>

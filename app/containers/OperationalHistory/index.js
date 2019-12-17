@@ -73,6 +73,8 @@ export default class OperationalHistory extends Component {
       trans_from: '',
       trans_to: '',
       transcount_from: '',
+      history: [],
+      filter: "",
       transcount_to: '',
       fixed_amount: '',
       percentage: '',
@@ -331,19 +333,37 @@ export default class OperationalHistory extends Component {
       });
   };
 
-  
+  getHistory = () => {
+    axios
+      .post(`${API_URL  }/getInfraHistory`, { token:token, from: "operational", bank_id: this.props.match.params.bank })
+      .then(res => {
+        if(res.status == 200){
+          console.log(res.data);
+          this.setState({ loading: false, history: res.data.history});
+        }
+      })
+      .catch(err => {
+
+      });
+  };
+
+  filterData = (e) => {
+    this.setState({ filter: e });
+  };
 
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
       this.setState({ loading: false });
       this.getBanks();
+      this.getHistory();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
     }
   }
 
+  
   render() {
         function inputFocus(e) {
       const { target } = e;
@@ -371,7 +391,8 @@ export default class OperationalHistory extends Component {
     if (redirect) {
       return <Redirect to="/" />
     }
-    
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var dis = this;
     return (
       <Wrapper>
         <Helmet>
@@ -430,20 +451,40 @@ export default class OperationalHistory extends Component {
               </div>
               <div className="cardBody">
                 <div className="clr">
-                <div className="menuTabs">All</div>
-                <div className="menuTabs">Payment Sent</div>
-                <div className="menuTabs">Payment Recieved</div> 
+                <div className="menuTabs" onClick={() => this.filterData("")}>All</div>
+                <div className="menuTabs" onClick={() => this.filterData("DR")}>Payment Sent</div>
+                <div className="menuTabs" onClick={() => this.filterData("CR")}>Payment Recieved</div> 
                 </div>
                 <Table marginTop="34px" smallTd>
                  <tbody>
-                   <tr>
-                     <td><div className="labelGrey">Nov 15, 2019</div></td>
-                    <td><div className="labelBlue">Transfered to Axis bank</div> <div className="labelSmallGrey">Completed</div></td>
-                    <td><div className="labelGrey">$400</div></td>
-                   </tr>
-                  </tbody>
-                </Table>
-              
+                {
+                      
+                      this.state.history && this.state.history.length > 0
+                        ? this.state.history.map(function(b) {
+
+                          var isoformat = b.Timestamp;
+                          var readable = new Date(isoformat);
+                          var m = readable.getMonth(); // returns 6
+                          var d = readable.getDay();  // returns 15
+                          var y = readable.getFullYear();
+                          var h = readable.getHours();
+                          var mi = readable.getMinutes();
+                          var mlong = months[m];
+                          var fulldate = d + " " + mlong + " " + y+ " " + h+ " " + mi;
+                          
+                          return  dis.state.filter == b.Value.tx_data.tx_type || dis.state.filter == "" ? <tr key={b.TxId} >
+                          <td><div className="labelGrey">{fulldate}</div></td>
+                        <td><div className="labelBlue">{b.Value.tx_data.tx_details}</div> <div className="labelSmallGrey">Completed</div></td>
+                         <td><div className="labelGrey">${b.Value.amount}</div></td>
+                        </tr>
+                        :
+                        null
+                        })
+                        :
+                        null
+                    }
+              </tbody>
+              </Table>
               </div>
             </Card>
           </Main>

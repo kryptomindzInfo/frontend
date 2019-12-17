@@ -65,12 +65,13 @@ padding: 15px;
 const token = localStorage.getItem('bankLogged');
 const bid = localStorage.getItem('bankId');
 console.log(bid);
-export default class BankBankInfo extends Component {
+export default class BankDocuments extends Component {
   constructor() {
     super();
     this.state = {
       sid: '',
       bank: bid,
+      bank_id: bid,
       name: '',
       address1: '',
       popname: '',
@@ -93,6 +94,8 @@ export default class BankBankInfo extends Component {
       user_id: token,
       banks: [],
       rules: [],
+      docs: [],
+      
       otp: '',
       showOtp: false
     };
@@ -361,16 +364,7 @@ export default class BankBankInfo extends Component {
   }
 
   getBanks = () => {
-    axios
-      .post(`${API_URL  }/getBank`, { token:token, bank_id: bid })
-      .then(res => {
-        if(res.status == 200){
-          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo });
-        }
-      })
-      .catch(err => {
-        
-      });
+
   };
 
   getRules = () => {
@@ -386,14 +380,30 @@ export default class BankBankInfo extends Component {
         
       });
   };
+
+  getDocs = () => {
+    axios
+      .post(`${API_URL  }/getDocs`, { bank_id: this.state.bank_id })
+      .then(res => {
+        
+        if(res.status == 200){
+          this.setState({ loading: false, docs: res.data.docs }, function(){
+            console.log(this.state.docs);
+          });
+        }
+      })
+      .catch(err => {
+        
+      });
+  };
   
 
   componentDidMount() {
-    this.setState({ bank: this.state.bank_id });
+    
     if (token !== undefined && token !== null) {
       this.setState({ loading: false });
       this.getBanks();
-      this.getRules();
+      this.getDocs();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -401,7 +411,7 @@ export default class BankBankInfo extends Component {
   }
 
   render() {
-    console.log(this.props);
+    
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector("label").classList.add("focused");
@@ -422,6 +432,7 @@ export default class BankBankInfo extends Component {
       return null;
     }
     const dis = this;
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     return (
       
       <Wrapper  from="bank">
@@ -431,101 +442,45 @@ export default class BankBankInfo extends Component {
         </Helmet>
         <BankHeader />
         <Container verticalMargin>
-          <BankSidebarTwo active="info" />
+          <BankSidebarTwo active="documents" />
           <Main>
-          <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-            
-            <Button className="fr" flex>
-              <span>Edit</span>
-            </Button>
-          </ActionBar>
-          <Card bigPadding bordered>
 
-            <div className="cardBody">
-              <Row>
-                <Col className="infoLeft">
-                Bank Name
-                </Col>
-                <Col className="infoRight">
-                {this.state.banks.name}
-                </Col>
-              </Row>
-              
-              <Row>
-                <Col className="infoLeft">
-                Bank Code
-                </Col>
-                <Col className="infoRight">
-                
-                </Col>
-              </Row>
+            <Card bigPadding>
 
-              <Row>
-                <Col className="infoLeft">
-                Address
-                </Col>
-                <Col className="infoRight">
-                {this.state.banks.address1}
-                </Col>
-              </Row>
-
-              <Row>
-                <Col className="infoLeft">
-                State
-                </Col>
-                <Col className="infoRight">
-                {this.state.banks.state}
-                </Col>
-              </Row>
-
-              <Row>
-                <Col className="infoLeft">
-                Zip Code
-                </Col>
-                <Col className="infoRight">
-                {this.state.banks.zip}
-                </Col>
-              </Row>
-
-              <Row>
-                <Col className="infoLeft">
-                Country Code
-                </Col>
-                <Col className="infoRight">
-                {this.state.banks.ccode}
-                </Col>
-              </Row>
-
-              <Row>
-                <Col className="infoLeft">
-                Country
-                </Col>
-                <Col className="infoRight">
-                {this.state.banks.country}
-                </Col>
-              </Row>
-
-              <Row>
-                <Col className="infoLeft">
-                Email
-                </Col>
-                <Col className="infoRight">
-                {this.state.banks.email}
-                </Col>
-              </Row>
-
-              <Row>
-                <Col className="infoLeft">
-                Phone Number
-                </Col>
-                <Col className="infoRight">
-                {this.state.banks.mobile}
-                </Col>
-              </Row>
-
-
-            </div>
-          </Card>
+              <div className="cardBody clr">
+              <h3>FILES</h3>
+              {
+                  
+                  this.state.docs && this.state.docs.length > 0
+                    ? this.state.docs.map(function(b) {
+                      var filename = b.contract.replace(/^.*[\\\/]/, '');
+                      var ext = b.contract.split('.').pop();
+                      var icon = (ext == 'pdf') ? STATIC_URL+'main/pdf-icon.png' : STATIC_URL+'main/doc-icon.png';
+                      var isoformat = b.created_at;
+                      var readable = new Date(isoformat);
+                      var m = readable.getMonth(); // returns 6
+                      var d = readable.getDay();  // returns 15
+                      var y = readable.getFullYear();
+                      var h = readable.getHours();
+                      var mi = readable.getMinutes();
+                      var mlong = months[m];
+                      var fulldate = d + " " + mlong + " " + y+ " " + h+ " " + mi;
+                      return <Card key={b._id} blueHover col horizontalMargin="10px" cardWidth="192px" className="doc">
+                        <a href={STATIC_URL+b.contract} target="_blank">
+                        <div className="profile">
+                          <img src={icon} />
+                          </div>
+                          <h4 className="hhh">{filename}</h4>
+                          <h4 className="hhhh">{fulldate}</h4>
+                          </a>
+                      </Card>
+                      
+                    })
+                    :
+                    null
+                }
+              </div>
+            </Card>
           </Main>
         </Container>
         { this.state.popup ? 

@@ -65,6 +65,7 @@ export default class MasterHistory extends Component {
       bank: '',
       logo: null,
       contract: null,
+      filter: "",
       loading: true,
       redirect: false,
       name: '',
@@ -107,6 +108,11 @@ export default class MasterHistory extends Component {
     });
   };
 
+
+  filterData = (e) => {
+    this.setState({ filter: e });
+  };
+
   showPopup = () => {
     //this.setState({ popup: true });
     this.props.history.push('/createfee/'+this.props.match.params.bank);
@@ -116,6 +122,7 @@ export default class MasterHistory extends Component {
     this.setState({
       popup: false,
       name: '',
+      history: [],
       address1: '',
       state: '',
       zip: '',
@@ -239,6 +246,7 @@ export default class MasterHistory extends Component {
         logo: this.state.logo,
         contract: this.state.contract,
         otp: this.state.otp,
+        
         token,
       })
       .then(res => {
@@ -331,6 +339,20 @@ export default class MasterHistory extends Component {
       });
   };
 
+  getHistory = () => {
+    axios
+      .post(`${API_URL  }/getInfraHistory`, { token:token, from: "master", bank_id: this.props.match.params.bank })
+      .then(res => {
+        if(res.status == 200){
+          console.log(res.data);
+          this.setState({ loading: false, history: res.data.history});
+        }
+      })
+      .catch(err => {
+
+      });
+  };
+
   
 
   componentDidMount() {
@@ -338,6 +360,7 @@ export default class MasterHistory extends Component {
     if (token !== undefined && token !== null) {
       this.setState({ loading: false });
       this.getBanks();
+      this.getHistory();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -371,12 +394,13 @@ export default class MasterHistory extends Component {
     if (redirect) {
       return <Redirect to="/" />
     }
-    
+    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var dis = this;
     return (
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>Create Fee | INFRA | E-WALLET</title>
+          <title>Master History| INFRA | E-WALLET</title>
         </Helmet>
         <TopBar>
         <Welcome infraNav/>
@@ -430,19 +454,42 @@ export default class MasterHistory extends Component {
               </div>
               <div className="cardBody">
                 <div className="clr">
-                <div className="menuTabs">All</div>
-                <div className="menuTabs">Payment Sent</div>
-                <div className="menuTabs">Payment Recieved</div> 
+                <div className="menuTabs" onClick={() => this.filterData("")}>All</div>
+                <div className="menuTabs" onClick={() => this.filterData("DR")}>Payment Sent</div>
+                <div className="menuTabs" onClick={() => this.filterData("CR")}>Payment Recieved</div> 
                 </div>
                 <Table marginTop="34px" smallTd>
                  <tbody>
-                   <tr>
-                     <td><div className="labelGrey">Nov 15, 2019</div></td>
-                    <td><div className="labelBlue">Transfered to Axis bank</div> <div className="labelSmallGrey">Completed</div></td>
-                    <td><div className="labelGrey">$400</div></td>
-                   </tr>
+                 {
+                      
+                      this.state.history && this.state.history.length > 0
+                        ? this.state.history.map(function(b) {
+
+                          var isoformat = b.Timestamp;
+                          var readable = new Date(isoformat);
+                          var m = readable.getMonth(); // returns 6
+                          var d = readable.getDay();  // returns 15
+                          var y = readable.getFullYear();
+                          var h = readable.getHours();
+                          var mi = readable.getMinutes();
+                          var mlong = months[m];
+                          var fulldate = d + " " + mlong + " " + y+ " " + h+ " " + mi;
+                          
+                          return  dis.state.filter == b.Value.tx_data.tx_type || dis.state.filter == "" ? <tr key={b.TxId} >
+                          <td><div className="labelGrey">{fulldate}</div></td>
+                        <td><div className="labelBlue">{b.Value.tx_data.tx_details}</div> <div className="labelSmallGrey">Completed</div></td>
+                         <td><div className="labelGrey">${b.Value.amount}</div></td>
+                        </tr>
+                        :
+                        null
+                        })
+                        :
+                        null
+                    }
+                  
                   </tbody>
                 </Table>
+              
               
               </div>
             </Card>

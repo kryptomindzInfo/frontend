@@ -9,23 +9,23 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
-
+import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
-import TopBar from 'components/Header/TopBar';
+import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
 import Logo from 'components/Header/Logo';
 import Nav from 'components/Header/Nav';
 import Welcome from 'components/Header/Welcome';
-import SidebarTwo from 'components/Sidebar/SidebarTwo';
+import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Table from 'components/Table';
-import Popup from 'components/Popup';
+import MiniPopUp from 'components/MiniPopUp';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import UploadArea from 'components/UploadArea';
@@ -44,17 +44,39 @@ toast.configure({
   draggable: true,
 });
 
-const token = localStorage.getItem('logged');
+const Tab = styled.div`
+background: #417505;
+width: 194px;
+padding: 15px;
+float:left;
+border: 1px solid  #417505;
+color: #fff;
+font-size: 20px;
+`;
+const Tab2 = styled.div`
+float:left;
+width: 194px;
+border: 1px solid  #417505;
+color: #417505;
+font-size: 20px;
+padding: 15px;
+`;
 
-
-
-export default class FeeList extends Component {
+const token = localStorage.getItem('bankLogged');
+const bid = localStorage.getItem('bankId');
+console.log(bid);
+export default class BankFees extends Component {
   constructor() {
     super();
     this.state = {
-      bank: '',
+      sid: '',
+      bank: bid,
       name: '',
       address1: '',
+      popname: '',
+      poprange: '',
+      poptype: '',
+      poppercent: '',
       state: '',
       zip: '',
       country: '',
@@ -77,6 +99,7 @@ export default class FeeList extends Component {
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
+    this.showMiniPopUp = this.showMiniPopUp.bind(this);
 
     this.onChange = this.onChange.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
@@ -95,12 +118,17 @@ export default class FeeList extends Component {
     });
   };
 
-  showPopup = () => {
-    //this.setState({ popup: true });
-    this.props.history.push('/createfee/'+this.props.match.params.bank);
+  showMiniPopUp = event => {
+    this.setState({ popup: true });
+    var id = event.target.getAttribute("data-id");
+    var d =  event.target.getAttribute("data-d");
+    console.log(id);
+    var dd = d.split("^");
+    this.setState({ popname: dd[0], poptype: dd[1], poprange: dd[2], poppercent: dd[3], sid: id });
+    //this.props.history.push('/createfee/'+this.state.bank_id);
   };
 
-  closePopup = () => {
+  closeMiniPopUp = () => {
     this.setState({
       popup: false,
       name: '',
@@ -170,6 +198,75 @@ export default class FeeList extends Component {
       });
   };
 
+  approve = event => {
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/approveFee`, {
+        id: this.state.sid,
+        token,
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              notification: 'Approved'
+            });
+            this.success();
+            window.location.reload();
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+        
+      });
+  };
+
+  decline = event => {
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/declineFee`, {
+        id: this.state.sid,
+        token,
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              notification: 'Declined'
+            });
+            this.success();
+            window.location.reload();
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+  };
+
+
+  showWallet = event => {
+    event.preventDefault();
+    
+  };
+
   verifyOTP = event => {
     event.preventDefault();
     axios
@@ -196,7 +293,7 @@ export default class FeeList extends Component {
               notification: "Bank added successfully!",
             });
             this.success();
-            this.closePopup();
+            this.closeMiniPopUp();
             this.getBanks();
           }
         }else{
@@ -264,22 +361,12 @@ export default class FeeList extends Component {
   }
 
   getBanks = () => {
-    axios
-      .post(`${API_URL  }/getBank`, { token:token, bank_id: this.props.match.params.bank })
-      .then(res => {
-        if(res.status == 200){
-          
-          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo });
-        }
-      })
-      .catch(err => {
-        
-      });
+
   };
 
   getRules = () => {
     axios
-      .post(`${API_URL  }/getRules`, { token:token, bank_id: this.props.match.params.bank })
+      .post(`${API_URL  }/getBankRules`, { bank_id: this.state.bank })
       .then(res => {
         if(res.status == 200){
           
@@ -293,7 +380,7 @@ export default class FeeList extends Component {
   
 
   componentDidMount() {
-    this.setState({ bank: this.props.match.params.bank });
+    this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
       this.setState({ loading: false });
       this.getBanks();
@@ -305,7 +392,7 @@ export default class FeeList extends Component {
   }
 
   render() {
-    
+    console.log(this.props);
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector("label").classList.add("focused");
@@ -323,42 +410,26 @@ export default class FeeList extends Component {
       return null;
     }
     if (redirect) {
-      return <Redirect to="/" />
+      return null;
     }
-    
+    const dis = this;
     return (
-      <Wrapper>
+      
+      <Wrapper  from="bank">
         <Helmet>
           <meta charSet="utf-8" />
           <title>Banks | INFRA | E-WALLET</title>
         </Helmet>
-        <TopBar>
-        <Welcome infraNav/>
-          <Container>
-            <a href="/dashboard" className="headerNavDash">
-              Main Dashboard
-            </a>
-            <div className="bankLogo">
-            <img src={STATIC_URL+this.state.logo}/>
-              </div>
-
-    <h2>{this.state.banks.name}</h2>
-            
-          </Container>
-        </TopBar>
+        <BankHeader />
         <Container verticalMargin>
-          <SidebarTwo bankId={this.state.bank} active="fees"/>
-          <Main big>
+          <BankSidebarTwo active="fees" />
+          <Main>
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-              <div className="iconedInput fl">
-                <i className="material-icons">search</i>
-                <input type="text" placeholder="Search" />
+              <div className="clr">
+                <Tab>Bank and Infra</Tab>
+                <Tab2>Bank and Users</Tab2>
               </div>
-              <Button className="fr" flex onClick={this.showPopup}>
-                <i className="material-icons">add</i>
-                <span>Create Rules</span>
-              </Button>
-            </ActionBar>
+                        </ActionBar>
             <Card bigPadding>
               <div className="cardHeader" >
                 <div className="cardHeaderLeft">
@@ -386,8 +457,19 @@ export default class FeeList extends Component {
                   {
                       this.state.rules && this.state.rules.length > 0 
                         ? this.state.rules.map(function(b) {
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td><td className="tac green">$ {b.trans_from} - $ {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
-                          <td className="tac bold">{b.percentage} </td><td className="tac bold"><a>Edit</a></td></tr>
+                          return <tr key={b._id} id={"tr"+b._id}><td className="tname tname">{b.name}</td><td className="tac ttype" >{b.trans_type}</td><td className="tac green trange">$ {b.trans_from} - $ {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
+                          <td className="tac bold tpercent">{b.percentage} </td><td className="tac bold" >
+                            {
+                              b.status != 0 ?
+                              b.status == 1 ?
+                              <a className="text-light">approved</a>
+                              :
+                              <a className="text-accent">declined</a>
+                              :
+                              <a onClick = {dis.showMiniPopUp} data-id={b._id} data-d={b.name+"^"+b.trans_type+"^$"+b.trans_from+" - $ "+b.trans_to+"^"+b.percentage}>approve</a>
+                            }
+                            
+                            </td></tr>
                         })
                         :
                         null
@@ -399,12 +481,12 @@ export default class FeeList extends Component {
           </Main>
         </Container>
         { this.state.popup ? 
-          <Popup close={this.closePopup.bind(this)}>
+          <MiniPopUp close={this.closeMiniPopUp.bind(this)}>
             {
               this.state.showOtp ?
               <div>
               <h1><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyOTP} >
+            <form >
               <FormGroup>
                 <label><FormattedMessage {...messages.otp} /></label>
                 <TextInput
@@ -424,184 +506,34 @@ export default class FeeList extends Component {
               </div>
               :
               <div>
-            <h1><FormattedMessage {...messages.addbank} /></h1>
-            <form action="" method="post" onSubmit={this.addBank}>
-              <FormGroup>
-                <label><FormattedMessage {...messages.popup1} /></label>
-                <TextInput
-                  type="text"
-                  name="name"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label><FormattedMessage {...messages.popup2} /></label>
-                <TextInput
-                  type="text"
-                  name="address1"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.address1}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              
-                <Row>
+            
+            <form >
+              <p><span  id="popname">{this.state.popname}</span></p>
+              <p > Sending from <span id="poptype">{this.state.poptype}</span></p>
+              <p > Transaction range<span id="poprange">{this.state.poprange}</span></p>
+              <p > Fee <span id="poppercent">{this.state.poppercent}</span> &nbsp; &nbsp; Priority: <span>100</span></p>
+                         <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup3} /></label>
-                  <TextInput
-                    type="text"
-                    name="state"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.state}
-                    onChange={this.handleInputChange}
-                    required
-                  />
+                  <Button filledBtn marginTop="50px" accentedBtn onClick={this.decline}>
+                <span>Decline</span>
+              </Button >
                   </FormGroup>
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup4} /></label>
-                  <TextInput
-                    type="text"
-                    name="zip"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.zip}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup5} /></label>
-                  <TextInput
-                    type="text"
-                    name="country"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.country}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup6} /></label>
-                  <TextInput
-                    type="text"
-                    name="ccode"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.ccode}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>  
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} /></label>
-                  <TextInput
-                    type="text"
-                    name="mobile"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.mobile}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup8} /></label>
-                  <TextInput
-                    type="text"
-                    name="email"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.email}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>
-              
-
-              <FormGroup>
-                
-                  {/* <UploadedFile>
-                    
-                      <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
-                    </UploadedFile>
-                  : */}
-                  <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
-                    { 
-                    this.state.logo ? 
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
-                    </a> 
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
-                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
-                    { 
-                    !this.state.logo ? 
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
-                    <label><FormattedMessage {...messages.popup9} /> </label>
-                    </div>
-                  </UploadArea>
-                
-              </FormGroup>
-
-              <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
-                    { 
-                    this.state.contract ? 
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
-                    </a> 
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
-                    <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
-                    { 
-                    !this.state.contract ? 
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
-                    
-                    <label><FormattedMessage {...messages.popup10} /> </label>
-                    </div>
-                  </UploadArea>
-              </FormGroup>
-
-              <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.addbank} /></span>
+                  <Button filledBtn marginTop="50px"  onClick={this.approve}>
+                <span>Approve</span>
               </Button>
+                  </FormGroup>
+                  </Col>
+                </Row>
+
+              
             </form>
             </div>
             }
-          </Popup>
+          </MiniPopUp>
           : null }
       </Wrapper>
     );

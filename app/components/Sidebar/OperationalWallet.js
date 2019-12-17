@@ -87,9 +87,7 @@ class OperationalWallet extends Component {
       });
       this.error();
     });
- 
-
-  
+   
   };
 
   closePopup = () => {
@@ -175,6 +173,60 @@ class OperationalWallet extends Component {
       });
   };
 
+  submitMoney = (e) => {
+    e.preventDefault();
+    if(this.state.amount > this.state.balance){
+      this.setState({
+        notification: 'Insufficient Balance'
+      }, function(){
+        this.error();
+      });
+    }
+    else if(this.state.amount == ''){
+      this.setState({
+        notification: 'Invalid Amount'
+      }, function(){
+        this.error();
+      });
+    }
+    else{
+      axios
+    .post(`${API_URL  }/transferMoney`, {
+      from: this.state.from,
+      to: this.state.to,
+      amount: this.state.amount,
+      note: this.state.note,
+      auth: "infra",
+      token
+    })
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.error){
+          throw res.data.error;
+        }else{
+          this.setState({
+            notification: "Successfully Transfered" + res.data.walletStatus
+          }, function(){
+            this.success();
+            window.location.reload();
+          });
+      }
+    }
+      else{
+        const error = new Error(res.data.error);
+        throw error;
+      }
+    })
+    .catch(err => {
+      this.setState({
+        notification: (err.response) ? err.response.data.error : err.toString()
+      });
+      this.error();
+    });
+    }
+  
+  };
+
   componentDidMount() {
     this.setState({
       bank: this.props.historyLink
@@ -235,7 +287,7 @@ class OperationalWallet extends Component {
              { this.state.popup ? 
           <Popup close={this.closePopup.bind(this)} roundedCorner>
           <h1 className="normalH1">Transfer the amount</h1>
-          <form action="" method="post" onSubmit={this.addBank}>
+          <form action="" method="post" onSubmit={this.submitMoney}>
               <FormGroup>
                 <label>From</label>
                 <TextInput
@@ -294,7 +346,7 @@ class OperationalWallet extends Component {
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>
               </Button>
-              <p className="note">Total Fee $200 will be charges</p>
+              {/* <p className="note">Total Fee $200 will be charges</p> */}
             </form>
 
               </Popup>

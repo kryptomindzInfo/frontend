@@ -66,7 +66,9 @@ td > .material-icons{
 }
 
 .popMenuTrigger{
-
+    i{
+    font-size: 18px;
+    }
     cursor: pointer;
     .popMenu{
         display: none;
