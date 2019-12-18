@@ -74,6 +74,9 @@ body{
   .mt10{
     margin-top:10px;
   }
+  .m0{
+    margin:0;
+  }
   .absoluteRight{
     position:absolute;
     right:0;

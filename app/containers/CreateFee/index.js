@@ -396,7 +396,7 @@ export default class CreateFee extends Component {
           </Container>
         </TopBar>
         <Container verticalMargin>
-          <SidebarTwo />
+        <SidebarTwo bankId={this.state.bank} active="fees"/>
           <Main>
             <Card bigPadding centerSmall>
               <div className="cardHeader" >

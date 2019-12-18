@@ -217,11 +217,11 @@ export default class UserPage extends Component {
             this.setState({
               notification: "Infra User added successfully!",
             }, function(){
-              window.location.reload();
+              //window.location.reload();
             });
             this.success();
             this.closePopup();
-            this.getBanks();
+            this.getUsers();
           }
         }else{
           const error = new Error(res.data.error);
@@ -372,10 +372,10 @@ export default class UserPage extends Component {
             this.setState({
               notification: "Profile added successfully!",
             });
-            window.location.reload();
+            //window.location.reload();
             this.success();
             this.closePopup();
-            
+            this.getRoles();
           }
         }else{
           const error = new Error(res.data.error);
@@ -410,10 +410,10 @@ export default class UserPage extends Component {
             this.setState({
               notification: "Profile updated successfully!",
             });
-            window.location.reload();
+            //window.location.reload();
             this.success();
             this.closePopup();
-            
+            this.getRoles();
           }
         }else{
           const error = new Error(res.data.error);
@@ -584,10 +584,21 @@ export default class UserPage extends Component {
               <div className="tabBody">
                 <div id="box1" className="tabContent active">
                 <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-              <div className="iconedInput fl">
-                <i className="material-icons">search</i>
-                <input type="text" placeholder="Search" />
-              </div>
+                {
+                    
+                    this.state.users.length <= 0 ?
+                    this.state.profiles.length <= 0 ?
+                    <h2 className="fl m0">Create Your User Profile First</h2>
+                    :
+                    <h2 className="fl m0">Create Your First Infra User</h2>
+                      :
+
+                      <div className="iconedInput fl">
+                      <i className="material-icons">search</i>
+                      <input type="text" placeholder="Search" />
+                    </div>
+                  }
+              
               <Button className="fr" flex onClick={this.showPopup}>
                 <i className="material-icons">add</i>
                 <span>Add Infra User</span>
