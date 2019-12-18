@@ -16,7 +16,7 @@ import messages from './messages';
 import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
+import Popup from 'components/Popup';
 import Nav from 'components/Header/Nav';
 import Welcome from 'components/Header/Welcome';
 import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
@@ -118,6 +118,60 @@ export default class BankBankInfo extends Component {
     });
   };
 
+
+  editBank = event => {
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/generateOTPBank`, {
+        name: this.state.name,
+        page: 'editBank',
+        username: this.state.username,
+        token,
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              otpId: res.data.id,
+              showEditOtp: true,
+              notification: 'OTP Sent'
+            });
+            this.success();
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+  };
+
+  closePopup = () => {
+    this.setState({
+      popup: false,
+      showEditOtp: false,
+      name: '',
+      address1: '',
+      state: '',
+      zip: '',
+      ccode: '',
+      country: '',
+      email: '',
+      mobile: '',
+      logo: null,
+      contract: null,
+      otp: '',
+      showOtp: false
+    });
+  };
+  
   showMiniPopUp = event => {
     this.setState({ popup: true });
     var id = event.target.getAttribute("data-id");
@@ -360,12 +414,13 @@ export default class BankBankInfo extends Component {
       });
   }
 
+
   getBanks = () => {
     axios
-      .post(`${API_URL  }/getBank`, { token:token, bank_id: bid })
+      .post(`${API_URL  }/getBank`, { token:token, bank_id: bid})
       .then(res => {
         if(res.status == 200){
-          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo });
+          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo, name: res.data.banks.name, address1: res.data.banks.address1, state: res.data.banks.state, zip: res.data.banks.zip, country: res.data.banks.country, ccode: res.data.banks.ccode, mobile: res.data.banks.mobile, email: res.data.banks.email, logo: res.data.banks.logo, contract: res.data.banks.contract, username: res.data.banks.contract, bank_id: res.data.banks._id, username: res.data.banks.username  });
         }
       })
       .catch(err => {
@@ -386,7 +441,54 @@ export default class BankBankInfo extends Component {
         
       });
   };
-  
+  showPopup = () => {
+    //, name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id 
+    this.setState({ popup: true});
+  };
+
+  verifyEditOTP = event => {
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/editBankBank`, {
+        name: this.state.name,
+        address1: this.state.address1,
+        state: this.state.state,
+        zip: this.state.zip,
+        bank_id: this.state.bank_id,
+        country: this.state.country,
+        ccode: this.state.ccode,
+        email: this.state.email,
+        mobile: this.state.mobile,
+        logo: this.state.logo,
+        contract: this.state.contract,
+        otp: this.state.otp,
+        otp_id: this.state.otpId,
+        token,
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              notification: "Bank updated successfully!",
+            });
+            this.success();
+            this.closePopup();
+            this.getBanks();
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+  };
 
   componentDidMount() {
     this.setState({ bank: this.state.bank_id });
@@ -399,6 +501,7 @@ export default class BankBankInfo extends Component {
       // this.setState({loading: false, redirect: true });
     }
   }
+
 
   render() {
     console.log(this.props);
@@ -435,7 +538,7 @@ export default class BankBankInfo extends Component {
           <Main>
           <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
             
-            <Button className="fr" flex>
+            <Button className="fr" flex  onClick={this.showPopup}>
               <span>Edit</span>
             </Button>
           </ActionBar>
@@ -528,13 +631,13 @@ export default class BankBankInfo extends Component {
           </Card>
           </Main>
         </Container>
-        { this.state.popup ? 
-          <MiniPopUp close={this.closeMiniPopUp.bind(this)}>
+        { this.state.popup ?
+          <Popup close={this.closePopup.bind(this)} accentedH1>
             {
-              this.state.showOtp ?
+              this.state.showEditOtp ?
               <div>
-              <h1><FormattedMessage {...messages.verify} /></h1>
-            <form >
+              <h1 ><FormattedMessage {...messages.verify} /></h1>
+            <form action="" method="post" onSubmit={this.verifyEditOTP} >
               <FormGroup>
                 <label><FormattedMessage {...messages.otp} /></label>
                 <TextInput
@@ -554,34 +657,207 @@ export default class BankBankInfo extends Component {
               </div>
               :
               <div>
-            
-            <form >
-              <p><span  id="popname">{this.state.popname}</span></p>
-              <p > Sending from <span id="poptype">{this.state.poptype}</span></p>
-              <p > Transaction range<span id="poprange">{this.state.poprange}</span></p>
-              <p > Fee <span id="poppercent">{this.state.poppercent}</span> &nbsp; &nbsp; Priority: <span>100</span></p>
-                         <Row>
+            <h1 >Edit Bank</h1>
+            <form action="" method="post" onSubmit={this.editBank}>
+              <FormGroup>
+                <label><FormattedMessage {...messages.popup1} /></label>
+                <TextInput
+                  type="text"
+                  name="name"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.name}
+                  autoFocus
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <label><FormattedMessage {...messages.popup2} /></label>
+                <TextInput
+                  type="text"
+                  name="address1"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  autoFocus
+                  value={this.state.address1}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+
+                <Row>
                   <Col>
                   <FormGroup>
-                  <Button filledBtn marginTop="50px" accentedBtn onClick={this.decline}>
-                <span>Decline</span>
-              </Button >
+                  <label><FormattedMessage {...messages.popup3} /></label>
+                  <TextInput
+                    type="text"
+                    name="state"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    autoFocus
+                    value={this.state.state}
+                    onChange={this.handleInputChange}
+                    required
+                  />
                   </FormGroup>
                   </Col>
                   <Col>
                   <FormGroup>
-                  <Button filledBtn marginTop="50px"  onClick={this.approve}>
-                <span>Approve</span>
-              </Button>
+                  <label><FormattedMessage {...messages.popup4} /></label>
+                  <TextInput
+                    type="text"
+                    name="zip"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    autoFocus
+                    value={this.state.zip}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                  <FormGroup>
+                  <label><FormattedMessage {...messages.popup5} /></label>
+                  <TextInput
+                    type="text"
+                    name="country"
+                    onFocus={inputFocus}
+                    autoFocus
+                    onBlur={inputBlur}
+                    value={this.state.country}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                  <Col>
+                  <FormGroup>
+                  <label><FormattedMessage {...messages.popup6} /></label>
+                  <TextInput
+                    type="text"
+                    name="ccode"
+                    autoFocus
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.ccode}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                  <FormGroup>
+                  <label><FormattedMessage {...messages.popup7} /></label>
+                  <TextInput
+                    type="text"
+                    name="mobile"
+                    autoFocus
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.mobile}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                  <Col>
+                  <FormGroup>
+                  <label><FormattedMessage {...messages.popup8} /></label>
+                  <TextInput
+                    type="text"
+                    name="email"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    autoFocus
+                    value={this.state.email}
+                    onChange={this.handleInputChange}
+                    required
+                  />
                   </FormGroup>
                   </Col>
                 </Row>
 
-              
+
+              <FormGroup>
+
+                  {/* <UploadedFile>
+
+                      <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
+                    </UploadedFile>
+                  : */}
+                  <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
+                    {
+                    this.state.logo ?
+                    <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
+                    </a>
+                    :
+                    ' '
+                    }
+                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
+                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
+                    {
+                    !this.state.logo ?
+                    <i className="material-icons">cloud_upload</i>
+                    :
+                    ' '
+                    }
+                    <label>
+                      {
+                      this.state.logo == '' ? 
+                      <FormattedMessage {...messages.popup9} /> 
+                      :
+                      <span>Change Logo</span>
+                      }
+                      
+                      </label>
+                    </div>
+                  </UploadArea>
+
+              </FormGroup>
+
+              <FormGroup>
+              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
+                    {
+                    this.state.contract ?
+                    <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
+                    </a>
+                    :
+                    ' '
+                    }
+                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
+                    <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
+                    {
+                    !this.state.contract ?
+                    <i className="material-icons">cloud_upload</i>
+                    :
+                    ' '
+                    }
+
+                    <label>
+                    {
+                      this.state.contract == '' ? 
+                      <FormattedMessage {...messages.popup10} /> 
+                      :
+                      <span>Change Contract</span>
+                      }
+                      </label>
+                    </div>
+                  </UploadArea>
+              </FormGroup>
+
+              <Button filledBtn marginTop="50px">
+                <span>Update Bank</span>
+              </Button>
             </form>
             </div>
             }
-          </MiniPopUp>
+          </Popup>
           : null }
       </Wrapper>
     );

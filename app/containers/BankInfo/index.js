@@ -63,6 +63,7 @@ export default class BankInfo extends Component {
       email: '',
       logo: null,
       contract: null,
+      username: '',
       loading: true,
       redirect: false,
       totalBanks: 0,
@@ -96,13 +97,94 @@ export default class BankInfo extends Component {
   };
 
   showPopup = () => {
-    //this.setState({ popup: true });
-    this.props.history.push('/createfee/'+this.props.match.params.bank);
+    //, name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id 
+    this.setState({ popup: true});
   };
+
+  editBank = event => {
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/generateOTP`, {
+        name: this.state.name,
+        page: 'editBank',
+        username: this.state.username,
+        token,
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              otpId: res.data.id,
+              showEditOtp: true,
+              notification: 'OTP Sent'
+            });
+            this.success();
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+  };
+
+  verifyEditOTP = event => {
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/editBank`, {
+        name: this.state.name,
+        address1: this.state.address1,
+        state: this.state.state,
+        zip: this.state.zip,
+        bank_id: this.state.bank_id,
+        country: this.state.country,
+        ccode: this.state.ccode,
+        email: this.state.email,
+        mobile: this.state.mobile,
+        logo: this.state.logo,
+        contract: this.state.contract,
+        otp: this.state.otp,
+        otp_id: this.state.otpId,
+        token,
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              notification: "Bank updated successfully!",
+            });
+            this.success();
+            this.closePopup();
+            this.getBanks();
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+  };
+
+
 
   closePopup = () => {
     this.setState({
       popup: false,
+      showEditOtp: false,
       name: '',
       address1: '',
       state: '',
@@ -268,7 +350,7 @@ export default class BankInfo extends Component {
       .post(`${API_URL  }/getBank`, { token:token, bank_id: this.props.match.params.bank })
       .then(res => {
         if(res.status == 200){
-          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo });
+          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo, name: res.data.banks.name, address1: res.data.banks.address1, state: res.data.banks.state, zip: res.data.banks.zip, country: res.data.banks.country, ccode: res.data.banks.ccode, mobile: res.data.banks.mobile, email: res.data.banks.email, logo: res.data.banks.logo, contract: res.data.banks.contract, username: res.data.banks.contract, bank_id: res.data.banks._id, username: res.data.banks.username  });
         }
       })
       .catch(err => {
@@ -336,7 +418,7 @@ export default class BankInfo extends Component {
           <Main big>
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
             
-              <Button className="fr" flex>
+              <Button className="fr" flex onClick={this.showPopup}>
                 <span>Edit</span>
               </Button>
             </ActionBar>
@@ -429,13 +511,13 @@ export default class BankInfo extends Component {
             </Card>
           </Main>
         </Container>
-        { this.state.popup ? 
-          <Popup close={this.closePopup.bind(this)}>
+        { this.state.popup ?
+          <Popup close={this.closePopup.bind(this)} accentedH1>
             {
-              this.state.showOtp ?
+              this.state.showEditOtp ?
               <div>
-              <h1><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyOTP} >
+              <h1 ><FormattedMessage {...messages.verify} /></h1>
+            <form action="" method="post" onSubmit={this.verifyEditOTP} >
               <FormGroup>
                 <label><FormattedMessage {...messages.otp} /></label>
                 <TextInput
@@ -455,8 +537,8 @@ export default class BankInfo extends Component {
               </div>
               :
               <div>
-            <h1><FormattedMessage {...messages.addbank} /></h1>
-            <form action="" method="post" onSubmit={this.addBank}>
+            <h1 >Edit Bank</h1>
+            <form action="" method="post" onSubmit={this.editBank}>
               <FormGroup>
                 <label><FormattedMessage {...messages.popup1} /></label>
                 <TextInput
@@ -465,6 +547,7 @@ export default class BankInfo extends Component {
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.name}
+                  autoFocus
                   onChange={this.handleInputChange}
                   required
                 />
@@ -476,12 +559,13 @@ export default class BankInfo extends Component {
                   name="address1"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
+                  autoFocus
                   value={this.state.address1}
                   onChange={this.handleInputChange}
                   required
                 />
               </FormGroup>
-              
+
                 <Row>
                   <Col>
                   <FormGroup>
@@ -491,6 +575,7 @@ export default class BankInfo extends Component {
                     name="state"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
+                    autoFocus
                     value={this.state.state}
                     onChange={this.handleInputChange}
                     required
@@ -505,6 +590,7 @@ export default class BankInfo extends Component {
                     name="zip"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
+                    autoFocus
                     value={this.state.zip}
                     onChange={this.handleInputChange}
                     required
@@ -520,6 +606,7 @@ export default class BankInfo extends Component {
                     type="text"
                     name="country"
                     onFocus={inputFocus}
+                    autoFocus
                     onBlur={inputBlur}
                     value={this.state.country}
                     onChange={this.handleInputChange}
@@ -533,6 +620,7 @@ export default class BankInfo extends Component {
                   <TextInput
                     type="text"
                     name="ccode"
+                    autoFocus
                     onFocus={inputFocus}
                     onBlur={inputBlur}
                     value={this.state.ccode}
@@ -541,7 +629,7 @@ export default class BankInfo extends Component {
                   />
                   </FormGroup>
                   </Col>
-                </Row>  
+                </Row>
                 <Row>
                   <Col>
                   <FormGroup>
@@ -549,6 +637,7 @@ export default class BankInfo extends Component {
                   <TextInput
                     type="text"
                     name="mobile"
+                    autoFocus
                     onFocus={inputFocus}
                     onBlur={inputBlur}
                     value={this.state.mobile}
@@ -565,6 +654,7 @@ export default class BankInfo extends Component {
                     name="email"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
+                    autoFocus
                     value={this.state.email}
                     onChange={this.handleInputChange}
                     required
@@ -572,62 +662,77 @@ export default class BankInfo extends Component {
                   </FormGroup>
                   </Col>
                 </Row>
-              
+
 
               <FormGroup>
-                
+
                   {/* <UploadedFile>
-                    
+
                       <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
                     </UploadedFile>
                   : */}
                   <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
-                    { 
-                    this.state.logo ? 
+                    {
+                    this.state.logo ?
                     <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
-                    </a> 
+                    </a>
                     :
                     ' '
                     }
                     <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
                     <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
-                    { 
-                    !this.state.logo ? 
+                    {
+                    !this.state.logo ?
                     <i className="material-icons">cloud_upload</i>
                     :
                     ' '
                     }
-                    <label><FormattedMessage {...messages.popup9} /> </label>
+                    <label>
+                      {
+                      this.state.logo == '' ? 
+                      <FormattedMessage {...messages.popup9} /> 
+                      :
+                      <span>Change Logo</span>
+                      }
+                      
+                      </label>
                     </div>
                   </UploadArea>
-                
+
               </FormGroup>
 
               <FormGroup>
               <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
-                    { 
-                    this.state.contract ? 
+                    {
+                    this.state.contract ?
                     <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
-                    </a> 
+                    </a>
                     :
                     ' '
                     }
                     <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
                     <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
-                    { 
-                    !this.state.contract ? 
+                    {
+                    !this.state.contract ?
                     <i className="material-icons">cloud_upload</i>
                     :
                     ' '
                     }
-                    
-                    <label><FormattedMessage {...messages.popup10} /> </label>
+
+                    <label>
+                    {
+                      this.state.contract == '' ? 
+                      <FormattedMessage {...messages.popup10} /> 
+                      :
+                      <span>Change Contract</span>
+                      }
+                      </label>
                     </div>
                   </UploadArea>
               </FormGroup>
 
               <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.addbank} /></span>
+                <span>Update Bank</span>
               </Button>
             </form>
             </div>
