@@ -587,16 +587,18 @@ export default class UserPage extends Component {
                       this.state.roles && this.state.roles.length > 0
                         ? this.state.roles.map(function(b) {
                           var perms = [];
-                          b.permissions = JSON.parse(b.permissions);
-                          console.log(b.permissions);
-                          if(b.permissions.create_bank){
+                          if(b.permissions && b.permissions != ""){
+                          var p = JSON.parse(b.permissions);
+                          console.log(p);
+                          if(p.create_bank){
                             perms.push("Create Bank");
                           }
-                          if(b.permissions.edit_bank){
+                          if(p.edit_bank){
                             perms.push("Edit Bank");
                           }
-                          if(b.permissions.create_fee){
+                          if(p.create_fee){
                             perms.push("Create Fee");
+                          }
                           }
                           return <tr key={b._id} ><td>{b.name}</td>
                           <td className="tac">{b.description}</td>
