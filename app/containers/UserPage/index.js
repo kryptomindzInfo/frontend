@@ -68,12 +68,14 @@ export default class UserPage extends Component {
       email: '',
       logo: '',
       profile_id: '',
+      user_id: '',
       contract: '',
       loading: true,
       redirect: false,
       totalBanks: 0,
       notification: 'Welcome',
       popup: false,
+      editPopup: false,
       profile_popup: false,
       pro_name: '',
       pro_description: '',
@@ -117,7 +119,9 @@ export default class UserPage extends Component {
   showPopup = () => {
     this.setState({ popup: true });
   };
-
+  showEditPopup = (v) => {
+    this.setState({ editPopup: true, name: v.name, email: v.email, mobile: v.mobile, user_id:v._id, username: v.username, password: v.password, profile_id: v.profile_id, logo: v.logo });
+  };
   showProfilePopup = () => {
     this.setState({ profile_popup: true });
   };
@@ -125,6 +129,7 @@ export default class UserPage extends Component {
   closePopup = () => {
     this.setState({
       popup: false,
+      editPopup: false,
       profile_popup: false,
       pro_name: '',
       pro_description: '',
@@ -231,6 +236,50 @@ export default class UserPage extends Component {
     //     });
     //     this.error();
     //   });
+  };
+
+  editUser = event => {
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/editInfraUser`, {
+        name: this.state.name,
+        email: this.state.email,
+        mobile: this.state.mobile,
+        username: this.state.username,
+        password: this.state.password,
+        profile_id: this.state.profile_id,
+        user_id: this.state.user_id,
+        logo: this.state.logo,
+        token
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              notification: "Infra User updated successfully!",
+            }, function(){
+              this.success();
+
+              window.location.reload();
+              
+              // this.closePopup();
+              // this.getBanks();
+            });
+           
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
   };
 
   verifyOTP = event => {
@@ -434,6 +483,7 @@ export default class UserPage extends Component {
   }
 
   render() {
+    const ep = this;
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector("label").classList.add("focused");
@@ -482,16 +532,17 @@ export default class UserPage extends Component {
                       this.state.users && this.state.users.length > 0
                         ? this.state.users.map(function(b) {
                           if(b.name != "Infra Admin"){
+                            var pic = (b.logo && b.logo != '' && b.logo != undefined) ?  STATIC_URL+b.logo  : STATIC_URL+"main/default-profile.png";
                           return <Card key={b._id} col horizontalMargin="10px" cardWidth="192px">
                             <div className="profile">
-                              <img src={STATIC_URL+b.logo} />
+                              <img src={pic} />
                               </div>
                             <Row>
                               <Col cW="80%">
                               <h4 className="hh">{b.name}</h4>
                               </Col>
                               <Col cW="20%">
-                              <Button noMin className="fr">Edit</Button>
+                              <Button noMin className="fr" onClick={() => ep.showEditPopup(b)} >Edit</Button>
                               </Col>
                             </Row>
                           </Card>
@@ -535,9 +586,23 @@ export default class UserPage extends Component {
                     {
                       this.state.roles && this.state.roles.length > 0
                         ? this.state.roles.map(function(b) {
+                          var perms = [];
+                          b.permissions = JSON.parse(b.permissions);
+                          console.log(b.permissions);
+                          if(b.permissions.create_bank){
+                            perms.push("Create Bank");
+                          }
+                          if(b.permissions.edit_bank){
+                            perms.push("Edit Bank");
+                          }
+                          if(b.permissions.create_fee){
+                            perms.push("Create Fee");
+                          }
                           return <tr key={b._id} ><td>{b.name}</td>
                           <td className="tac">{b.description}</td>
-                          <td className="tac green">{b.permissions}</td>
+                          <td className="tac green">
+                            {perms.toString()}
+                          </td>
                           <td className="tac bold">
                            <span className="absoluteRight primary popMenuTrigger">
                           <a>Edit</a>
@@ -713,7 +778,175 @@ export default class UserPage extends Component {
 
 
               <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.addbank} /></span>
+                <span>Add User</span>
+              </Button>
+            </form>
+            </div>
+            }
+          </Popup>
+          : null }
+
+{ this.state.editPopup ?
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+            {
+              this.state.showOtp ?
+              <div>
+              <h1 ><FormattedMessage {...messages.verify} /></h1>
+            <form action="" method="post" onSubmit={this.verifyOTP} >
+              <FormGroup>
+                <label><FormattedMessage {...messages.otp} /></label>
+                <TextInput
+                  type="text"
+                  name="otp"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.otp}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <Button filledBtn marginTop="50px">
+                <span><FormattedMessage {...messages.verify} /></span>
+              </Button>
+              </form>
+              </div>
+              :
+              <div>
+            <h1 >Edit Infra User</h1>
+            <form action="" method="post" onSubmit={this.editUser}>
+              <FormGroup>
+                <label><FormattedMessage {...messages.popup1} /></label>
+                <TextInput
+                  type="text"
+                  name="name"
+                  onFocus={inputFocus}
+                  autoFocus
+                  onBlur={inputBlur}
+                  value={this.state.name}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <label>Email</label>
+                <TextInput
+                  type="text"
+                  name="email"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  autoFocus
+                  value={this.state.email}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+
+              <FormGroup>
+                  <label>Mobile Number</label>
+                  <TextInput
+                    type="text"
+                    name="mobile"
+                    autoFocus
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.mobile}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+
+                  <FormGroup>
+                  <label>User Id</label>
+                  <TextInput
+                    type="text"
+                    name="username"
+                    onFocus={inputFocus}
+                    autoFocus
+                    onBlur={inputBlur}
+                    value={this.state.username}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+
+                  <FormGroup>
+                  <label>Temporary Password</label>
+                  <TextInput
+                    type="text"
+                    name="password"
+                    onFocus={inputFocus}
+                    autoFocus
+                    onBlur={inputBlur}
+                    value={this.state.password}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+
+                  <FormGroup>
+                  <SelectInput
+                    type="text"
+                    name="profile_id"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.profile_id}
+                    onChange={this.handleInputChange}
+                    required
+                  >
+                    <option value="">Select Profile</option>
+                    {
+                      this.state.roles && this.state.roles.length > 0
+                        ? this.state.roles.map(function(b) {
+                          return  <option value={b._id}>{b.name}</option>
+                        })
+                        :
+                        null
+                    }
+                    </SelectInput>
+                  </FormGroup>
+
+               
+
+              <FormGroup>
+
+                  {/* <UploadedFile>
+
+                      <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
+                    </UploadedFile>
+                  : */}
+                  <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
+                    {
+                    this.state.logo ?
+                    <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
+                    </a>
+                    :
+                    ' '
+                    }
+                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
+                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
+                    {
+                    !this.state.logo ?
+                    <i className="material-icons">cloud_upload</i>
+                    :
+                    ' '
+                    }
+                    <label>
+                      {
+                      this.state.logo == '' ? 
+                      <FormattedMessage {...messages.popup9} /> 
+                      :
+                      <span>Change Logo</span>
+                      }
+                      
+                      </label>
+                    </div>
+                  </UploadArea>
+
+              </FormGroup>
+
+
+              <Button filledBtn marginTop="50px">
+                <span>Update User</span>
               </Button>
             </form>
             </div>
@@ -765,12 +998,14 @@ export default class UserPage extends Component {
                 
 
               <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.addbank} /></span>
+                <span>Add Profile</span>
               </Button>
             </form>
             
           </Popup>
           : null }
+
+
       </Wrapper>
     );
   }

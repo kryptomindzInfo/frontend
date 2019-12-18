@@ -388,7 +388,7 @@ export default class Documents extends Component {
                           var h = readable.getHours();
                           var mi = readable.getMinutes();
                           var mlong = months[m];
-                          var fulldate = d + " " + mlong + " " + y+ " " + h+ " " + mi;
+                          var fulldate = d + " " + mlong + " " + y+ " " + h+ ":" + mi;
                           return <Card key={b._id} blueHover col horizontalMargin="10px" cardWidth="192px" className="doc">
                             <a href={STATIC_URL+b.contract} target="_blank">
                             <div className="profile">

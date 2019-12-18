@@ -205,10 +205,12 @@ class OperationalWallet extends Component {
           throw res.data.error;
         }else{
           this.setState({
-            notification: "Successfully Transfered" + res.data.walletStatus
+            notification: "Transfer Initiated, You will be notified once done"
           }, function(){
             this.success();
-            window.location.reload();
+            setTimeout(function(){
+              window.location.reload();
+            },1000);
           });
       }
     }

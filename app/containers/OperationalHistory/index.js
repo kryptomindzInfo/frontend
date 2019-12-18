@@ -470,7 +470,7 @@ export default class OperationalHistory extends Component {
                           var h = readable.getHours();
                           var mi = readable.getMinutes();
                           var mlong = months[m];
-                          var fulldate = d + " " + mlong + " " + y+ " " + h+ " " + mi;
+                          var fulldate = d + " " + mlong + " " + y+ " " + h+ ":" + mi;
                           
                           return  dis.state.filter == b.Value.tx_data.tx_type || dis.state.filter == "" ? <tr key={b.TxId} >
                           <td><div className="labelGrey">{fulldate}</div></td>
