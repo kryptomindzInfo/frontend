@@ -76,6 +76,7 @@ export default class UserPage extends Component {
       notification: 'Welcome',
       popup: false,
       editPopup: false,
+      profile_popup_edit: false,
       profile_popup: false,
       pro_name: '',
       pro_description: '',
@@ -122,6 +123,32 @@ export default class UserPage extends Component {
   showEditPopup = (v) => {
     this.setState({ editPopup: true, name: v.name, email: v.email, mobile: v.mobile, user_id:v._id, username: v.username, password: v.password, profile_id: v.profile_id, logo: v.logo });
   };
+
+  showEditProfilePopup = (v) => {
+
+    if(v.permissions && v.permissions != ""){
+      var p = JSON.parse(v.permissions);
+      console.log(p.edit_bank);
+      if(p.create_bank){
+        this.setState({ create_bank: true});
+      }else{
+        this.setState({ create_bank: false});
+      }
+      if(p.edit_bank){
+        this.setState({ edit_bank: true});
+      }else{
+        this.setState({ edit_bank: false});
+      }
+      if(p.create_fee){
+        this.setState({ create_fee: true});
+      }else{
+        this.setState({ create_fee: false});
+      }
+      }
+
+    this.setState({ profile_popup_edit: true, pro_name: v.name, pro_description: v.description, profile_id : v._id });
+    
+  };
   showProfilePopup = () => {
     this.setState({ profile_popup: true });
   };
@@ -131,6 +158,7 @@ export default class UserPage extends Component {
       popup: false,
       editPopup: false,
       profile_popup: false,
+      profile_popup_edit: false,
       pro_name: '',
       pro_description: '',
       pro_permissions: [],
@@ -343,6 +371,44 @@ export default class UserPage extends Component {
           }else{
             this.setState({
               notification: "Profile added successfully!",
+            });
+            window.location.reload();
+            this.success();
+            this.closePopup();
+            
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+  };
+
+  editProfile = event => {
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/editProfile`, {
+        pro_name: this.state.pro_name,
+        pro_description: this.state.pro_description,
+        create_bank: this.state.create_bank,
+        edit_bank: this.state.edit_bank,
+        create_fee: this.state.create_fee,
+        profile_id: this.state.profile_id,
+        token,
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              notification: "Profile updated successfully!",
             });
             window.location.reload();
             this.success();
@@ -607,7 +673,7 @@ export default class UserPage extends Component {
                           </td>
                           <td className="tac bold">
                            <span className="absoluteRight primary popMenuTrigger">
-                          <a>Edit</a>
+                          <a onClick={() => ep.showEditProfilePopup(b)} >Edit</a>
                           </span>
                           </td>
                           </tr>
@@ -1001,6 +1067,59 @@ export default class UserPage extends Component {
 
               <Button filledBtn marginTop="50px">
                 <span>Add Profile</span>
+              </Button>
+            </form>
+            
+          </Popup>
+          : null }
+
+{ this.state.profile_popup_edit ?
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+           
+            <h1 >Edit Profile</h1>
+            <form action="" method="post" onSubmit={this.editProfile}>
+              <FormGroup>
+                <label>Profile Name</label>
+                <TextInput
+                  type="text"
+                  name="pro_name"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  autoFocus
+                  value={this.state.pro_name}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <label>Description</label>
+                <TextInput
+                  type="text"
+                  name="pro_description"
+                  onFocus={inputFocus}
+                  autoFocus
+                  onBlur={inputBlur}
+                  value={this.state.pro_description}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+
+                <Row>
+                  <Col cW="33%">
+                  <Button type="button" className={"toggle "+ (this.state.create_bank ? 'active' : '')} onClick={this.checkBtn} data-id="create_bank" id="edit_create_bank">Create Bank</Button>
+                  </Col>
+                  <Col cW="33%">
+                  <Button  type="button" className={"toggle "+ (this.state.edit_bank ? 'active' : '')} onClick={this.checkBtn} data-id="edit_bank" id="edit_edit_bank">Edit Bank</Button>
+                  </Col>
+                  <Col cW="33%">
+                  <Button  type="button" className={"toggle "+ (this.state.create_fee ? 'active' : '')} onClick={this.checkBtn} data-id="create_fee" id="edit_create_fee">Create Fee</Button>          
+                  </Col>
+                </Row>
+                
+
+              <Button filledBtn marginTop="50px">
+                <span>Update Profile</span>
               </Button>
             </form>
             

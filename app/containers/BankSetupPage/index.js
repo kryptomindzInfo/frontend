@@ -114,7 +114,7 @@ export default class BankSetupPage extends Component {
     // } else {
     this.setState({ loading: false });
     // }
-    // document.getElementById('username').focus();
+     document.getElementById('username').focus();
   }
 
   render() {
@@ -153,7 +153,7 @@ export default class BankSetupPage extends Component {
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
           <form action="" method="POST" onSubmit={this.setupUpdate}>
             <InputsWrap>
-              {/* <FormGroup>
+              <FormGroup>
                 <label><FormattedMessage {...messages.userid} /></label>
                 <TextInput
                   id="username"
@@ -165,7 +165,7 @@ export default class BankSetupPage extends Component {
                   onChange={this.handleInputChange}
                   required
                 />
-              </FormGroup> */}
+              </FormGroup>
               <FormGroup>
                 <label><FormattedMessage {...messages.newpass} /></label>
                 <TextInput

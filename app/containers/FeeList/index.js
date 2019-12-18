@@ -45,8 +45,10 @@ toast.configure({
 });
 
 const token = localStorage.getItem('logged');
-
-
+var permissions = localStorage.getItem('permissions');
+if(permissions != 'all' && permissions != ''){
+permissions = JSON.parse(permissions);
+}
 
 export default class FeeList extends Component {
   constructor() {
@@ -72,6 +74,7 @@ export default class FeeList extends Component {
       banks: [],
       rules: [],
       otp: '',
+      permissions,
       showOtp: false
     };
     this.success = this.success.bind(this);
@@ -268,7 +271,7 @@ export default class FeeList extends Component {
       .post(`${API_URL  }/getBank`, { token:token, bank_id: this.props.match.params.bank })
       .then(res => {
         if(res.status == 200){
-          
+          console.log(res.data);
           this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo });
         }
       })
@@ -354,10 +357,15 @@ export default class FeeList extends Component {
                 <i className="material-icons">search</i>
                 <input type="text" placeholder="Search" />
               </div>
+              {
+                (this.state.permissions == "all" || this.state.permissions.create_fee) ?
               <Button className="fr" flex onClick={this.showPopup}>
                 <i className="material-icons">add</i>
                 <span>Create Rules</span>
               </Button>
+              :
+              null
+  }
             </ActionBar>
             <Card bigPadding>
               <div className="cardHeader" >

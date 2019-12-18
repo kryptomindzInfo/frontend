@@ -24,16 +24,22 @@ class Nav extends Component {
     const user = this.props.active == 'user' ? 'true' : '';
     const merchants = this.props.active == 'merchants' ? 'true' : '';
     const reports = this.props.active == 'reports' ? 'true' : '';
-
+    const name = localStorage.getItem("name");
+    console.log(name);
     return (
       <React.Fragment>
         <NavTag>
           <Link href="/dashboard" active={dashboard}>
           <FormattedMessage {...messages.menu1} /> 
           </Link>
+          {
+          name == "Infra Admin" ?
           <Link href="/user" active={user}>
             Infra User
           </Link>
+          :
+          null
+          }
           <Link href="/banks" active={bank}>
           <FormattedMessage {...messages.menu2} /> 
           </Link>
