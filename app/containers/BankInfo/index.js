@@ -47,6 +47,10 @@ toast.configure({
 const token = localStorage.getItem('logged');
 
 
+var permissions = localStorage.getItem('permissions');
+if(permissions != 'all' && permissions != ''){
+permissions = JSON.parse(permissions);
+}
 
 export default class BankInfo extends Component {
   constructor() {
@@ -73,6 +77,7 @@ export default class BankInfo extends Component {
       banks: [],
       rules: [],
       otp: '',
+      permissions,
       showOtp: false
     };
     this.success = this.success.bind(this);
@@ -97,7 +102,7 @@ export default class BankInfo extends Component {
   };
 
   showPopup = () => {
-    //, name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id 
+    //, name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id
     this.setState({ popup: true});
   };
 
@@ -354,16 +359,16 @@ export default class BankInfo extends Component {
         }
       })
       .catch(err => {
-        
+
       });
   };
 
-  
+
 
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });      
+      this.setState({ loading: false });
       this.getBanks();
     } else {
       // alert('Login to continue');
@@ -372,7 +377,7 @@ export default class BankInfo extends Component {
   }
 
   render() {
-    
+
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector("label").classList.add("focused");
@@ -392,7 +397,7 @@ export default class BankInfo extends Component {
     if (redirect) {
       return <Redirect to="/" />
     }
-    
+
     return (
       <Wrapper>
         <Helmet>
@@ -410,18 +415,24 @@ export default class BankInfo extends Component {
               </div>
 
     <h2>{this.state.banks.name}</h2>
-            
+
           </Container>
         </TopBar>
         <Container verticalMargin>
           <SidebarTwo bankId={this.state.bank} active="info"/>
           <Main big>
+            {
+              (this.state.permissions == "all" || this.state.permissions.create_fee) ?
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-            
+
               <Button className="fr" flex onClick={this.showPopup}>
                 <span>Edit</span>
               </Button>
             </ActionBar>
+            :
+            null
+}
+
             <Card bigPadding bordered>
 
               <div className="cardBody">
@@ -433,13 +444,13 @@ export default class BankInfo extends Component {
                   {this.state.banks.name}
                   </Col>
                 </Row>
-                
+
                 <Row>
                   <Col className="infoLeft">
                   Bank Code
                   </Col>
                   <Col className="infoRight">
-                  
+
                   </Col>
                 </Row>
 
@@ -689,12 +700,12 @@ export default class BankInfo extends Component {
                     }
                     <label>
                       {
-                      this.state.logo == '' ? 
-                      <FormattedMessage {...messages.popup9} /> 
+                      this.state.logo == '' ?
+                      <FormattedMessage {...messages.popup9} />
                       :
                       <span>Change Logo</span>
                       }
-                      
+
                       </label>
                     </div>
                   </UploadArea>
@@ -721,8 +732,8 @@ export default class BankInfo extends Component {
 
                     <label>
                     {
-                      this.state.contract == '' ? 
-                      <FormattedMessage {...messages.popup10} /> 
+                      this.state.contract == '' ?
+                      <FormattedMessage {...messages.popup10} />
                       :
                       <span>Change Contract</span>
                       }

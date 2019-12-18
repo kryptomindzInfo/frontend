@@ -226,7 +226,7 @@ export default class BankFees extends Component {
           notification: (err.response) ? err.response.data.error : err.toString()
         });
         this.error();
-        
+
       });
   };
 
@@ -264,7 +264,7 @@ export default class BankFees extends Component {
 
   showWallet = event => {
     event.preventDefault();
-    
+
   };
 
   verifyOTP = event => {
@@ -369,15 +369,15 @@ export default class BankFees extends Component {
       .post(`${API_URL  }/getBankRules`, { bank_id: this.state.bank })
       .then(res => {
         if(res.status == 200){
-          
+          console.log(res.data);
           this.setState({ loading: false, rules: res.data.rules });
         }
       })
       .catch(err => {
-        
+
       });
   };
-  
+
 
   componentDidMount() {
     this.setState({ bank: this.state.bank_id });
@@ -414,7 +414,7 @@ export default class BankFees extends Component {
     }
     const dis = this;
     return (
-      
+
       <Wrapper  from="bank">
         <Helmet>
           <meta charSet="utf-8" />
@@ -455,7 +455,7 @@ export default class BankFees extends Component {
                   </thead>
                   <tbody>
                   {
-                      this.state.rules && this.state.rules.length > 0 
+                      this.state.rules && this.state.rules.length > 0
                         ? this.state.rules.map(function(b) {
                           return <tr key={b._id} id={"tr"+b._id}><td className="tname tname">{b.name}</td><td className="tac ttype" >{b.trans_type}</td><td className="tac green trange">$ {b.trans_from} - $ {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
                           <td className="tac bold tpercent">{b.percentage} </td><td className="tac bold" >
@@ -468,7 +468,7 @@ export default class BankFees extends Component {
                               :
                               <a onClick = {dis.showMiniPopUp} data-id={b._id} data-d={b.name+"^"+b.trans_type+"^$"+b.trans_from+" - $ "+b.trans_to+"^"+b.percentage}>approve</a>
                             }
-                            
+
                             </td></tr>
                         })
                         :
@@ -480,7 +480,7 @@ export default class BankFees extends Component {
             </Card>
           </Main>
         </Container>
-        { this.state.popup ? 
+        { this.state.popup ?
           <MiniPopUp close={this.closeMiniPopUp.bind(this)}>
             {
               this.state.showOtp ?
@@ -506,7 +506,7 @@ export default class BankFees extends Component {
               </div>
               :
               <div>
-            
+
             <form >
               <p><span  id="popname">{this.state.popname}</span></p>
               <p > Sending from <span id="poptype">{this.state.poptype}</span></p>
@@ -529,7 +529,7 @@ export default class BankFees extends Component {
                   </Col>
                 </Row>
 
-              
+
             </form>
             </div>
             }
