@@ -379,7 +379,7 @@ export default class Documents extends Component {
                         ? this.state.docs.map(function(b) {
                           var filename = b.contract.replace(/^.*[\\\/]/, '');
                           var ext = b.contract.split('.').pop();
-                          var icon = (ext == 'pdf') ? STATIC_URL+'main/pdf-icon.png' : STATIC_URL+'main/doc-icon.png';
+                          var icon = (ext == 'pdf') ? STATIC_URL+'QmQvj1En6YeiyxKT8JHkhB9UH3ynyeE3WHpKbGEpNdzfy4' : STATIC_URL+'Qmaj4nht1TsJChZn98PWttoip1LgbdkdGxtwWQDLbCYv9z';
                           var isoformat = b.created_at;
                           var readable = new Date(isoformat);
                           var m = readable.getMonth(); // returns 6
@@ -583,7 +583,7 @@ export default class Documents extends Component {
               </FormGroup>
 
               <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
+              <UploadArea  bgImg={STATIC_URL+ 'QmQvj1En6YeiyxKT8JHkhB9UH3ynyeE3WHpKbGEpNdzfy4'}>
                     { 
                     this.state.contract ? 
                     <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">

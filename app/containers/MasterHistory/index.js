@@ -419,7 +419,7 @@ export default class MasterHistory extends Component {
         <Container verticalMargin>
         <SidebarOne bankId={this.state.bank}/>
           <Main>
-          <ActionBar marginBottom="33px" inputWidth="calc(100% - 344px)" className="clr">
+          {/* <ActionBar marginBottom="33px" inputWidth="calc(100% - 344px)" className="clr">
               <div className="iconedInput fl small">
                 <i className="material-icons">search</i>
                 <input type="text" placeholder="Search"  />
@@ -441,7 +441,7 @@ export default class MasterHistory extends Component {
                 <option>Select</option>
               </datalist>
 
-            </ActionBar>
+            </ActionBar> */}
             <Card bigPadding>
             <div className="cardHeader" >
                 <div className="cardHeaderLeft">

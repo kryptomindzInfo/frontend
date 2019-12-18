@@ -11,7 +11,7 @@ class BankMasterWallet extends Component {
         <Card buttonMarginTop="32px" bigPadding>
             <h3><FormattedMessage {...messages.master} /></h3>
             <h5><FormattedMessage {...messages.available} /></h5>
-            <div className="cardValue">$0.00</div>
+            <div className="cardValue">$ 0.0</div>
             <button>
             <i className="material-icons">send</i> <FormattedMessage {...messages.sendmoney} />
             </button>

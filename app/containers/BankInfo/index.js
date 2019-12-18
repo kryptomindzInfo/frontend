@@ -713,7 +713,7 @@ export default class BankInfo extends Component {
               </FormGroup>
 
               <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
+              <UploadArea  bgImg={STATIC_URL+ 'QmQvj1En6YeiyxKT8JHkhB9UH3ynyeE3WHpKbGEpNdzfy4'}>
                     {
                     this.state.contract ?
                     <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">

@@ -11,17 +11,17 @@ class EscrowWallet extends Component {
         <Card marginBottom="54px"  buttonMarginTop="32px" bigPadding>
             <h3><FormattedMessage {...messages.escrow} /></h3>
             <h5><FormattedMessage {...messages.available} /></h5>
-            <div className="cardValue">$0.00</div>
-            {
+            <div className="cardValue">$ 0.0</div>
+            {/* {
               this.props.activateNeeded ?
               <button className="fullWidth">
             <FormattedMessage {...messages.activate} />
             </button>
-              :
+              : */}
               <button>
             <i className="material-icons">send</i> <FormattedMessage {...messages.sendmoney} />
             </button>
-            }
+            {/* } */}
         </Card>
     );
   }
