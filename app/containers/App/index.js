@@ -19,6 +19,7 @@ import DashboardPage from 'containers/DashboardPage/Loadable';
 import BankPage from 'containers/BankPage/Loadable';
 import BankInfo from 'containers/BankInfo/Loadable';
 import CreateFee from 'containers/CreateFee/Loadable';
+import EditFee from 'containers/EditFee/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import LocaleToggle from 'containers/LocaleToggle/index';
 
@@ -75,6 +76,7 @@ export default function App() {
           <Route path="/info/:bank?" component={BankInfo} />
           <Route exact path="/bank" component={BankLoginPage} />
           <Route path="/createfee/:bank?" component={CreateFee} />
+          <Route path="/editfee/:bank?" component={EditFee} />
           <Route path="/documents/:bank?" component={Documents} />
           <Route path="/operationalHistory/:bank?" component={OperationalHistory} />
           <Route path="/masterHistory/:bank?" component={MasterHistory} />

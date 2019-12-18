@@ -28,9 +28,18 @@ import Table from 'components/Table';
 import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
+import SelectInput from 'components/SelectInput';
 import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import styled from 'styled-components';
+
+const H4 = styled.h4 `
+ > span{
+   font-size: 13px;
+   color: #666;
+ }
+`;
 
 import { API_URL, STATIC_URL } from '../App/constants';
 
@@ -45,38 +54,43 @@ toast.configure({
 });
 
 const token = localStorage.getItem('logged');
+
 var permissions = localStorage.getItem('permissions');
 if(permissions != 'all' && permissions != ''){
 permissions = JSON.parse(permissions);
 }
 
-export default class FeeList extends Component {
+const rid = localStorage.getItem('feeid');
+
+export default class EditFee extends Component {
   constructor() {
     super();
     this.state = {
-      bank: '',
-      name: '',
-      address1: '',
-      state: '',
-      zip: '',
-      country: '',
-      ccode: '',
-      mobile: '',
-      email: '',
+      bank_id: '',
       logo: null,
+      rule_id : rid,
       contract: null,
       loading: true,
       redirect: false,
-      totalBanks: 0,
-      notification: 'Welcome',
+      name: '',
+      trans_type: '',
+      active: 'Active',
+      trans_from: '',
+      trans_to: '',
+      transcount_from: '',
+      transcount_to: '',
+      fixed_amount: '',
+      percentage: '',
+      notification: '',
       popup: false,
       user_id: token,
       banks: [],
-      rules: [],
       otp: '',
-      permissions,
-      showOtp: false
+      showOtp: false,
+      token: token,
+      permissions
     };
+
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
@@ -92,6 +106,7 @@ export default class FeeList extends Component {
   warn = () => toast.warn(this.state.notification);
 
   handleInputChange = event => {
+    console.log(event);
     const { value, name } = event.target;
     this.setState({
       [name]: value,
@@ -101,12 +116,6 @@ export default class FeeList extends Component {
   showPopup = () => {
     //this.setState({ popup: true });
     this.props.history.push('/createfee/'+this.props.match.params.bank);
-  };
-
-  goEdit = (a, b) => {
-    //this.setState({ popup: true });
-    localStorage.setItem("feeid", b);
-    this.props.history.push('/editfee/'+a);
   };
 
   closePopup = () => {
@@ -179,6 +188,90 @@ export default class FeeList extends Component {
       });
   };
 
+  createRules = event => {
+    event.preventDefault();
+    if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
+      this.setState({
+        notification: 'Fill either fixed amount or percentage'
+      }, () => {
+        this.error();
+    });
+    }else{
+    axios
+      .post(`${API_URL  }/createRules`, this.state)
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            //console.log(res.data);
+            this.setState({
+              notification: 'Rule added'
+            }, () => {
+              this.success();
+              let ba = this.state.bank;
+              let history = this.props.history;
+              setTimeout(function(){
+                history.push('/fees/'+ba);
+              }, 1000);
+          });
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+    }
+  };
+
+  editRules = event => {
+    event.preventDefault();
+    // if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
+    //   this.setState({
+    //     notification: 'Fill either fixed amount or percentage'
+    //   }, () => {
+    //     this.error();
+    // });
+    // }else{
+    axios
+      .post(`${API_URL  }/editRule`, this.state)
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            //console.log(res.data);
+            this.setState({
+              notification: 'Rule updated'
+            }, () => {
+              this.success();
+              let ba = this.state.bank;
+              let history = this.props.history;
+              setTimeout(function(){
+                history.push('/fees/'+ba);
+              }, 1000);
+          });
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString()
+        });
+        this.error();
+      });
+    //}
+  };
+
   verifyOTP = event => {
     event.preventDefault();
     axios
@@ -207,6 +300,7 @@ export default class FeeList extends Component {
             this.success();
             this.closePopup();
             this.getBanks();
+            this.getFees();
           }
         }else{
           const error = new Error(res.data.error);
@@ -277,8 +371,8 @@ export default class FeeList extends Component {
       .post(`${API_URL  }/getBank`, { token:token, bank_id: this.props.match.params.bank })
       .then(res => {
         if(res.status == 200){
-          console.log(res.data);
-          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo });
+          
+          this.setState({ banks: res.data.banks, logo: res.data.banks.logo, bank_id: this.props.match.params.bank});
         }
       })
       .catch(err => {
@@ -286,27 +380,30 @@ export default class FeeList extends Component {
       });
   };
 
-  getRules = () => {
+  getFees = () => {
     axios
-      .post(`${API_URL  }/getRules`, { token:token, bank_id: this.props.match.params.bank })
+      .post(`${API_URL  }/getRule`, { token:token, rule_id: this.state.rule_id })
       .then(res => {
         if(res.status == 200){
-          
-          this.setState({ loading: false, rules: res.data.rules });
+          console.log(res.data);
+          this.setState({ name: res.data.rules.name, trans_type: res.data.rules.trans_type, active: res.data.rules.active, trans_to: res.data.rules.trans_to, trans_from: res.data.rules.trans_from, transcount_from: res.data.rules.transcount_from, transcount_to: res.data.rules.transcount_to, fixed_amount: res.data.rules.fixed_amount, percentage: res.data.rules.percentage});
+          this.setState({loading: false });
+
         }
       })
       .catch(err => {
         
       });
   };
+
   
 
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      // this.setState({ loading: false });
       this.getBanks();
-      this.getRules();
+      this.getFees();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -314,8 +411,7 @@ export default class FeeList extends Component {
   }
 
   render() {
-    
-    function inputFocus(e) {
+        function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector("label").classList.add("focused");
     }
@@ -327,6 +423,13 @@ export default class FeeList extends Component {
       }
     }
 
+    function onChange(event){
+      console.log(event);
+      // this.setState({
+      //   trans_type: event.target.value
+      // });
+     }
+
     const { loading, redirect } = this.state;
     if (loading) {
       return null;
@@ -334,12 +437,12 @@ export default class FeeList extends Component {
     if (redirect) {
       return <Redirect to="/" />
     }
-    const ep = this;
+    
     return (
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>Banks | INFRA | E-WALLET</title>
+          <title>Create Fee | INFRA | E-WALLET</title>
         </Helmet>
         <TopBar>
         <Welcome infraNav/>
@@ -356,94 +459,23 @@ export default class FeeList extends Component {
           </Container>
         </TopBar>
         <Container verticalMargin>
-          <SidebarTwo bankId={this.state.bank} active="fees"/>
-          <Main big>
-            <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-              <div className="iconedInput fl">
-                <i className="material-icons">search</i>
-                <input type="text" placeholder="Search" />
-              </div>
-              {
-                (this.state.permissions == "all" || this.state.permissions.create_fee) ?
-              <Button className="fr" flex onClick={this.showPopup}>
-                <i className="material-icons">add</i>
-                <span>Create Rules</span>
-              </Button>
-              :
-              null
-  }
-            </ActionBar>
-            <Card bigPadding>
+        <SidebarTwo bankId={this.state.bank} active="fees"/>
+          <Main>
+            <Card bigPadding centerSmall>
               <div className="cardHeader" >
-                <div className="cardHeaderLeft">
-                  <i className="material-icons">supervised_user_circle</i>
-                </div>
-                <div className="cardHeaderRight">
-                  <h3>Revenue Sharing Rules</h3>
-                  <h5>Fees created by the infra</h5>
+                <div className="cardHeaderLeft flex">
+                  <a className="material-icons" href={"/fees/"+this.props.match.params.bank}>arrow_back</a>
+                  <h3>
+Edit Revenue sharing Rule</h3>
                 </div>
               </div>
               <div className="cardBody">
-                <Table marginTop="34px" smallTd>
-                  <thead>
-                    <tr>
-                     <th>Name</th>
-                     <th>Transaction Type</th>
-                     <th>Amount of Transaction</th>
-                     <th>Transaction Count</th>
-                     <th>Fixed Amount</th>
-                     <th>Percentage</th>
-                     <th></th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                  {
-                      this.state.rules && this.state.rules.length > 0 
-                        ? this.state.rules.map(function(b) {
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td><td className="tac green">$ {b.trans_from} - $ {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
-                          <td className="tac bold">{b.percentage} </td><td className="tac bold"><a href="#" onClick={ () => ep.goEdit(ep.state.bank, b._id)}>Edit</a></td></tr>
-                        })
-                        :
-                        null
-                    }
-                  </tbody>
-                </Table>
-              </div>
-            </Card>
-          </Main>
-        </Container>
-        { this.state.popup ? 
-          <Popup close={this.closePopup.bind(this)}>
-            {
-              this.state.showOtp ?
-              <div>
-              <h1><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyOTP} >
+              <form action="" method="post" onSubmit={this.editRules}>
               <FormGroup>
-                <label><FormattedMessage {...messages.otp} /></label>
+                <label>Name</label>
                 <TextInput
                   type="text"
-                  name="otp"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.otp}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.verify} /></span>
-              </Button>
-              </form>
-              </div>
-              :
-              <div>
-            <h1><FormattedMessage {...messages.addbank} /></h1>
-            <form action="" method="post" onSubmit={this.addBank}>
-              <FormGroup>
-                <label><FormattedMessage {...messages.popup1} /></label>
-                <TextInput
-                  type="text"
+                  autoFocus
                   name="name"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
@@ -452,59 +484,68 @@ export default class FeeList extends Component {
                   required
                 />
               </FormGroup>
-              <FormGroup>
-                <label><FormattedMessage {...messages.popup2} /></label>
-                <TextInput
-                  type="text"
-                  name="address1"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.address1}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              
+
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup3} /></label>
+                  <label>Transaction Type</label>
                   <TextInput
                     type="text"
-                    name="state"
+                    autoFocus
+                    name="trans_type"
                     onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.state}
-                    onChange={this.handleInputChange}
+                  onBlur={inputBlur}
+                    value={this.state.trans_type}
+                    onChange={this.handleInputChange.bind(this)}
                     required
-                  />
+                    list="ttype"
+                  >
+                  </TextInput>
+                  <datalist id="ttype">
+                  <option value="">Transaction Type</option>
+                    <option >Wallet to Wallet </option>
+                    <option >Sending Non Wallet to Non Wallet </option>
+                    <option >Receiving Non Wallet from Non Wallet</option>
+                    <option >Non Wallet to Wallet</option>
+                    <option >Wallet to Non Wallet</option>
+                    <option >Wallet to merchant</option>
+                    <option >Non Wallet to Merchant</option>
+                    <option >Wallet to Bank Account</option>
+                    <option >Bank Account to Wallet Request</option>
+                  </datalist>
                   </FormGroup>
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup4} /></label>
                   <TextInput
                     type="text"
-                    name="zip"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.zip}
+                    name="active"
+                    autoFocus
+                    value={this.state.active}
                     onChange={this.handleInputChange}
                     required
-                  />
+                    list="act"
+                  >
+                  </TextInput>
+                  <datalist id="act">
+                  <option>Active</option>
+                    <option>Inactive </option>
+                  </datalist>
                   </FormGroup>
                   </Col>
                 </Row>
+                <H4>Transation amount Range <span className="small">(for example from 0$ to 100$)</span></H4>
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup5} /></label>
+                  <label>From</label>
                   <TextInput
                     type="text"
-                    name="country"
+                    name="trans_from"
+                    autoFocus
                     onFocus={inputFocus}
                     onBlur={inputBlur}
-                    value={this.state.country}
+                    value={this.state.trans_from}
                     onChange={this.handleInputChange}
                     required
                   />
@@ -512,13 +553,48 @@ export default class FeeList extends Component {
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup6} /></label>
+                  <label>To</label>
                   <TextInput
                     type="text"
-                    name="ccode"
+                    name="trans_to"
                     onFocus={inputFocus}
+                    autoFocus
                     onBlur={inputBlur}
-                    value={this.state.ccode}
+                    value={this.state.trans_to}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                </Row>  
+
+                <H4>Transaction Count</H4>
+                <Row>
+                  <Col>
+                  <FormGroup>
+                  <label>From</label>
+                  <TextInput
+                    type="text"
+                    name="transcount_from"
+                    onFocus={inputFocus}
+                    autoFocus
+                    onBlur={inputBlur}
+                    value={this.state.transcount_from}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  </Col>
+                  <Col>
+                  <FormGroup>
+                  <label>To</label>
+                  <TextInput
+                    type="text"
+                    name="transcount_to"
+                    onFocus={inputFocus}
+                    autoFocus
+                    onBlur={inputBlur}
+                    value={this.state.transcount_to}
                     onChange={this.handleInputChange}
                     required
                   />
@@ -528,95 +604,47 @@ export default class FeeList extends Component {
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} /></label>
+                  <label>Fixed Amount</label>
                   <TextInput
                     type="text"
-                    name="mobile"
+                    name="fixed_amount"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
-                    value={this.state.mobile}
+                    autoFocus
+                    value={this.state.fixed_amount}
                     onChange={this.handleInputChange}
-                    required
+                    
                   />
                   </FormGroup>
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup8} /></label>
+                  <label>Percentage</label>
                   <TextInput
                     type="text"
-                    name="email"
+                    name="percentage"
                     onFocus={inputFocus}
+                    autoFocus
                     onBlur={inputBlur}
-                    value={this.state.email}
+                    value={this.state.percentage}
                     onChange={this.handleInputChange}
-                    required
+                    
                   />
                   </FormGroup>
                   </Col>
                 </Row>
               
 
-              <FormGroup>
-                
-                  {/* <UploadedFile>
-                    
-                      <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
-                    </UploadedFile>
-                  : */}
-                  <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
-                    { 
-                    this.state.logo ? 
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
-                    </a> 
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
-                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
-                    { 
-                    !this.state.logo ? 
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
-                    <label><FormattedMessage {...messages.popup9} /> </label>
-                    </div>
-                  </UploadArea>
-                
-              </FormGroup>
-
-              <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
-                    { 
-                    this.state.contract ? 
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
-                    </a> 
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
-                    <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
-                    { 
-                    !this.state.contract ? 
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
-                    
-                    <label><FormattedMessage {...messages.popup10} /> </label>
-                    </div>
-                  </UploadArea>
-              </FormGroup>
 
               <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.addbank} /></span>
+                <span>Update Rule</span>
               </Button>
             </form>
-            </div>
-            }
-          </Popup>
-          : null }
+              </div>
+            </Card>
+          </Main>
+        </Container>
+     
       </Wrapper>
     );
   }
