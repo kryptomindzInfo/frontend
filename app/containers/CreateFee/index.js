@@ -41,7 +41,7 @@ const H4 = styled.h4 `
  }
 `;
 
-import { API_URL, STATIC_URL } from '../App/constants';
+import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -187,13 +187,13 @@ export default class CreateFee extends Component {
 
   createRules = event => {
     event.preventDefault();
-    if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
-      this.setState({
-        notification: 'Fill either fixed amount or percentage'
-      }, () => {
-        this.error();
-    });
-    }else{
+    // if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
+    //   this.setState({
+    //     notification: 'Fill either fixed amount or percentage'
+    //   }, () => {
+    //     this.error();
+    // });
+    // }else{
     axios
       .post(`${API_URL  }/createRules`, this.state)
       .then(res => {
@@ -224,7 +224,7 @@ export default class CreateFee extends Component {
         });
         this.error();
       });
-    }
+    //}
   };
 
   verifyOTP = event => {
@@ -468,7 +468,7 @@ Create Revenue sharing Rules</h3>
                   </FormGroup>
                   </Col>
                 </Row>
-                <H4>Transation amount Range <span className="small">(for example from 0$ to 100$)</span></H4>
+    <H4>Transation amount Range <span className="small">(for example from {CURRENCY} 0 to {CURRENCY} 100)</span></H4>
                 <Row>
                   <Col>
                   <FormGroup>
@@ -539,6 +539,7 @@ Create Revenue sharing Rules</h3>
                     type="text"
                     name="fixed_amount"
                     onFocus={inputFocus}
+                    required
                     onBlur={inputBlur}
                     value={this.state.fixed_amount}
                     onChange={this.handleInputChange}
@@ -550,6 +551,7 @@ Create Revenue sharing Rules</h3>
                   <FormGroup>
                   <label>Percentage</label>
                   <TextInput
+                  required
                     type="text"
                     name="percentage"
                     onFocus={inputFocus}

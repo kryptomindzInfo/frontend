@@ -32,7 +32,7 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 
-import { API_URL, STATIC_URL } from '../App/constants';
+import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -99,7 +99,7 @@ export default class BankFees extends Component {
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
-    this.showMiniPopUp = this.showMiniPopUp.bind(this);
+    
 
     this.onChange = this.onChange.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
@@ -118,13 +118,9 @@ export default class BankFees extends Component {
     });
   };
 
-  showMiniPopUp = event => {
-    this.setState({ popup: true });
-    var id = event.target.getAttribute("data-id");
-    var d =  event.target.getAttribute("data-d");
-    console.log(id);
-    var dd = d.split("^");
-    this.setState({ popname: dd[0], poptype: dd[1], poprange: dd[2], poppercent: dd[3], sid: id });
+  showMiniPopUp = (b) => {
+    
+    this.setState({ popname: b.name, poptype: b.trans_type, poprange: b.trans_from+" - "+b.trans_to, poppercent: b.percentage, sid: b._id, popup: true });
     //this.props.history.push('/createfee/'+this.state.bank_id);
   };
 
@@ -457,7 +453,7 @@ export default class BankFees extends Component {
                   {
                       this.state.rules && this.state.rules.length > 0
                         ? this.state.rules.map(function(b) {
-                          return <tr key={b._id} id={"tr"+b._id}><td className="tname tname">{b.name}</td><td className="tac ttype" >{b.trans_type}</td><td className="tac green trange">$ {b.trans_from} - $ {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
+                          return <tr key={b._id} id={"tr"+b._id}><td className="tname tname">{b.name}</td><td className="tac ttype" >{b.trans_type}</td><td className="tac green trange">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
                           <td className="tac bold tpercent">{b.percentage} </td><td className="tac bold" >
                             {
                               b.status != 0 ?
@@ -466,7 +462,9 @@ export default class BankFees extends Component {
                               :
                               <a className="text-accent">declined</a>
                               :
-                              <a onClick = {dis.showMiniPopUp} data-id={b._id} data-d={b.name+"^"+b.trans_type+"^$"+b.trans_from+" - $ "+b.trans_to+"^"+b.percentage}>approve</a>
+                              <Button onClick={() => dis.showMiniPopUp(b)}>
+                                <span>Approve</span>
+                              </Button>
                             }
 
                             </td></tr>

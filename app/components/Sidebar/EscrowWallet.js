@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
@@ -11,7 +11,7 @@ class EscrowWallet extends Component {
         <Card marginBottom="54px"  buttonMarginTop="32px" bigPadding>
             <h3><FormattedMessage {...messages.escrow} /></h3>
             <h5><FormattedMessage {...messages.available} /></h5>
-            <div className="cardValue">$ 0.0</div>
+            <div className="cardValue">{CURRENCY} 0.0</div>
             {/* {
               this.props.activateNeeded ?
               <button className="fullWidth">

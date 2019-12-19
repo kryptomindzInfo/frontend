@@ -32,7 +32,7 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 
-import { API_URL, STATIC_URL } from '../App/constants';
+import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -400,8 +400,16 @@ export default class FeeList extends Component {
                   {
                       this.state.rules && this.state.rules.length > 0 
                         ? this.state.rules.map(function(b) {
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td><td className="tac green">$ {b.trans_from} - $ {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
-                          <td className="tac bold">{b.percentage} </td><td className="tac bold"><a href="#" onClick={ () => ep.goEdit(ep.state.bank, b._id)}>Edit</a></td></tr>
+                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td><td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
+                          <td className="tac bold">{b.percentage} </td><td className="tac bold">
+                            {
+                              b.status == 0 ?
+                              <a href="#" className="material-icons ">block</a>
+                              :
+<a href="#" onClick={ () => ep.goEdit(ep.state.bank, b._id)}>Edit</a>
+                            }
+                            
+                            </td></tr>
                         })
                         :
                         null
@@ -597,7 +605,7 @@ export default class FeeList extends Component {
                     }
                     <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
                     <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
-                    { 
+                    {
                     !this.state.contract ? 
                     <i className="material-icons">cloud_upload</i>
                     :

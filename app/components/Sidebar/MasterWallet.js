@@ -10,7 +10,7 @@ import TextArea from 'components/TextArea';
 import FormGroup from 'components/FormGroup';
 import Button from 'components/Button';
 
-import { API_URL, STATIC_URL } from 'containers/App/constants';
+import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -241,7 +241,7 @@ class MasterWallet extends Component {
         <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
             <h3><FormattedMessage {...messages.master} /></h3>
             <h5><FormattedMessage {...messages.available} /></h5>
-            <div className="cardValue">$ {this.state.balance.toFixed(1)}</div>
+            <div className="cardValue">{CURRENCY} {this.state.balance.toFixed(1)}</div>
             {
               this.props.activateNeeded ?
               <button className="fullWidth">
@@ -299,7 +299,7 @@ class MasterWallet extends Component {
                   required
                 />
               </FormGroup>
-              <p className="note">Total available $ {this.state.balance}</p>
+              <p className="note">Total available {CURRENCY} {this.state.balance}</p>
               <FormGroup>
                 <label>Note</label>
                 <TextArea
@@ -317,7 +317,7 @@ class MasterWallet extends Component {
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>
               </Button>
-              {/* <p className="note">Total Fee $200 will be charges</p> */}
+              {/* <p className="note">Total Fee {CURRENCY}200 will be charges</p> */}
             </form>
 
               </Popup>
