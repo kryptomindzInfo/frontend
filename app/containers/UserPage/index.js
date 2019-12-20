@@ -33,7 +33,7 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 
-import { API_URL, STATIC_URL } from '../App/constants';
+import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -217,12 +217,12 @@ roles:[],
           }else{
             this.setState({
               notification: "Infra User added successfully!",
-            }, function(){
-              //window.location.reload();
+            }, () => {
+              this.success();
+              this.closePopup();
+              this.getUsers();  
             });
-            this.success();
-            this.closePopup();
-            this.getUsers();
+            
           }
         }else{
           const error = new Error(res.data.error);
@@ -289,12 +289,9 @@ roles:[],
             this.setState({
               notification: "Infra User updated successfully!",
             }, function(){
-              this.success();
-
-              window.location.reload();
-              
-              // this.closePopup();
-              // this.getBanks();
+              this.success();              
+              this.closePopup();
+              this.getUsers();
             });
            
           }
@@ -372,11 +369,13 @@ roles:[],
           }else{
             this.setState({
               notification: "Profile added successfully!",
+            }, () => {
+              this.success();
+              this.closePopup();
+              this.getRoles();
             });
-            //window.location.reload();
-            this.success();
-            this.closePopup();
-            this.getRoles();
+            
+            
           }
         }else{
           const error = new Error(res.data.error);
@@ -410,11 +409,13 @@ roles:[],
           }else{
             this.setState({
               notification: "Profile updated successfully!",
+            }, () => {
+              this.success();
+              this.closePopup();
+              this.getRoles();
             });
-            //window.location.reload();
-            this.success();
-            this.closePopup();
-            this.getRoles();
+            
+            
           }
         }else{
           const error = new Error(res.data.error);
@@ -610,7 +611,7 @@ roles:[],
                       this.state.users && this.state.users.length > 0
                         ? this.state.users.map(function(b) {
                           if(b.name != "Infra Admin"){
-                            var pic = (b.logo && b.logo != '' && b.logo != undefined) ?  STATIC_URL+b.logo  : STATIC_URL+"QmaRW3pu9KVcN7jzuMuQxiQAHLTnXwRCjoaXJog3yNxdwJ";
+                            var pic = (b.logo && b.logo != '' && b.logo != undefined) ?  STATIC_URL+b.logo  : CONTRACT_URL+"main/default-profile.png";
                           return <Card key={b._id} col horizontalMargin="10px" cardWidth="192px">
                             <div className="profile">
                               <img src={pic} />

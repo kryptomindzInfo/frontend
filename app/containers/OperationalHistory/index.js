@@ -29,7 +29,7 @@ import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import SelectInput from 'components/SelectInput';
-
+import Pagination from "react-js-pagination";
 import Row from 'components/Row';
 import Col from 'components/Col';
 import styled from 'styled-components';
@@ -69,6 +69,10 @@ export default class OperationalHistory extends Component {
       redirect: false,
       name: '',
       trans_type: '',
+      perPage: 5,
+      totalCount: 100,
+      allhistory: [],
+      activePage: 1,
       active: 'Active',
       trans_from: '',
       trans_to: '',
@@ -93,6 +97,7 @@ export default class OperationalHistory extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
+    this.showHistory = this.showHistory.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -127,6 +132,7 @@ export default class OperationalHistory extends Component {
       mobile: '',
       logo: null,
       contract: null,
+      
       otp: '',
       showOtp: false
     });
@@ -333,13 +339,48 @@ export default class OperationalHistory extends Component {
       });
   };
 
+  showHistory= () =>{
+    this.setState({ history: [] }, () => {
+      var out = [];
+      var start = (this.state.activePage-1)*this.state.perPage;
+      var end = this.state.perPage*this.state.activePage;
+      if(end > this.state.totalCount){
+        end = this.state.totalCount;
+      }
+      for(var i = start; i < end; i++){
+        out.push(this.state.allhistory[i]);
+      }  
+      this.setState({ history: out });
+    });
+  };
+
   getHistory = () => {
     axios
-      .post(`${API_URL  }/getInfraHistory`, { token:token, from: "operational", bank_id: this.props.match.params.bank })
+      .post(`${API_URL  }/getInfraHistory`, { token:token, from: "operational", bank_id: this.props.match.params.bank, page: this.state.activePage, offset: this.state.perPage })
+      .then(res => {
+        if(res.status == 200){
+          // console.log(res.data);
+          this.setState({ loading: false, allhistory: res.data.history, totalCount: res.data.history.length}, () => {
+            this.showHistory();
+          });
+        }
+      })
+      .catch(err => {
+
+      });
+  };
+
+  getHistoryTotal = () => {
+    axios
+      .post(`${API_URL  }/getInfraHistoryTotal`, { token:token, from: "operational", bank_id: this.props.match.params.bank })
       .then(res => {
         if(res.status == 200){
           console.log(res.data);
-          this.setState({ loading: false, history: res.data.history});
+          this.setState({ loading: false, totalCount: res.data.total}
+          , () =>{
+            this.getHistory();
+          }  
+          );
         }
       })
       .catch(err => {
@@ -350,6 +391,12 @@ export default class OperationalHistory extends Component {
   filterData = (e) => {
     this.setState({ filter: e });
   };
+
+  handlePageChange = (pageNumber) => {
+    console.log(`active page is ${pageNumber}`);
+    this.setState({activePage: pageNumber});
+    this.showHistory();
+  }
 
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
@@ -485,6 +532,15 @@ export default class OperationalHistory extends Component {
                     }
               </tbody>
               </Table>
+              <div>
+        <Pagination
+          activePage={this.state.activePage}
+          itemsCountPerPage={this.state.perPage}
+          totalItemsCount={this.state.totalCount}
+          pageRangeDisplayed={5}
+          onChange={this.handlePageChange}
+        />
+      </div>
               </div>
             </Card>
           </Main>

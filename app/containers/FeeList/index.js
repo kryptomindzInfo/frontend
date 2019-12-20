@@ -16,8 +16,6 @@ import messages from './messages';
 import Wrapper from 'components/Wrapper';
 import TopBar from 'components/Header/TopBar';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
-import Nav from 'components/Header/Nav';
 import Welcome from 'components/Header/Welcome';
 import SidebarTwo from 'components/Sidebar/SidebarTwo';
 import Main from 'components/Main';
@@ -595,7 +593,7 @@ export default class FeeList extends Component {
               </FormGroup>
 
               <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'QmQvj1En6YeiyxKT8JHkhB9UH3ynyeE3WHpKbGEpNdzfy4'}>
+              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
                     { 
                     this.state.contract ? 
                     <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">

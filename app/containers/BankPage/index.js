@@ -16,10 +16,6 @@ import messages from './messages';
 import Wrapper from 'components/Wrapper';
 import Header from 'components/Header/index';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
-import Nav from 'components/Header/Nav';
-import Welcome from 'components/Header/Welcome';
-import SidebarOne from 'components/Sidebar/SidebarOne';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
@@ -32,7 +28,7 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 
-import { API_URL, STATIC_URL } from '../App/constants';
+import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -132,22 +128,9 @@ export default class BankPage extends Component {
   };
 
   logout = () => {
-    // event.preventDefault();
-    // axios.post(API_URL+'/logout', {token: token})
-    // .then(res => {
-    //    if(res.status == 200){
     localStorage.removeItem("logged");
     localStorage.removeItem("name");
     this.setState({ redirect: true });
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    // })
-    // .catch(err => {
-    //   alert('Login to continue');
-    //   this.setState({ redirect: true });
-    // });
   };
 
   addBank = event => {
@@ -322,11 +305,10 @@ blockBank = (e, s) =>{
             this.setState({
               notification: "Bank updated successfully!",
             }, function(){
-              window.location.reload();
+              this.success();
+              this.closePopup();
+              this.getBanks();
             });
-            this.success();
-            this.closePopup();
-            this.getBanks();
           }
         }else{
           const error = new Error(res.data.error);
@@ -368,9 +350,12 @@ blockBank = (e, s) =>{
         'content-type': 'multipart/form-data'
       },
     };
-
+    var method = "fileUpload";
+    if(key == 'contract'){
+      method = "ipfsUpload";
+    }
     axios
-      .post(`${API_URL  }/fileUpload?token=${  token}`, formData, config)
+      .post(`${API_URL  }/${method}?token=${  token}`, formData, config)
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
@@ -492,7 +477,7 @@ blockBank = (e, s) =>{
                       this.state.banks && this.state.banks.length > 0
                         ? this.state.banks.map(function(b) {
                           return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td  className="tac">0</td>
-                          <td className="tac bold">0 
+                          <td className="tac bold">{b.total_trans}
                             { 
                             b.status != 0
                             ?
@@ -718,10 +703,10 @@ blockBank = (e, s) =>{
               </FormGroup>
 
               <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'QmQvj1En6YeiyxKT8JHkhB9UH3ynyeE3WHpKbGEpNdzfy4'}>
+              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
                     {
                     this.state.contract ?
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
+                    <a className="uploadedImg" href={CONTRACT_URL+ this.state.contract } target="_BLANK">
                     </a>
                     :
                     ' '
@@ -947,10 +932,10 @@ blockBank = (e, s) =>{
               </FormGroup>
 
               <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'QmQvj1En6YeiyxKT8JHkhB9UH3ynyeE3WHpKbGEpNdzfy4'}>
+              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
                     {
                     this.state.contract ?
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
+                    <a className="uploadedImg" href={CONTRACT_URL+ this.state.contract} target="_BLANK">
                     </a>
                     :
                     ' '

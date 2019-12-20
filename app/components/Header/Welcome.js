@@ -63,6 +63,7 @@ class Welcome extends Component {
               {
                 this.props.infraNav ?
                 <SubNav className="infraSubNav">
+                    {name == "Infra Admin" ? <a href="/profile">Profile</a> : null }
                     <a onClick={this.logoutInfra} href="#">Logout</a>
                 </SubNav>
                 :

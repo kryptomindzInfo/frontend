@@ -17,7 +17,7 @@ import ForgotPasswordPage from 'containers/ForgotPasswordPage/Loadable';
 import OTPPage from 'containers/OTPPage/Loadable';
 import DashboardPage from 'containers/DashboardPage/Loadable';
 import BankPage from 'containers/BankPage/Loadable';
-import BankInfo from 'containers/BankInfo/Loadable';
+import InfraInfo from 'containers/InfraInfo/Loadable';
 import CreateFee from 'containers/CreateFee/Loadable';
 import EditFee from 'containers/EditFee/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
@@ -31,18 +31,20 @@ import BankDashboard from 'containers/BankDashboard/Loadable';
 import BankActivate from 'containers/BankActivate/Loadable';
 import SetupPage from 'containers/SetupPage/Loadable';
 import ForgotSetup from 'containers/ForgotSetup/Loadable';
-import BankBankInfo from 'containers/BankBankInfo/Loadable';
+import BankInfo from 'containers/BankInfo/Loadable';
 import BankDocuments from 'containers/BankDocuments/Loadable';
 import UserPage from 'containers/UserPage/Loadable';
 import BankFees from 'containers/BankFees/Loadable';
 import Documents from 'containers/Documents/Loadable';
 import OperationalHistory from 'containers/OperationalHistory/Loadable';
 import MasterHistory from 'containers/MasterHistory/Loadable';
+import InfraProfile from 'containers/InfraProfile/Loadable';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
 
 import 'react-toastify/dist/ReactToastify.css';import FeeList from '../FeeList';
+
 const theme = {
   primary: '#417505',
   secondary: '#6cac69',
@@ -69,11 +71,12 @@ export default function App() {
           <Route exact path="/otp" component={OTPPage} />
           <Route exact path="/dashboard" component={DashboardPage} />
           <Route exact path="/banks" component={BankPage} />
+          <Route exact path="/profile" component={InfraProfile} />
           <Route exact path="/user" component={UserPage} />
           <Route exact path="/" component={HomePage} notify={notify} />
           <Route exact path="/forgot-setup" component={ForgotSetup} />
           <Route path="/fees/:bank?" component={FeeList} />
-          <Route path="/info/:bank?" component={BankInfo} />
+          <Route path="/info/:bank?" component={InfraInfo} />
           <Route exact path="/bank" component={BankLoginPage} />
           <Route path="/createfee/:bank?" component={CreateFee} />
           <Route path="/editfee/:bank?" component={EditFee} />
@@ -82,7 +85,7 @@ export default function App() {
           <Route path="/masterHistory/:bank?" component={MasterHistory} />
 
           <Route exact path="/bank/setup" component={BankSetupPage} />
-          <Route path="/bank/info" component={BankBankInfo} />
+          <Route path="/bank/info" component={BankInfo} />
           <Route path="/bank/fees" component={BankFees} />
           <Route path="/bank/documents" component={BankDocuments} />
           <Route exact path="/bank/forgot-password" component={BankForgotPasswordPage}/>

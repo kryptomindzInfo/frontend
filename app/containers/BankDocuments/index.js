@@ -16,23 +16,17 @@ import messages from './messages';
 import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
-import Nav from 'components/Header/Nav';
-import Welcome from 'components/Header/Welcome';
 import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 import Main from 'components/Main';
-import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
 import Button from 'components/Button';
-import Table from 'components/Table';
 import MiniPopUp from 'components/MiniPopUp';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
-import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 
-import { API_URL, STATIC_URL } from '../App/constants';
+import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -217,7 +211,7 @@ export default class BankDocuments extends Component {
               notification: 'Approved'
             });
             this.success();
-            window.location.reload();
+            
           }
         }else{
           const error = new Error(res.data.error);
@@ -249,7 +243,7 @@ export default class BankDocuments extends Component {
               notification: 'Declined'
             });
             this.success();
-            window.location.reload();
+            
           }
         }else{
           const error = new Error(res.data.error);
@@ -455,7 +449,7 @@ export default class BankDocuments extends Component {
                     ? this.state.docs.map(function(b) {
                       var filename = b.contract.replace(/^.*[\\\/]/, '');
                       var ext = b.contract.split('.').pop();
-                      var icon = (ext == 'pdf') ? STATIC_URL+'QmQvj1En6YeiyxKT8JHkhB9UH3ynyeE3WHpKbGEpNdzfy4' : STATIC_URL+'Qmaj4nht1TsJChZn98PWttoip1LgbdkdGxtwWQDLbCYv9z';
+                      var icon = (ext == 'pdf') ? CONTRACT_URL+'main/pdf-icon.png' : CONTRACT_URL+'main/doc-icon.png';
                       var isoformat = b.created_at;
                       var readable = new Date(isoformat);
                       var m = readable.getMonth(); // returns 6

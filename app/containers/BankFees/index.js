@@ -208,9 +208,11 @@ export default class BankFees extends Component {
           }else{
             this.setState({
               notification: 'Approved'
+            }, () => {
+              this.success();
+              this.getRules();
             });
-            this.success();
-            window.location.reload();
+           
           }
         }else{
           const error = new Error(res.data.error);
@@ -240,9 +242,11 @@ export default class BankFees extends Component {
           }else{
             this.setState({
               notification: 'Declined'
+            }, () => {
+              this.success();
+              this.getRules();
             });
-            this.success();
-            window.location.reload();
+            
           }
         }else{
           const error = new Error(res.data.error);

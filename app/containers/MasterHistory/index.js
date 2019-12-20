@@ -29,7 +29,7 @@ import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import SelectInput from 'components/SelectInput';
-
+import Pagination from "react-js-pagination";
 import Row from 'components/Row';
 import Col from 'components/Col';
 import styled from 'styled-components';
@@ -65,15 +65,20 @@ export default class MasterHistory extends Component {
       bank: '',
       logo: null,
       contract: null,
-      filter: "",
       loading: true,
       redirect: false,
       name: '',
       trans_type: '',
+      perPage: 5,
+      totalCount: 100,
+      allhistory: [],
+      activePage: 1,
       active: 'Active',
       trans_from: '',
       trans_to: '',
       transcount_from: '',
+      history: [],
+      filter: "",
       transcount_to: '',
       fixed_amount: '',
       percentage: '',
@@ -92,6 +97,7 @@ export default class MasterHistory extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
+    this.showHistory = this.showHistory.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -108,11 +114,6 @@ export default class MasterHistory extends Component {
     });
   };
 
-
-  filterData = (e) => {
-    this.setState({ filter: e });
-  };
-
   showPopup = () => {
     //this.setState({ popup: true });
     this.props.history.push('/createfee/'+this.props.match.params.bank);
@@ -122,7 +123,6 @@ export default class MasterHistory extends Component {
     this.setState({
       popup: false,
       name: '',
-      history: [],
       address1: '',
       state: '',
       zip: '',
@@ -132,6 +132,7 @@ export default class MasterHistory extends Component {
       mobile: '',
       logo: null,
       contract: null,
+      
       otp: '',
       showOtp: false
     });
@@ -246,7 +247,6 @@ export default class MasterHistory extends Component {
         logo: this.state.logo,
         contract: this.state.contract,
         otp: this.state.otp,
-        
         token,
       })
       .then(res => {
@@ -339,13 +339,30 @@ export default class MasterHistory extends Component {
       });
   };
 
+  showHistory= () =>{
+    this.setState({ history: [] }, () => {
+      var out = [];
+      var start = (this.state.activePage-1)*this.state.perPage;
+      var end = this.state.perPage*this.state.activePage;
+      if(end > this.state.totalCount){
+        end = this.state.totalCount;
+      }
+      for(var i = start; i < end; i++){
+        out.push(this.state.allhistory[i]);
+      }  
+      this.setState({ history: out });
+    });
+  };
+
   getHistory = () => {
     axios
-      .post(`${API_URL  }/getInfraHistory`, { token:token, from: "master", bank_id: this.props.match.params.bank })
+      .post(`${API_URL  }/getInfraHistory`, { token:token, from: "master", bank_id: this.props.match.params.bank, page: this.state.activePage, offset: this.state.perPage })
       .then(res => {
         if(res.status == 200){
-          console.log(res.data);
-          this.setState({ loading: false, history: res.data.history});
+          // console.log(res.data);
+          this.setState({ loading: false, allhistory: res.data.history, totalCount: res.data.history.length}, () => {
+            this.showHistory();
+          });
         }
       })
       .catch(err => {
@@ -353,7 +370,33 @@ export default class MasterHistory extends Component {
       });
   };
 
-  
+  getHistoryTotal = () => {
+    axios
+      .post(`${API_URL  }/getInfraHistoryTotal`, { token:token, from: "master", bank_id: this.props.match.params.bank })
+      .then(res => {
+        if(res.status == 200){
+          console.log(res.data);
+          this.setState({ loading: false, totalCount: res.data.total}
+          , () =>{
+            this.getHistory();
+          }  
+          );
+        }
+      })
+      .catch(err => {
+
+      });
+  };
+
+  filterData = (e) => {
+    this.setState({ filter: e });
+  };
+
+  handlePageChange = (pageNumber) => {
+    console.log(`active page is ${pageNumber}`);
+    this.setState({activePage: pageNumber});
+    this.showHistory();
+  }
 
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
@@ -367,6 +410,7 @@ export default class MasterHistory extends Component {
     }
   }
 
+  
   render() {
         function inputFocus(e) {
       const { target } = e;
@@ -400,7 +444,7 @@ export default class MasterHistory extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>Master History| INFRA | E-WALLET</title>
+          <title>Create Fee | INFRA | E-WALLET</title>
         </Helmet>
         <TopBar>
         <Welcome infraNav/>
@@ -460,7 +504,7 @@ export default class MasterHistory extends Component {
                 </div>
                 <Table marginTop="34px" smallTd>
                  <tbody>
-                 {
+                {
                       
                       this.state.history && this.state.history.length > 0
                         ? this.state.history.map(function(b) {
@@ -486,11 +530,17 @@ export default class MasterHistory extends Component {
                         :
                         null
                     }
-                  
-                  </tbody>
-                </Table>
-              
-              
+              </tbody>
+              </Table>
+              <div>
+        <Pagination
+          activePage={this.state.activePage}
+          itemsCountPerPage={this.state.perPage}
+          totalItemsCount={this.state.totalCount}
+          pageRangeDisplayed={5}
+          onChange={this.handlePageChange}
+        />
+      </div>
               </div>
             </Card>
           </Main>

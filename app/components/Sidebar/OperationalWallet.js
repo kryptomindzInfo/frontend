@@ -35,12 +35,15 @@ class OperationalWallet extends Component {
       notification: "",
       balance: 0,
       note: '',
+      livefee: 0,
       token
     };
 
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
+
+    this.getBalance = this.getBalance.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -55,9 +58,44 @@ class OperationalWallet extends Component {
       [name]: value,
     });
   };
+  amountChange = event => {
+    const { value, name } = event.target;
+    this.setState({
+      [name]: value,
+    }, () => {
+      if(this.state.amount != ""){
+        axios
+        .post(`${API_URL  }/checkFee`, {
+          from: this.state.from,
+          to: this.state.to,
+          amount: this.state.amount,
+          auth: "infra",
+          token
+        })
+        .then(res => {
+          if(res.status == 200){
+            if(res.data.error){
+              
+            }else{
+              this.setState({
+                livefee: res.data.fee
+              }, function(){
+    
+              });
+          }
+        }
+        });
+      }else{
+        this.setState({
+          livefee: 0
+        });
+      }
+    });
+  
+
+  };
   sendMoney = (e) => {
     e.preventDefault();
- 
     axios
     .post(`${API_URL  }/getWalletsOperational`, {
       bank_id : this.props.historyLink,
@@ -73,8 +111,6 @@ class OperationalWallet extends Component {
             to: res.data.to,
             popup: true
           });
-          document.getElementById("popfrom").focus()
-          document.getElementById("popto").focus()
         }
       }else{
         const error = new Error(res.data.error);
@@ -96,81 +132,27 @@ class OperationalWallet extends Component {
     });
   };
 
-
-  addBank = event => {
-    event.preventDefault();
-    // axios
-    //   .post(`${API_URL  }/generateOTP`, {
-    //     name: this.state.name,
-    //     mobile: this.state.mobile,
-    //     page: 'addBank',
-    //     token,
-    //   })
-    //   .then(res => {
-    //     if(res.status == 200){
-    //       if(res.data.error){
-    //         throw res.data.error;
-    //       }else{
-    //         this.setState({
-    //           showOtp: true,
-    //           notification: 'OTP Sent'
-    //         });
-    //         this.success();
-    //       }
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    //   })
-    //   .catch(err => {
-    //     this.setState({
-    //       notification: (err.response) ? err.response.data.error : err.toString()
-    //     });
-    //     this.error();
-    //   });
-  };
-
-  verifyOTP = event => {
-    event.preventDefault();
+  getBalance = () => {
+    
     axios
-      .post(`${API_URL  }/addBank`, {
-        name: this.state.name,
-        address1: this.state.address1,
-        state: this.state.state,
-        
-        zip: this.state.zip,
-        country: this.state.country,
-        ccode: this.state.ccode,
-        email: this.state.email,
-        mobile: this.state.mobile,
-        logo: this.state.logo,
-        contract: this.state.contract,
-        otp: this.state.otp,
-        token,
-      })
-      .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
-            throw res.data.error;
-          }else{
-            this.setState({
-              notification: "Bank added successfully!",
-            });
-            this.success();
-            this.closePopup();
-            this.getBanks();
-          }
+    .get(`${API_URL  }/getInfraOperationalBalance?bank=${this.props.historyLink}`)
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.error){
+          throw res.data.error;
         }else{
-          const error = new Error(res.data.error);
-          throw error;
+          this.setState({
+            balance: res.data.balance,
+          });
         }
-      })
-      .catch(err => {
-        this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
-        });
-        this.error();
+      }
+    })
+    .catch(err => {
+      this.setState({
+        notification: (err.response) ? err.response.data.error : err.toString()
       });
+      this.error();
+    });
   };
 
   submitMoney = (e) => {
@@ -208,9 +190,7 @@ class OperationalWallet extends Component {
             notification: "Transfer Initiated, You will be notified once done"
           }, function(){
             this.success();
-            setTimeout(function(){
-              window.location.reload();
-            },1000);
+            this.getBalance();
           });
       }
     }
@@ -233,25 +213,7 @@ class OperationalWallet extends Component {
     this.setState({
       bank: this.props.historyLink
     });
-    axios
-    .get(`${API_URL  }/getInfraOperationalBalance?bank=${this.props.historyLink}`)
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-          throw res.data.error;
-        }else{
-          this.setState({
-            balance: res.data.balance,
-          });
-        }
-      }
-    })
-    .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
-      });
-      this.error();
-    });
+    this.getBalance();
   }
 
   
@@ -298,6 +260,7 @@ class OperationalWallet extends Component {
                   type="text"
                   name="from"
                   onFocus={inputFocus}
+                  autoFocus
                   onBlur={inputBlur}
                   value={this.state.from}
                   onChange={this.handleInputChange}
@@ -311,6 +274,7 @@ class OperationalWallet extends Component {
                 id="popto"
                   type="text"
                   name="to"
+                  autoFocus
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.to}
@@ -326,7 +290,7 @@ class OperationalWallet extends Component {
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.amount}
-                  onChange={this.handleInputChange}
+                  onChange={this.amountChange}
                   required
                 />
               </FormGroup>
@@ -348,7 +312,7 @@ class OperationalWallet extends Component {
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>
               </Button>
-              {/* <p className="note">Total Fee {CURRENCY} 200 will be charges</p> */}
+              <p className="note">Total Fee {CURRENCY} {this.state.livefee} will be charges</p>
             </form>
 
               </Popup>
