@@ -5,7 +5,7 @@ const SelectInput = styled.select `
   z-index: 1;
   background: transparent;
   box-sizing:border-box;
-  padding:10px 16px;
+  padding:10px;
   padding-right:0;
   border: solid 1px rgba(0, 0, 0, 0.32);
   

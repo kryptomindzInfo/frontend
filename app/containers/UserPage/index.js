@@ -610,7 +610,7 @@ roles:[],
             {
                       this.state.users && this.state.users.length > 0
                         ? this.state.users.map(function(b) {
-                          if(b.name != "Infra Admin"){
+                          if(!b.isAdmin){
                             var pic = (b.logo && b.logo != '' && b.logo != undefined) ?  STATIC_URL+b.logo  : CONTRACT_URL+"main/default-profile.png";
                           return <Card key={b._id} col horizontalMargin="10px" cardWidth="192px">
                             <div className="profile">

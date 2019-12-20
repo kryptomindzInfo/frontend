@@ -43,9 +43,11 @@ class Welcome extends Component {
 
   render() {
     let name = '';
+    let isAdmin = false;
       if( this.props.from == 'bank'){
         name = localStorage.getItem("bankName");
       }else{
+        isAdmin = localStorage.getItem("isAdmin");
         name = localStorage.getItem("name");
       }
 
@@ -63,7 +65,7 @@ class Welcome extends Component {
               {
                 this.props.infraNav ?
                 <SubNav className="infraSubNav">
-                    {name == "Infra Admin" ? <a href="/profile">Profile</a> : null }
+                    { isAdmin ? <a href="/profile">Profile</a> : null }
                     <a onClick={this.logoutInfra} href="#">Logout</a>
                 </SubNav>
                 :

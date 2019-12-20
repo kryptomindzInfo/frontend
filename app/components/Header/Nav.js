@@ -25,7 +25,8 @@ class Nav extends Component {
     const merchants = this.props.active == 'merchants' ? 'true' : '';
     const reports = this.props.active == 'reports' ? 'true' : '';
     const name = localStorage.getItem("name");
-    console.log(name);
+    const isAdmin = localStorage.getItem("isAdmin");
+    
     return (
       <React.Fragment>
         <NavTag>
@@ -33,7 +34,7 @@ class Nav extends Component {
           <FormattedMessage {...messages.menu1} /> 
           </Link>
           {
-          name == "Infra Admin" ?
+          isAdmin ?
           <Link href="/user" active={user}>
             Infra User
           </Link>
