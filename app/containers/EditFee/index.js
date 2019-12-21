@@ -85,6 +85,7 @@ export default class EditFee extends Component {
       popup: false,
       user_id: token,
       banks: [],
+      ranges: [],
       otp: '',
       showOtp: false,
       token: token,
@@ -135,7 +136,78 @@ export default class EditFee extends Component {
       showOtp: false
     });
   };
+  addRange = () => {
+    var temp = this.state.ranges;
+    var l = temp.length;
+    var last = temp[l-1].trans_to;
+    if(last == ''){
+      this.setState({
+        notification: "Fill previous range first"
+      }, () =>{
+        this.error();
+      });
+    }
+    else if(last <= temp[l-1].trans_from){
+      this.setState({
+        notification: "To value has to be greater than From value in all ranges"
+      }, () =>{
+        this.error();
+      });
+    }
+    else{
+      last = Number(last)+1;
+    temp.push({
+        trans_from: last,
+        trans_to: '',
+        fixed_amount: '',
+        percentage: ''
+    });
+    this.setState({
+      ranges : temp
+    });
+  }
+  };
+  handleInputChange2 = event => {
+    // console.log(k);
 
+    const { value, name } = event.target;
+    var temp = this.state.ranges;
+    var k = event.target.getAttribute("data-key");
+    
+     temp[k][name] = value;
+     console.log(temp[k]);
+    this.setState({
+      ranges : temp
+    });
+    
+    // this.setState({
+    //   [name]: value,
+    // });
+  };
+  removeRange = (k) => {
+    console.log(k);
+    // var dis = this;
+    var temp = this.state.ranges;
+    // delete temp[k];
+    temp.splice(k, 1);
+    this.setState({
+      ranges : temp
+    });
+    // console.log(temp);
+    // var out = [];
+    
+    // for(var i = 0; i < temp.length; i++){
+    //   if(i != k){
+    //     out.push(temp[i]);
+    //   }
+    //   if(i == (temp.length)-1){
+    //     dis.setState({
+    //       ranges : out
+    //     });
+    //   }
+    // }
+    
+  };
   logout = () => {
     // event.preventDefault();
     // axios.post(API_URL+'/logout', {token: token})
@@ -385,10 +457,10 @@ export default class EditFee extends Component {
       .post(`${API_URL  }/getRule`, { token:token, rule_id: this.state.rule_id })
       .then(res => {
         if(res.status == 200){
-          console.log(res.data);
-          this.setState({ name: res.data.rules.name, trans_type: res.data.rules.trans_type, active: res.data.rules.active, trans_to: res.data.rules.trans_to, trans_from: res.data.rules.trans_from, transcount_from: res.data.rules.transcount_from, transcount_to: res.data.rules.transcount_to, fixed_amount: res.data.rules.fixed_amount, percentage: res.data.rules.percentage});
-          this.setState({loading: false });
-
+                    var temp = JSON.parse(res.data.rules.ranges);
+          this.setState({ name: res.data.rules.name, trans_type: res.data.rules.trans_type, active: res.data.rules.active, ranges: temp, loading: false}, ()=>{
+            console.log(this.state);
+          });
         }
       })
       .catch(err => {
@@ -437,7 +509,7 @@ export default class EditFee extends Component {
     if (redirect) {
       return <Redirect to="/" />
     }
-    
+    const dis = this;
     return (
       <Wrapper>
         <Helmet>
@@ -475,11 +547,11 @@ Edit Revenue sharing Rule</h3>
                 <label>Name</label>
                 <TextInput
                   type="text"
-                  autoFocus
                   name="name"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.name}
+                  autoFocus
                   onChange={this.handleInputChange}
                   required
                 />
@@ -488,21 +560,16 @@ Edit Revenue sharing Rule</h3>
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label>Transaction Type</label>
-                  <TextInput
+                   <SelectInput
                     type="text"
-                    autoFocus
                     name="trans_type"
-                    onFocus={inputFocus}
-                  onBlur={inputBlur}
                     value={this.state.trans_type}
+                    autoFocus
                     onChange={this.handleInputChange.bind(this)}
                     required
                     list="ttype"
                   >
-                  </TextInput>
-                  <datalist id="ttype">
-                  <option value="">Transaction Type</option>
+                       <option value="">Transaction Type</option>
                     <option >Wallet to Wallet </option>
                     <option >Sending Non Wallet to Non Wallet </option>
                     <option >Receiving Non Wallet from Non Wallet</option>
@@ -512,7 +579,8 @@ Edit Revenue sharing Rule</h3>
                     <option >Non Wallet to Merchant</option>
                     <option >Wallet to Bank Account</option>
                     <option >Bank Account to Wallet Request</option>
-                  </datalist>
+                  </SelectInput>
+                 
                   </FormGroup>
                   </Col>
                   <Col>
@@ -520,8 +588,8 @@ Edit Revenue sharing Rule</h3>
                   <TextInput
                     type="text"
                     name="active"
-                    autoFocus
                     value={this.state.active}
+                    autoFocus
                     onChange={this.handleInputChange}
                     required
                     list="act"
@@ -534,107 +602,109 @@ Edit Revenue sharing Rule</h3>
                   </FormGroup>
                   </Col>
                 </Row>
-                <H4>Transation amount Range <span className="small">(for example from 0$ to 100$)</span></H4>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label>From</label>
-                  <TextInput
-                    type="text"
-                    name="trans_from"
-                    autoFocus
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.trans_from}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label>To</label>
-                  <TextInput
-                    type="text"
-                    name="trans_to"
-                    onFocus={inputFocus}
-                    autoFocus
-                    onBlur={inputBlur}
-                    value={this.state.trans_to}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>  
+   
 
                 <H4>Transaction Count</H4>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label>From</label>
-                  <TextInput
-                    type="text"
-                    name="transcount_from"
-                    onFocus={inputFocus}
-                    autoFocus
-                    onBlur={inputBlur}
-                    value={this.state.transcount_from}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label>To</label>
-                  <TextInput
-                    type="text"
-                    name="transcount_to"
-                    onFocus={inputFocus}
-                    autoFocus
-                    onBlur={inputBlur}
-                    value={this.state.transcount_to}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>  
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label>Fixed Amount</label>
-                  <TextInput
-                    type="text"
-                    name="fixed_amount"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    autoFocus
-                    value={this.state.fixed_amount}
-                    onChange={this.handleInputChange}
+                {
+                  this.state.ranges.map(function(v, i) {
                     
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label>Percentage</label>
-                  <TextInput
-                    type="text"
-                    name="percentage"
-                    onFocus={inputFocus}
-                    autoFocus
-                    onBlur={inputBlur}
-                    value={this.state.percentage}
-                    onChange={this.handleInputChange}
+                    return <Row key={i}>
+                    <Col cW="20%" mR="2%">
+                    <FormGroup>
+                    <label>From</label>
+                    {
+                        i > 0 ? 
+                        <TextInput
+                        type="text"
+                        name="trans_from"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={v.trans_from}
+                        onChange={dis.handleInputChange2}
+                        data-key = {i}
+                        autoFocus
+                        readOnly
+                        required
+                      />
+                        :
+                        <TextInput
+                        type="text"
+                        name="trans_from"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={v.trans_from}
+                        onChange={dis.handleInputChange2}
+                        data-key = {i}
+                        autoFocus
+                        required
+                      />
+                      }
+                  
+                    </FormGroup>
+                    </Col>
+                    <Col cW="20%" mR="2%">
+                    <FormGroup>
+                    <label>To</label>
+                    <TextInput
+                      type="text"
+                      name="trans_to"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={v.trans_to}
+                      onChange={dis.handleInputChange2}
+                      data-key = {i}
+                      autoFocus
+                      required
+                    />
+                    </FormGroup>
+                    </Col>
+                    <Col cW="26%" mR="2%">
+                    <FormGroup>
+                    <label>Fixed Amount</label>
+                    <TextInput
+                      type="text"
+                      name="fixed_amount"
+                      onFocus={inputFocus}
+                      required
+                      onBlur={inputBlur}
+                      value={v.fixed_amount}
+                      autoFocus
+                      onChange={dis.handleInputChange2}
+                      data-key = {i}
+                      
+                    />
+                    </FormGroup>
+                    </Col>
+                    <Col cW="28%" mR="0">
+                    <FormGroup>
+                    <label>Percentage</label>
+                    <TextInput
+                    required
+                      type="text"
+                      name="percentage"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={v.percentage}
+                      autoFocus
+                      onChange={dis.handleInputChange2}
+                      data-key = {i}
+                      
+                    />
+                    </FormGroup>
+                    {
+                      i > 0 ?
+                      <a href="#" onClick={() => dis.removeRange(i)} className="material-icons removeBtn">cancel</a>
+                      :
+                      null
+                    }
                     
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>
-              
-
+                    </Col>
+                  </Row>
+                  })
+                }
+                 <Button type="button" accentedBtn marginTop="10px" onClick={this.addRange}>
+                <span>Add Another Range</span>
+              </Button>
 
               <Button filledBtn marginTop="50px">
                 <span>Update Rule</span>

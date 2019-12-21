@@ -957,7 +957,7 @@ blockBank = (e, s) =>{
                     </div>
                   </UploadArea>
               </FormGroup>
-
+              <p className="note">Please create the revenue policy or otherwise by default 0 fee will be debited for all transctions</p>
               <Button filledBtn marginTop="50px">
                 <span><FormattedMessage {...messages.addbank} /></span>
               </Button>

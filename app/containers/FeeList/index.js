@@ -387,10 +387,7 @@ export default class FeeList extends Component {
                     <tr>
                      <th>Name</th>
                      <th>Transaction Type</th>
-                     <th>Amount of Transaction</th>
-                     <th>Transaction Count</th>
-                     <th>Fixed Amount</th>
-                     <th>Percentage</th>
+                     <th>Ranges</th>
                      <th></th>
                       </tr>
                   </thead>
@@ -398,8 +395,18 @@ export default class FeeList extends Component {
                   {
                       this.state.rules && this.state.rules.length > 0 
                         ? this.state.rules.map(function(b) {
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td><td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
-                          <td className="tac bold">{b.percentage} </td><td className="tac bold">
+                          var r = JSON.parse(b.ranges);
+                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td>
+                          {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
+                          <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
+                          <td>
+                            {
+                            r.map(function(v){
+                            return <div>Count: <span className="green">{v.trans_from} -  {v.trans_to}</span>, Fixed: <span className="green">{CURRENCY+" "+v.fixed_amount}</span>, Percentage: <span className="green">{v.percentage}</span></div>
+                            })
+                            }
+                          </td>
+                          <td className="tac bold">
                             {
                               b.status == 0 ?
                               <a href="#" className="material-icons ">block</a>

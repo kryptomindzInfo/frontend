@@ -73,6 +73,7 @@ export default class BankFees extends Component {
       bank: bid,
       name: '',
       address1: '',
+      html: '',
       popname: '',
       poprange: '',
       poptype: '',
@@ -118,27 +119,16 @@ export default class BankFees extends Component {
     });
   };
 
-  showMiniPopUp = (b) => {
+  showMiniPopUp = (b, r) => {
     
-    this.setState({ popname: b.name, poptype: b.trans_type, poprange: b.trans_from+" - "+b.trans_to, poppercent: b.percentage, sid: b._id, popup: true });
+    this.setState({ popname: b.name, poptype: b.trans_type, sid: b._id, popup: true, html: r  });
     //this.props.history.push('/createfee/'+this.state.bank_id);
   };
 
   closeMiniPopUp = () => {
     this.setState({
       popup: false,
-      name: '',
-      address1: '',
-      state: '',
-      zip: '',
-      ccode: '',
-      country: '',
-      email: '',
-      mobile: '',
-      logo: null,
-      contract: null,
-      otp: '',
-      showOtp: false
+     
     });
   };
 
@@ -210,9 +200,9 @@ export default class BankFees extends Component {
               notification: 'Approved'
             }, () => {
               this.success();
+              this.closeMiniPopUp();
               this.getRules();
             });
-           
           }
         }else{
           const error = new Error(res.data.error);
@@ -244,6 +234,7 @@ export default class BankFees extends Component {
               notification: 'Declined'
             }, () => {
               this.success();
+              this.closeMiniPopUp();
               this.getRules();
             });
             
@@ -380,7 +371,7 @@ export default class BankFees extends Component {
 
 
   componentDidMount() {
-    this.setState({ bank: this.state.bank_id });
+    // this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
       this.setState({ loading: false });
       this.getBanks();
@@ -444,12 +435,9 @@ export default class BankFees extends Component {
                 <Table marginTop="34px" smallTd>
                   <thead>
                     <tr>
-                     <th>Name</th>
+                    <th>Name</th>
                      <th>Transaction Type</th>
-                     <th>Amount of Transaction</th>
-                     <th>Transaction Count</th>
-                     <th>Fixed Amount</th>
-                     <th>Percentage</th>
+                     <th>Ranges</th>
                      <th></th>
                       </tr>
                   </thead>
@@ -457,16 +445,26 @@ export default class BankFees extends Component {
                   {
                       this.state.rules && this.state.rules.length > 0
                         ? this.state.rules.map(function(b) {
-                          return <tr key={b._id} id={"tr"+b._id}><td className="tname tname">{b.name}</td><td className="tac ttype" >{b.trans_type}</td><td className="tac green trange">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td><td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td>
-                          <td className="tac bold tpercent">{b.percentage} </td><td className="tac bold" >
+                          var r = JSON.parse(b.editedRanges);
+                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td>
+                          {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
+                          <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
+                          <td>
                             {
-                              b.status != 0 ?
-                              b.status == 1 ?
+                            r.map(function(v){
+                            return <div>Count: <span className="green">{v.trans_from} -  {v.trans_to}</span>, Fixed: <span className="green">{CURRENCY+" "+v.fixed_amount}</span>, Percentage: <span className="green">{v.percentage}</span></div>
+                            })
+                            }
+                          </td>
+                          <td className="tac bold" >
+                            {
+                              b.edit_status != 0 ?
+                              b.edit_status == 1 ?
                               <a className="text-light">approved</a>
                               :
                               <a className="text-accent">declined</a>
                               :
-                              <Button onClick={() => dis.showMiniPopUp(b)}>
+                              <Button onClick={() => dis.showMiniPopUp(b, r)}>
                                 <span>Approve</span>
                               </Button>
                             }
@@ -512,8 +510,14 @@ export default class BankFees extends Component {
             <form >
               <p><span  id="popname">{this.state.popname}</span></p>
               <p > Sending from <span id="poptype">{this.state.poptype}</span></p>
-              <p > Transaction range<span id="poprange">{this.state.poprange}</span></p>
-              <p > Fee <span id="poppercent">{this.state.poppercent}</span> &nbsp; &nbsp; Priority: <span>100</span></p>
+              {/* <div dangerouslySetInnerHTML={{__html: this.state.html}} /> */}
+              {
+                this.state.html.map(function(v){
+                  return <div>Count: <span className="green">{v.trans_from} -  {v.trans_to}</span>, Fixed: <span className="green">{CURRENCY+" "+v.fixed_amount}</span>, Percentage: <span className="green">{v.percentage}</span></div>
+                  })
+              }
+              {/* <p > Transaction range<span id="poprange">{this.state.poprange}</span></p>
+              <p > Fee <span id="poppercent">{this.state.poppercent}</span> &nbsp; &nbsp; Priority: <span>100</span></p> */}
                          <Row>
                   <Col>
                   <FormGroup>
