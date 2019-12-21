@@ -58,6 +58,9 @@ body{
     font-weight: bold;
     font-size: 14px;
   }
+  .green{
+    color: ${props => props.theme.primary};
+  }
   a >  span > span {
     color: ${props => props.theme.light};
   }

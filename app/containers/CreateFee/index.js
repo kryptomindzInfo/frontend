@@ -220,6 +220,17 @@ export default class CreateFee extends Component {
     //     this.error();
     // });
     // }else{
+      var temp = this.state.ranges;
+      var l = temp.length;
+      var last = temp[l-1].trans_to;
+      if(last <= temp[l-1].trans_from){
+        this.setState({
+          notification: "To value has to be greater than From value in all ranges"
+        }, () =>{
+          this.error();
+        });
+      }
+      else{
     axios
       .post(`${API_URL  }/createRules`, this.state)
       .then(res => {
@@ -227,7 +238,6 @@ export default class CreateFee extends Component {
           if(res.data.error){
             throw res.data.error;
           }else{
-            //console.log(res.data);
             this.setState({
               notification: 'Rule added'
             }, () => {
@@ -250,7 +260,7 @@ export default class CreateFee extends Component {
         });
         this.error();
       });
-    //}
+    }
   };
 
   verifyOTP = event => {
@@ -304,8 +314,26 @@ export default class CreateFee extends Component {
 
   addRange = () => {
     var temp = this.state.ranges;
+    var l = temp.length;
+    var last = temp[l-1].trans_to;
+    if(last == ''){
+      this.setState({
+        notification: "Fill previous range first"
+      }, () =>{
+        this.error();
+      });
+    }
+    else if(last <= temp[l-1].trans_from){
+      this.setState({
+        notification: "To value has to be greater than From value in all ranges"
+      }, () =>{
+        this.error();
+      });
+    }
+    else{
+      last = Number(last)+1;
     temp.push({
-        trans_from: '',
+        trans_from: last,
         trans_to: '',
         fixed_amount: '',
         percentage: ''
@@ -313,16 +341,18 @@ export default class CreateFee extends Component {
     this.setState({
       ranges : temp
     });
+  }
   };
 
   removeRange = (k) => {
     console.log(k);
     // var dis = this;
     var temp = this.state.ranges;
-    delete temp[k];
+    // delete temp[k];
+    temp.splice(k, 1);
     this.setState({
-            ranges : temp
-          });
+      ranges : temp
+    });
     // console.log(temp);
     // var out = [];
     
@@ -537,16 +567,34 @@ Create Revenue sharing Rules</h3>
                     <Col cW="20%" mR="2%">
                     <FormGroup>
                     <label>From</label>
-                    <TextInput
-                      type="text"
-                      name="trans_from"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={v.trans_from}
-                      onChange={dis.handleInputChange2}
-                      data-key = {i}
-                      required
-                    />
+                    {
+                        i > 0 ? 
+                        <TextInput
+                        type="text"
+                        name="trans_from"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={v.trans_from}
+                        onChange={dis.handleInputChange2}
+                        data-key = {i}
+                        autoFocus
+                        readOnly
+                        required
+                      />
+                        :
+                        <TextInput
+                        type="text"
+                        name="trans_from"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={v.trans_from}
+                        onChange={dis.handleInputChange2}
+                        data-key = {i}
+                        autoFocus
+                        required
+                      />
+                      }
+                  
                     </FormGroup>
                     </Col>
                     <Col cW="20%" mR="2%">

@@ -190,7 +190,9 @@ class OperationalWallet extends Component {
             notification: "Transfer Initiated, You will be notified once done"
           }, function(){
             this.success();
-            this.getBalance();
+           setTimeout(function(){
+            window.location.reload();
+           }, 1000);
           });
       }
     }
