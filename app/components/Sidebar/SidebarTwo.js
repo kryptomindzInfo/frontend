@@ -19,13 +19,12 @@ font-size: 11px;
 class SidebarTwo extends Component {
 
   render() {
-    console.log(this.props.active);
+    
     const info = this.props.active == 'info' ? true : false;
     const documents = this.props.active == 'documents' ? true : false;
     const fees = this.props.active == 'fees' ? true : false;
 
-    console.log(this.props);
-    return (
+        return (
         <Sidebar marginRight>
             <H3>SETTINGS</H3>
             <a href={"/info/"+this.props.bankId }>

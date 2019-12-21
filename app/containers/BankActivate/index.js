@@ -25,7 +25,7 @@ import BackBtn from 'components/BackBtn';
 import PrimaryBtn from 'components/PrimaryBtn';
 import Button from 'components/Button';
 import Col from 'components/Col';
-import { API_URL, STATIC_URL } from '../App/constants';
+import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -146,11 +146,11 @@ export default class BankActivate extends Component {
           <form action="" method="POST" onSubmit={this.activateAccount}>
             <InputsWrap>
               <FormGroup>
-                <iframe src={STATIC_URL+contract} width="100%" height="500px">
+                <iframe src={CONTRACT_URL+contract} width="100%" height="500px">
                 
                 </iframe>
                 <Button onClick={this.openPDF} type="button" accentedBtn bottomRight><FormattedMessage {...messages.btn1} /></Button>
-                <a target="_BLANK" href={STATIC_URL+contract} download="Contract" id="pdfdown" className="hide">click me</a>
+                <a target="_BLANK" href={CONTRACT_URL+contract} download="Contract" id="pdfdown" className="hide">click me</a>
               </FormGroup>
 
               <FormGroup className="checkbox">                
@@ -165,6 +165,7 @@ export default class BankActivate extends Component {
                 /> <FormattedMessage {...messages.confirm} />
               </FormGroup>
             </InputsWrap>
+            <p className="note">Please approve the revenue policy or otherwise by default 0 fee will be debited for all transctions</p>
             <PrimaryBtn><FormattedMessage {...messages.btn2} /></PrimaryBtn>
           </form>
         </FrontRightSection>

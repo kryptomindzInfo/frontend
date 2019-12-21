@@ -115,6 +115,21 @@ body{
   .pagination li.active{
     background: #f5a623;
   }
+  .note{
+    color: #9b9b9b;
+    size: 12px;
+    a{
+      color: #56575a;
+      text-decoration:underline;
+    }
+
+  }
+  .removeBtn{
+    color: red;
+    position:absolute;
+    right:-30px;
+    top: 10px;
+  }
 `;
 
 export default GlobalStyle;

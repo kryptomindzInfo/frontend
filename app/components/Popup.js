@@ -29,14 +29,7 @@ const PopupBody = styled.div`
   padding: 20px;
   margin: 50px auto;
   
-  .note{
-    color: #9b9b9b;
-    size: 12px;
-    a{
-      color: #56575a;
-      text-decoration:underline;
-    }
-  }
+
   h1 {
     text-align: center;
     font-size: 26px;

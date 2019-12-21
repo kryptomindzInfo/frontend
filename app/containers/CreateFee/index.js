@@ -70,6 +70,14 @@ export default class CreateFee extends Component {
       loading: true,
       redirect: false,
       name: '',
+      ranges: [
+        {
+          trans_from: '',
+          trans_to: '',
+          fixed_amount: '',
+          percentage: '',
+        }
+      ],
       trans_type: '',
       active: 'Active',
       trans_from: '',
@@ -103,11 +111,29 @@ export default class CreateFee extends Component {
   warn = () => toast.warn(this.state.notification);
 
   handleInputChange = event => {
-    console.log(event);
+    
     const { value, name } = event.target;
     this.setState({
       [name]: value,
     });
+  };
+
+  handleInputChange2 = event => {
+    // console.log(k);
+
+    const { value, name } = event.target;
+    var temp = this.state.ranges;
+    var k = event.target.getAttribute("data-key");
+    
+     temp[k][name] = value;
+     console.log(temp[k]);
+    this.setState({
+      ranges : temp
+    });
+    
+    // this.setState({
+    //   [name]: value,
+    // });
   };
 
   showPopup = () => {
@@ -276,6 +302,43 @@ export default class CreateFee extends Component {
     });
   };
 
+  addRange = () => {
+    var temp = this.state.ranges;
+    temp.push({
+        trans_from: '',
+        trans_to: '',
+        fixed_amount: '',
+        percentage: ''
+    });
+    this.setState({
+      ranges : temp
+    });
+  };
+
+  removeRange = (k) => {
+    console.log(k);
+    // var dis = this;
+    var temp = this.state.ranges;
+    delete temp[k];
+    this.setState({
+            ranges : temp
+          });
+    // console.log(temp);
+    // var out = [];
+    
+    // for(var i = 0; i < temp.length; i++){
+    //   if(i != k){
+    //     out.push(temp[i]);
+    //   }
+    //   if(i == (temp.length)-1){
+    //     dis.setState({
+    //       ranges : out
+    //     });
+    //   }
+    // }
+    
+  };
+
   triggerBrowse = inp => {
     const input = document.getElementById(inp);
     input.click();
@@ -361,7 +424,7 @@ export default class CreateFee extends Component {
     }
 
     function onChange(event){
-      console.log(event);
+      
       // this.setState({
       //   trans_type: event.target.value
       // });
@@ -374,7 +437,7 @@ export default class CreateFee extends Component {
     if (redirect) {
       return <Redirect to="/" />
     }
-    
+    const dis = this;
     return (
       <Wrapper>
         <Helmet>
@@ -424,20 +487,15 @@ Create Revenue sharing Rules</h3>
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label>Transaction Type</label>
-                  <TextInput
+                   <SelectInput
                     type="text"
                     name="trans_type"
-                    onFocus={inputFocus}
-                  onBlur={inputBlur}
                     value={this.state.trans_type}
                     onChange={this.handleInputChange.bind(this)}
                     required
                     list="ttype"
                   >
-                  </TextInput>
-                  <datalist id="ttype">
-                  <option value="">Transaction Type</option>
+                       <option value="">Transaction Type</option>
                     <option >Wallet to Wallet </option>
                     <option >Sending Non Wallet to Non Wallet </option>
                     <option >Receiving Non Wallet from Non Wallet</option>
@@ -447,7 +505,8 @@ Create Revenue sharing Rules</h3>
                     <option >Non Wallet to Merchant</option>
                     <option >Wallet to Bank Account</option>
                     <option >Bank Account to Wallet Request</option>
-                  </datalist>
+                  </SelectInput>
+                 
                   </FormGroup>
                   </Col>
                   <Col>
@@ -468,105 +527,92 @@ Create Revenue sharing Rules</h3>
                   </FormGroup>
                   </Col>
                 </Row>
-    <H4>Transation amount Range <span className="small">(for example from {CURRENCY} 0 to {CURRENCY} 100)</span></H4>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label>From</label>
-                  <TextInput
-                    type="text"
-                    name="trans_from"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.trans_from}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label>To</label>
-                  <TextInput
-                    type="text"
-                    name="trans_to"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.trans_to}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>  
+   
 
                 <H4>Transaction Count</H4>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label>From</label>
-                  <TextInput
-                    type="text"
-                    name="transcount_from"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.transcount_from}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label>To</label>
-                  <TextInput
-                    type="text"
-                    name="transcount_to"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.transcount_to}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>  
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label>Fixed Amount</label>
-                  <TextInput
-                    type="text"
-                    name="fixed_amount"
-                    onFocus={inputFocus}
-                    required
-                    onBlur={inputBlur}
-                    value={this.state.fixed_amount}
-                    onChange={this.handleInputChange}
+                {
+                  this.state.ranges.map(function(v, i) {
                     
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label>Percentage</label>
-                  <TextInput
-                  required
-                    type="text"
-                    name="percentage"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.percentage}
-                    onChange={this.handleInputChange}
+                    return <Row key={i}>
+                    <Col cW="20%" mR="2%">
+                    <FormGroup>
+                    <label>From</label>
+                    <TextInput
+                      type="text"
+                      name="trans_from"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={v.trans_from}
+                      onChange={dis.handleInputChange2}
+                      data-key = {i}
+                      required
+                    />
+                    </FormGroup>
+                    </Col>
+                    <Col cW="20%" mR="2%">
+                    <FormGroup>
+                    <label>To</label>
+                    <TextInput
+                      type="text"
+                      name="trans_to"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={v.trans_to}
+                      onChange={dis.handleInputChange2}
+                      data-key = {i}
+                      required
+                    />
+                    </FormGroup>
+                    </Col>
+                    <Col cW="26%" mR="2%">
+                    <FormGroup>
+                    <label>Fixed Amount</label>
+                    <TextInput
+                      type="text"
+                      name="fixed_amount"
+                      onFocus={inputFocus}
+                      required
+                      onBlur={inputBlur}
+                      value={v.fixed_amount}
+                      onChange={dis.handleInputChange2}
+                      data-key = {i}
+                      
+                    />
+                    </FormGroup>
+                    </Col>
+                    <Col cW="28%" mR="0">
+                    <FormGroup>
+                    <label>Percentage</label>
+                    <TextInput
+                    required
+                      type="text"
+                      name="percentage"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={v.percentage}
+                      onChange={dis.handleInputChange2}
+                      data-key = {i}
+                      
+                    />
+                    </FormGroup>
+                    {
+                      i > 0 ?
+                      <a href="#" onClick={() => dis.removeRange(i)} className="material-icons removeBtn">cancel</a>
+                      :
+                      null
+                    }
                     
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>
+                    </Col>
+                  </Row>
+                  })
+                }
+                 <Button type="button" accentedBtn marginTop="10px" onClick={this.addRange}>
+                <span>Add Another Range</span>
+              </Button>
               
 
 
-              <Button filledBtn marginTop="50px">
+              <Button filledBtn marginTop="100px">
                 <span>Create Rules</span>
               </Button>
             </form>
