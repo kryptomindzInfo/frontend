@@ -27,7 +27,7 @@ const PopupBody = styled.div`
   width: 90%;
   max-width: 648px;
   padding: 20px;
-  margin: 50px auto;
+  margin: 30px auto;
   position:relative;
   
 .popClose{

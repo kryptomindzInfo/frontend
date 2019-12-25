@@ -205,7 +205,12 @@ export default class BankPage extends Component {
       this.setState({
         otpOpt: 'addBank'
       }, () => {
-        this.generateOTP();
+        this.setState({
+          showOtp: true
+        }, () =>{
+          this.generateOTP();
+        });
+        
       });
       
     }
@@ -263,8 +268,8 @@ blockBank = (e, s) =>{
     }
     else{
       this.setState({
-        otpOpt: 'editBank'
-      }, () => {
+        showEditOtp: true
+      }, () =>{
         this.generateOTP();
       });
     }
@@ -1000,10 +1005,10 @@ blockBank = (e, s) =>{
                   </UploadArea>
               </FormGroup>
               <p className="note">Please create the revenue policy or otherwise by default 0 fee will be debited for all transctions</p>
-              <Button filledBtn marginTop="50px">
+              <Button filledBtn marginTop="10px">
                 <span><FormattedMessage {...messages.addbank} /></span>
               </Button>
-              <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
+              
             </form>
             
 
@@ -1447,7 +1452,7 @@ blockBank = (e, s) =>{
                   </UploadArea>
               </FormGroup>
 
-              <Button filledBtn marginTop="50px">
+              <Button filledBtn marginTop="10px">
                 <span>Update Bank</span>
               </Button>
             </form>

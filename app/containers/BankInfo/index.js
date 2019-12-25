@@ -134,8 +134,8 @@ export default class BankInfo extends Component {
     }
     else{
       this.setState({
-        otpOpt: 'editBank'
-      }, () => {
+        showOtp: true
+      }, () =>{
         this.generateOTP();
       });
     }
@@ -259,7 +259,7 @@ export default class BankInfo extends Component {
             throw res.data.error;
           }else{
             this.setState({
-              showOtp: true,
+              showEditOtp: true,
               notification: 'OTP Sent'
             });
             this.success();
@@ -1107,7 +1107,7 @@ export default class BankInfo extends Component {
                   </UploadArea>
               </FormGroup>
 
-              <Button filledBtn marginTop="50px">
+              <Button filledBtn marginTop="10px">
                 <span>Update Bank</span>
               </Button>
             </form>
