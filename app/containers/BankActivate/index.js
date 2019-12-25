@@ -25,7 +25,7 @@ import FormGroup from 'components/FormGroup';
 import BackBtn from 'components/BackBtn';
 import PrimaryBtn from 'components/PrimaryBtn';
 import Button from 'components/Button';
-import Col from 'components/Col';
+import A from 'components/A';
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -139,9 +139,12 @@ export default class BankActivate extends Component {
         </FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
-          <BackBtn onClick={ this.history.push("/bank") } className="material-icons">
+
+          <A href="/bank"  float="left">
+          <BackBtn className="material-icons">
             keyboard_backspace
           </BackBtn>
+          </A>
             <FormattedMessage {...messages.pagetitle} /></LoginHeader>
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
           <form action="" method="POST" onSubmit={this.activateAccount}>
