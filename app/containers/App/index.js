@@ -10,6 +10,8 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import InfraRoute from './InfraRoute';
+import BankRoute from './BankRoute';
 
 import HomePage from 'containers/HomePage/Loadable';
 import SignupPage from 'containers/SignupPage/Loadable';
@@ -62,7 +64,7 @@ toast.configure();
 export default function App() {
   const notify = () => toast('Wow so easy !');
   const token = localStorage.getItem('logged');
-
+  const bankToken = localStorage.getItem('bankLogged');
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -72,31 +74,33 @@ export default function App() {
           <Route exact path="/lang" component={LocaleToggle} />
           <Route exact path="/signup" component={SignupPage} />
           <Route exact path="/forgot-password" component={ForgotPasswordPage} />
-          <Route exact path="/otp" component={OTPPage} />
-          <Route exact path="/dashboard" component={DashboardPage} token={token} />
-          <Route exact path="/banks" component={BankPage} />
-          <Route exact path="/profile" component={InfraProfile} />
-          <Route exact path="/user" component={UserPage} />
-          <Route exact path="/" component={HomePage} notify={notify} />
           <Route exact path="/forgot-setup" component={ForgotSetup} />
-          <Route path="/fees/:bank?" component={FeeList} />
-          <Route path="/info/:bank?" component={InfraInfo} />
-          <Route exact path="/bank" component={BankLoginPage} />
-          <Route path="/createfee/:bank?" component={CreateFee} />
-          <Route path="/editfee/:bank?" component={EditFee} />
-          <Route path="/documents/:bank?" component={Documents} />
-          <Route path="/operationalHistory/:bank?" component={OperationalHistory} />
-          <Route path="/masterHistory/:bank?" component={MasterHistory} />
+          <Route exact path="/otp" component={OTPPage} />
 
+          <InfraRoute exact path = "/dashboard" component={DashboardPage} />
+          <InfraRoute exact path="/banks" component={BankPage} />
+          <InfraRoute exact path="/profile" component={InfraProfile} />
+          <InfraRoute exact path="/user" component={UserPage} />
+          <InfraRoute path="/fees/:bank?" component={FeeList} />
+          <InfraRoute path="/info/:bank?" component={InfraInfo} />
+          <InfraRoute path="/createfee/:bank?" component={CreateFee} />
+          <InfraRoute path="/editfee/:bank?" component={EditFee} />
+          <InfraRoute path="/documents/:bank?" component={Documents} />
+          <InfraRoute path="/operationalHistory/:bank?" component={OperationalHistory} />
+          <InfraRoute path="/masterHistory/:bank?" component={MasterHistory} />
+
+          <Route exact path="/bank" component={BankLoginPage} />
           <Route exact path="/bank/setup" component={BankSetupPage} />
-          <Route path="/bank/info" component={BankInfo} />
-          <Route path="/bank/fees" component={BankFees} />
-          <Route path="/bank/documents" component={BankDocuments} />
+          <Route exact path="/bank/activate" component={BankActivate} />
           <Route exact path="/bank/forgot-password" component={BankForgotPasswordPage}/>
           <Route exact path="/bank/otp" component={BankOTPPage} />
-          <Route exact path="/bank/activate" component={BankActivate} />
-          <Route exact path="/bank/dashboard" component={BankDashboard} />
+
+          <BankRoute exact path="/bank/dashboard" component={BankDashboard} />
+          <BankRoute path="/bank/info" component={BankInfo} />
+          <BankRoute path="/bank/fees" component={BankFees} />
+          <BankRoute path="/bank/documents" component={BankDocuments} />
           
+
           <Route component={NotFoundPage} />
         </Switch>
         <GlobalStyle />
