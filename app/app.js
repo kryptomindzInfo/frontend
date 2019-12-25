@@ -78,6 +78,28 @@ if (!window.Intl) {
 // Install ServiceWorker and AppCache in the end since
 // it's not most important operation and if main code fails,
 // we do not want it installed
+const runtime = require('offline-plugin/runtime');
 if (process.env.NODE_ENV === 'production') {
-  require('offline-plugin/runtime').install(); // eslint-disable-line global-require
+    runtime.install({
+    onUpdating: () => {
+      console.log('SW Event:', 'onUpdating');
+    },
+    onUpdateReady: () => {
+      console.log('SW Event:', 'onUpdateReady');
+      // Tells to new SW to take control immediately
+      console.log('Installing new version of this website, please wait..');
+      setTimeout(() => {
+        runtime.applyUpdate();
+      }, 1000);
+    },
+    onUpdated: () => {
+      console.log('SW Event:', 'onUpdated');
+      // Reload the webpage to load into the new version
+      window.location.reload();
+    },
+
+    onUpdateFailed: () => {
+      console.log('SW Event:', 'onUpdateFailed');
+    },
+  });
 }
