@@ -7,7 +7,7 @@ font-size: 18px;
 height: 63px;
 box-sizing: border-box;
 padding: 11px 30px;
-> a {
+> .anchor {
     color: #fff;
 }
 &:after{

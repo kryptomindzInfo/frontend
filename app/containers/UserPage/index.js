@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -165,8 +166,11 @@ roles:[],
       pro_permissions: [],
       name: '',
       address1: '',
+      username: '',
+      password:'',
       state: '',
       zip: '',
+      profile_id: '',
       ccode: '',
       country: '',
       email: '',
@@ -198,7 +202,15 @@ roles:[],
   };
 
   addBank = event => {
+
     event.preventDefault();
+    if(this.state.logo == null || this.state.logo == ''){
+      this.setState({
+        notification: "You need to upload a logo"
+      }, () =>{
+        this.error();
+      });
+    }else{
     axios
       .post(`${API_URL  }/addInfraUser`, {
         name: this.state.name,
@@ -265,10 +277,19 @@ roles:[],
     //     });
     //     this.error();
     //   });
+    }
   };
 
   editUser = event => {
     event.preventDefault();
+    if(this.state.logo == null || this.state.logo == ''){
+      this.setState({
+        notification: "You need to upload a logo"
+      }, () =>{
+        this.error();
+      });
+    }
+    else{
     axios
       .post(`${API_URL  }/editInfraUser`, {
         name: this.state.name,
@@ -306,6 +327,7 @@ roles:[],
         });
         this.error();
       });
+    }
   };
 
   verifyOTP = event => {
@@ -353,6 +375,14 @@ roles:[],
 
   addProfile = event => {
     event.preventDefault();
+    if(!this.state.create_bank && !this.state.edit_bank && !this.state.create_fee){
+      this.setState({
+        notification: "You need to select at least one role"
+      }, () => {
+        this.error();
+      });
+      
+    }else{
     axios
       .post(`${API_URL  }/addProfile`, {
         pro_name: this.state.pro_name,
@@ -388,6 +418,7 @@ roles:[],
         });
         this.error();
       });
+    }
   };
 
   editProfile = event => {
@@ -464,7 +495,7 @@ roles:[],
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
-            throw "File upload error";
+            throw res.data.error;
           }else{
             this.setState({
               [key] : res.data.name
@@ -747,7 +778,7 @@ roles:[],
               <FormGroup>
                 <label>Email</label>
                 <TextInput
-                  type="text"
+                  type="email"
                   name="email"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
@@ -760,7 +791,9 @@ roles:[],
               <FormGroup>
                   <label>Mobile Number</label>
                   <TextInput
-                    type="text"
+                     type="text"
+                     pattern="[0-9]{10}"
+                     title="10 Digit numeric value"
                     name="mobile"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
@@ -775,6 +808,8 @@ roles:[],
                   <TextInput
                     type="text"
                     name="username"
+                    pattern=".{8,}"
+                    title= "Minimum 8 Characters"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
                     value={this.state.username}
@@ -786,7 +821,9 @@ roles:[],
                   <FormGroup>
                   <label>Temporary Password</label>
                   <TextInput
-                    type="text"
+                    type="password"
+                    pattern=".{8,}"
+                    title= "Minimum 8 Characters"
                     name="password"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
@@ -900,6 +937,8 @@ roles:[],
                 <TextInput
                   type="text"
                   name="name"
+                    pattern=".{8,}"
+                    title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   autoFocus
                   onBlur={inputBlur}
@@ -911,7 +950,7 @@ roles:[],
               <FormGroup>
                 <label>Email</label>
                 <TextInput
-                  type="text"
+                  type="email"
                   name="email"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
@@ -925,7 +964,9 @@ roles:[],
               <FormGroup>
                   <label>Mobile Number</label>
                   <TextInput
-                    type="text"
+                     type="text"
+                     pattern="[0-9]{10}"
+                     title="10 Digit numeric value"
                     name="mobile"
                     autoFocus
                     onFocus={inputFocus}
@@ -940,6 +981,8 @@ roles:[],
                   <label>User Id</label>
                   <TextInput
                     type="text"
+                    pattern=".{8,}"
+                    title= "Minimum 8 Characters"
                     name="username"
                     onFocus={inputFocus}
                     autoFocus
@@ -953,7 +996,9 @@ roles:[],
                   <FormGroup>
                   <label>Temporary Password</label>
                   <TextInput
-                    type="text"
+                    type="password"
+                    pattern=".{8,}"
+                    title= "Minimum 8 Characters"
                     name="password"
                     onFocus={inputFocus}
                     autoFocus

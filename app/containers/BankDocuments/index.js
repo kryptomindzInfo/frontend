@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
@@ -339,7 +340,7 @@ export default class BankDocuments extends Component {
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
-            throw "File upload error";
+            throw res.data.error;
           }else{
             this.setState({
               [key] : res.data.name
@@ -449,7 +450,7 @@ export default class BankDocuments extends Component {
                     ? this.state.docs.map(function(b) {
                       var filename = b.contract.replace(/^.*[\\\/]/, '');
                       var ext = b.contract.split('.').pop();
-                      var icon = (ext == 'pdf') ? CONTRACT_URL+'main/pdf-icon.png' : CONTRACT_URL+'main/doc-icon.png';
+                      var icon = (ext == 'pdf') ? STATIC_URL+'main/pdf-icon.png' : STATIC_URL+'main/pdf-icon.png';
                       var isoformat = b.created_at;
                       var readable = new Date(isoformat);
                       var m = readable.getMonth(); // returns 6
@@ -460,7 +461,7 @@ export default class BankDocuments extends Component {
                       var mlong = months[m];
                       var fulldate = d + " " + mlong + " " + y+ " " + h+ ":" + mi;
                       return <Card key={b._id} blueHover col horizontalMargin="10px" cardWidth="192px" className="doc">
-                        <a href={STATIC_URL+b.contract} target="_blank">
+                        <a href={CONTRACT_URL+b.contract} target="_blank">
                         <div className="profile">
                           <img src={icon} />
                           </div>

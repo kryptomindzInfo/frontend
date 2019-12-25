@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -246,7 +247,7 @@ export default class InfraProfile extends Component {
   editProfile = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/editProfile`, {
+      .post(`${API_URL  }/editInfraProfile`, {
         name: this.state.name,
         mobile: this.state.mobile,
         username: this.state.username,

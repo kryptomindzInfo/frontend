@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -23,7 +24,7 @@ import InputsWrap from 'components/InputsWrap';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
-import Row from 'components/Row';
+import A from 'components/A';
 import Col from 'components/Col';
 import { API_URL } from '../App/constants';
 
@@ -145,9 +146,11 @@ export default class ForgotSetup extends Component {
         </FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
-          <BackBtn href="/forgot-password" className="material-icons">
+            <A href="/forgot-password" float="left">
+          <BackBtn  className="material-icons">
             keyboard_backspace
           </BackBtn>
+          </A>
             <FormattedMessage {...messages.pagetitle} /></LoginHeader>
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
           <form action="" method="POST" onSubmit={this.setupUpdate}>

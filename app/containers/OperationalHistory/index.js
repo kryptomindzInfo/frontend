@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -31,7 +32,7 @@ import TextInput from 'components/TextInput';
 import SelectInput from 'components/SelectInput';
 import Pagination from "react-js-pagination";
 import Row from 'components/Row';
-import Col from 'components/Col';
+import A from 'components/A';
 import styled from 'styled-components';
 
 const H4 = styled.h4 `
@@ -307,7 +308,7 @@ export default class OperationalHistory extends Component {
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
-            throw "File upload error";
+            throw res.data.error;
           }else{
             this.setState({
               [key] : res.data.name
@@ -449,9 +450,11 @@ export default class OperationalHistory extends Component {
         <TopBar>
         <Welcome infraNav/>
           <Container>
-            <a href="/dashboard" className="headerNavDash">
+          <A href="/dashboard" float="left">
+            <div className="headerNavDash">
               Main Dashboard
-            </a>
+            </div>
+            </A>
             <div className="bankLogo">
             <img src={STATIC_URL+this.state.logo}/>
               </div>

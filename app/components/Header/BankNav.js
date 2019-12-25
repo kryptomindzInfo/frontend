@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
+import A from 'components/A';
 
 const NavTag = styled.nav`
   float: left;
   margin: 8px 27px;
 `;
 
-const Link = styled.a`
+const Link = styled.span`
   color: #fff;
   font-size: 18px;
   margin: 0 12px;
@@ -29,24 +30,36 @@ class BankNav extends Component {
     return (
       <React.Fragment>
         <NavTag>
-          <Link href="/bank/dashboard" active={dashboard}>
+          <A href="/bank/dashboard" >
+          <Link active={dashboard}>
           <FormattedMessage {...messages.menu1} /> 
           </Link>
-          <Link href="/bank/branches" active={branches}>
+          </A>
+          <A href="/bank/branches">
+          <Link  active={branches}>
           <FormattedMessage {...messages.bmenu1} /> 
           </Link>
-          <Link href="/bank/partners" active={partners}>
+          </A>
+          <A href="/bank/partners" >
+          <Link active={partners}>
           <FormattedMessage {...messages.bmenu2} /> 
           </Link>
-          <Link href="/bank/merchants" active={merchants}>
+          </A>
+          <A href="/bank/merchants" >
+          <Link active={merchants}>
           <FormattedMessage {...messages.menu3} /> 
           </Link>
-          <Link href="/bank/users" active={users}>
+          </A>
+          <A href="/bank/users" >
+          <Link active={users}>
           <FormattedMessage {...messages.bmenu3} /> 
           </Link>
-          <Link href="/bank/reports" active={reports}>
+          </A>
+          <A href="/bank/reports" >
+          <Link active={reports}>
           <FormattedMessage {...messages.menu4} /> 
           </Link>
+          </A>
         </NavTag>
       </React.Fragment>
     );

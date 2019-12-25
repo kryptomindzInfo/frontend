@@ -9,6 +9,7 @@ import TextInput from 'components/TextInput';
 import TextArea from 'components/TextArea';
 import FormGroup from 'components/FormGroup';
 import Button from 'components/Button';
+import A from 'components/A';
 
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
@@ -252,9 +253,9 @@ class MasterWallet extends Component {
             <i className="material-icons">send</i> <FormattedMessage {...messages.sendmoney} />
             </button>
             }
-            
-                <a href={"/masterHistory/"+this.props.historyLink} className="history">History</a>
-            
+              <A href={"/masterHistory/"+this.props.historyLink}>
+                <span  className="history">History</span>
+                </A>
              { this.state.popup ? 
           <Popup close={this.closePopup.bind(this)} roundedCorner>
           <h1 className="normalH1">Transfer the amount</h1>

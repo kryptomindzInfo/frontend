@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -24,7 +25,7 @@ import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
 import Button from 'components/Button';
-import Table from 'components/Table';
+import A from 'components/A';
 import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
@@ -246,7 +247,7 @@ export default class Documents extends Component {
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
-            throw "File upload error";
+            throw res.data.error;
           }else{
             this.setState({
               [key] : res.data.name
@@ -351,9 +352,11 @@ export default class Documents extends Component {
         <TopBar>
         <Welcome infraNav/>
           <Container>
-            <a href="/dashboard" className="headerNavDash">
+            <A  href="/dashboard" float="left">
+            <div className="headerNavDash">
               Main Dashboard
-            </a>
+            </div>
+            </A>
             <div className="bankLogo">
             <img src={STATIC_URL+this.state.logo}/>
               </div>
@@ -379,7 +382,7 @@ export default class Documents extends Component {
                         ? this.state.docs.map(function(b) {
                           var filename = b.contract.replace(/^.*[\\\/]/, '');
                           var ext = b.contract.split('.').pop();
-                          var icon = (ext == 'pdf') ? CONTRACT_URL+'main/pdf-icon.png' : CONTRACT_URL+'main/doc-icon.png';
+                          var icon = (ext == 'pdf') ? STATIC_URL+'main/pdf-icon.png' : STATIC_URL+'main/pdf-icon.png';
                           var isoformat = b.created_at;
                           var readable = new Date(isoformat);
                           var m = readable.getMonth(); // returns 6
@@ -390,7 +393,7 @@ export default class Documents extends Component {
                           var mlong = months[m];
                           var fulldate = d + " " + mlong + " " + y+ " " + h+ ":" + mi;
                           return <Card key={b._id} blueHover col horizontalMargin="10px" cardWidth="192px" className="doc">
-                            <a href={STATIC_URL+b.contract} target="_blank">
+                            <a href={CONTRACT_URL+b.contract} target="_blank">
                             <div className="profile">
                               <img src={icon} />
                               </div>
@@ -586,7 +589,7 @@ export default class Documents extends Component {
               <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
                     { 
                     this.state.contract ? 
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
+                    <a className="uploadedImg" href={CONTRACT_URL+ this.state.contract } target="_BLANK">
                     </a> 
                     :
                     ' '

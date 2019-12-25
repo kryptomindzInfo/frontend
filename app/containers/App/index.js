@@ -57,8 +57,12 @@ const theme = {
 };
 toast.configure();
 
+
+
 export default function App() {
   const notify = () => toast('Wow so easy !');
+  const token = localStorage.getItem('logged');
+
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -69,7 +73,7 @@ export default function App() {
           <Route exact path="/signup" component={SignupPage} />
           <Route exact path="/forgot-password" component={ForgotPasswordPage} />
           <Route exact path="/otp" component={OTPPage} />
-          <Route exact path="/dashboard" component={DashboardPage} />
+          <Route exact path="/dashboard" component={DashboardPage} token={token} />
           <Route exact path="/banks" component={BankPage} />
           <Route exact path="/profile" component={InfraProfile} />
           <Route exact path="/user" component={UserPage} />

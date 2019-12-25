@@ -45,7 +45,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
     position: absolute;
     right: 20px;
     bottom: 25px;
-    color: ${props => props.theme.accent};
+    color: ${props => props.theme.accent} !important;
 }
 &.sideNav{
     padding: 15px 10px;
@@ -122,7 +122,10 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
         .material-icons{
             background: #417505;
             color: #fff;
-            
+            margin-right: 10px;
+            font-size: 28px;
+    padding: 4px;
+    border-radius: 50%;
         }
     }
 }

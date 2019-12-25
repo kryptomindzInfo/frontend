@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -16,7 +17,7 @@ import messages from './messages';
 import Wrapper from 'components/Wrapper';
 import TopBar from 'components/Header/TopBar';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
+import A from 'components/A';
 import Nav from 'components/Header/Nav';
 import Welcome from 'components/Header/Welcome';
 import SidebarTwo from 'components/Sidebar/SidebarTwo';
@@ -420,7 +421,7 @@ export default class EditFee extends Component {
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
-            throw "File upload error";
+            throw res.data.error;
           }else{
             this.setState({
               [key] : res.data.name
@@ -519,9 +520,11 @@ export default class EditFee extends Component {
         <TopBar>
         <Welcome infraNav/>
           <Container>
-            <a href="/dashboard" className="headerNavDash">
+            <A href="/dashboard">
+            <div  className="headerNavDash">
               Main Dashboard
-            </a>
+            </div>
+            </A>
             <div className="bankLogo">
             <img src={STATIC_URL+this.state.logo}/>
               </div>
@@ -536,7 +539,9 @@ export default class EditFee extends Component {
             <Card bigPadding centerSmall>
               <div className="cardHeader" >
                 <div className="cardHeaderLeft flex">
-                  <a className="material-icons" href={"/fees/"+this.props.match.params.bank}>arrow_back</a>
+                  <A  href={"/fees/"+this.props.match.params.bank}>
+                  <i className="material-icons">arrow_back</i>
+                  </A>
                   <h3>
 Edit Revenue sharing Rule</h3>
                 </div>
@@ -585,7 +590,7 @@ Edit Revenue sharing Rule</h3>
                   </Col>
                   <Col>
                   <FormGroup>
-                  <TextInput
+                  <SelectInput
                     type="text"
                     name="active"
                     value={this.state.active}
@@ -594,11 +599,9 @@ Edit Revenue sharing Rule</h3>
                     required
                     list="act"
                   >
-                  </TextInput>
-                  <datalist id="act">
-                  <option>Active</option>
+                     <option>Active</option>
                     <option>Inactive </option>
-                  </datalist>
+                  </SelectInput>
                   </FormGroup>
                   </Col>
                 </Row>
@@ -629,6 +632,8 @@ Edit Revenue sharing Rule</h3>
                         :
                         <TextInput
                         type="text"
+                        pattern="[0-9]{1,}"
+                        title="Greater than or equal to 0"
                         name="trans_from"
                         onFocus={inputFocus}
                         onBlur={inputBlur}
@@ -646,7 +651,9 @@ Edit Revenue sharing Rule</h3>
                     <FormGroup>
                     <label>To</label>
                     <TextInput
-                      type="text"
+                       type="text"
+                       pattern="[0-9]{1,}"
+                       title="Greater than or equal to 0"
                       name="trans_to"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
@@ -693,7 +700,7 @@ Edit Revenue sharing Rule</h3>
                     </FormGroup>
                     {
                       i > 0 ?
-                      <a href="#" onClick={() => dis.removeRange(i)} className="material-icons removeBtn">cancel</a>
+                      <span onClick={() => dis.removeRange(i)} className="material-icons removeBtn pointer">cancel</span>
                       :
                       null
                     }

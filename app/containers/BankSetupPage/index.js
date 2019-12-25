@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -24,7 +25,7 @@ import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
 import BackBtn from 'components/BackBtn';
-import Row from 'components/Row';
+import A from 'components/A';
 import Col from 'components/Col';
 import { API_URL } from '../App/constants';
 
@@ -146,9 +147,11 @@ export default class BankSetupPage extends Component {
         </FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
-          <BackBtn href="/bank/forgot-password" className="material-icons">
+            <A href="/bank" float="left">
+          <BackBtn className="material-icons">
             keyboard_backspace
           </BackBtn>
+          </A>
             <FormattedMessage {...messages.pagetitle} /></LoginHeader>
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
           <form action="" method="POST" onSubmit={this.setupUpdate}>
@@ -159,6 +162,8 @@ export default class BankSetupPage extends Component {
                   id="username"
                   type="text"
                   name="username"
+                  pattern=".{8,}"
+                  title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.username}
@@ -171,6 +176,8 @@ export default class BankSetupPage extends Component {
                 <TextInput
                   type="password"
                   name="password"
+                  pattern=".{8,}"
+                  title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.password}
@@ -184,6 +191,8 @@ export default class BankSetupPage extends Component {
                 <TextInput
                   type="password"
                   name="confirm"
+                  pattern=".{8,}"
+                  title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.confirm}

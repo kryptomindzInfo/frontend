@@ -15,9 +15,10 @@ background-color: #ffffff;
 left: 15px;
 display:none;
 
- a{
+ .anchor, span{
   color: #000;
   font-size: 18px;
+  cursor: pointer;
   padding: 8px 0;
   display:block;
   font-weight: normal;

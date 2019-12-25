@@ -6,6 +6,7 @@
  */
 import React, {Component} from 'react';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
@@ -22,6 +23,7 @@ import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
 import BackBtn from 'components/BackBtn';
+import A from 'components/A';
 
 import { API_URL } from '../App/constants';
 
@@ -103,9 +105,11 @@ render() {
       </FrontLeftSection>
       <FrontRightSection>
         <LoginHeader>
-          <BackBtn href="/bank" className="material-icons">
+        <A href="/bank" float="left">
+          <BackBtn  className="material-icons">
             keyboard_backspace
           </BackBtn>
+          </A>
           <FormattedMessage {...messages.pagetitle} />
         </LoginHeader>
         <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
@@ -115,6 +119,8 @@ render() {
               <label><FormattedMessage {...messages.mobile} /></label>
               <TextInput
                   type="text"
+                  pattern="[0-9]{10}"
+                  title="10 Digit numeric value"
                   name="mobile"
                   onFocus={inputFocus}
                   onBlur={inputBlur}

@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -29,6 +30,7 @@ import TextInput from 'components/TextInput';
 import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import A from 'components/A';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
@@ -252,7 +254,7 @@ export default class FeeList extends Component {
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
-            throw "File upload error";
+            throw res.data.error;
           }else{
             this.setState({
               [key] : res.data.name
@@ -342,9 +344,11 @@ export default class FeeList extends Component {
         <TopBar>
         <Welcome infraNav/>
           <Container>
-            <a href="/dashboard" className="headerNavDash">
+            <A href="/dashboard" float="left">
+            <div  className="headerNavDash">
               Main Dashboard
-            </a>
+            </div>
+            </A>
             <div className="bankLogo">
             <img src={STATIC_URL+this.state.logo}/>
               </div>
@@ -409,9 +413,9 @@ export default class FeeList extends Component {
                           <td className="tac bold">
                             {
                               b.status == 0 ?
-                              <a href="#" className="material-icons ">block</a>
+                              <span className="material-icons">block</span>
                               :
-<a href="#" onClick={ () => ep.goEdit(ep.state.bank, b._id)}>Edit</a>
+                              <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
                             }
                             
                             </td></tr>

@@ -82,7 +82,7 @@ td > .material-icons{
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   background-color: #ffffff;
         padding: 5px 10px;
-        > a {
+        > span {
             margin: 8px 0 12px;
             text-align: left;
             display:block;

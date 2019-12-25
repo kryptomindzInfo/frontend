@@ -4,6 +4,9 @@ import LanguageSwitch from 'components/LanguageSwitch';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 import SubNav from './SubNav';
+import A from 'components/A';
+import history from 'utils/history';
+
 
 const WelcomeWrap = styled.div `
     float: right;
@@ -32,13 +35,15 @@ class Welcome extends Component {
   logoutInfra = () => {
     localStorage.removeItem('logged');
     localStorage.removeItem('name');
-    window.location.href = '/';
+    history.push('/');
+    //this.props.history.push('/');
   };
 
   logoutBank = () => {
     localStorage.removeItem('bankLogged');
     localStorage.removeItem('bankName');
-    window.location.href = '/bank';
+    history.push('/bank');
+    //this.props.history.push('/bank');
   };
 
   render() {
@@ -54,7 +59,7 @@ class Welcome extends Component {
 
     return (
 
-        <WelcomeWrap className="clr" href="#">
+        <WelcomeWrap className="clr" >
             <div className="dropdown fl">
               <Icon className="material-icons fl">
                   settings
@@ -65,13 +70,15 @@ class Welcome extends Component {
               {
                 this.props.infraNav ?
                 <SubNav className="infraSubNav">
-                    { isAdmin ? <a href="/profile">Profile</a> : null }
-                    <a onClick={this.logoutInfra} href="#">Logout</a>
+                    {/* { isAdmin ?  */}
+                    <A href="/profile">Profile</A>
+                    {/* //  : null } */}
+                    <span onClick={this.logoutInfra} >Logout</span>
                 </SubNav>
                 :
                 <SubNav className="bankSubNav">
-                    <a href="/bank/info">Settings</a>
-                    <a onClick={this.logoutBank} href="#">Logout</a>
+                    <A href="/bank/info">Settings</A>
+                    <span onClick={this.logoutBank} >Logout</span>
                 </SubNav>
               }
                 

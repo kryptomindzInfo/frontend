@@ -4,6 +4,7 @@ import Nav from './Nav';
 import TopBar from './TopBar';
 import Welcome from './Welcome';
 import Container from 'components/Container';
+import A from 'components/A';
 
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
@@ -15,9 +16,9 @@ class Header extends Component {
         <TopBar>
           <Welcome infraNav />
           <Container>
-            <a href="/dashboard">
+            <A href="/dashboard" float="left">
               <Logo><FormattedMessage {...messages.logo} /></Logo>
-            </a>
+            </A>
             <Nav active={this.props.active} />
           </Container>
         </TopBar>

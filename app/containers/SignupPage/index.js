@@ -20,7 +20,7 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import BackBtn from 'components/BackBtn';
 import CheckBox from 'components/CheckBox';
-
+import A from 'components/A';
 
 export default function SignupPage() {
 
@@ -43,7 +43,9 @@ export default function SignupPage() {
         </FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
-            <BackBtn href="/" className="material-icons">keyboard_backspace</BackBtn> Sign Up
+            <A href="/" float="left">
+            <BackBtn className="material-icons">keyboard_backspace</BackBtn> Sign Up
+            </A>
           </LoginHeader>
           <FrontFormTitle>
             Create new account
@@ -83,10 +85,10 @@ export default function SignupPage() {
           </form>
           <Row marginTop>
             <Col>
-              <a href="/"><span>Have an account? </span> Sign In</a>
+              <A href="/"><span>Have an account? </span> Sign In</A>
             </Col>
             <Col textRight>
-              <a href="/forgot-password" >Forgot Password?</a>
+              <A href="/forgot-password" >Forgot Password?</A>
             </Col>
           </Row>
         </FrontRightSection>

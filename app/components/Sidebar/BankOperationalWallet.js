@@ -209,7 +209,7 @@ class OperationalWallet extends Component {
           }, function(){
             this.success();
             setTimeout(function(){
-              window.location.reload();
+              
             },1000);
           });
       }
@@ -284,7 +284,7 @@ class OperationalWallet extends Component {
             </button>
             }
             
-                {/* <a href={"/operationalHistory/"+this.props.historyLink} className="history">History</a> */}
+                
             
              { this.state.popup ? 
           <Popup close={this.closePopup.bind(this)} roundedCorner>

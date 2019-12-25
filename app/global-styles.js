@@ -133,6 +133,22 @@ body{
     right:-30px;
     top: 10px;
   }
+  .resend{
+    .timer{
+      color: #f5a623;
+    }
+    .go{
+      font-weight: bold;
+      background: #f5a623;
+      padding: 4px 10px;
+      border-radius: 7px;
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+  .pointer{
+    cursor:pointer;
+  }
 `;
 
 export default GlobalStyle;

@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -24,7 +25,7 @@ import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
 import Button from 'components/Button';
-import Table from 'components/Table';
+import A from 'components/A';
 import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
@@ -336,7 +337,7 @@ export default class InfraInfo extends Component {
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
-            throw "File upload error";
+            throw res.data.error;
           }else{
             this.setState({
               [key] : res.data.name
@@ -411,9 +412,11 @@ export default class InfraInfo extends Component {
         <TopBar>
         <Welcome infraNav/>
           <Container>
-            <a href="/dashboard" className="headerNavDash">
+            <A href="/dashboard" float="left">
+            <div className="headerNavDash">
               Main Dashboard
-            </a>
+            </div>
+            </A>
             <div className="bankLogo">
             <img src={STATIC_URL+this.state.logo}/>
               </div>
@@ -918,7 +921,7 @@ export default class InfraInfo extends Component {
                     ' '
                     }
                     <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
-                    <input type="file" id="logo" onChange={this.onChange} data-key="logo" required/>
+                    <input type="file" id="logo" onChange={this.onChange} data-key="logo" />
                     {
                     !this.state.logo ?
                     <i className="material-icons">cloud_upload</i>
@@ -949,7 +952,7 @@ export default class InfraInfo extends Component {
                     ' '
                     }
                     <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
-                    <input type="file" id="contract" onChange={this.onChange} data-key="contract" required/>
+                    <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
                     {
                     !this.state.contract ?
                     <i className="material-icons">cloud_upload</i>

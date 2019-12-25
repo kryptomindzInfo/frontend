@@ -9,6 +9,7 @@ import TextInput from 'components/TextInput';
 import TextArea from 'components/TextArea';
 import FormGroup from 'components/FormGroup';
 import Button from 'components/Button';
+import A from 'components/A';
 
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
@@ -186,12 +187,15 @@ class OperationalWallet extends Component {
         if(res.data.error){
           throw res.data.error;
         }else{
+          var tis = this;
           this.setState({
             notification: "Transfer Initiated, You will be notified once done"
           }, function(){
             this.success();
            setTimeout(function(){
-            window.location.reload();
+            tis.closePopup();
+            this.getBalance();
+            ts.props.reload();
            }, 1000);
           });
       }
@@ -247,8 +251,9 @@ class OperationalWallet extends Component {
             <i className="material-icons">send</i> <FormattedMessage {...messages.sendmoney} />
             </button>
             }
-            
-                <a href={"/operationalHistory/"+this.props.historyLink} className="history">History</a>
+              <A href={"/operationalHistory/"+this.props.historyLink}>
+                <span className="history">History</span>
+                </A>
             
              { this.state.popup ? 
           <Popup close={this.closePopup.bind(this)} roundedCorner>

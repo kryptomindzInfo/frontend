@@ -40,7 +40,7 @@ const Icon = styled.i `
 class LanguageSwitch extends Component {
   render() {
     return (
-        <LanguageWrap className="clr" href="#">
+        <LanguageWrap className="clr">
             <LocaleToggle />
             <Icon className="material-icons fl">g_translate</Icon>
         </LanguageWrap>

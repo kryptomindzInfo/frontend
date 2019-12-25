@@ -1,9 +1,9 @@
 import styled from 'styled-components';
-const BackBtn = styled.a `
+const BackBtn = styled.span `
   color: #9ea0a5;
   position: absolute;
   left: 37px;
-  padding: 6px 0;
+  padding: 0;
   font-size: 26px;
   font-weight: normal;
 `;

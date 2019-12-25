@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import Card from '../Card';
 import styled from 'styled-components';
-
+import A from 'components/A';
 const Sidebar = styled.aside `
 width: 260px;
 float:left;
 margin-right: ${props => props.marginRight ? '33px' : '0' };
+.anchor{
+  display:block;
+}
 `;
 
 const H3 = styled.h3 `
@@ -24,30 +27,30 @@ class BankSidebarTwo extends Component {
     return (
         <Sidebar marginRight>
             <H3>SETTINGS</H3>
-            <a href="/bank/info">
+            <A href="/bank/info">
             <Card rounded selected={info} className="sideNav">
                 <i className="material-icons">person_add</i>
                 <h3>Personal Info</h3>
             </Card >
-            </a>
-            <a href="/bank/security">
+            </A>
+            <A href="/bank/security">
             <Card rounded selected={security} className="sideNav">
             <i className="material-icons">security</i>
                 <h3>Login and Security</h3>
             </Card>
-            </a>
-            <a href="/bank/documents">
+            </A>
+            <A href="/bank/documents">
             <Card rounded selected={documents} className="sideNav">
             <i className="material-icons">folder</i>
                 <h3>Documents</h3>
             </Card>
-            </a>
-            <a href="/bank/fees">
+            </A>
+            <A href="/bank/fees">
             <Card rounded selected={fees} className="sideNav">
-            <i className="material-icons">mobile_screen_share</i>
+                <i className="material-icons">mobile_screen_share</i>
                 <h3>Fees</h3>
             </Card>
-            </a>
+            </A>
         </Sidebar>
     );
   }

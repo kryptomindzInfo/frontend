@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -26,6 +27,7 @@ import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import A from 'components/A';
 import { API_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -188,7 +190,7 @@ export default class HomePage extends Component {
           <Row marginTop>
             <Col />
             <Col textRight>
-              <a href="/forgot-password"><FormattedMessage {...messages.forgotpassword} /></a>
+              <A href="/forgot-password"><FormattedMessage {...messages.forgotpassword} /></A>
             </Col>
           </Row>
         </FrontRightSection>

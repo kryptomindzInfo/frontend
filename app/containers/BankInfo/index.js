@@ -7,6 +7,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
@@ -117,53 +118,81 @@ export default class BankInfo extends Component {
 
   editBank = event => {
     event.preventDefault();
-    axios
-      .post(`${API_URL  }/generateOTPBank`, {
-        name: this.state.name,
-        page: 'editBank',
-        username: this.state.username,
-        token,
-      })
-      .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
-            throw res.data.error;
-          }else{
-            this.setState({
-              otpId: res.data.id,
-              showEditOtp: true,
-              notification: 'OTP Sent'
-            });
-            this.success();
-          }
-        }else{
-          const error = new Error(res.data.error);
-          throw error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
-        });
+    if(this.state.logo == null || this.state.logo == ''){
+      this.setState({
+        notification: "You need to upload a logo"
+      }, () =>{
         this.error();
       });
+    }
+    else if(this.state.contract == null || this.state.contract == ''){
+      this.setState({
+        notification: "You need to upload a contract"
+      }, () =>{
+        this.error();
+      });
+    }
+    else{
+      this.setState({
+        otpOpt: 'editBank'
+      }, () => {
+        this.generateOTP();
+      });
+    }
   };
+
+  startTimer = () => {
+    var dis = this;
+    var timer = setInterval(function(){
+      if(dis.state.timer <= 0){
+        clearInterval(timer);
+        dis.setState({ resend: true });
+      }else{
+      var time = Number(dis.state.timer) - 1;
+      dis.setState({ timer: time});
+      }
+    }, 1000);
+  };
+
+  generateOTP = () =>{
+    this.setState({ resend: false, timer: 30});
+    this.startTimer();
+    axios
+    .post(`${API_URL  }/generateOTPBank`, {
+      name: this.state.name,
+      page: 'editBank',
+      username: this.state.username,
+      token,
+    })
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.error){
+          throw res.data.error;
+        }else{
+          this.setState({
+            otpId: res.data.id,
+            showEditOtp: true,
+            notification: 'OTP Sent'
+          });
+          this.success();
+        }
+      }else{
+        const error = new Error(res.data.error);
+        throw error;
+      }
+    })
+    .catch(err => {
+      this.setState({
+        notification: (err.response) ? err.response.data.error : err.toString()
+      });
+      this.error();
+    });
+  }
 
   closePopup = () => {
     this.setState({
       popup: false,
       showEditOtp: false,
-      name: '',
-      address1: '',
-      state: '',
-      zip: '',
-      ccode: '',
-      country: '',
-      email: '',
-      mobile: '',
-      logo: null,
-      contract: null,
-      otp: '',
       showOtp: false
     });
   };
@@ -395,7 +424,7 @@ export default class BankInfo extends Component {
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
-            throw "File upload error";
+            throw res.data.error;
           }else{
             this.setState({
               [key] : res.data.name
@@ -447,6 +476,7 @@ export default class BankInfo extends Component {
 
   verifyEditOTP = event => {
     event.preventDefault();
+
     axios
       .post(`${API_URL  }/editBankBank`, {
         name: this.state.name,
@@ -652,6 +682,8 @@ export default class BankInfo extends Component {
               <Button filledBtn marginTop="50px">
                 <span><FormattedMessage {...messages.verify} /></span>
               </Button>
+              <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
+
               </form>
               </div>
               :
@@ -978,6 +1010,8 @@ export default class BankInfo extends Component {
                   <label><FormattedMessage {...messages.popup7} /></label>
                   <TextInput
                     type="text"
+                    pattern="[0-9]{10}"
+                    title="10 Digit numeric value"
                     name="mobile"
                     autoFocus
                     onFocus={inputFocus}
@@ -992,7 +1026,7 @@ export default class BankInfo extends Component {
                   <FormGroup>
                   <label><FormattedMessage {...messages.popup8} /></label>
                   <TextInput
-                    type="text"
+                    type="email"
                     name="email"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
@@ -1022,7 +1056,7 @@ export default class BankInfo extends Component {
                     ' '
                     }
                     <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
-                    <input type="file" id="logo" onChange={this.onChange} data-key="logo" required/>
+                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
                     {
                     !this.state.logo ?
                     <i className="material-icons">cloud_upload</i>
@@ -1053,7 +1087,7 @@ export default class BankInfo extends Component {
                     ' '
                     }
                     <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
-                    <input type="file" id="contract" onChange={this.onChange} data-key="contract" required/>
+                    <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
                     {
                     !this.state.contract ?
                     <i className="material-icons">cloud_upload</i>

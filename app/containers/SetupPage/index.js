@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -54,14 +55,12 @@ export default class SetupPage extends Component {
       loading: true,
       redirect: false
     };
-    this.error = this.error.bind(this);
+    // this.error = this.error.bind(this);
   }
 
-  success = () => toast.success(this.state.notification);
-
-  error = () => toast.error(this.state.notification);
-
-  warn = () => toast.warn(this.state.notification);
+  success = (txt) => toast.success(txt);
+  error = (txt) => toast.error(txt);
+  warn = (txt) => toast.warn(txt);
 
   handleInputChange = event => {
     console.log(event);
@@ -74,36 +73,28 @@ export default class SetupPage extends Component {
   setupUpdate = event => {
     event.preventDefault();
     if(this.state.password != this.state.confirm){
-      this.setState({
-        notification: 'Passwords do not match'
-      }, () => {
-        this.error();
-    });
-      
+		this.error("Passwords do not match");
     }else{
     axios
       .post(`${API_URL}/setupUpdate`, this.state )
       .then(res => {
         if (res.status == 200) {
-            this.setState({
-              notification: 'Details updated, you will be redirected to the login screen'
-            }, () => {
-              this.success();
+           if(res.data.error){
+				throw res.data.error;
+			}else{
+              this.success('Details updated, you will be redirected to the login screen');
               let history = this.props.history;
               setTimeout(function(){
                 history.push('/');
-              }, 1000);
-          });
+			  }, 1000);
+			}
+      
         } else {
           throw res.data.error;
         }
       })
       .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        }, () => {
-          this.error();
-      });
+          this.error(err.response ? err.response.data.error : err.toString());
       });
     }
   };
@@ -159,7 +150,9 @@ export default class SetupPage extends Component {
                 <TextInput
                   id="username"
                   type="text"
-                  name="username"
+				  name="username"
+				  pattern=".{8,}"
+				  title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.username}
@@ -172,7 +165,9 @@ export default class SetupPage extends Component {
                 <label><FormattedMessage {...messages.newpass} /></label>
                 <TextInput
                   type="password"
-                  name="password"
+				  name="password"
+				  pattern=".{8,}"
+				  title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.password}
@@ -185,7 +180,9 @@ export default class SetupPage extends Component {
                 <label><FormattedMessage {...messages.confirm} /></label>
                 <TextInput
                   type="password"
-                  name="confirm"
+				  name="confirm"
+				  pattern=".{8,}"
+				  title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.confirm}
@@ -437,7 +434,9 @@ export default class SetupPage extends Component {
                 <FormGroup>
                 <label>Authorized Phone Number</label>
                 <TextInput
-                  type="number"
+				  type="text"
+				  pattern="[0-9]{10}"
+				  title="10 Digit numeric value"
                   name="mobile"
                   onFocus={inputFocus}
                   onBlur={inputBlur}

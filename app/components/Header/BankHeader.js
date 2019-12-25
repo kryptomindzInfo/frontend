@@ -4,6 +4,7 @@ import BankNav from './BankNav';
 import TopBar from './TopBar';
 import Welcome from './Welcome';
 import Container from 'components/Container';
+import A from 'components/A';
 
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
@@ -15,9 +16,9 @@ class BankHeader extends Component {
         <TopBar >
           <Welcome from="bank" />
           <Container>
-            <a href="/dashboard">
+            <A href="/dashboard" float="left">
               <Logo><FormattedMessage {...messages.logo} /></Logo>
-            </a>
+            </A>
             <BankNav active={this.props.active} />
           </Container>
         </TopBar>

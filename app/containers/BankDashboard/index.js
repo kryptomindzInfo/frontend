@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -16,7 +17,7 @@ import messages from './messages';
 import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
-import Sidebar from 'components/Sidebar';
+import A from 'components/A';
 import Main from 'components/Main';
 import Card from 'components/Card';
 import SidebarBank from 'components/Sidebar/SidebarBank';
@@ -122,7 +123,7 @@ export default class BankDashboard extends Component {
           <SidebarBank />
           <Main>
             <div className="clr">
-              <a href="/banks">
+              <A href="/banks">
                 <Card
                   horizontalMargin="7px"
                   cardWidth="151px"
@@ -132,7 +133,7 @@ export default class BankDashboard extends Component {
                   <h4><FormattedMessage {...messages.bbox1} /></h4>
                   <div className="cardValue">{this.state.totalBanks}</div>
                 </Card>
-              </a>
+              </A>
               <Card
                 horizontalMargin="7px"
                 cardWidth="151px"

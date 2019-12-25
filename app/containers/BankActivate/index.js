@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -138,7 +139,7 @@ export default class BankActivate extends Component {
         </FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
-          <BackBtn href="/bank" className="material-icons">
+          <BackBtn onClick={ this.history.push("/bank") } className="material-icons">
             keyboard_backspace
           </BackBtn>
             <FormattedMessage {...messages.pagetitle} /></LoginHeader>

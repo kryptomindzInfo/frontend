@@ -6,12 +6,13 @@
  */
 import React, {Component} from 'react';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
 import { FormattedMessage } from 'react-intl';
 import messages from '../ForgotPasswordPage/messages';
-
+import A from 'components/A';
 import Wrapper from 'components/Wrapper';
 import FrontLeftSection from 'components/FrontLeftSection';
 import FrontRightSection from 'components/FrontRightSection';
@@ -79,6 +80,7 @@ export default class ForgotPasswordPage extends Component {
       });
   };
 
+
 render() {
   function inputFocus(e) {
     const { target } = e;
@@ -101,9 +103,11 @@ render() {
       </FrontLeftSection>
       <FrontRightSection>
         <LoginHeader>
-          <BackBtn href="/" className="material-icons">
+          <A href="/" float="left">
+          <BackBtn className="material-icons">
             keyboard_backspace
           </BackBtn>
+          </A>
           <FormattedMessage {...messages.pagetitle} />
         </LoginHeader>
         <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
@@ -113,6 +117,8 @@ render() {
               <label><FormattedMessage {...messages.mobile} /></label>
               <TextInput
                   type="text"
+                  pattern="[0-9]{10}"
+                  title="10 Digit numeric value"
                   name="mobile"
                   onFocus={inputFocus}
                   onBlur={inputBlur}

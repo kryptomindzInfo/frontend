@@ -3,11 +3,15 @@ import OperationalWallet from './OperationalWallet';
 import MasterWallet from './MasterWallet';
 import Card from '../Card';
 import styled from 'styled-components';
+import A from 'components/A';
 
 const Sidebar = styled.aside `
 width: 260px;
 float:left;
 margin-right: ${props => props.marginRight ? '33px' : '0' };
+.anchor{
+  display:block;
+}
 `;
 
 const H3 = styled.h3 `
@@ -27,24 +31,24 @@ class SidebarTwo extends Component {
         return (
         <Sidebar marginRight>
             <H3>SETTINGS</H3>
-            <a href={"/info/"+this.props.bankId }>
+            <A href={"/info/"+this.props.bankId }>
             <Card rounded  selected={info} className="sideNav">
                 <i className="material-icons">person_add</i>
                 <h3>Bank Info</h3>
             </Card >
-            </a>
-            <a href={"/documents/"+this.props.bankId }>
+            </A>
+            <A href={"/documents/"+this.props.bankId }>
             <Card rounded selected={documents} className="sideNav">
             <i className="material-icons">folder</i>
                 <h3>Documents</h3>
             </Card>
-            </a>
-            <a href={"/fees/"+this.props.bankId }>
+            </A>
+            <A href={"/fees/"+this.props.bankId }>
             <Card selected={fees} rounded className="sideNav">
             <i className="material-icons">mobile_screen_share</i>
                 <h3>Fees</h3>
             </Card>
-            </a>
+            </A>
             <OperationalWallet historyLink={this.props.bankId } />
             <MasterWallet historyLink={this.props.bankId }  />
         </Sidebar>

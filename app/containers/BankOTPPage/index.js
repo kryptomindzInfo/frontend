@@ -6,6 +6,7 @@
  */
 import React, {Component} from 'react';
 import { Helmet } from 'react-helmet';
+
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
@@ -22,6 +23,7 @@ import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
 import BackBtn from 'components/BackBtn';
+import A from 'components/A';
 
 
 import { API_URL } from '../App/constants';
@@ -114,9 +116,11 @@ render() {
       </FrontLeftSection>
       <FrontRightSection>
         <LoginHeader>
-          <BackBtn href="/bank/forgot-password" className="material-icons">
+          <A href="/bank/forgot-password" float="left">
+          <BackBtn className="material-icons">
             keyboard_backspace
-          </BackBtn>{' '}
+          </BackBtn>
+          </A>
           <FormattedMessage {...messages.pagetitle} />
         </LoginHeader>
         <FrontFormTitle><FormattedMessage {...messages.title} /> {this.state.mobile}</FrontFormTitle>

@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
+import A from 'components/A';
 
 const NavTag = styled.nav`
   float: left;
   margin: 8px 27px;
 `;
 
-const Link = styled.a`
+const Link = styled.span`
   color: #fff;
   font-size: 18px;
   margin: 0 12px;
@@ -26,31 +27,41 @@ class Nav extends Component {
     const reports = this.props.active == 'reports' ? 'true' : '';
     const name = localStorage.getItem("name");
     const isAdmin = localStorage.getItem("isAdmin");
-    
+  
     return (
       <React.Fragment>
         <NavTag>
-          <Link href="/dashboard" active={dashboard}>
+          <A href="/dashboard" >
+          <Link active={dashboard}>
           <FormattedMessage {...messages.menu1} /> 
           </Link>
+          </A>
           {
-          isAdmin ?
-          <Link href="/user" active={user}>
+          isAdmin != 'false' ?
+          <A href="/user">
+          <Link 
+           active={user}>
             Infra User
           </Link>
+          </A>
           :
           null
           }
-          <Link href="/banks" active={bank}>
+          <A href="/banks">
+          <Link active={bank}>
           <FormattedMessage {...messages.menu2} /> 
-          </Link>
-          
-          <Link href="/merchants" active={merchants}>
+          </Link>         
+          </A>
+          <A href="/merchants">
+          <Link active={merchants}>
           <FormattedMessage {...messages.menu3} /> 
           </Link>
-          <Link href="/reports" active={reports}>
+          </A>
+          <A href="/reports">
+          <Link active={reports}>
           <FormattedMessage {...messages.menu4} /> 
           </Link>
+          </A>
         </NavTag>
       </React.Fragment>
     );
