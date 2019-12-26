@@ -100,7 +100,30 @@ export default class SetupPage extends Component {
   };
 
   componentDidMount() {
-    this.setState({ loading: false });
+
+		axios
+		.get(`${API_URL}/checkInfra`, {})
+		.then(res => {
+		  if (res.status == 200) {
+			
+			if(res.data.infras > 0){
+			  this.props.history.push('/');
+			}else{
+				this.setState({ loading: false });
+			}
+			
+		  } else {
+			throw res.data.error;
+		  }
+		})
+		.catch(err => {
+		  this.setState({
+			notification: err.response ? err.response.data.error : err.toString(),
+		  });
+		  this.error();
+		});
+		
+	  
   }
 
   onChange(e) {
@@ -125,6 +148,7 @@ export default class SetupPage extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
+		return null;
     }
     if (redirect) {
       return <Redirect to="/bank/dashboard" />;
