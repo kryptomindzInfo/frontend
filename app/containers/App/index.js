@@ -41,6 +41,7 @@ import Documents from 'containers/Documents/Loadable';
 import OperationalHistory from 'containers/OperationalHistory/Loadable';
 import MasterHistory from 'containers/MasterHistory/Loadable';
 import InfraProfile from 'containers/InfraProfile/Loadable';
+import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
@@ -99,6 +100,7 @@ export default function App() {
           <BankRoute path="/bank/info" component={BankInfo} />
           <BankRoute path="/bank/fees" component={BankFees} />
           <BankRoute path="/bank/documents" component={BankDocuments} />
+          <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
           
 
           <Route component={NotFoundPage} />

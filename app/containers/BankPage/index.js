@@ -58,7 +58,7 @@ export default class BankPage extends Component {
       state: '',
       zip: '',
       country: '',
-      ccode: '',
+      ccode: '+91',
       mobile: '',
       bank_id: '',
       email: '',
@@ -101,6 +101,16 @@ export default class BankPage extends Component {
     });
   };
 
+  countryChange = event => {
+    const { value, name } = event.target;
+    const title = event.target.options[event.target.selectedIndex].title;
+    
+    this.setState({
+      [name]: value,
+      ccode: title
+    });
+  };
+
   showPopup = () => {
     this.setState({ popup: true });
   };
@@ -119,7 +129,7 @@ export default class BankPage extends Component {
   };
 
   showEditPopup = (v) => {
-    this.setState({ editPopup: true, name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id });
+    this.setState({ editPopup: true, name: v.name, bcode: v.bcode, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id });
   };
 
   closePopup = () => {
@@ -130,7 +140,7 @@ export default class BankPage extends Component {
       address1: '',
       state: '',
       zip: '',
-      ccode: '',
+      bcode: '',
       country: '',
       email: '',
       mobile: '',
@@ -171,8 +181,8 @@ export default class BankPage extends Component {
             this.success();
           }
         }else{
-          const error = new Error(res.data.error);
-          throw error;
+          
+          throw res.data.error;
         }
       })
       .catch(err => {
@@ -268,7 +278,8 @@ blockBank = (e, s) =>{
     }
     else{
       this.setState({
-        showEditOtp: true
+        showEditOtp: true,
+        otpOpt: 'editBank'
       }, () =>{
         this.generateOTP();
       });
@@ -285,6 +296,7 @@ blockBank = (e, s) =>{
         zip: this.state.zip,
         country: this.state.country,
         ccode: this.state.ccode,
+        bcode: this.state.bcode,
         email: this.state.email,
         mobile: this.state.mobile,
         logo: this.state.logo,
@@ -330,6 +342,7 @@ blockBank = (e, s) =>{
         bank_id: this.state.bank_id,
         country: this.state.country,
         ccode: this.state.ccode,
+        bcode: this.state.bcode,
         email: this.state.email,
         mobile: this.state.mobile,
         logo: this.state.logo,
@@ -609,6 +622,18 @@ blockBank = (e, s) =>{
                 />
               </FormGroup>
               <FormGroup>
+                <label>Bank Code</label>
+                <TextInput
+                  type="text"
+                  name="bcode"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.bcode}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
                 <label><FormattedMessage {...messages.popup2} /></label>
                 <TextInput
                   type="text"
@@ -654,273 +679,233 @@ blockBank = (e, s) =>{
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup5} /></label>
-                  <TextInput
+                  
+                  <SelectInput
                     type="text"
                     name="country"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
                     value={this.state.country}
-                    onChange={this.handleInputChange}
+                    onChange={this.countryChange}
                     required
-                  />
+                  >
+                    <option title="" value="">Select Country</option>
+                    <option title="+213">Algeria</option>
+		<option title="+376">Andorra</option>
+		<option title="+244">Angola</option>
+		<option title="+1264">Anguilla</option>
+		<option title="+1268">Antigua &amp; Barbuda</option>
+		<option title="+54">Argentina</option>
+		<option title="+374">Armenia</option>
+		<option title="+297">Aruba</option>
+		<option title="+61">Australia</option>
+		<option title="+43">Austria</option>
+		<option title="+994">Azerbaijan</option>
+		<option title="+1242">Bahamas</option>
+		<option title="+973">Bahrain</option>
+		<option title="+880">Bangladesh</option>
+		<option title="+1246">Barbados</option>
+		<option title="+375">Belarus</option>
+		<option title="+32">Belgium</option>
+		<option title="+501">Belize</option>
+		<option title="+229">Benin</option>
+		<option title="+1441">Bermuda</option>
+		<option title="+975">Bhutan</option>
+		<option title="+591">Bolivia</option>
+		<option title="+387">Bosnia Herzegovina</option>
+		<option title="+267">Botswana</option>
+		<option title="+55">Brazil</option>
+		<option title="+673">Brunei</option>
+		<option title="+359">Bulgaria</option>
+		<option title="+226">Burkina Faso</option>
+		<option title="+257">Burundi</option>
+		<option title="+855">Cambodia</option>
+		<option title="+237">Cameroon</option>
+		<option title="+1">Canada</option>
+		<option title="+238">Cape Verde Islands</option>
+		<option title="+1345">Cayman Islands</option>
+		<option title="+236">Central African Republic</option>
+		<option title="+56">Chile</option>
+		<option title="+86">China</option>
+		<option title="+57">Colombia</option>
+		<option title="+269">Comoros</option>
+		<option title="+242">Congo</option>
+		<option title="+682">Cook Islands</option>
+		<option title="+506">Costa Rica</option>
+		<option title="+385">Croatia</option>
+		<option title="+53">Cuba</option>
+		<option title="+90392">Cyprus North</option>
+		<option title="+357">Cyprus South</option>
+		<option title="+42">Czech Republic</option>
+		<option title="+45">Denmark</option>
+		<option title="+253">Djibouti</option>
+		<option title="+1809">Dominica</option>
+		<option title="+1809">Dominican Republic</option>
+		<option title="+593">Ecuador</option>
+		<option title="+20">Egypt</option>
+		<option title="+503">El Salvador</option>
+		<option title="+240">Equatorial Guinea</option>
+		<option title="+291">Eritrea</option>
+		<option title="+372">Estonia</option>
+		<option title="+251">Ethiopia</option>
+		<option title="+500">Falkland Islands</option>
+		<option title="+298">Faroe Islands</option>
+		<option title="+679">Fiji</option>
+		<option title="+358">Finland</option>
+		<option title="+33">France</option>
+		<option title="+594">French Guiana</option>
+		<option title="+689">French Polynesia</option>
+		<option title="+241">Gabon</option>
+		<option title="+220">Gambia</option>
+		<option title="+7880">Georgia</option>
+		<option title="+49">Germany</option>
+		<option title="+233">Ghana</option>
+		<option title="+350">Gibraltar</option>
+		<option title="+30">Greece</option>
+		<option title="+299">Greenland</option>
+		<option title="+1473">Grenada</option>
+		<option title="+590">Guadeloupe</option>
+		<option title="+671">Guam</option>
+		<option title="+502">Guatemala</option>
+		<option title="+224">Guinea</option>
+		<option title="+245">Guinea - Bissau</option>
+		<option title="+592">Guyana</option>
+		<option title="+509">Haiti</option>
+		<option title="+504">Honduras</option>
+		<option title="+852">Hong Kong</option>
+		<option title="+36">Hungary</option>
+		<option title="+354">Iceland</option>
+		<option title="+91">India</option>
+		<option title="+62">Indonesia</option>
+		<option title="+98">Iran</option>
+		<option title="+964">Iraq</option>
+		<option title="+353">Ireland</option>
+		<option title="+972">Israel</option>
+		<option title="+39">Italy</option>
+		<option title="+1876">Jamaica</option>
+		<option title="+81">Japan</option>
+		<option title="+962">Jordan</option>
+		<option title="+7">Kazakhstan</option>
+		<option title="+254">Kenya</option>
+		<option title="+686">Kiribati</option>
+		<option title="+850">Korea North</option>
+		<option title="+82">Korea South</option>
+		<option title="+965">Kuwait</option>
+		<option title="+996">Kyrgyzstan</option>
+		<option title="+856">Laos</option>
+		<option title="+371">Latvia</option>
+		<option title="+961">Lebanon</option>
+		<option title="+266">Lesotho</option>
+		<option title="+231">Liberia</option>
+		<option title="+218">Libya</option>
+		<option title="+417">Liechtenstein</option>
+		<option title="+370">Lithuania</option>
+		<option title="+352">Luxembourg</option>
+		<option title="+853">Macao</option>
+		<option title="+389">Macedonia</option>
+		<option title="+261">Madagascar</option>
+		<option title="+265">Malawi</option>
+		<option title="+60">Malaysia</option>
+		<option title="+960">Maldives</option>
+		<option title="+223">Mali</option>
+		<option title="+356">Malta</option>
+		<option title="+692">Marshall Islands</option>
+		<option title="+596">Martinique</option>
+		<option title="+222">Mauritania</option>
+		<option title="+269">Mayotte</option>
+		<option title="+52">Mexico</option>
+		<option title="+691">Micronesia</option>
+		<option title="+373">Moldova</option>
+		<option title="+377">Monaco</option>
+		<option title="+976">Mongolia</option>
+		<option title="+1664">Montserrat</option>
+		<option title="+212">Morocco</option>
+		<option title="+258">Mozambique</option>
+		<option title="+95">Myanmar</option>
+		<option title="+264">Namibia</option>
+		<option title="+674">Nauru</option>
+		<option title="+977">Nepal</option>
+		<option title="+31">Netherlands</option>
+		<option title="+687">New Caledonia</option>
+		<option title="+64">New Zealand</option>
+		<option title="+505">Nicaragua</option>
+		<option title="+227">Niger</option>
+		<option title="+234">Nigeria</option>
+		<option title="+683">Niue</option>
+		<option title="+672">Norfolk Islands</option>
+		<option title="+670">Northern Marianas</option>
+		<option title="+47">Norway</option>
+		<option title="+968">Oman</option>
+		<option title="+680">Palau</option>
+		<option title="+507">Panama</option>
+		<option title="+675">Papua New Guinea</option>
+		<option title="+595">Paraguay</option>
+		<option title="+51">Peru</option>
+		<option title="+63">Philippines</option>
+		<option title="+48">Poland</option>
+		<option title="+351">Portugal</option>
+		<option title="+1787">Puerto Rico</option>
+		<option title="+974">Qatar</option>
+		<option title="+262">Reunion</option>
+		<option title="+40">Romania</option>
+		<option title="+7">Russia</option>
+		<option title="+250">Rwanda</option>
+		<option title="+378">San Marino</option>
+		<option title="+239">Sao Tome &amp; Principe</option>
+		<option title="+966">Saudi Arabia</option>
+		<option title="+221">Senegal</option>
+		<option title="+381">Serbia</option>
+		<option title="+248">Seychelles</option>
+		<option title="+232">Sierra Leone</option>
+		<option title="+65">Singapore</option>
+		<option title="+421">Slovak Republic</option>
+		<option title="+386">Slovenia</option>
+		<option title="+677">Solomon Islands</option>
+		<option title="+252">Somalia</option>
+		<option title="+27">South Africa</option>
+		<option title="+34">Spain</option>
+		<option title="+94">Sri Lanka</option>
+		<option title="+290">St. Helena</option>
+		<option title="+1869">St. Kitts</option>
+		<option title="+1758">St. Lucia</option>
+		<option title="+249">Sudan</option>
+		<option title="+597">Suriname</option>
+		<option title="+268">Swaziland</option>
+		<option title="+46">Sweden</option>
+		<option title="+41">Switzerland</option>
+		<option title="+963">Syria</option>
+		<option title="+886">Taiwan</option>
+		<option title="+7">Tajikstan</option>
+		<option title="+66">Thailand</option>
+		<option title="+228">Togo</option>
+		<option title="+676">Tonga</option>
+		<option title="+1868">Trinidad &amp; Tobago</option>
+		<option title="+216">Tunisia</option>
+		<option title="+90">Turkey</option>
+		<option title="+7">Turkmenistan</option>
+		<option title="+993">Turkmenistan</option>
+		<option title="+1649">Turks &amp; Caicos Islands</option>
+		<option title="+688">Tuvalu</option>
+		<option title="+256">Uganda</option>
+		<option title="+44">UK</option> 
+		<option title="+380">Ukraine</option>
+		<option title="+971">United Arab Emirates</option>
+		<option title="+598">Uruguay</option>
+		<option title="+1">USA</option> 
+		<option title="+7">Uzbekistan</option>
+		<option title="+678">Vanuatu</option>
+		<option title="+379">Vatican City</option>
+		<option title="+58">Venezuela</option>
+		<option title="+84">Vietnam</option>
+		<option title="+84">Virgin Islands - British</option>
+		<option title="+84">Virgin Islands - US</option>
+		<option title="+681">Wallis &amp; Futuna</option>
+		<option title="+969">Yemen</option>
+		<option title="+967">Yemen</option>
+		<option title="+260">Zambia</option>
+		<option title="+263">Zimbabwe</option>
+    </SelectInput>
                   </FormGroup>
                   </Col>
-                  <Col>
-                  <FormGroup>
-                  {/* <label><FormattedMessage {...messages.popup6} /></label> */}
-                  {/* <TextInput
-                    type="text"
-                    name="ccode"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.ccode}
-                    onChange={this.handleInputChange}
-                    required
-                  /> */}
-                  <SelectInput
-                  type="text"
-                  name="ccode"
-                  value={this.state.ccode}
-                  onChange={this.handleInputChange}
-                  required
-                >
-                  <option value="">Country Code</option>
-                	    <option value="213">+213</option>
-		<option value="376">+376</option>
-		<option value="244">+244</option>
-		<option value="1264">+1264</option>
-		<option value="1268">+1268</option>
-		<option value="54">+54</option>
-		<option value="374">+374</option>
-		<option value="297">+297</option>
-		<option value="61">+61</option>
-		<option value="43">+43</option>
-		<option value="994">+994</option>
-		<option value="1242">+1242</option>
-		<option value="973">+973</option>
-		<option value="880">+880</option>
-		<option value="1246">+1246</option>
-		<option value="375">+375</option>
-		<option value="32">+32</option>
-		<option value="501">+501</option>
-		<option value="229">+229</option>
-		<option value="1441">+1441</option>
-		<option value="975">+975</option>
-		<option value="591">+591</option>
-		<option value="387">+387</option>
-		<option value="267">+267</option>
-		<option value="55">+55</option>
-		<option value="673">+673</option>
-		<option value="359">+359</option>
-		<option value="226">+226</option>
-		<option value="257">+257</option>
-		<option value="855">+855</option>
-		<option value="237">+237</option>
-		<option value="1">+1</option>
-		<option value="238">+238</option>
-		<option value="1345">+1345</option>
-		<option value="236">+236</option>
-		<option value="56">+56</option>
-		<option value="86">+86</option>
-		<option value="57">+57</option>
-		<option value="269">+269</option>
-		<option value="242">+242</option>
-		<option value="682">+682</option>
-		<option value="506">+506</option>
-		<option value="385">+385</option>
-		<option value="53">+53</option>
-		<option value="90392">+90392</option>
-		<option value="357">+357</option>
-		<option value="42">+42</option>
-		<option value="45">+45</option>
-		<option value="253">+253</option>
-		<option value="1809">+1809</option>
-		<option value="1809">+1809</option>
-		<option value="593">+593</option>
-		<option value="20">+20</option>
-		<option value="503">+503</option>
-		<option value="240">+240</option>
-		<option value="291">+291</option>
-		<option value="372">+372</option>
-		<option value="251">+251</option>
-		<option value="500">+500</option>
-		<option value="298">+298</option>
-		<option value="679">+679</option>
-		<option value="358">+358</option>
-		<option value="33">+33</option>
-		<option value="594">+594</option>
-		<option value="689">+689</option>
-		<option value="241">+241</option>
-		<option value="220">+220</option>
-		<option value="7880">+7880</option>
-		<option value="49">+49</option>
-		<option value="233">+233</option>
-		<option value="350">+350</option>
-		<option value="30">+30</option>
-		<option value="299">+299</option>
-		<option value="1473">+1473</option>
-		<option value="590">+590</option>
-		<option value="671">+671</option>
-		<option value="502">+502</option>
-		<option value="224">+224</option>
-		<option value="245">+245</option>
-		<option value="592">+592</option>
-		<option value="509">+509</option>
-		<option value="504">+504</option>
-		<option value="852">+852</option>
-		<option value="36">+36</option>
-		<option value="354">+354</option>
-		<option value="91">+91</option>
-		<option value="62">+62</option>
-		<option value="98">+98</option>
-		<option value="964">+964</option>
-		<option value="353">+353</option>
-		<option value="972">+972</option>
-		<option value="39">+39</option>
-		<option value="1876">+1876</option>
-		<option value="81">+81</option>
-		<option value="962">+962</option>
-		<option value="7">+7</option>
-		<option value="254">+254</option>
-		<option value="686">+686</option>
-		<option value="850">+850</option>
-		<option value="82">+82</option>
-		<option value="965">+965</option>
-		<option value="996">+996</option>
-		<option value="856">+856</option>
-		<option value="371">+371</option>
-		<option value="961">+961</option>
-		<option value="266">+266</option>
-		<option value="231">+231</option>
-		<option value="218">+218</option>
-		<option value="417">+417</option>
-		<option value="370">+370</option>
-		<option value="352">+352</option>
-		<option value="853">+853</option>
-		<option value="389">+389</option>
-		<option value="261">+261</option>
-		<option value="265">+265</option>
-		<option value="60">+60</option>
-		<option value="960">+960</option>
-		<option value="223">+223</option>
-		<option value="356">+356</option>
-		<option value="692">+692</option>
-		<option value="596">+596</option>
-		<option value="222">+222</option>
-		<option value="269">+269</option>
-		<option value="52">+52</option>
-		<option value="691">+691</option>
-		<option value="373">+373</option>
-		<option value="377">+377</option>
-		<option value="976">+976</option>
-		<option value="1664">+1664</option>
-		<option value="212">+212</option>
-		<option value="258">+258</option>
-		<option value="95">+95</option>
-		<option value="264">+264</option>
-		<option value="674">+674</option>
-		<option value="977">+977</option>
-		<option value="31">+31</option>
-		<option value="687">+687</option>
-		<option value="64">+64</option>
-		<option value="505">+505</option>
-		<option value="227">+227</option>
-		<option value="234">+234</option>
-		<option value="683">+683</option>
-		<option value="672">+672</option>
-		<option value="670">+670</option>
-		<option value="47">+47</option>
-		<option value="968">+968</option>
-		<option value="680">+680</option>
-		<option value="507">+507</option>
-		<option value="675">+675</option>
-		<option value="595">+595</option>
-		<option value="51">+51</option>
-		<option value="63">+63</option>
-		<option value="48">+48</option>
-		<option value="351">+351</option>
-		<option value="1787">+1787</option>
-		<option value="974">+974</option>
-		<option value="262">+262</option>
-		<option value="40">+40</option>
-		<option value="7">+7</option>
-		<option value="250">+250</option>
-		<option value="378">+378</option>
-		<option value="239">+239</option>
-		<option value="966">+966</option>
-		<option value="221">+221</option>
-		<option value="381">+381</option>
-		<option value="248">+248</option>
-		<option value="232">+232</option>
-		<option value="65">+65</option>
-		<option value="421">+421</option>
-		<option value="386">+386</option>
-		<option value="677">+677</option>
-		<option value="252">+252</option>
-		<option value="27">+27</option>
-		<option value="34">+34</option>
-		<option value="94">+94</option>
-		<option value="290">+290</option>
-		<option value="1869">+1869</option>
-		<option value="1758">+1758</option>
-		<option value="249">+249</option>
-		<option value="597">+597</option>
-		<option value="268">+268</option>
-		<option value="46">+46</option>
-		<option value="41">+41</option>
-		<option value="963">+963</option>
-		<option value="886">+886</option>
-		<option value="7">+7</option>
-		<option value="66">+66</option>
-		<option value="228">+228</option>
-		<option value="676">+676</option>
-		<option value="1868">+1868</option>
-		<option value="216">+216</option>
-		<option value="90">+90</option>
-		<option value="7">+7</option>
-		<option value="993">+993</option>
-		<option value="1649">+1649</option>
-		<option value="688">+688</option>
-		<option value="256">+256</option>
-		 <option value="44">+44</option>
-		<option value="380">+380</option>
-		<option value="971">+971</option>
-		<option value="598">+598</option>
-		<option value="1">+1</option>
-		<option value="7">+7</option>
-		<option value="678">+678</option>
-		<option value="379">+379</option>
-		<option value="58">+58</option>
-		<option value="84">+84</option>
-		<option value="84">+1284</option>
-		<option value="84">+1340</option>
-		<option value="681">+681</option>
-		<option value="969">+969</option>
-		<option value="967">+967</option>
-		<option value="260">+260</option>
-		<option value="263">+263</option>
-                </SelectInput>
-                  </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} /></label>
-                  <TextInput
-                    type="text"
-                    pattern="[0-9]{10}"
-                    title="10 Digit numeric value"
-                    name="mobile"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.mobile}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
+                  
                   <Col>
                   <FormGroup>
                   <label><FormattedMessage {...messages.popup8} /></label>
@@ -934,7 +919,42 @@ blockBank = (e, s) =>{
                     required
                   />
                   </FormGroup>
+      
                   </Col>
+                </Row>
+                <Row>
+                <Col  cW="20%" mR="2%">
+                  
+                <FormGroup>
+                  
+                  <TextInput
+                    type="text"
+                  name="ccode"
+                  readOnly
+                    value={this.state.ccode}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  
+                </Col>
+                <Col cW="78%">
+                <FormGroup>
+                  <label><FormattedMessage {...messages.popup7} /></label>
+                  <TextInput
+                    type="text"
+                    pattern="[0-9]{10}"
+                    title="10 Digit numeric value"
+                    name="mobile"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.mobile}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  
+                </Col>
                 </Row>
 
 
@@ -1060,6 +1080,19 @@ blockBank = (e, s) =>{
                 />
               </FormGroup>
               <FormGroup>
+                <label>Bank Code</label>
+                <TextInput
+                  type="text"
+                  name="bcode"
+                  onFocus={inputFocus}
+                  autoFocus
+                  onBlur={inputBlur}
+                  value={this.state.bcode}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
                 <label><FormattedMessage {...messages.popup2} /></label>
                 <TextInput
                   type="text"
@@ -1108,263 +1141,232 @@ blockBank = (e, s) =>{
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup5} /></label>
-                  <TextInput
-                    type="text"
-                    name="country"
-                    onFocus={inputFocus}
-                    autoFocus
-                    onBlur={inputBlur}
-                    value={this.state.country}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
+                  
                   <SelectInput
-                  type="text"
-                  name="ccode"
-                  value={this.state.ccode}
-                  onChange={this.handleInputChange}
-                  required
-                >
-                  <option value="">Country Code</option>
-                	    <option value="213">+213</option>
-		<option value="376">+376</option>
-		<option value="244">+244</option>
-		<option value="1264">+1264</option>
-		<option value="1268">+1268</option>
-		<option value="54">+54</option>
-		<option value="374">+374</option>
-		<option value="297">+297</option>
-		<option value="61">+61</option>
-		<option value="43">+43</option>
-		<option value="994">+994</option>
-		<option value="1242">+1242</option>
-		<option value="973">+973</option>
-		<option value="880">+880</option>
-		<option value="1246">+1246</option>
-		<option value="375">+375</option>
-		<option value="32">+32</option>
-		<option value="501">+501</option>
-		<option value="229">+229</option>
-		<option value="1441">+1441</option>
-		<option value="975">+975</option>
-		<option value="591">+591</option>
-		<option value="387">+387</option>
-		<option value="267">+267</option>
-		<option value="55">+55</option>
-		<option value="673">+673</option>
-		<option value="359">+359</option>
-		<option value="226">+226</option>
-		<option value="257">+257</option>
-		<option value="855">+855</option>
-		<option value="237">+237</option>
-		<option value="1">+1</option>
-		<option value="238">+238</option>
-		<option value="1345">+1345</option>
-		<option value="236">+236</option>
-		<option value="56">+56</option>
-		<option value="86">+86</option>
-		<option value="57">+57</option>
-		<option value="269">+269</option>
-		<option value="242">+242</option>
-		<option value="682">+682</option>
-		<option value="506">+506</option>
-		<option value="385">+385</option>
-		<option value="53">+53</option>
-		<option value="90392">+90392</option>
-		<option value="357">+357</option>
-		<option value="42">+42</option>
-		<option value="45">+45</option>
-		<option value="253">+253</option>
-		<option value="1809">+1809</option>
-		<option value="1809">+1809</option>
-		<option value="593">+593</option>
-		<option value="20">+20</option>
-		<option value="503">+503</option>
-		<option value="240">+240</option>
-		<option value="291">+291</option>
-		<option value="372">+372</option>
-		<option value="251">+251</option>
-		<option value="500">+500</option>
-		<option value="298">+298</option>
-		<option value="679">+679</option>
-		<option value="358">+358</option>
-		<option value="33">+33</option>
-		<option value="594">+594</option>
-		<option value="689">+689</option>
-		<option value="241">+241</option>
-		<option value="220">+220</option>
-		<option value="7880">+7880</option>
-		<option value="49">+49</option>
-		<option value="233">+233</option>
-		<option value="350">+350</option>
-		<option value="30">+30</option>
-		<option value="299">+299</option>
-		<option value="1473">+1473</option>
-		<option value="590">+590</option>
-		<option value="671">+671</option>
-		<option value="502">+502</option>
-		<option value="224">+224</option>
-		<option value="245">+245</option>
-		<option value="592">+592</option>
-		<option value="509">+509</option>
-		<option value="504">+504</option>
-		<option value="852">+852</option>
-		<option value="36">+36</option>
-		<option value="354">+354</option>
-		<option value="91">+91</option>
-		<option value="62">+62</option>
-		<option value="98">+98</option>
-		<option value="964">+964</option>
-		<option value="353">+353</option>
-		<option value="972">+972</option>
-		<option value="39">+39</option>
-		<option value="1876">+1876</option>
-		<option value="81">+81</option>
-		<option value="962">+962</option>
-		<option value="7">+7</option>
-		<option value="254">+254</option>
-		<option value="686">+686</option>
-		<option value="850">+850</option>
-		<option value="82">+82</option>
-		<option value="965">+965</option>
-		<option value="996">+996</option>
-		<option value="856">+856</option>
-		<option value="371">+371</option>
-		<option value="961">+961</option>
-		<option value="266">+266</option>
-		<option value="231">+231</option>
-		<option value="218">+218</option>
-		<option value="417">+417</option>
-		<option value="370">+370</option>
-		<option value="352">+352</option>
-		<option value="853">+853</option>
-		<option value="389">+389</option>
-		<option value="261">+261</option>
-		<option value="265">+265</option>
-		<option value="60">+60</option>
-		<option value="960">+960</option>
-		<option value="223">+223</option>
-		<option value="356">+356</option>
-		<option value="692">+692</option>
-		<option value="596">+596</option>
-		<option value="222">+222</option>
-		<option value="269">+269</option>
-		<option value="52">+52</option>
-		<option value="691">+691</option>
-		<option value="373">+373</option>
-		<option value="377">+377</option>
-		<option value="976">+976</option>
-		<option value="1664">+1664</option>
-		<option value="212">+212</option>
-		<option value="258">+258</option>
-		<option value="95">+95</option>
-		<option value="264">+264</option>
-		<option value="674">+674</option>
-		<option value="977">+977</option>
-		<option value="31">+31</option>
-		<option value="687">+687</option>
-		<option value="64">+64</option>
-		<option value="505">+505</option>
-		<option value="227">+227</option>
-		<option value="234">+234</option>
-		<option value="683">+683</option>
-		<option value="672">+672</option>
-		<option value="670">+670</option>
-		<option value="47">+47</option>
-		<option value="968">+968</option>
-		<option value="680">+680</option>
-		<option value="507">+507</option>
-		<option value="675">+675</option>
-		<option value="595">+595</option>
-		<option value="51">+51</option>
-		<option value="63">+63</option>
-		<option value="48">+48</option>
-		<option value="351">+351</option>
-		<option value="1787">+1787</option>
-		<option value="974">+974</option>
-		<option value="262">+262</option>
-		<option value="40">+40</option>
-		<option value="7">+7</option>
-		<option value="250">+250</option>
-		<option value="378">+378</option>
-		<option value="239">+239</option>
-		<option value="966">+966</option>
-		<option value="221">+221</option>
-		<option value="381">+381</option>
-		<option value="248">+248</option>
-		<option value="232">+232</option>
-		<option value="65">+65</option>
-		<option value="421">+421</option>
-		<option value="386">+386</option>
-		<option value="677">+677</option>
-		<option value="252">+252</option>
-		<option value="27">+27</option>
-		<option value="34">+34</option>
-		<option value="94">+94</option>
-		<option value="290">+290</option>
-		<option value="1869">+1869</option>
-		<option value="1758">+1758</option>
-		<option value="249">+249</option>
-		<option value="597">+597</option>
-		<option value="268">+268</option>
-		<option value="46">+46</option>
-		<option value="41">+41</option>
-		<option value="963">+963</option>
-		<option value="886">+886</option>
-		<option value="7">+7</option>
-		<option value="66">+66</option>
-		<option value="228">+228</option>
-		<option value="676">+676</option>
-		<option value="1868">+1868</option>
-		<option value="216">+216</option>
-		<option value="90">+90</option>
-		<option value="7">+7</option>
-		<option value="993">+993</option>
-		<option value="1649">+1649</option>
-		<option value="688">+688</option>
-		<option value="256">+256</option>
-		 <option value="44">+44</option>
-		<option value="380">+380</option>
-		<option value="971">+971</option>
-		<option value="598">+598</option>
-		<option value="1">+1</option>
-		<option value="7">+7</option>
-		<option value="678">+678</option>
-		<option value="379">+379</option>
-		<option value="58">+58</option>
-		<option value="84">+84</option>
-		<option value="84">+1284</option>
-		<option value="84">+1340</option>
-		<option value="681">+681</option>
-		<option value="969">+969</option>
-		<option value="967">+967</option>
-		<option value="260">+260</option>
-		<option value="263">+263</option>
-                </SelectInput>
-                  </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} /></label>
-                  <TextInput
-                    	  type="text"
-                        pattern="[0-9]{10}"
-                        title="10 Digit numeric value"
-                    name="mobile"
+                    type="text"
                     autoFocus
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.mobile}
-                    onChange={this.handleInputChange}
+                    name="country"
+                    value={this.state.country}
+                    onChange={this.countryChange}
                     required
-                  />
+                  >
+                    <option title="" value="">Select Country</option>
+                    <option title="+213">Algeria</option>
+		<option title="+376">Andorra</option>
+		<option title="+244">Angola</option>
+		<option title="+1264">Anguilla</option>
+		<option title="+1268">Antigua &amp; Barbuda</option>
+		<option title="+54">Argentina</option>
+		<option title="+374">Armenia</option>
+		<option title="+297">Aruba</option>
+		<option title="+61">Australia</option>
+		<option title="+43">Austria</option>
+		<option title="+994">Azerbaijan</option>
+		<option title="+1242">Bahamas</option>
+		<option title="+973">Bahrain</option>
+		<option title="+880">Bangladesh</option>
+		<option title="+1246">Barbados</option>
+		<option title="+375">Belarus</option>
+		<option title="+32">Belgium</option>
+		<option title="+501">Belize</option>
+		<option title="+229">Benin</option>
+		<option title="+1441">Bermuda</option>
+		<option title="+975">Bhutan</option>
+		<option title="+591">Bolivia</option>
+		<option title="+387">Bosnia Herzegovina</option>
+		<option title="+267">Botswana</option>
+		<option title="+55">Brazil</option>
+		<option title="+673">Brunei</option>
+		<option title="+359">Bulgaria</option>
+		<option title="+226">Burkina Faso</option>
+		<option title="+257">Burundi</option>
+		<option title="+855">Cambodia</option>
+		<option title="+237">Cameroon</option>
+		<option title="+1">Canada</option>
+		<option title="+238">Cape Verde Islands</option>
+		<option title="+1345">Cayman Islands</option>
+		<option title="+236">Central African Republic</option>
+		<option title="+56">Chile</option>
+		<option title="+86">China</option>
+		<option title="+57">Colombia</option>
+		<option title="+269">Comoros</option>
+		<option title="+242">Congo</option>
+		<option title="+682">Cook Islands</option>
+		<option title="+506">Costa Rica</option>
+		<option title="+385">Croatia</option>
+		<option title="+53">Cuba</option>
+		<option title="+90392">Cyprus North</option>
+		<option title="+357">Cyprus South</option>
+		<option title="+42">Czech Republic</option>
+		<option title="+45">Denmark</option>
+		<option title="+253">Djibouti</option>
+		<option title="+1809">Dominica</option>
+		<option title="+1809">Dominican Republic</option>
+		<option title="+593">Ecuador</option>
+		<option title="+20">Egypt</option>
+		<option title="+503">El Salvador</option>
+		<option title="+240">Equatorial Guinea</option>
+		<option title="+291">Eritrea</option>
+		<option title="+372">Estonia</option>
+		<option title="+251">Ethiopia</option>
+		<option title="+500">Falkland Islands</option>
+		<option title="+298">Faroe Islands</option>
+		<option title="+679">Fiji</option>
+		<option title="+358">Finland</option>
+		<option title="+33">France</option>
+		<option title="+594">French Guiana</option>
+		<option title="+689">French Polynesia</option>
+		<option title="+241">Gabon</option>
+		<option title="+220">Gambia</option>
+		<option title="+7880">Georgia</option>
+		<option title="+49">Germany</option>
+		<option title="+233">Ghana</option>
+		<option title="+350">Gibraltar</option>
+		<option title="+30">Greece</option>
+		<option title="+299">Greenland</option>
+		<option title="+1473">Grenada</option>
+		<option title="+590">Guadeloupe</option>
+		<option title="+671">Guam</option>
+		<option title="+502">Guatemala</option>
+		<option title="+224">Guinea</option>
+		<option title="+245">Guinea - Bissau</option>
+		<option title="+592">Guyana</option>
+		<option title="+509">Haiti</option>
+		<option title="+504">Honduras</option>
+		<option title="+852">Hong Kong</option>
+		<option title="+36">Hungary</option>
+		<option title="+354">Iceland</option>
+		<option title="+91">India</option>
+		<option title="+62">Indonesia</option>
+		<option title="+98">Iran</option>
+		<option title="+964">Iraq</option>
+		<option title="+353">Ireland</option>
+		<option title="+972">Israel</option>
+		<option title="+39">Italy</option>
+		<option title="+1876">Jamaica</option>
+		<option title="+81">Japan</option>
+		<option title="+962">Jordan</option>
+		<option title="+7">Kazakhstan</option>
+		<option title="+254">Kenya</option>
+		<option title="+686">Kiribati</option>
+		<option title="+850">Korea North</option>
+		<option title="+82">Korea South</option>
+		<option title="+965">Kuwait</option>
+		<option title="+996">Kyrgyzstan</option>
+		<option title="+856">Laos</option>
+		<option title="+371">Latvia</option>
+		<option title="+961">Lebanon</option>
+		<option title="+266">Lesotho</option>
+		<option title="+231">Liberia</option>
+		<option title="+218">Libya</option>
+		<option title="+417">Liechtenstein</option>
+		<option title="+370">Lithuania</option>
+		<option title="+352">Luxembourg</option>
+		<option title="+853">Macao</option>
+		<option title="+389">Macedonia</option>
+		<option title="+261">Madagascar</option>
+		<option title="+265">Malawi</option>
+		<option title="+60">Malaysia</option>
+		<option title="+960">Maldives</option>
+		<option title="+223">Mali</option>
+		<option title="+356">Malta</option>
+		<option title="+692">Marshall Islands</option>
+		<option title="+596">Martinique</option>
+		<option title="+222">Mauritania</option>
+		<option title="+269">Mayotte</option>
+		<option title="+52">Mexico</option>
+		<option title="+691">Micronesia</option>
+		<option title="+373">Moldova</option>
+		<option title="+377">Monaco</option>
+		<option title="+976">Mongolia</option>
+		<option title="+1664">Montserrat</option>
+		<option title="+212">Morocco</option>
+		<option title="+258">Mozambique</option>
+		<option title="+95">Myanmar</option>
+		<option title="+264">Namibia</option>
+		<option title="+674">Nauru</option>
+		<option title="+977">Nepal</option>
+		<option title="+31">Netherlands</option>
+		<option title="+687">New Caledonia</option>
+		<option title="+64">New Zealand</option>
+		<option title="+505">Nicaragua</option>
+		<option title="+227">Niger</option>
+		<option title="+234">Nigeria</option>
+		<option title="+683">Niue</option>
+		<option title="+672">Norfolk Islands</option>
+		<option title="+670">Northern Marianas</option>
+		<option title="+47">Norway</option>
+		<option title="+968">Oman</option>
+		<option title="+680">Palau</option>
+		<option title="+507">Panama</option>
+		<option title="+675">Papua New Guinea</option>
+		<option title="+595">Paraguay</option>
+		<option title="+51">Peru</option>
+		<option title="+63">Philippines</option>
+		<option title="+48">Poland</option>
+		<option title="+351">Portugal</option>
+		<option title="+1787">Puerto Rico</option>
+		<option title="+974">Qatar</option>
+		<option title="+262">Reunion</option>
+		<option title="+40">Romania</option>
+		<option title="+7">Russia</option>
+		<option title="+250">Rwanda</option>
+		<option title="+378">San Marino</option>
+		<option title="+239">Sao Tome &amp; Principe</option>
+		<option title="+966">Saudi Arabia</option>
+		<option title="+221">Senegal</option>
+		<option title="+381">Serbia</option>
+		<option title="+248">Seychelles</option>
+		<option title="+232">Sierra Leone</option>
+		<option title="+65">Singapore</option>
+		<option title="+421">Slovak Republic</option>
+		<option title="+386">Slovenia</option>
+		<option title="+677">Solomon Islands</option>
+		<option title="+252">Somalia</option>
+		<option title="+27">South Africa</option>
+		<option title="+34">Spain</option>
+		<option title="+94">Sri Lanka</option>
+		<option title="+290">St. Helena</option>
+		<option title="+1869">St. Kitts</option>
+		<option title="+1758">St. Lucia</option>
+		<option title="+249">Sudan</option>
+		<option title="+597">Suriname</option>
+		<option title="+268">Swaziland</option>
+		<option title="+46">Sweden</option>
+		<option title="+41">Switzerland</option>
+		<option title="+963">Syria</option>
+		<option title="+886">Taiwan</option>
+		<option title="+7">Tajikstan</option>
+		<option title="+66">Thailand</option>
+		<option title="+228">Togo</option>
+		<option title="+676">Tonga</option>
+		<option title="+1868">Trinidad &amp; Tobago</option>
+		<option title="+216">Tunisia</option>
+		<option title="+90">Turkey</option>
+		<option title="+7">Turkmenistan</option>
+		<option title="+993">Turkmenistan</option>
+		<option title="+1649">Turks &amp; Caicos Islands</option>
+		<option title="+688">Tuvalu</option>
+		<option title="+256">Uganda</option>
+		<option title="+44">UK</option> 
+		<option title="+380">Ukraine</option>
+		<option title="+971">United Arab Emirates</option>
+		<option title="+598">Uruguay</option>
+		<option title="+1">USA</option> 
+		<option title="+7">Uzbekistan</option>
+		<option title="+678">Vanuatu</option>
+		<option title="+379">Vatican City</option>
+		<option title="+58">Venezuela</option>
+		<option title="+84">Vietnam</option>
+		<option title="+84">Virgin Islands - British</option>
+		<option title="+84">Virgin Islands - US</option>
+		<option title="+681">Wallis &amp; Futuna</option>
+		<option title="+969">Yemen</option>
+		<option title="+967">Yemen</option>
+		<option title="+260">Zambia</option>
+		<option title="+263">Zimbabwe</option>
+    </SelectInput>
+                
                   </FormGroup>
                   </Col>
                   <Col>
@@ -1382,6 +1384,41 @@ blockBank = (e, s) =>{
                   />
                   </FormGroup>
                   </Col>
+                </Row>
+                <Row>
+                <Col  cW="20%" mR="2%">
+                  
+                <FormGroup>
+                  
+                  <TextInput
+                    type="text"
+                  name="ccode"
+                  readOnly
+                    value={this.state.ccode}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  
+                </Col>
+                <Col cW="78%">
+                <FormGroup>
+                  <label><FormattedMessage {...messages.popup7} /></label>
+                  <TextInput
+                    type="text"
+                    pattern="[0-9]{10}"
+                    autoFocus
+                    title="10 Digit numeric value"
+                    name="mobile"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.mobile}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+                  
+                </Col>
                 </Row>
 
 

@@ -24,8 +24,9 @@ const FormGroup = styled.div`
     z-index: 2;
   }
   &.checkbox{
-    font-size: 12px;
-    color: #9ea0a5;
+    font-size: 14px;
+    font-weight:bold;
+    color: #000;
     margin-top: 20px;
     display:flex;
     flex-direction: row;

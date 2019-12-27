@@ -478,7 +478,7 @@ export default class SetupPage extends Component {
 
               
             </InputsWrap>
-            <PrimaryBtn><FormattedMessage {...messages.update} /></PrimaryBtn>
+            <PrimaryBtn>Submit</PrimaryBtn>
           </form>
         </FrontRightSection>
       </Wrapper>

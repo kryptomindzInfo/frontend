@@ -129,7 +129,9 @@ class OperationalWallet extends Component {
 
   closePopup = () => {
     this.setState({
-      popup: false
+      popup: false,
+      amount: '',
+      note: ''
     });
   };
 
@@ -158,6 +160,7 @@ class OperationalWallet extends Component {
 
   submitMoney = (e) => {
     e.preventDefault();
+    console.log(this.state.balance + " : "+ this.state.amount);
     if(this.state.amount > this.state.balance){
       this.setState({
         notification: 'Insufficient Balance'
@@ -194,8 +197,8 @@ class OperationalWallet extends Component {
             this.success();
            setTimeout(function(){
             tis.closePopup();
-            this.getBalance();
-            ts.props.reload();
+            tis.getBalance();
+            tis.props.reload();
            }, 1000);
           });
       }
@@ -301,7 +304,7 @@ class OperationalWallet extends Component {
                   required
                 />
               </FormGroup>
-              <p className="note">Total available {CURRENCY} {this.state.balance}</p>
+              <p className="note">Total available {CURRENCY} {this.state.balance.toFixed(1)}</p>
               <FormGroup>
                 <label>Note</label>
                 <TextArea
@@ -319,7 +322,7 @@ class OperationalWallet extends Component {
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>
               </Button>
-              <p className="note">Total Fee {CURRENCY} {this.state.livefee} will be charges</p>
+              <p className="note">Total Fee {CURRENCY} {this.state.livefee.toFixed(1)} will be charges</p>
             </form>
 
               </Popup>
