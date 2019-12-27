@@ -170,7 +170,7 @@ export default class SetupPage extends Component {
           <form action="" method="POST" onSubmit={this.setupUpdate} className="formWrap">
             <InputsWrap>
               <FormGroup>
-                <label><FormattedMessage {...messages.userid} /></label>
+                <label><FormattedMessage {...messages.userid} />*</label>
                 <TextInput
                   id="username"
                   type="text"
@@ -186,7 +186,7 @@ export default class SetupPage extends Component {
               </FormGroup>
               
               <FormGroup>
-                <label><FormattedMessage {...messages.newpass} /></label>
+                <label><FormattedMessage {...messages.newpass} />*</label>
                 <TextInput
                   type="password"
 				  name="password"
@@ -201,7 +201,7 @@ export default class SetupPage extends Component {
               </FormGroup>
 
               <FormGroup>
-                <label><FormattedMessage {...messages.confirm} /></label>
+                <label><FormattedMessage {...messages.confirm} />*</label>
                 <TextInput
                   type="password"
 				  name="confirm"
@@ -216,7 +216,7 @@ export default class SetupPage extends Component {
               </FormGroup>
 
               <FormGroup>
-                <label>Authorized Email ID</label>
+                <label>Authorized Email ID*</label>
                 <TextInput
                   type="email"
                   name="email"
@@ -456,7 +456,7 @@ export default class SetupPage extends Component {
                 </Col>
                 <Col cW="78%">
                 <FormGroup>
-                <label>Authorized Phone Number</label>
+                <label>Authorized Phone Number*</label>
                 <TextInput
 				  type="text"
 				  pattern="[0-9]{10}"

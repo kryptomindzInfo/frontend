@@ -156,7 +156,7 @@ export default class ForgotSetup extends Component {
           <form action="" method="POST" onSubmit={this.setupUpdate}>
             <InputsWrap>
               {/* <FormGroup>
-                <label><FormattedMessage {...messages.userid} /></label>
+                <label><FormattedMessage {...messages.userid} />*</label>
                 <TextInput
                   id="username"
                   type="text"
@@ -169,7 +169,7 @@ export default class ForgotSetup extends Component {
                 />
               </FormGroup> */}
               <FormGroup>
-                <label><FormattedMessage {...messages.newpass} /></label>
+                <label><FormattedMessage {...messages.newpass} />*</label>
                 <TextInput
                   type="password"
                   name="password"
@@ -182,7 +182,7 @@ export default class ForgotSetup extends Component {
               </FormGroup>
 
               <FormGroup>
-                <label><FormattedMessage {...messages.confirm} /></label>
+                <label><FormattedMessage {...messages.confirm} />*</label>
                 <TextInput
                   type="password"
                   name="confirm"

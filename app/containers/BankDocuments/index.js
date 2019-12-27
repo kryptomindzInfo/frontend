@@ -486,7 +486,7 @@ export default class BankDocuments extends Component {
               <h1><FormattedMessage {...messages.verify} /></h1>
             <form >
               <FormGroup>
-                <label><FormattedMessage {...messages.otp} /></label>
+                <label><FormattedMessage {...messages.otp} />*</label>
                 <TextInput
                   type="text"
                   name="otp"

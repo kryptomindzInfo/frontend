@@ -261,7 +261,7 @@ class MasterWallet extends Component {
           <h1 className="normalH1">Transfer the amount</h1>
           <form action="" method="post" onSubmit={this.submitMoney}>
               <FormGroup>
-                <label>From</label>
+                <label>From*</label>
                 <TextInput
                 readOnly
                 id="popfrom"
@@ -275,7 +275,7 @@ class MasterWallet extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>To</label>
+                <label>To*</label>
                 <TextInput
                 readOnly
                 id="popto"
@@ -289,7 +289,7 @@ class MasterWallet extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>Amount</label>
+                <label>Amount*</label>
                 <TextInput
                   type="text"
                   name="amount"
@@ -302,7 +302,7 @@ class MasterWallet extends Component {
               </FormGroup>
               <p className="note">Total available {CURRENCY} {this.state.balance}</p>
               <FormGroup>
-                <label>Note</label>
+                <label>Note*</label>
                 <TextArea
                   type="text"
                   name="note"

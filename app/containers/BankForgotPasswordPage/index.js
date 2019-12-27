@@ -116,7 +116,7 @@ render() {
         <form action="" method="POST" onSubmit={this.forgotRequest}>
           <InputsWrap>
             <FormGroup>
-              <label><FormattedMessage {...messages.mobile} /></label>
+              <label><FormattedMessage {...messages.mobile} />*</label>
               <TextInput
                   type="text"
                   pattern="[0-9]{10}"

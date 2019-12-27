@@ -419,7 +419,7 @@ export default class Documents extends Component {
               <h1><FormattedMessage {...messages.verify} /></h1>
             <form action="" method="post" onSubmit={this.verifyOTP} >
               <FormGroup>
-                <label><FormattedMessage {...messages.otp} /></label>
+                <label><FormattedMessage {...messages.otp} />*</label>
                 <TextInput
                   type="text"
                   name="otp"
@@ -440,7 +440,7 @@ export default class Documents extends Component {
             <h1><FormattedMessage {...messages.addbank} /></h1>
             <form action="" method="post" onSubmit={this.addBank}>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup1} /></label>
+                <label><FormattedMessage {...messages.popup1} />*</label>
                 <TextInput
                   type="text"
                   name="name"
@@ -452,7 +452,7 @@ export default class Documents extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup2} /></label>
+                <label><FormattedMessage {...messages.popup2} />*</label>
                 <TextInput
                   type="text"
                   name="address1"
@@ -467,7 +467,7 @@ export default class Documents extends Component {
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup3} /></label>
+                  <label><FormattedMessage {...messages.popup3} />*</label>
                   <TextInput
                     type="text"
                     name="state"
@@ -481,7 +481,7 @@ export default class Documents extends Component {
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup4} /></label>
+                  <label><FormattedMessage {...messages.popup4} />*</label>
                   <TextInput
                     type="text"
                     name="zip"
@@ -497,7 +497,7 @@ export default class Documents extends Component {
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup5} /></label>
+                  <label><FormattedMessage {...messages.popup5} />*</label>
                   <TextInput
                     type="text"
                     name="country"
@@ -511,7 +511,7 @@ export default class Documents extends Component {
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup6} /></label>
+                  <label><FormattedMessage {...messages.popup6} />*</label>
                   <TextInput
                     type="text"
                     name="ccode"
@@ -527,7 +527,7 @@ export default class Documents extends Component {
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} /></label>
+                  <label><FormattedMessage {...messages.popup7} />*</label>
                   <TextInput
                     type="text"
                     name="mobile"
@@ -541,7 +541,7 @@ export default class Documents extends Component {
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup8} /></label>
+                  <label><FormattedMessage {...messages.popup8} />*</label>
                   <TextInput
                     type="text"
                     name="email"
@@ -579,7 +579,7 @@ export default class Documents extends Component {
                     :
                     ' '
                     }
-                    <label><FormattedMessage {...messages.popup9} /> </label>
+                    <label><FormattedMessage {...messages.popup9} /> *</label>
                     </div>
                   </UploadArea>
                 
@@ -603,7 +603,7 @@ export default class Documents extends Component {
                     ' '
                     }
                     
-                    <label><FormattedMessage {...messages.popup10} /> </label>
+                    <label><FormattedMessage {...messages.popup10} /> *</label>
                     </div>
                   </UploadArea>
               </FormGroup>

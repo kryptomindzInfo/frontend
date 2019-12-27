@@ -56,23 +56,23 @@ export default function SignupPage() {
           <form action="" method="get">
           <InputsWrap>
           <FormGroup>
-              <label>Name</label>
+              <label>Name*</label>
               <TextInput type="text"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
             <FormGroup>
-              <label>Mobile Number</label>
+              <label>Mobile Number*</label>
               <TextInput type="text"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
             <FormGroup>
-              <label>Email Address <span>(Optional)</span></label>
+              <label>Email Address <span>(Optional)</span>*</label>
               <TextInput type="text"  onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
             <FormGroup>
-              <label>Address</label>
+              <label>Address*</label>
               <TextInput type="text"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
             <FormGroup>
-              <label>Password</label>
+              <label>Password*</label>
               <TextInput type="pasword"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
             <FormGroup>

@@ -585,7 +585,7 @@ blockBank = (e, s) =>{
               <h1 ><FormattedMessage {...messages.verify} /></h1>
             <form action="" method="post" onSubmit={this.verifyOTP} >
               <FormGroup>
-                <label><FormattedMessage {...messages.otp} /></label>
+                <label><FormattedMessage {...messages.otp} />*</label>
                 <TextInput
                   type="text"
                   name="otp"
@@ -610,7 +610,7 @@ blockBank = (e, s) =>{
             <h1 ><FormattedMessage {...messages.addbank} /></h1>
             <form action="" method="post" onSubmit={this.addBank}>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup1} /></label>
+                <label><FormattedMessage {...messages.popup1} />*</label>
                 <TextInput
                   type="text"
                   name="name"
@@ -622,7 +622,7 @@ blockBank = (e, s) =>{
                 />
               </FormGroup>
               <FormGroup>
-                <label>Bank Code</label>
+                <label>Bank Code*</label>
                 <TextInput
                   type="text"
                   name="bcode"
@@ -634,7 +634,7 @@ blockBank = (e, s) =>{
                 />
               </FormGroup>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup2} /></label>
+                <label><FormattedMessage {...messages.popup2} />*</label>
                 <TextInput
                   type="text"
                   name="address1"
@@ -649,7 +649,7 @@ blockBank = (e, s) =>{
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup3} /></label>
+                  <label><FormattedMessage {...messages.popup3} />*</label>
                   <TextInput
                     type="text"
                     name="state"
@@ -663,7 +663,7 @@ blockBank = (e, s) =>{
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup4} /></label>
+                  <label><FormattedMessage {...messages.popup4} />*</label>
                   <TextInput
                     type="text"
                     name="zip"
@@ -687,7 +687,7 @@ blockBank = (e, s) =>{
                     onChange={this.countryChange}
                     required
                   >
-                    <option title="" value="">Select Country</option>
+                    <option title="" value="">Select Country*</option>
                     <option title="+213">Algeria</option>
 		<option title="+376">Andorra</option>
 		<option title="+244">Angola</option>
@@ -908,7 +908,7 @@ blockBank = (e, s) =>{
                   
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup8} /></label>
+                  <label><FormattedMessage {...messages.popup8} />*</label>
                   <TextInput
                     type="email"
                     name="email"
@@ -940,7 +940,7 @@ blockBank = (e, s) =>{
                 </Col>
                 <Col cW="78%">
                 <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} /></label>
+                  <label><FormattedMessage {...messages.popup7} />*</label>
                   <TextInput
                     type="text"
                     pattern="[0-9]{10}"
@@ -989,7 +989,7 @@ blockBank = (e, s) =>{
                       <span>Change Logo</span>
                       }
                       
-                      </label>
+                      *</label>
                     </div>
                   </UploadArea>
 
@@ -1020,7 +1020,7 @@ blockBank = (e, s) =>{
                       :
                       <span>Change Contract</span>
                       }
-                      </label>
+                      *</label>
                     </div>
                   </UploadArea>
               </FormGroup>
@@ -1045,7 +1045,7 @@ blockBank = (e, s) =>{
               <h1 ><FormattedMessage {...messages.verify} /></h1>
             <form action="" method="post" onSubmit={this.verifyEditOTP} >
               <FormGroup>
-                <label><FormattedMessage {...messages.otp} /></label>
+                <label><FormattedMessage {...messages.otp} />*</label>
                 <TextInput
                   type="text"
                   name="otp"
@@ -1067,7 +1067,7 @@ blockBank = (e, s) =>{
             <h1 >Edit Bank</h1>
             <form action="" method="post" onSubmit={this.editBank}>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup1} /></label>
+                <label><FormattedMessage {...messages.popup1} />*</label>
                 <TextInput
                   type="text"
                   name="name"
@@ -1080,7 +1080,7 @@ blockBank = (e, s) =>{
                 />
               </FormGroup>
               <FormGroup>
-                <label>Bank Code</label>
+                <label>Bank Code*</label>
                 <TextInput
                   type="text"
                   name="bcode"
@@ -1093,7 +1093,7 @@ blockBank = (e, s) =>{
                 />
               </FormGroup>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup2} /></label>
+                <label><FormattedMessage {...messages.popup2} />*</label>
                 <TextInput
                   type="text"
                   name="address1"
@@ -1109,7 +1109,7 @@ blockBank = (e, s) =>{
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup3} /></label>
+                  <label><FormattedMessage {...messages.popup3} />*</label>
                   <TextInput
                     type="text"
                     name="state"
@@ -1124,7 +1124,7 @@ blockBank = (e, s) =>{
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup4} /></label>
+                  <label><FormattedMessage {...messages.popup4} />*</label>
                   <TextInput
                     type="text"
                     name="zip"
@@ -1150,7 +1150,7 @@ blockBank = (e, s) =>{
                     onChange={this.countryChange}
                     required
                   >
-                    <option title="" value="">Select Country</option>
+                    <option title="" value="">Select Country*</option>
                     <option title="+213">Algeria</option>
 		<option title="+376">Andorra</option>
 		<option title="+244">Angola</option>
@@ -1371,7 +1371,7 @@ blockBank = (e, s) =>{
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup8} /></label>
+                  <label><FormattedMessage {...messages.popup8} />*</label>
                   <TextInput
                     type="email"
                     name="email"
@@ -1403,7 +1403,7 @@ blockBank = (e, s) =>{
                 </Col>
                 <Col cW="78%">
                 <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} /></label>
+                  <label><FormattedMessage {...messages.popup7} />*</label>
                   <TextInput
                     type="text"
                     pattern="[0-9]{10}"
@@ -1453,7 +1453,7 @@ blockBank = (e, s) =>{
                       <span>Change Logo</span>
                       }
                       
-                      </label>
+                      *</label>
                     </div>
                   </UploadArea>
 
@@ -1484,7 +1484,7 @@ blockBank = (e, s) =>{
                       :
                       <span>Change Contract</span>
                       }
-                      </label>
+                      *</label>
                     </div>
                   </UploadArea>
               </FormGroup>

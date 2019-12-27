@@ -746,7 +746,7 @@ roles:[],
               <h1 ><FormattedMessage {...messages.verify} /></h1>
             <form action="" method="post" onSubmit={this.verifyOTP} >
               <FormGroup>
-                <label><FormattedMessage {...messages.otp} /></label>
+                <label><FormattedMessage {...messages.otp} />*</label>
                 <TextInput
                   type="text"
                   name="otp"
@@ -767,7 +767,7 @@ roles:[],
             <h1 >Create Infra User</h1>
             <form action="" method="post" onSubmit={this.addBank}>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup1} /></label>
+                <label><FormattedMessage {...messages.popup1} />*</label>
                 <TextInput
                   type="text"
                   name="name"
@@ -779,7 +779,7 @@ roles:[],
                 />
               </FormGroup>
               <FormGroup>
-                <label>Email</label>
+                <label>Email*</label>
                 <TextInput
                   type="email"
                   name="email"
@@ -792,7 +792,7 @@ roles:[],
               </FormGroup>
 
               <FormGroup>
-                  <label>Mobile Number</label>
+                  <label>Mobile Number*</label>
                   <TextInput
                      type="text"
                      pattern="[0-9]{10}"
@@ -807,7 +807,7 @@ roles:[],
                   </FormGroup>
 
                   <FormGroup>
-                  <label>User Id</label>
+                  <label>User Id*</label>
                   <TextInput
                     type="text"
                     name="username"
@@ -822,7 +822,7 @@ roles:[],
                   </FormGroup>
 
                   <FormGroup>
-                  <label>Temporary Password</label>
+                  <label>Temporary Password*</label>
                   <TextInput
                     type="password"
                     pattern=".{8,}"
@@ -846,7 +846,7 @@ roles:[],
                     onChange={this.handleInputChange}
                     required
                   >
-                    <option value="">Select Profile</option>
+                    <option value="">Select Profile*</option>
                     {
                       this.state.roles && this.state.roles.length > 0
                         ? this.state.roles.map(function(b) {
@@ -891,7 +891,7 @@ roles:[],
                       <span>Change Logo</span>
                       }
                       
-                      </label>
+                      *</label>
                     </div>
                   </UploadArea>
 
@@ -915,7 +915,7 @@ roles:[],
               <h1 ><FormattedMessage {...messages.verify} /></h1>
             <form action="" method="post" onSubmit={this.verifyOTP} >
               <FormGroup>
-                <label><FormattedMessage {...messages.otp} /></label>
+                <label><FormattedMessage {...messages.otp} />*</label>
                 <TextInput
                   type="text"
                   name="otp"
@@ -936,7 +936,7 @@ roles:[],
             <h1 >Edit Infra User</h1>
             <form action="" method="post" onSubmit={this.editUser}>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup1} /></label>
+                <label><FormattedMessage {...messages.popup1} />*</label>
                 <TextInput
                   type="text"
                   name="name"
@@ -951,7 +951,7 @@ roles:[],
                 />
               </FormGroup>
               <FormGroup>
-                <label>Email</label>
+                <label>Email*</label>
                 <TextInput
                   type="email"
                   name="email"
@@ -965,7 +965,7 @@ roles:[],
               </FormGroup>
 
               <FormGroup>
-                  <label>Mobile Number</label>
+                  <label>Mobile Number*</label>
                   <TextInput
                      type="text"
                      pattern="[0-9]{10}"
@@ -981,7 +981,7 @@ roles:[],
                   </FormGroup>
 
                   <FormGroup>
-                  <label>User Id</label>
+                  <label>User Id*</label>
                   <TextInput
                     type="text"
                     pattern=".{8,}"
@@ -997,7 +997,7 @@ roles:[],
                   </FormGroup>
 
                   <FormGroup>
-                  <label>Temporary Password</label>
+                  <label>Temporary Password*</label>
                   <TextInput
                     type="password"
                     pattern=".{8,}"
@@ -1022,7 +1022,7 @@ roles:[],
                     onChange={this.handleInputChange}
                     required
                   >
-                    <option value="">Select Profile</option>
+                    <option value="">Select Profile*</option>
                     {
                       this.state.roles && this.state.roles.length > 0
                         ? this.state.roles.map(function(b) {
@@ -1067,7 +1067,7 @@ roles:[],
                       <span>Change Logo</span>
                       }
                       
-                      </label>
+                      *</label>
                     </div>
                   </UploadArea>
 
@@ -1089,7 +1089,7 @@ roles:[],
             <h1 >Create Profile</h1>
             <form action="" method="post" onSubmit={this.addProfile}>
               <FormGroup>
-                <label>Profile Name</label>
+                <label>Profile Name*</label>
                 <TextInput
                   type="text"
                   name="pro_name"
@@ -1101,7 +1101,7 @@ roles:[],
                 />
               </FormGroup>
               <FormGroup>
-                <label>Description</label>
+                <label>Description*</label>
                 <TextInput
                   type="text"
                   name="pro_description"
@@ -1140,7 +1140,7 @@ roles:[],
             <h1 >Edit Profile</h1>
             <form action="" method="post" onSubmit={this.editProfile}>
               <FormGroup>
-                <label>Profile Name</label>
+                <label>Profile Name*</label>
                 <TextInput
                   type="text"
                   name="pro_name"
@@ -1153,7 +1153,7 @@ roles:[],
                 />
               </FormGroup>
               <FormGroup>
-                <label>Description</label>
+                <label>Description*</label>
                 <TextInput
                   type="text"
                   name="pro_description"

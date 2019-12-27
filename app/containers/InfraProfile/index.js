@@ -457,7 +457,7 @@ export default class InfraProfile extends Component {
             <h1 >Edit Profile</h1>
             <form action="" method="post" onSubmit={this.editProfile}>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup1} /></label>
+                <label><FormattedMessage {...messages.popup1} />*</label>
                 <TextInput
                   type="text"
                   name="name"
@@ -470,7 +470,7 @@ export default class InfraProfile extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>User Id</label>
+                <label>User Id*</label>
                 <TextInput
                   type="text"
                   name="username"
@@ -484,7 +484,7 @@ export default class InfraProfile extends Component {
               </FormGroup>
 
               <FormGroup>
-                <label>Password <small className="small">(Leave blank if you don't want to change)</small></label>
+                <label>Password <small className="small">(Leave blank if you don't want to change)</small>*</label>
                 <TextInput
                   type="password"
                   name="password"
@@ -498,7 +498,7 @@ export default class InfraProfile extends Component {
               </FormGroup>
 
               <FormGroup>
-                <label>Email</label>
+                <label>Email*</label>
                 <TextInput
                   type="text"
                   name="email"
@@ -741,7 +741,7 @@ export default class InfraProfile extends Component {
                 </Col>
                 <Col cW="78%">
                 <FormGroup>
-                <label>Authorized Phone Number</label>
+                <label>Authorized Phone Number*</label>
                 <TextInput
                   type="number"
                   name="mobile"

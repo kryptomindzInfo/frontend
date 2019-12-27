@@ -588,7 +588,7 @@ export default class InfraInfo extends Component {
               <h1 ><FormattedMessage {...messages.verify} /></h1>
             <form action="" method="post" onSubmit={this.verifyEditOTP} >
               <FormGroup>
-                <label><FormattedMessage {...messages.otp} /></label>
+                <label><FormattedMessage {...messages.otp} />*</label>
                 <TextInput
                   type="text"
                   name="otp"
@@ -610,7 +610,7 @@ export default class InfraInfo extends Component {
             <h1 >Edit Bank</h1>
             <form action="" method="post" onSubmit={this.editBank}>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup1} /></label>
+                <label><FormattedMessage {...messages.popup1} />*</label>
                 <TextInput
                   type="text"
                   name="name"
@@ -623,7 +623,7 @@ export default class InfraInfo extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>Bank Code</label>
+                <label>Bank Code*</label>
                 <TextInput
                   type="text"
                   name="bcode"
@@ -636,7 +636,7 @@ export default class InfraInfo extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label><FormattedMessage {...messages.popup2} /></label>
+                <label><FormattedMessage {...messages.popup2} />*</label>
                 <TextInput
                   type="text"
                   name="address1"
@@ -652,7 +652,7 @@ export default class InfraInfo extends Component {
                 <Row>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup3} /></label>
+                  <label><FormattedMessage {...messages.popup3} />*</label>
                   <TextInput
                     type="text"
                     name="state"
@@ -667,7 +667,7 @@ export default class InfraInfo extends Component {
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup4} /></label>
+                  <label><FormattedMessage {...messages.popup4} />*</label>
                   <TextInput
                     type="text"
                     name="zip"
@@ -693,7 +693,7 @@ export default class InfraInfo extends Component {
                     onChange={this.countryChange}
                     required
                   >
-                    <option title="" value="">Select Country</option>
+                    <option title="" value="">Select Country*</option>
                     <option title="+213">Algeria</option>
 		<option title="+376">Andorra</option>
 		<option title="+244">Angola</option>
@@ -914,7 +914,7 @@ export default class InfraInfo extends Component {
                   </Col>
                   <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup8} /></label>
+                  <label><FormattedMessage {...messages.popup8} />*</label>
                   <TextInput
                     type="email"
                     name="email"
@@ -946,7 +946,7 @@ export default class InfraInfo extends Component {
                 </Col>
                 <Col cW="78%">
                 <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} /></label>
+                  <label><FormattedMessage {...messages.popup7} />*</label>
                   <TextInput
                     type="text"
                     pattern="[0-9]{10}"
@@ -997,7 +997,7 @@ export default class InfraInfo extends Component {
                       <span>Change Logo</span>
                       }
 
-                      </label>
+                      *</label>
                     </div>
                   </UploadArea>
 
@@ -1028,7 +1028,7 @@ export default class InfraInfo extends Component {
                       :
                       <span>Change Contract</span>
                       }
-                      </label>
+                      *</label>
                     </div>
                   </UploadArea>
               </FormGroup>

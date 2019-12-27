@@ -549,7 +549,7 @@ Edit Revenue sharing Rule</h3>
               <div className="cardBody">
               <form action="" method="post" onSubmit={this.editRules}>
               <FormGroup>
-                <label>Name</label>
+                <label>Name*</label>
                 <TextInput
                   type="text"
                   name="name"
@@ -574,7 +574,7 @@ Edit Revenue sharing Rule</h3>
                     required
                     list="ttype"
                   >
-                       <option value="">Transaction Type</option>
+                       <option value="">Transaction Type*</option>
                     <option >Wallet to Wallet </option>
                     <option >Sending Non Wallet to Non Wallet </option>
                     <option >Receiving Non Wallet from Non Wallet</option>
@@ -614,7 +614,7 @@ Edit Revenue sharing Rule</h3>
                     return <Row key={i}>
                     <Col cW="20%" mR="2%">
                     <FormGroup>
-                    <label>From</label>
+                    <label>From*</label>
                     {
                         i > 0 ? 
                         <TextInput
@@ -649,7 +649,7 @@ Edit Revenue sharing Rule</h3>
                     </Col>
                     <Col cW="20%" mR="2%">
                     <FormGroup>
-                    <label>To</label>
+                    <label>To*</label>
                     <TextInput
                        type="text"
                        pattern="[0-9]{1,}"
@@ -667,7 +667,7 @@ Edit Revenue sharing Rule</h3>
                     </Col>
                     <Col cW="26%" mR="2%">
                     <FormGroup>
-                    <label>Fixed Amount</label>
+                    <label>Fixed Amount*</label>
                     <TextInput
                       type="text"
                       name="fixed_amount"
@@ -684,7 +684,7 @@ Edit Revenue sharing Rule</h3>
                     </Col>
                     <Col cW="28%" mR="0">
                     <FormGroup>
-                    <label>Percentage</label>
+                    <label>Percentage*</label>
                     <TextInput
                     required
                       type="text"

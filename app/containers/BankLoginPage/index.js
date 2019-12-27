@@ -145,7 +145,7 @@ export default class BankLoginPage extends Component {
           <form action="" method="POST" onSubmit={this.loginRequest}>
             <InputsWrap>
               <FormGroup>
-                <label><FormattedMessage {...messages.userid} /></label>
+                <label><FormattedMessage {...messages.userid} />*</label>
                 <TextInput
                   type="text"
                   name="username"
@@ -157,7 +157,7 @@ export default class BankLoginPage extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label><FormattedMessage {...messages.password} /></label>
+                <label><FormattedMessage {...messages.password} />*</label>
                 <TextInput
                   type="password"
                   name="password"
