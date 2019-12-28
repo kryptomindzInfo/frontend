@@ -30,21 +30,21 @@ import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import SelectInput from 'components/SelectInput';
-import Pagination from "react-js-pagination";
+import Pagination from 'react-js-pagination';
 import Row from 'components/Row';
 import A from 'components/A';
 import styled from 'styled-components';
 
+const H4 = styled.h4`
+  > span {
+    font-size: 13px;
+    color: #666;
+  }
+`;
+
 import { API_URL, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
-
-const H4 = styled.h4 `
- > span{
-   font-size: 13px;
-   color: #666;
- }
-`;
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -87,7 +87,7 @@ export default class OperationalHistory extends Component {
       banks: [],
       otp: '',
       showOtp: false,
-      token
+      token: token,
     };
 
     this.success = this.success.bind(this);
@@ -114,8 +114,8 @@ export default class OperationalHistory extends Component {
   };
 
   showPopup = () => {
-    // this.setState({ popup: true });
-    this.props.history.push(`/createfee/${this.props.match.params.bank}`);
+    //this.setState({ popup: true });
+    this.props.history.push('/createfee/' + this.props.match.params.bank);
   };
 
   closePopup = () => {
@@ -201,35 +201,41 @@ export default class OperationalHistory extends Component {
         },
         () => {
           this.error();
-      });
+        },
+      );
     } else {
       axios
-        .post(`${API_URL  }/createRules`, this.state)
+        .post(`${API_URL}/createRules`, this.state)
         .then(res => {
-          if(res.status == 200){
-            if(res.data.error){
+          if (res.status == 200) {
+            if (res.data.error) {
               throw res.data.error;
-            }else{
-              // console.log(res.data);
-              this.setState({
-                notification: 'Rule added'
-              }, () => {
+            } else {
+              //console.log(res.data);
+              this.setState(
+                {
+                  notification: 'Rule added',
+                },
+                () => {
                   this.success();
-                  const ba = this.state.bank;
-                  let {history} = this.props;
-                setTimeout(function(){
-                  history.push(`/fees/${ba}`);
-                }, 1000);
-              });
+                  let ba = this.state.bank;
+                  let history = this.props.history;
+                  setTimeout(function() {
+                    history.push('/fees/' + ba);
+                  }, 1000);
+                },
+              );
             }
-          }else{
+          } else {
             const error = new Error(res.data.error);
             throw error;
           }
         })
         .catch(err => {
           this.setState({
-            notification: (err.response) ? err.response.data.error : err.toString()
+            notification: err.response
+              ? err.response.data.error
+              : err.toString(),
           });
           this.error();
         });
@@ -349,9 +355,9 @@ export default class OperationalHistory extends Component {
 
   showHistory = () => {
     this.setState({ history: [] }, () => {
-      let out = [];
-      let start = (this.state.activePage - 1) * this.state.perPage;
-      let end = this.state.perPage * this.state.activePage;
+      var out = [];
+      var start = (this.state.activePage - 1) * this.state.perPage;
+      var end = this.state.perPage * this.state.activePage;
       if (end > this.state.totalCount) {
         end = this.state.totalCount;
       }
@@ -400,8 +406,8 @@ export default class OperationalHistory extends Component {
         if (res.status == 200) {
           console.log(res.data);
           this.setState({ loading: false, totalCount: res.data.total }, () => {
-              this.getHistory();
-            });
+            this.getHistory();
+          });
         }
       })
       .catch(err => {});
@@ -456,7 +462,7 @@ export default class OperationalHistory extends Component {
     if (redirect) {
       return <Redirect to="/" />;
     }
-    let months = [
+    var months = [
       'Jan',
       'Feb',
       'Mar',
@@ -470,7 +476,7 @@ export default class OperationalHistory extends Component {
       'Nov',
       'Dec',
     ];
-    let dis = this;
+    var dis = this;
     return (
       <Wrapper>
         <Helmet>
@@ -478,22 +484,20 @@ export default class OperationalHistory extends Component {
           <title>Create Fee | INFRA | E-WALLET</title>
         </Helmet>
         <TopBar>
-          <Welcome infraNav/>
+          <Welcome infraNav />
           <Container>
             <A href="/dashboard" float="left">
-              <div className="headerNavDash">
-              Main Dashboard
-              </div>
+              <div className="headerNavDash">Main Dashboard</div>
             </A>
             <div className="bankLogo">
-              <img src={STATIC_URL+this.state.logo}/>
+              <img src={STATIC_URL + this.state.logo} />
             </div>
 
             <h2>{this.state.banks.name}</h2>
           </Container>
         </TopBar>
         <Container verticalMargin>
-          <SidebarOne bankId={this.state.bank}/>
+          <SidebarOne bankId={this.state.bank} />
           <Main>
             {/* <ActionBar marginBottom="33px" inputWidth="calc(100% - 344px)" className="clr">
               <div className="iconedInput fl small">
@@ -519,7 +523,7 @@ export default class OperationalHistory extends Component {
 
             </ActionBar> */}
             <Card bigPadding>
-              <div className="cardHeader" >
+              <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">playlist_add_check</i>
                 </div>
@@ -530,36 +534,54 @@ export default class OperationalHistory extends Component {
               </div>
               <div className="cardBody">
                 <div className="clr">
-                  <div className="menuTabs" onClick={() => this.filterData("")}>All</div>
-                  <div className="menuTabs" onClick={() => this.filterData("DR")}>Payment Sent</div>
-                  <div className="menuTabs" onClick={() => this.filterData("CR")}>Payment Recieved</div> 
+                  <div className="menuTabs" onClick={() => this.filterData('')}>
+                    All
+                  </div>
+                  <div
+                    className="menuTabs"
+                    onClick={() => this.filterData('DR')}
+                  >
+                    Payment Sent
+                  </div>
+                  <div
+                    className="menuTabs"
+                    onClick={() => this.filterData('CR')}
+                  >
+                    Payment Recieved
+                  </div>
                 </div>
                 <Table marginTop="34px" smallTd>
                   <tbody>
-                    {
-                      
-                      this.state.history && this.state.history.length > 0
+                    {this.state.history && this.state.history.length > 0
                       ? this.state.history.map(function(b) {
-                          let isoformat = b.Timestamp;
-                          let readable = new Date(isoformat);
-                          let m = readable.getMonth(); // returns 6
-                          let d = readable.getDay(); // returns 15
-                          let y = readable.getFullYear();
-                          let h = readable.getHours();
-                          let mi = readable.getMinutes();
-                          let mlong = months[m];
-                          let fulldate =
+                          var isoformat = b.Timestamp;
+                          var readable = new Date(isoformat);
+                          var m = readable.getMonth(); // returns 6
+                          var d = readable.getDay(); // returns 15
+                          var y = readable.getFullYear();
+                          var h = readable.getHours();
+                          var mi = readable.getMinutes();
+                          var mlong = months[m];
+                          var fulldate =
                             d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
 
                           return dis.state.filter == b.Value.tx_data.tx_type ||
                             dis.state.filter == '' ? (
                             <tr key={b.TxId}>
-                            <td><div className="labelGrey">{fulldate}</div></td>
-                            <td><div className="labelBlue">{b.Value.tx_data.tx_details}</div> <div className="labelSmallGrey">Completed</div></td>
-                            <td><div className="labelGrey">XOF {b.Value.amount}</div></td>
-                          </tr>
-                            :
-                            null
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div className="labelBlue">
+                                  {b.Value.tx_data.tx_details}
+                                </div>{' '}
+                                <div className="labelSmallGrey">Completed</div>
+                              </td>
+                              <td>
+                                <div className="labelGrey">
+                                  XOF {b.Value.amount}
+                                </div>
+                              </td>
                             </tr>
                           ) : null;
                         })
