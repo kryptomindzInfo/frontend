@@ -165,8 +165,8 @@ export default class SetupPage extends Component {
           <LoginHeader>
           {/* <FormattedMessage {...messages.pagetitle} /> */}
           </LoginHeader>
-          <FrontFormTitle>Setup your account</FrontFormTitle>
-          <FrontFormSubTitle>Please fil the below information to begin witht th ewallet system</FrontFormSubTitle>
+          <FrontFormTitle>Infra Admin Setup</FrontFormTitle>
+          <FrontFormSubTitle>Please fil the below information to begin witht the wallet system</FrontFormSubTitle>
           <form action="" method="POST" onSubmit={this.setupUpdate} className="formWrap">
             <InputsWrap>
               <FormGroup>

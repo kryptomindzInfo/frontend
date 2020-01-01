@@ -547,7 +547,7 @@ export default class OperationalHistory extends Component {
                     className="menuTabs"
                     onClick={() => this.filterData('CR')}
                   >
-                    Payment Recieved
+                    Payment Received
                   </div>
                 </div>
                 <Table marginTop="34px" smallTd>
@@ -579,7 +579,7 @@ export default class OperationalHistory extends Component {
                               </td>
                               <td>
                                 <div className="labelGrey">
-                                  XOF {b.Value.amount}
+                                 {b.Value.tx_data.tx_type == 'DR' ? '+XOF' : '-XOF'}{b.Value.amount}
                                 </div>
                               </td>
                             </tr>

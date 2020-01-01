@@ -42,6 +42,8 @@ import OperationalHistory from 'containers/OperationalHistory/Loadable';
 import MasterHistory from 'containers/MasterHistory/Loadable';
 import InfraProfile from 'containers/InfraProfile/Loadable';
 import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
+import TermsConditions from '../../components/TermsConditions';
+
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
@@ -95,12 +97,15 @@ export default function App() {
           <Route exact path="/bank/activate" component={BankActivate} />
           <Route exact path="/bank/forgot-password" component={BankForgotPasswordPage}/>
           <Route exact path="/bank/otp" component={BankOTPPage} />
+          <Route exact path="/termsConditions" component={TermsConditions} />
+
 
           <BankRoute exact path="/bank/dashboard" component={BankDashboard} />
           <BankRoute path="/bank/info" component={BankInfo} />
           <BankRoute path="/bank/fees" component={BankFees} />
           <BankRoute path="/bank/documents" component={BankDocuments} />
           <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
+
           
 
           <Route component={NotFoundPage} />

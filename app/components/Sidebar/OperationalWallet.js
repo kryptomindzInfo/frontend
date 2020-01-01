@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
@@ -33,11 +33,11 @@ class OperationalWallet extends Component {
       from: '',
       to: '',
       amount: '',
-      notification: "",
+      notification: '',
       balance: 0,
       note: '',
       livefee: 0,
-      token
+      token,
     };
 
     this.success = this.success.bind(this);
@@ -61,176 +61,184 @@ class OperationalWallet extends Component {
   };
   amountChange = event => {
     const { value, name } = event.target;
-    this.setState({
-      [name]: value,
-    }, () => {
-      if(this.state.amount != ""){
-        axios
-        .post(`${API_URL  }/checkFee`, {
-          from: this.state.from,
-          to: this.state.to,
-          amount: this.state.amount,
-          auth: "infra",
-          token
-        })
-        .then(res => {
-          if(res.status == 200){
-            if(res.data.error){
-              
-            }else{
-              this.setState({
-                livefee: res.data.fee
-              }, function(){
-    
-              });
-          }
-        }
-        });
-      }else{
-        this.setState({
-          livefee: 0
-        });
-      }
-    });
-  
-
-  };
-  sendMoney = (e) => {
-    e.preventDefault();
-    axios
-    .post(`${API_URL  }/getWalletsOperational`, {
-      bank_id : this.props.historyLink,
-      token
-    })
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-          throw res.data.error;
-        }else{
+    this.setState(
+      {
+        [name]: value,
+      },
+      () => {
+        if (this.state.amount != '') {
+          axios
+            .post(`${API_URL}/checkFee`, {
+              from: this.state.from,
+              to: this.state.to,
+              amount: this.state.amount,
+              auth: 'infra',
+              token,
+            })
+            .then(res => {
+              if (res.status == 200) {
+                if (res.data.error) {
+                } else {
+                  this.setState(
+                    {
+                      livefee: res.data.fee,
+                    },
+                    function() {},
+                  );
+                }
+              }
+            });
+        } else {
           this.setState({
-            from: res.data.from,
-            to: res.data.to,
-            popup: true
+            livefee: 0,
           });
         }
-      }else{
-        const error = new Error(res.data.error);
-        throw error;
-      }
-    })
-    .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
+      },
+    );
+  };
+  sendMoney = e => {
+    e.preventDefault();
+    axios
+      .post(`${API_URL}/getWalletsOperational`, {
+        bank_id: this.props.historyLink,
+        token,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              from: res.data.from,
+              to: res.data.to,
+              popup: true,
+            });
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+        });
+        this.error();
       });
-      this.error();
-    });
-   
   };
 
   closePopup = () => {
     this.setState({
       popup: false,
       amount: '',
-      note: ''
+      note: '',
     });
   };
 
   getBalance = () => {
-    
     axios
-    .get(`${API_URL  }/getInfraOperationalBalance?bank=${this.props.historyLink}`)
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-          throw res.data.error;
-        }else{
-          this.setState({
-            balance: res.data.balance,
-          });
+      .get(
+        `${API_URL}/getInfraOperationalBalance?bank=${this.props.historyLink}`,
+      )
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              balance: res.data.balance,
+            });
+          }
         }
-      }
-    })
-    .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+        });
+        this.error();
       });
-      this.error();
-    });
   };
 
-  submitMoney = (e) => {
+  submitMoney = e => {
     e.preventDefault();
-    console.log(this.state.balance + " : "+ this.state.amount);
-    if(this.state.amount > this.state.balance){
-      this.setState({
-        notification: 'Insufficient Balance'
-      }, function(){
-        this.error();
-      });
-    }
-    else if(this.state.amount == ''){
-      this.setState({
-        notification: 'Invalid Amount'
-      }, function(){
-        this.error();
-      });
-    }
-    else{
+    console.log(this.state.balance + ' : ' + this.state.amount);
+    if (this.state.amount > this.state.balance) {
+      this.setState(
+        {
+          notification: 'Insufficient Balance',
+        },
+        function() {
+          this.error();
+        },
+      );
+    } else if (this.state.amount == '') {
+      this.setState(
+        {
+          notification: 'Invalid Amount',
+        },
+        function() {
+          this.error();
+        },
+      );
+    } else {
       axios
-    .post(`${API_URL  }/transferMoney`, {
-      from: this.state.from,
-      to: this.state.to,
-      amount: this.state.amount,
-      note: this.state.note,
-      auth: "infra",
-      token
-    })
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-          throw res.data.error;
-        }else{
-          var tis = this;
+        .post(`${API_URL}/transferMoney`, {
+          from: this.state.from,
+          to: this.state.to,
+          amount: this.state.amount,
+          note: this.state.note,
+          auth: 'infra',
+          token,
+        })
+        .then(res => {
+          if (res.status == 200) {
+            if (res.data.error) {
+              throw res.data.error;
+            } else {
+              var tis = this;
+              this.setState(
+                {
+                  notification:
+                    'Transfer Initiated, You will be notified once done',
+                },
+                function() {
+                  this.success();
+                  setTimeout(function() {
+                    tis.closePopup();
+                    tis.getBalance();
+                    tis.props.reload();
+                  }, 1000);
+                },
+              );
+            }
+          } else {
+            const error = new Error(res.data.error);
+            throw error;
+          }
+        })
+        .catch(err => {
           this.setState({
-            notification: "Transfer Initiated, You will be notified once done"
-          }, function(){
-            this.success();
-           setTimeout(function(){
-            tis.closePopup();
-            tis.getBalance();
-            tis.props.reload();
-           }, 1000);
+            notification: err.response
+              ? err.response.data.error
+              : err.toString(),
           });
-      }
+          this.error();
+        });
     }
-      else{
-        const error = new Error(res.data.error);
-        throw error;
-      }
-    })
-    .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
-      });
-      this.error();
-    });
-    }
-  
   };
 
   componentDidMount() {
     this.setState({
-      bank: this.props.historyLink
+      bank: this.props.historyLink,
     });
     this.getBalance();
   }
 
-  
   render() {
-    
+    var termsConditions;
     function inputFocus(e) {
       const { target } = e;
-      target.parentElement.querySelector("label").classList.add("focused");
+      target.parentElement.querySelector('label').classList.add('focused');
     }
 
     function inputBlur(e) {
@@ -240,33 +248,39 @@ class OperationalWallet extends Component {
       }
     }
     return (
-        <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
-            <h3><FormattedMessage {...messages.operational} /></h3>
-            <h5><FormattedMessage {...messages.available} /></h5>
-            <div className="cardValue">{CURRENCY} {this.state.balance.toFixed(1)}</div>
-            {
-              this.props.activateNeeded ?
-              <button className="fullWidth">
+      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
+        <h3>
+          <FormattedMessage {...messages.operational} />
+        </h3>
+        <h5>
+          <FormattedMessage {...messages.available} />
+        </h5>
+        <div className="cardValue">
+          {CURRENCY} {this.state.balance.toFixed(2)}
+        </div>
+        {this.props.activateNeeded ? (
+          <button className="fullWidth">
             <FormattedMessage {...messages.activate} />
-            </button>
-              :
-              <button onClick={this.sendMoney}>
-            <i className="material-icons">send</i> <FormattedMessage {...messages.sendmoney} />
-            </button>
-            }
-              <A href={"/operationalHistory/"+this.props.historyLink}>
-                <span className="history">History</span>
-                </A>
-            
-             { this.state.popup ? 
+          </button>
+        ) : (
+          <button onClick={this.sendMoney}>
+            <i className="material-icons">send</i>{' '}
+            <FormattedMessage {...messages.sendmoney} />
+          </button>
+        )}
+        <A href={'/operationalHistory/' + this.props.historyLink}>
+          <span className="history">History</span>
+        </A>
+
+        {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)} roundedCorner>
-          <h1 className="normalH1">Transfer the amount</h1>
-          <form action="" method="post" onSubmit={this.submitMoney}>
+            <h1 className="normalH1">Transfer the amount</h1>
+            <form action="" method="post" onSubmit={this.submitMoney}>
               <FormGroup>
                 <label>From*</label>
                 <TextInput
-                readOnly
-                id="popfrom"
+                  readOnly
+                  id="popfrom"
                   type="text"
                   name="from"
                   onFocus={inputFocus}
@@ -280,8 +294,8 @@ class OperationalWallet extends Component {
               <FormGroup>
                 <label>To*</label>
                 <TextInput
-                readOnly
-                id="popto"
+                  readOnly
+                  id="popto"
                   type="text"
                   name="to"
                   autoFocus
@@ -304,7 +318,9 @@ class OperationalWallet extends Component {
                   required
                 />
               </FormGroup>
-              <p className="note">Total available {CURRENCY} {this.state.balance.toFixed(1)}</p>
+              <p className="note">
+                Total available {CURRENCY} {this.state.balance.toFixed(2)}
+              </p>
               <FormGroup>
                 <label>Note*</label>
                 <TextArea
@@ -317,20 +333,27 @@ class OperationalWallet extends Component {
                   required
                 />
               </FormGroup>
-              <p className="note">I have read the  <a>Terms and Conditions</a></p>
+              <p className="note">
+                I have read the{' '}
+                <a onClick={() => window.open('/termsConditions')}>
+                  Terms and Conditions
+                </a>
+              </p>
 
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>
               </Button>
-              <p className="note">Total Fee {CURRENCY} {this.state.livefee.toFixed(1)} will be charges</p>
+              <p className="note">
+                Total Fee {CURRENCY} {this.state.livefee.toFixed(2)} will be
+                charged and receiver will get {CURRENCY}{' '}
+                {this.state.amount - this.state.livefee.toFixed(2)}{' '}
+              </p>
             </form>
-
-              </Popup>
-          : null }
-        </Card>
+          </Popup>
+        ) : null}
+      </Card>
     );
   }
 }
- 
-export default OperationalWallet;
 
+export default OperationalWallet;

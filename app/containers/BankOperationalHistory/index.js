@@ -30,16 +30,16 @@ import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import SelectInput from 'components/SelectInput';
-import Pagination from "react-js-pagination";
+import Pagination from 'react-js-pagination';
 import Row from 'components/Row';
 import A from 'components/A';
 import styled from 'styled-components';
 
-const H4 = styled.h4 `
- > span{
-   font-size: 13px;
-   color: #666;
- }
+const H4 = styled.h4`
+  > span {
+    font-size: 13px;
+    color: #666;
+  }
 `;
 
 import { API_URL, STATIC_URL } from '../App/constants';
@@ -55,8 +55,6 @@ toast.configure({
 });
 
 const token = localStorage.getItem('bankLogged');
-
-
 
 export default class BankOperationalHistory extends Component {
   constructor() {
@@ -79,7 +77,7 @@ export default class BankOperationalHistory extends Component {
       trans_to: '',
       transcount_from: '',
       history: [],
-      filter: "",
+      filter: '',
       transcount_to: '',
       fixed_amount: '',
       percentage: '',
@@ -89,7 +87,7 @@ export default class BankOperationalHistory extends Component {
       banks: [],
       otp: '',
       showOtp: false,
-      token: token
+      token: token,
     };
 
     this.success = this.success.bind(this);
@@ -117,7 +115,7 @@ export default class BankOperationalHistory extends Component {
 
   showPopup = () => {
     //this.setState({ popup: true });
-    this.props.history.push('/createfee/'+this.props.match.params.bank);
+    this.props.history.push('/createfee/' + this.props.match.params.bank);
   };
 
   closePopup = () => {
@@ -133,9 +131,9 @@ export default class BankOperationalHistory extends Component {
       mobile: '',
       logo: null,
       contract: null,
-      
+
       otp: '',
-      showOtp: false
+      showOtp: false,
     });
   };
 
@@ -144,8 +142,8 @@ export default class BankOperationalHistory extends Component {
     // axios.post(API_URL+'/logout', {token: token})
     // .then(res => {
     //    if(res.status == 200){
-    localStorage.removeItem("logged");
-    localStorage.removeItem("name");
+    localStorage.removeItem('logged');
+    localStorage.removeItem('name');
     this.setState({ redirect: true });
     //     }else{
     //       const error = new Error(res.data.error);
@@ -161,31 +159,31 @@ export default class BankOperationalHistory extends Component {
   addBank = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/generateOTP`, {
+      .post(`${API_URL}/generateOTP`, {
         name: this.state.name,
         mobile: this.state.mobile,
         page: 'addBank',
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
               showOtp: true,
-              notification: 'OTP Sent'
+              notification: 'OTP Sent',
             });
             this.success();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
@@ -193,50 +191,61 @@ export default class BankOperationalHistory extends Component {
 
   createRules = event => {
     event.preventDefault();
-    if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
-      this.setState({
-        notification: 'Fill either fixed amount or percentage'
-      }, () => {
-        this.error();
-    });
-    }else{
-    axios
-      .post(`${API_URL  }/createRules`, this.state)
-      .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
-            throw res.data.error;
-          }else{
-            //console.log(res.data);
-            this.setState({
-              notification: 'Rule added'
-            }, () => {
-              this.success();
-              let ba = this.state.bank;
-              let history = this.props.history;
-              setTimeout(function(){
-                history.push('/fees/'+ba);
-              }, 1000);
-          });
+    if (
+      (this.state.fixed_amount == '' && this.state.percentage == '') ||
+      (this.state.fixed_amount != '' && this.state.percentage != '')
+    ) {
+      this.setState(
+        {
+          notification: 'Fill either fixed amount or percentage',
+        },
+        () => {
+          this.error();
+        },
+      );
+    } else {
+      axios
+        .post(`${API_URL}/createRules`, this.state)
+        .then(res => {
+          if (res.status == 200) {
+            if (res.data.error) {
+              throw res.data.error;
+            } else {
+              //console.log(res.data);
+              this.setState(
+                {
+                  notification: 'Rule added',
+                },
+                () => {
+                  this.success();
+                  let ba = this.state.bank;
+                  let history = this.props.history;
+                  setTimeout(function() {
+                    history.push('/fees/' + ba);
+                  }, 1000);
+                },
+              );
+            }
+          } else {
+            const error = new Error(res.data.error);
+            throw error;
           }
-        }else{
-          const error = new Error(res.data.error);
-          throw error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+        })
+        .catch(err => {
+          this.setState({
+            notification: err.response
+              ? err.response.data.error
+              : err.toString(),
+          });
+          this.error();
         });
-        this.error();
-      });
     }
   };
 
   verifyOTP = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/addBank`, {
+      .post(`${API_URL}/addBank`, {
         name: this.state.name,
         address1: this.state.address1,
         state: this.state.state,
@@ -251,30 +260,29 @@ export default class BankOperationalHistory extends Component {
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              notification: "Bank added successfully!",
+              notification: 'Bank added successfully!',
             });
             this.success();
             this.closePopup();
             this.getBanks();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
   };
-
 
   removeFile = key => {
     this.setState({
@@ -289,7 +297,7 @@ export default class BankOperationalHistory extends Component {
 
   onChange(e) {
     if (e.target.files && e.target.files[0] != null) {
-      this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
+      this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
     }
   }
 
@@ -299,28 +307,28 @@ export default class BankOperationalHistory extends Component {
     formData.append('file', file);
     const config = {
       headers: {
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     };
 
     axios
-      .post(`${API_URL  }/fileUpload?token=${  token}`, formData, config)
+      .post(`${API_URL}/fileUpload?token=${token}`, formData, config)
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              [key] : res.data.name
+              [key]: res.data.name,
             });
           }
-        }else{
+        } else {
           throw res.data.error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
@@ -328,76 +336,90 @@ export default class BankOperationalHistory extends Component {
 
   getBanks = () => {
     axios
-      .post(`${API_URL  }/getBank`, { token:token, bank_id: this.props.match.params.bank })
+      .post(`${API_URL}/getBank`, {
+        token: token,
+        bank_id: this.props.match.params.bank,
+      })
       .then(res => {
-        if(res.status == 200){
-          
-          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo, bank_id: this.props.match.params.bank});
+        if (res.status == 200) {
+          this.setState({
+            loading: false,
+            banks: res.data.banks,
+            logo: res.data.banks.logo,
+            bank_id: this.props.match.params.bank,
+          });
         }
       })
-      .catch(err => {
-        
-      });
+      .catch(err => {});
   };
 
-  showHistory= () =>{
+  showHistory = () => {
     this.setState({ history: [] }, () => {
       var out = [];
-      var start = (this.state.activePage-1)*this.state.perPage;
-      var end = this.state.perPage*this.state.activePage;
-      if(end > this.state.totalCount){
+      var start = (this.state.activePage - 1) * this.state.perPage;
+      var end = this.state.perPage * this.state.activePage;
+      if (end > this.state.totalCount) {
         end = this.state.totalCount;
       }
-      for(var i = start; i < end; i++){
+      for (var i = start; i < end; i++) {
         out.push(this.state.allhistory[i]);
-      }  
+      }
       this.setState({ history: out });
     });
   };
 
   getHistory = () => {
     axios
-      .post(`${API_URL  }/getBankHistory`, { token:token, from: "operational", page: this.state.activePage, offset: this.state.perPage })
+      .post(`${API_URL}/getBankHistory`, {
+        token: token,
+        from: 'operational',
+        page: this.state.activePage,
+        offset: this.state.perPage,
+      })
       .then(res => {
-        if(res.status == 200){
+        if (res.status == 200) {
           // console.log(res.data);
-          this.setState({ loading: false, allhistory: res.data.history, totalCount: res.data.history.length}, () => {
-            this.showHistory();
-          });
+          this.setState(
+            {
+              loading: false,
+              allhistory: res.data.history,
+              totalCount: res.data.history.length,
+            },
+            () => {
+              this.showHistory();
+            },
+          );
         }
       })
-      .catch(err => {
-
-      });
+      .catch(err => {});
   };
 
   getHistoryTotal = () => {
     axios
-      .post(`${API_URL  }/getBankHistoryTotal`, { token:token, from: "operational" })
+      .post(`${API_URL}/getBankHistoryTotal`, {
+        token: token,
+        from: 'operational',
+      })
       .then(res => {
-        if(res.status == 200){
+        if (res.status == 200) {
           console.log(res.data);
-          this.setState({ loading: false, totalCount: res.data.total}
-          , () =>{
+          this.setState({ loading: false, totalCount: res.data.total }, () => {
             this.getHistory();
-          }  
-          );
+          });
         }
       })
-      .catch(err => {
-
-      });
+      .catch(err => {});
   };
 
-  filterData = (e) => {
+  filterData = e => {
     this.setState({ filter: e });
   };
 
-  handlePageChange = (pageNumber) => {
+  handlePageChange = pageNumber => {
     console.log(`active page is ${pageNumber}`);
-    this.setState({activePage: pageNumber});
+    this.setState({ activePage: pageNumber });
     this.showHistory();
-  }
+  };
 
   componentDidMount() {
     // this.setState({ bank: this.props.match.params.bank });
@@ -411,11 +433,10 @@ export default class BankOperationalHistory extends Component {
     }
   }
 
-  
   render() {
-        function inputFocus(e) {
+    function inputFocus(e) {
       const { target } = e;
-      target.parentElement.querySelector("label").classList.add("focused");
+      target.parentElement.querySelector('label').classList.add('focused');
     }
 
     function inputBlur(e) {
@@ -425,21 +446,34 @@ export default class BankOperationalHistory extends Component {
       }
     }
 
-    function onChange(event){
+    function onChange(event) {
       console.log(event);
       // this.setState({
       //   trans_type: event.target.value
       // });
-     }
+    }
 
     const { loading, redirect } = this.state;
     if (loading) {
       return null;
     }
     if (redirect) {
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
-    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     var dis = this;
     return (
       <Wrapper>
@@ -451,7 +485,7 @@ export default class BankOperationalHistory extends Component {
         <Container verticalMargin>
           <SidebarBank />
           <Main>
-          {/* <ActionBar marginBottom="33px" inputWidth="calc(100% - 344px)" className="clr">
+            {/* <ActionBar marginBottom="33px" inputWidth="calc(100% - 344px)" className="clr">
               <div className="iconedInput fl small">
                 <i className="material-icons">search</i>
                 <input type="text" placeholder="Search"  />
@@ -475,7 +509,7 @@ export default class BankOperationalHistory extends Component {
 
             </ActionBar> */}
             <Card bigPadding>
-            <div className="cardHeader" >
+              <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">playlist_add_check</i>
                 </div>
@@ -486,54 +520,73 @@ export default class BankOperationalHistory extends Component {
               </div>
               <div className="cardBody">
                 <div className="clr">
-                <div className="menuTabs" onClick={() => this.filterData("")}>All</div>
-                <div className="menuTabs" onClick={() => this.filterData("DR")}>Payment Sent</div>
-                <div className="menuTabs" onClick={() => this.filterData("CR")}>Payment Recieved</div> 
+                  <div className="menuTabs" onClick={() => this.filterData('')}>
+                    All
+                  </div>
+                  <div
+                    className="menuTabs"
+                    onClick={() => this.filterData('DR')}
+                  >
+                    Payment Sent
+                  </div>
+                  <div
+                    className="menuTabs"
+                    onClick={() => this.filterData('CR')}
+                  >
+                    Payment Recieved
+                  </div>
                 </div>
                 <Table marginTop="34px" smallTd>
-                 <tbody>
-                {
-                      
-                      this.state.history && this.state.history.length > 0
-                        ? this.state.history.map(function(b) {
-
+                  <tbody>
+                    {this.state.history && this.state.history.length > 0
+                      ? this.state.history.map(function(b) {
                           var isoformat = b.Timestamp;
                           var readable = new Date(isoformat);
                           var m = readable.getMonth(); // returns 6
-                          var d = readable.getDay();  // returns 15
+                          var d = readable.getDay(); // returns 15
                           var y = readable.getFullYear();
                           var h = readable.getHours();
                           var mi = readable.getMinutes();
                           var mlong = months[m];
-                          var fulldate = d + " " + mlong + " " + y+ " " + h+ ":" + mi;
-                          
-                          return  dis.state.filter == b.Value.tx_data.tx_type || dis.state.filter == "" ? <tr key={b.TxId} >
-                          <td><div className="labelGrey">{fulldate}</div></td>
-                        <td><div className="labelBlue">{b.Value.tx_data.tx_details}</div> <div className="labelSmallGrey">Completed</div></td>
-                         <td><div className="labelGrey">${b.Value.amount}</div></td>
-                        </tr>
-                        :
-                        null
+                          var fulldate =
+                            d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+
+                          return dis.state.filter == b.Value.tx_data.tx_type ||
+                            dis.state.filter == '' ? (
+                            <tr key={b.TxId}>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div className="labelBlue">
+                                  {b.Value.tx_data.tx_details}
+                                </div>{' '}
+                                <div className="labelSmallGrey">Completed</div>
+                              </td>
+                              <td>
+                                <div className="labelGrey">
+                                {b.Value.tx_data.tx_type == 'DR' ? '+XOF' : '-XOF'} {b.Value.amount}
+                                </div>
+                              </td>
+                            </tr>
+                          ) : null;
                         })
-                        :
-                        null
-                    }
-              </tbody>
-              </Table>
-              <div>
-        <Pagination
-          activePage={this.state.activePage}
-          itemsCountPerPage={this.state.perPage}
-          totalItemsCount={this.state.totalCount}
-          pageRangeDisplayed={5}
-          onChange={this.handlePageChange}
-        />
-      </div>
+                      : null}
+                  </tbody>
+                </Table>
+                <div>
+                  <Pagination
+                    activePage={this.state.activePage}
+                    itemsCountPerPage={this.state.perPage}
+                    totalItemsCount={this.state.totalCount}
+                    pageRangeDisplayed={5}
+                    onChange={this.handlePageChange}
+                  />
+                </div>
               </div>
             </Card>
           </Main>
         </Container>
-     
       </Wrapper>
     );
   }
