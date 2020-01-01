@@ -273,7 +273,7 @@ class OperationalWallet extends Component {
         <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
             <h3><FormattedMessage {...messages.operational} /></h3>
             <h5><FormattedMessage {...messages.available} /></h5>
-            <div className="cardValue">{CURRENCY} {this.state.balance.toFixed(1)}</div>
+            <div className="cardValue">{CURRENCY} {this.state.balance.toFixed(2)}</div>
             {
             //   this.props.activateNeeded ?
             //   <button className="fullWidth">

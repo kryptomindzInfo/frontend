@@ -675,7 +675,7 @@ roles:[],
                   <i className="material-icons">supervised_user_circle</i>
                 </div>
                 <div className="cardHeaderRight">
-                  <h3>Profiles and Roles</h3>
+                  <h3>Profiles</h3>
                   <h5>User Profiles created by Infra</h5>
                 </div>
                 

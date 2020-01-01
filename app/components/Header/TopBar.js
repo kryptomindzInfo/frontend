@@ -26,6 +26,11 @@ padding: 11px 30px;
         max-height: 100%;
     }
 }
+
+bankLogoInfra{
+    height: 9px;
+    width: 9px;
+}
 h2{
     font-size: 24px;
     font-wight:normal;
