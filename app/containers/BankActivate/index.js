@@ -41,6 +41,8 @@ toast.configure({
 const token = localStorage.getItem('bankLogged');
 const username = localStorage.getItem('bankUserName');
 const contract = localStorage.getItem('bankContract');
+const logo = localStorage.getItem('bankLogo');
+
 export default class BankActivate extends Component {
   constructor() {
     super();
@@ -146,7 +148,11 @@ export default class BankActivate extends Component {
           </BackBtn>
           </A>
             <FormattedMessage {...messages.pagetitle} /></LoginHeader>
+            
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
+          <div className="bankLogoActivate">
+          <img src={STATIC_URL+logo} />
+          </div>
           <form action="" method="POST" onSubmit={this.activateAccount}>
             <InputsWrap>
               <FormGroup>

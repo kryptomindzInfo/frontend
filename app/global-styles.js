@@ -149,6 +149,13 @@ body{
   .pointer{
     cursor:pointer;
   }
+  .bankLogoActivate{
+    text-align:center;
+    img{
+      height: 80px;
+      margin-top:20px;
+    }
+  }
 `;
 
 export default GlobalStyle;

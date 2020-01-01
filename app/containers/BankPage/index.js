@@ -44,10 +44,11 @@ toast.configure({
 });
 
 const token = localStorage.getItem('logged');
-var permissions = localStorage.getItem('permissions');
-if(permissions != 'all' && permissions != ''){
-permissions = JSON.parse(permissions);
-}
+// var permissions = localStorage.getItem('permissions');
+// if(permissions != 'all' && permissions != ''){
+// permissions = JSON.parse(permissions);
+// }
+var isAdmin = localStorage.getItem("isAdmin");
 
 export default class BankPage extends Component {
   constructor() {
@@ -78,7 +79,7 @@ export default class BankPage extends Component {
       otp: '',
       showOtp: false,
       showEditOtp: false,
-      permissions
+      permissions : {}
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -449,9 +450,25 @@ blockBank = (e, s) =>{
 
   componentDidMount() {
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      if(isAdmin == "true"){
+        this.setState({ permissions: "all", loading: false });
+      }else{
+        axios
+        .post(`${API_URL  }/getPermission`, { token })
+        .then(res => {          if(res.status == 200){
+            this.setState({ permissions: res.data.permissions, loading: false }, () => {
+              console.log(this.state.permissions);
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
       this.getBanks();
     } else {
+
+     
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
     }

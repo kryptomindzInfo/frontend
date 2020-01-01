@@ -56,11 +56,7 @@ toast.configure({
 
 const token = localStorage.getItem('logged');
 
-var permissions = localStorage.getItem('permissions');
-if(permissions != 'all' && permissions != ''){
-permissions = JSON.parse(permissions);
-}
-
+var isAdmin = localStorage.getItem("isAdmin");
 export default class CreateFee extends Component {
   constructor() {
     super();
@@ -94,7 +90,7 @@ export default class CreateFee extends Component {
       otp: '',
       showOtp: false,
       token: token,
-      permissions
+      permissions: {}
     };
 
     this.success = this.success.bind(this);
@@ -433,7 +429,21 @@ export default class CreateFee extends Component {
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      if(isAdmin == "true"){
+        this.setState({ permissions: "all", loading: false });
+      }else{
+        axios
+        .post(`${API_URL  }/getPermission`, { token })
+        .then(res => {          if(res.status == 200){
+            this.setState({ permissions: res.data.permissions, loading: false }, () => {
+              console.log(this.state.permissions);
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
       this.getBanks();
     } else {
       // alert('Login to continue');

@@ -49,10 +49,7 @@ toast.configure({
 const token = localStorage.getItem('logged');
 
 
-var permissions = localStorage.getItem('permissions');
-if(permissions != 'all' && permissions != ''){
-permissions = JSON.parse(permissions);
-}
+var isAdmin = localStorage.getItem("isAdmin");
 
 export default class InfraInfo extends Component {
   constructor() {
@@ -79,7 +76,7 @@ export default class InfraInfo extends Component {
       banks: [],
       rules: [],
       otp: '',
-      permissions,
+      permissions: {},
       showOtp: false
     };
     this.success = this.success.bind(this);
@@ -424,7 +421,21 @@ export default class InfraInfo extends Component {
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      if(isAdmin == "true"){
+        this.setState({ permissions: "all", loading: false });
+      }else{
+        axios
+        .post(`${API_URL  }/getPermission`, { token })
+        .then(res => {          if(res.status == 200){
+            this.setState({ permissions: res.data.permissions, loading: false }, () => {
+              console.log(this.state.permissions);
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
       this.getBanks();
     } else {
       // alert('Login to continue');

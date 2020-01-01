@@ -78,6 +78,7 @@ export default class BankLoginPage extends Component {
           localStorage.setItem('bankName', res.data.name);
           localStorage.setItem('bankUserName', res.data.username);
           localStorage.setItem('bankContract', res.data.contract);
+          localStorage.setItem('bankLogo', res.data.logo);
           localStorage.setItem('bankId', res.data.id);
           if (!res.data.initial_setup) {
             this.props.history.push('/bank/setup');

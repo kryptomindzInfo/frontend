@@ -77,7 +77,6 @@ export default class HomePage extends Component {
         if (res.status == 200) {
           localStorage.setItem('logged', res.data.token);
           localStorage.setItem('name', res.data.name);
-          localStorage.setItem('permissions', res.data.permissions);
           localStorage.setItem('isAdmin', res.data.isAdmin);
           
           this.props.history.push('/dashboard');
@@ -104,7 +103,6 @@ export default class HomePage extends Component {
         if (res.status == 200) {
           
           if(res.data.infras <= 0){
-            console.log(res.data.infras);
             this.props.history.push('/setup');
           }
           
@@ -137,7 +135,7 @@ export default class HomePage extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return <p>sdf</p>;
+      return null;
     }
     if (redirect) {
       return <Redirect to="/dashboard" />;
