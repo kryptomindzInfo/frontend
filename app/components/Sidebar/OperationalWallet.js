@@ -344,9 +344,9 @@ class OperationalWallet extends Component {
                 <span>Proceed</span>
               </Button>
               <p className="note">
-                Total Fee {CURRENCY} {this.state.livefee.toFixed(2)} will be
+                Total Fee {CURRENCY}0 will be
                 charged and receiver will get {CURRENCY}{' '}
-                {this.state.amount - this.state.livefee.toFixed(2)}{' '}
+                {this.state.amount}{' '}
               </p>
             </form>
           </Popup>
