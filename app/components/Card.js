@@ -32,6 +32,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
         color: #000000;
         text-align:right;
         margin-bottom: 30px;
+       color: green;
 }
 .profile{
     img{
