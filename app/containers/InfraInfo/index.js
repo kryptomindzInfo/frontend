@@ -512,7 +512,7 @@ export default class InfraInfo extends Component {
               alignItems: 'center',
               paddingBottom: '16px',
               marginBottom: '1.2rem',
-              boxShadow: '0,0,1px black',
+              boxShadow: '0 0 1px black',
               paddingTop: '16px',
             }}
           >
