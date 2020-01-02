@@ -379,6 +379,7 @@ export default class FeeList extends Component {
               marginBottom: '1.2rem',
               boxShadow: '0 0 1px black',
               paddingTop: '16px',
+              backgroundColor: 'white',
             }}
           >
             <img
