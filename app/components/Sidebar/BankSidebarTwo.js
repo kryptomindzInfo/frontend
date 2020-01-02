@@ -33,12 +33,12 @@ class BankSidebarTwo extends Component {
                 <h3>Personal Info</h3>
             </Card >
             </A>
-            <A href="/bank/security">
+      {/* <A href="/bank/security">
             <Card rounded selected={security} className="sideNav">
             <i className="material-icons">security</i>
                 <h3>Login and Security</h3>
             </Card>
-            </A>
+            </A>*/}
             <A href="/bank/documents">
             <Card rounded selected={documents} className="sideNav">
             <i className="material-icons">folder</i>

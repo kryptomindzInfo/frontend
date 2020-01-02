@@ -360,15 +360,46 @@ export default class FeeList extends Component {
               Main Dashboard
             </div>
             </A>
-            <div className="bankLogo">
+      {/*   <div className="bankLogo">
             <img src={STATIC_URL+this.state.logo}/>
               </div>
 
-    <h2>{this.state.banks.name}</h2>
+    <h2>{this.state.banks.name}</h2> */}
             
           </Container>
         </TopBar>
         <Container verticalMargin>
+      <div
+            className="bankLogo"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingBottom: '16px',
+              marginBottom: '1.2rem',
+              boxShadow: '0 0 1px black',
+              paddingTop: '16px',
+              backgroundColor: 'white',
+            }}
+          >
+            <img
+              src={STATIC_URL + this.state.logo}
+              style={{
+                width: '75px',
+              }}
+            />
+            <div
+              style={{
+                paddingLeft: '5px',
+                paddingTop: '7px',
+              }}
+            >
+              <h2>{this.state.banks && this.state.banks.name}</h2>
+            </div>
+          </div>
+      
+      
+      
           <SidebarTwo bankId={this.state.bank} active="fees"/>
           <Main big>
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">

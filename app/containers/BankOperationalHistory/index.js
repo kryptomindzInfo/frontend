@@ -565,7 +565,7 @@ export default class BankOperationalHistory extends Component {
                               </td>
                               <td>
                                 <div className="labelGrey">
-                                {b.Value.tx_data.tx_type == 'DR' ? '+XOF' : '-XOF'} {b.Value.amount}
+                                {b.Value.tx_data.tx_type == 'DR' ? '-XOF' : 'XOF'} {b.Value.amount}
                                 </div>
                               </td>
                             </tr>
