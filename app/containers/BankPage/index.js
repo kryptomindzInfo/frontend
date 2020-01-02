@@ -1037,7 +1037,10 @@ blockBank = (e, s) =>{
                       :
                       <span>Change Contract</span>
                       }
-                      *</label>
+                      *
+                      <p>Only PDF allowed*</p>
+                      </label>
+                      
                     </div>
                   </UploadArea>
               </FormGroup>
@@ -1501,7 +1504,9 @@ blockBank = (e, s) =>{
                       :
                       <span>Change Contract</span>
                       }
-                      *</label>
+                      *
+                      <p>Only PDF allowed*</p>
+                      </label>
                     </div>
                   </UploadArea>
               </FormGroup>

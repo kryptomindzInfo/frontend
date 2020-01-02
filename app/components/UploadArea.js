@@ -62,7 +62,14 @@ margin-bottom: 20px;
     line-height:3;
     color: #43434a;
     float:right;
+    text-align:right;
     cursor:pointer;
+    p{
+        margin: 0;
+    font-size: 12px;
+    color: #9b9b9b;
+    line-height: 0;
+    }
 }
 }
 `;

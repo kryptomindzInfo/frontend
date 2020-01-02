@@ -7,11 +7,16 @@ const CircularLogo = styled.div `
     width: 120px;
     height:120px;
     text-align:center;
+    overflow:hidden;
     display:flex;
     align-items:center;
     justify-content: center;
     margin-bottom: 59px;
     font-size: 26px;
   font-weight: bold;
+  img{
+    max-width: 100%;
+    max-height: 100%;
+  }
 `;
 export default CircularLogo;

@@ -29,6 +29,9 @@ class FrontLeftSection extends Component {
         <FrontLeftWrap>
           <CircularLogo>
             {
+              (this.props.logo) ? 
+              <img src={this.props.logo} />
+              :
               (this.props.from == 'bank')  ?
                 <FormattedMessage {...messages.bank} />
               :
@@ -36,6 +39,7 @@ class FrontLeftSection extends Component {
               <FormattedMessage {...messages.user} />
               :
               <FormattedMessage {...messages.infra} />
+              
             }
           </CircularLogo>
           <Title>

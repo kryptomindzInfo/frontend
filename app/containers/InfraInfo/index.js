@@ -1083,6 +1083,7 @@ export default class InfraInfo extends Component {
                             <span>Change Contract</span>
                           )}
                           *
+                          <p>Only PDF allowed*</p>
                         </label>
                       </div>
                     </UploadArea>

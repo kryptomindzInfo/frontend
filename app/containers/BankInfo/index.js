@@ -1117,7 +1117,9 @@ export default class BankInfo extends Component {
                       :
                       <span>Change Contract</span>
                       }
-                      *</label>
+                      *
+                      <p>Only PDF allowed*</p>
+                      </label>
                     </div>
                   </UploadArea>
               </FormGroup>

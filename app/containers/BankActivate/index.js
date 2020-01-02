@@ -137,7 +137,7 @@ export default class BankActivate extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | BANK | HOME</title>
         </Helmet>
-        <FrontLeftSection from="bank">
+        <FrontLeftSection from="bank" logo={STATIC_URL+logo}>
         </FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
@@ -150,9 +150,9 @@ export default class BankActivate extends Component {
             <FormattedMessage {...messages.pagetitle} /></LoginHeader>
             
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
-          <div className="bankLogoActivate">
+          {/* <div className="bankLogoActivate">
           <img src={STATIC_URL+logo} />
-          </div>
+          </div> */}
           <form action="" method="POST" onSubmit={this.activateAccount}>
             <InputsWrap>
               <FormGroup>
