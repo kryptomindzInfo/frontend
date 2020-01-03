@@ -510,7 +510,6 @@ export default class CreateFee extends Component {
             {/* <div className="bankLogo">
               <img src={STATIC_URL + this.state.logo} />
             </div>
-
             <h2>{this.state.banks.name}</h2> */}
           </Container>
         </TopBar>
