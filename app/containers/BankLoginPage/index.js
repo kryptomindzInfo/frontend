@@ -28,6 +28,8 @@ import PrimaryBtn from 'components/PrimaryBtn';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
+import Loader from 'components/Loader';
+
 import { API_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -69,6 +71,9 @@ export default class BankLoginPage extends Component {
   };
 
   loginRequest = event => {
+    this.setState({
+      loginLoading: true
+    });
     event.preventDefault();
     axios
       .post(`${API_URL}/bankLogin`, this.state)
@@ -92,10 +97,14 @@ export default class BankLoginPage extends Component {
         } else {
           throw res.data.error;
         }
+        this.setState({
+          loginLoading: false
+        });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          loginLoading: false
         });
         this.error();
       });
@@ -105,7 +114,6 @@ export default class BankLoginPage extends Component {
     if (token !== undefined && token !== null) {
       this.setState({ loading: false, redirect: true });
     } else {
-      console.log('2');
       this.setState({ loading: false });
     }
   }
@@ -125,7 +133,7 @@ export default class BankLoginPage extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return <p>sdf</p>;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/dashboard" />;
@@ -170,7 +178,13 @@ export default class BankLoginPage extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            <PrimaryBtn><FormattedMessage {...messages.pagetitle} /></PrimaryBtn>
+            {
+              this.loginLoading ?
+              <PrimaryBtn disabled><Loader /></PrimaryBtn>
+              :
+              <PrimaryBtn><FormattedMessage {...messages.pagetitle} /></PrimaryBtn>
+            }
+            
           </form>
           <Row marginTop>
             <Col />

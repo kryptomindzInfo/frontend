@@ -31,9 +31,10 @@ import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import SelectInput from 'components/SelectInput';
 import Pagination from "react-js-pagination";
-import Row from 'components/Row';
+import Loader from 'components/Loader';
 import A from 'components/A';
 import styled from 'styled-components';
+
 
 const H4 = styled.h4 `
  > span{
@@ -332,7 +333,7 @@ export default class MasterHistory extends Component {
       .then(res => {
         if(res.status == 200){
           
-          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo, bank_id: this.props.match.params.bank});
+          this.setState({banks: res.data.banks, logo: res.data.banks.logo, bank_id: this.props.match.params.bank});
         }
       })
       .catch(err => {
@@ -402,9 +403,12 @@ export default class MasterHistory extends Component {
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      
       this.getBanks();
-      this.getHistory();
+      let dis = this;
+      setInterval(function(){
+        dis.getHistory();
+      }, 2000);
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -434,7 +438,7 @@ export default class MasterHistory extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />

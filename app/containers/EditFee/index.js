@@ -34,6 +34,7 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import styled from 'styled-components';
+import Loader from 'components/Loader';
 
 const H4 = styled.h4 `
  > span{
@@ -309,6 +310,9 @@ export default class EditFee extends Component {
     //     this.error();
     // });
     // }else{
+      this.setState({
+        editRulesLoading: true
+      });
     axios
       .post(`${API_URL  }/editRule`, this.state)
       .then(res => {
@@ -332,10 +336,14 @@ export default class EditFee extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          editRulesLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          editRulesLoading: false
         });
         this.error();
       });
@@ -456,7 +464,7 @@ export default class EditFee extends Component {
       .then(res => {
         if(res.status == 200){
                     var temp = JSON.parse(res.data.rules.ranges);
-          this.setState({ name: res.data.rules.name, trans_type: res.data.rules.trans_type, active: res.data.rules.active, ranges: temp, loading: false}, ()=>{
+          this.setState({ loading:false, name: res.data.rules.name, trans_type: res.data.rules.trans_type, active: res.data.rules.active, ranges: temp, loading: false}, ()=>{
             console.log(this.state);
           });
         }
@@ -472,12 +480,12 @@ export default class EditFee extends Component {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
       if(isAdmin == "true"){
-        this.setState({ permissions: "all", loading: false });
+        this.setState({ permissions: "all" });
       }else{
         axios
         .post(`${API_URL  }/getPermission`, { token })
         .then(res => {          if(res.status == 200){
-            this.setState({ permissions: res.data.permissions, loading: false }, () => {
+            this.setState({ permissions: res.data.permissions }, () => {
               console.log(this.state.permissions);
             });
           }
@@ -516,7 +524,7 @@ export default class EditFee extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />
@@ -723,10 +731,17 @@ Edit Revenue sharing Rule</h3>
                  <Button type="button" accentedBtn marginTop="10px" onClick={this.addRange}>
                 <span>Add Another Range</span>
               </Button>
-
-              <Button filledBtn marginTop="50px">
+                {
+                  this.state.editRulesLoading ?
+                  <Button filledBtn marginTop="50px" disabled>
+                <Loader />
+              </Button>
+                  :
+                  <Button filledBtn marginTop="50px">
                 <span>Update Rule</span>
               </Button>
+                }
+              
             </form>
               </div>
             </Card>

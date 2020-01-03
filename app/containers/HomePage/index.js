@@ -16,6 +16,7 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
+import Loader from 'components/Loader';
 import FrontLeftSection from 'components/FrontLeftSection/index';
 import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
@@ -71,6 +72,9 @@ export default class HomePage extends Component {
 
   loginRequest = event => {
     event.preventDefault();
+    this.setState({
+      loginLoading: true
+    });
     axios
       .post(`${API_URL}/login`, this.state)
       .then(res => {
@@ -84,10 +88,14 @@ export default class HomePage extends Component {
         } else {
           throw res.data.error;
         }
+        this.setState({
+          loginLoading: false
+        });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          loginLoading: false
         });
         this.error();
       });
@@ -105,7 +113,7 @@ export default class HomePage extends Component {
           if(res.data.infras <= 0){
             this.props.history.push('/setup');
           }
-          
+          this.setState({ loading: false });
         } else {
           throw res.data.error;
         }
@@ -116,7 +124,7 @@ export default class HomePage extends Component {
         });
         this.error();
       });
-      this.setState({ loading: false });
+     
     }
   }
 
@@ -135,7 +143,7 @@ export default class HomePage extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/dashboard" />;
@@ -181,9 +189,17 @@ export default class HomePage extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            <PrimaryBtn>
+            {
+              this.loginLoading ?
+              <PrimaryBtn disabled>
+              <Loader />
+            </PrimaryBtn>
+              :
+              <PrimaryBtn>
               <FormattedMessage {...messages.pagetitle} />
             </PrimaryBtn>
+            }
+            
           </form>
           <Row marginTop>
             <Col />

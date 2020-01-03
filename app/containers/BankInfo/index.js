@@ -28,6 +28,7 @@ import SelectInput from 'components/SelectInput';
 import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import Loader from 'components/Loader';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
@@ -126,6 +127,7 @@ export default class BankInfo extends Component {
 
 
   editBank = event => {
+   
     event.preventDefault();
     if(this.state.logo == null || this.state.logo == ''){
       this.setState({
@@ -143,9 +145,15 @@ export default class BankInfo extends Component {
     }
     else{
       this.setState({
+        editBankLoading: true
+      });
+      this.setState({
         showOtp: true
       }, () =>{
         this.generateOTP();
+        this.setState({
+          editBankLoading: false
+        });
       });
     }
   };
@@ -416,6 +424,9 @@ export default class BankInfo extends Component {
   }
 
   fileUpload(file, key) {
+    this.setState({
+      [key] : 'main/loader.gif'
+    });
     const formData = new FormData();
     //  formData.append('token',token);
     formData.append('file', file);
@@ -445,7 +456,8 @@ export default class BankInfo extends Component {
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          [key] : ''
         });
         this.error();
       });
@@ -484,6 +496,9 @@ export default class BankInfo extends Component {
   };
 
   verifyEditOTP = event => {
+    this.setState({
+      verifyLoading: true
+    });
     event.preventDefault();
 
     axios
@@ -520,10 +535,14 @@ export default class BankInfo extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          verifyLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          verifyLoading: false
         });
         this.error();
       });
@@ -532,7 +551,6 @@ export default class BankInfo extends Component {
   componentDidMount() {
     this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
       this.getBanks();
       this.getRules();
     } else {
@@ -558,7 +576,7 @@ export default class BankInfo extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return null;
@@ -689,9 +707,17 @@ export default class BankInfo extends Component {
                   required
                 />
               </FormGroup>
-              <Button filledBtn marginTop="50px">
+              {
+                this.state.verifyLoading ?
+                <Button filledBtn marginTop="50px" disabled>
+                <Loader />
+              </Button>
+                :
+                <Button filledBtn marginTop="50px">
                 <span><FormattedMessage {...messages.verify} /></span>
               </Button>
+              }
+              
               <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
 
               </form>
@@ -1093,7 +1119,7 @@ export default class BankInfo extends Component {
               </FormGroup>
 
               <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
+              <UploadArea  bgImg={STATIC_URL+ ( this.state.contract == 'main/loader.gif' ? 'main/loader.gif' : 'main/pdf-icon.png' )}>
                     {
                     this.state.contract ?
                     <a className="uploadedImg" href={CONTRACT_URL+ this.state.contract } target="_BLANK">
@@ -1123,10 +1149,17 @@ export default class BankInfo extends Component {
                     </div>
                   </UploadArea>
               </FormGroup>
-
-              <Button filledBtn marginTop="10px">
+                    {
+                      this.editBankLoading ?
+                      <Button filledBtn marginTop="10px" disabled>
+                        <Loader />
+                      </Button>
+                      :
+                      <Button filledBtn marginTop="10px">
                 <span>Update Bank</span>
               </Button>
+                    }
+              
             </form>
             </div>
             }

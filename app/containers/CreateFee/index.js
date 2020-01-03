@@ -34,6 +34,7 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import styled from 'styled-components';
+import Loader from 'components/Loader';
 
 const H4 = styled.h4`
   > span {
@@ -230,6 +231,9 @@ export default class CreateFee extends Component {
         },
       );
     } else {
+      this.setState({
+        createRulesLoading : true
+      });
       axios
         .post(`${API_URL}/createRules`, this.state)
         .then(res => {
@@ -255,12 +259,16 @@ export default class CreateFee extends Component {
             const error = new Error(res.data.error);
             throw error;
           }
+          this.setState({
+            createRulesLoading : false
+          });
         })
         .catch(err => {
           this.setState({
             notification: err.response
               ? err.response.data.error
               : err.toString(),
+              createRulesLoading: false
           });
           this.error();
         });
@@ -682,10 +690,17 @@ export default class CreateFee extends Component {
                   >
                     <span>Add Another Range</span>
                   </Button>
-
-                  <Button filledBtn marginTop="100px">
+                  {
+                    this.createRulesLoading ?
+                    <Button filledBtn marginTop="100px" disabled>
+                    <Loader />
+                  </Button>
+                    :
+                    <Button filledBtn marginTop="100px">
                     <span>Create Rules</span>
                   </Button>
+                  }
+                  
                 </form>
               </div>
             </Card>

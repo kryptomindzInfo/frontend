@@ -26,7 +26,7 @@ import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
 import BackBtn from 'components/BackBtn';
 import A from 'components/A';
-import Col from 'components/Col';
+import Loader from 'components/Loader';
 import { API_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -70,6 +70,7 @@ export default class BankSetupPage extends Component {
   };
 
   setupUpdate = event => {
+    
     event.preventDefault();
     if(this.state.password != this.state.confirm){
       this.setState({
@@ -79,6 +80,9 @@ export default class BankSetupPage extends Component {
     });
       
     }else{
+      this.setState({
+        setupLoading: true
+      });
     axios
       .post(`${API_URL}/bankSetupUpdate`, this.state )
       .then(res => {
@@ -98,10 +102,14 @@ export default class BankSetupPage extends Component {
         } else {
           throw res.data.error;
         }
+        this.setState({
+          setupLoading: false
+        });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          setupLoading: false
         }, () => {
           this.error();
       });
@@ -201,7 +209,13 @@ export default class BankSetupPage extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            <PrimaryBtn><FormattedMessage {...messages.update} /></PrimaryBtn>
+            {
+              this.state.setupLoading ?
+              <PrimaryBtn disabled><Loader /></PrimaryBtn>
+              :
+              <PrimaryBtn><FormattedMessage {...messages.update} /></PrimaryBtn>
+            }
+            
           </form>       </FrontRightSection>
       </Wrapper>
     );

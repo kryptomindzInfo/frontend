@@ -16,6 +16,7 @@ import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import Header from 'components/Header/index';
+import Loader from 'components/Loader';
 import Container from 'components/Container';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
@@ -72,6 +73,7 @@ export default class BankPage extends Component {
       popup: false,
       username: '',
       editPopup: false,
+      
       edit: false,
       user_id: token,
       otpId: '',
@@ -197,6 +199,7 @@ export default class BankPage extends Component {
   }
 
   addBank = event => {
+  
     event.preventDefault();
     if(this.state.logo == null || this.state.logo == ''){
       this.setState({
@@ -214,12 +217,18 @@ export default class BankPage extends Component {
     }
     else{
       this.setState({
+        addBankLoading: true
+      });
+      this.setState({
         otpOpt: 'addBank'
       }, () => {
         this.setState({
-          showOtp: true
+          showOtp: true,
         }, () =>{
           this.generateOTP();
+          this.setState({
+            addBankLoading: false
+          });
         });
         
       });
@@ -279,15 +288,24 @@ blockBank = (e, s) =>{
     }
     else{
       this.setState({
+        editBankLoading: true
+      });
+      this.setState({
         showEditOtp: true,
         otpOpt: 'editBank'
       }, () =>{
         this.generateOTP();
+        this.setState({
+          editBankLoading: false
+        });
       });
     }
   };
 
   verifyOTP = event => {
+    this.setState({
+      verifyOTPLoading: true
+    });
     event.preventDefault();
     axios
       .post(`${API_URL  }/addBank`, {
@@ -322,10 +340,14 @@ blockBank = (e, s) =>{
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          verifyOTPLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          verifyOTPLoading: false
         });
         this.error();
       });
@@ -333,6 +355,9 @@ blockBank = (e, s) =>{
 
 
   verifyEditOTP = event => {
+    this.setState({
+      verifyEditOTPLoading: true
+    });
     event.preventDefault();
     axios
       .post(`${API_URL  }/editBank`, {
@@ -369,10 +394,14 @@ blockBank = (e, s) =>{
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          verifyEditOTPLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          verifyEditOTPLoading:false
         });
         this.error();
       });
@@ -397,7 +426,9 @@ blockBank = (e, s) =>{
   }
 
   fileUpload(file, key) {
-
+    this.setState({
+      [key] : 'main/loader.gif'
+    });
     const formData = new FormData();
     //  formData.append('token',token);
     formData.append('file', file);
@@ -429,7 +460,8 @@ blockBank = (e, s) =>{
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          [key] : ''
         });
         this.error();
       });
@@ -451,12 +483,12 @@ blockBank = (e, s) =>{
   componentDidMount() {
     if (token !== undefined && token !== null) {
       if(isAdmin == "true"){
-        this.setState({ permissions: "all", loading: false });
+        this.setState({ permissions: "all"});
       }else{
         axios
         .post(`${API_URL  }/getPermission`, { token })
         .then(res => {          if(res.status == 200){
-            this.setState({ permissions: res.data.permissions, loading: false }, () => {
+            this.setState({ permissions: res.data.permissions }, () => {
               console.log(this.state.permissions);
             });
           }
@@ -490,7 +522,7 @@ blockBank = (e, s) =>{
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />
@@ -613,9 +645,17 @@ blockBank = (e, s) =>{
                   required
                 />
               </FormGroup>
-              <Button filledBtn marginTop="50px">
+              {
+                this.state.verifyOTPLoading ?
+                <Button filledBtn marginTop="50px" disabled>
+                <Loader />
+              </Button>
+                :
+                <Button filledBtn marginTop="50px">
                 <span><FormattedMessage {...messages.verify} /></span>
               </Button>
+              }
+              
 
               <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
               
@@ -1013,7 +1053,7 @@ blockBank = (e, s) =>{
               </FormGroup>
 
               <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
+              <UploadArea  bgImg={STATIC_URL+ ( this.state.contract == 'main/loader.gif' ? 'main/loader.gif' : 'main/pdf-icon.png' )}>
                     {
                     this.state.contract ?
                     <a className="uploadedImg" href={CONTRACT_URL+ this.state.contract } target="_BLANK">
@@ -1045,9 +1085,18 @@ blockBank = (e, s) =>{
                   </UploadArea>
               </FormGroup>
               <p className="note">Please create the revenue policy or otherwise by default 0 fee will be debited for all transctions</p>
-              <Button filledBtn marginTop="10px">
-                <span><FormattedMessage {...messages.addbank} /></span>
-              </Button>
+              
+                {
+                  this.state.addBankLoading ? 
+                  <Button filledBtn marginTop="10px" disabled>
+                  <Loader />
+                  </Button>
+                  :
+                  <Button filledBtn marginTop="10px">
+                  <span><FormattedMessage {...messages.addbank} /></span>
+                  </Button>
+                }
+              
               
             </form>
             
@@ -1076,9 +1125,17 @@ blockBank = (e, s) =>{
                   required
                 />
               </FormGroup>
-              <Button filledBtn marginTop="50px">
+              {
+                this.state.verifyEditOTPLoading ? 
+                <Button filledBtn marginTop="50px" disabled>
+                <Loader />
+              </Button>
+                :
+                <Button filledBtn marginTop="50px">
                 <span><FormattedMessage {...messages.verify} /></span>
               </Button>
+              }
+              
               <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
               </form>
               </div>
@@ -1480,7 +1537,7 @@ blockBank = (e, s) =>{
               </FormGroup>
 
               <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
+              <UploadArea  bgImg={STATIC_URL+ ( this.state.contract == 'main/loader.gif' ? 'main/loader.gif' : 'main/pdf-icon.png' )}>
                     {
                     this.state.contract ?
                     <a className="uploadedImg" href={CONTRACT_URL+ this.state.contract} target="_BLANK">
@@ -1510,10 +1567,17 @@ blockBank = (e, s) =>{
                     </div>
                   </UploadArea>
               </FormGroup>
-
-              <Button filledBtn marginTop="10px">
-                <span>Update Bank</span>
-              </Button>
+                    {
+                      this.state.editBankLoading ?
+                      <Button filledBtn marginTop="10px" disabled>
+                        <Loader />
+                      </Button>
+                      :
+                      <Button filledBtn marginTop="10px">
+                      <span>Update Bank</span>
+                    </Button>
+                    }
+              
             </form>
             </div>
             }

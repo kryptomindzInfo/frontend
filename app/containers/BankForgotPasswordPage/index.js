@@ -24,6 +24,7 @@ import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
 import BackBtn from 'components/BackBtn';
 import A from 'components/A';
+import Loader from 'components/Loader';
 
 import { API_URL } from '../App/constants';
 
@@ -61,6 +62,9 @@ export default class BankForgotPasswordPage extends Component {
   };
 
   forgotRequest = event => {
+    this.setState({
+      forgotLoading: true
+    });
     event.preventDefault();
     axios
       .post(`${API_URL}/bankForgotPassword`, this.state)
@@ -74,10 +78,14 @@ export default class BankForgotPasswordPage extends Component {
         } else {
           throw res.data.error;
         }
+        this.setState({
+          forgotLoading: false
+        });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          forgotLoading: false
         });
         this.error();
       });
@@ -130,7 +138,13 @@ render() {
                 />
             </FormGroup>
           </InputsWrap>
-          <PrimaryBtn><FormattedMessage {...messages.getotp} /></PrimaryBtn>
+          {
+            this.state.forgotLoading ?
+            <PrimaryBtn disabled><Loader /></PrimaryBtn>
+            :
+            <PrimaryBtn><FormattedMessage {...messages.getotp} /></PrimaryBtn>
+          }
+          
         </form>
       </FrontRightSection>
     </Wrapper>

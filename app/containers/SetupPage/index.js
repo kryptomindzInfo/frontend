@@ -28,6 +28,7 @@ import SelectInput from 'components/SelectInput';
 import PrimaryBtn from 'components/PrimaryBtn';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import Loader from 'components/Loader';
 import { API_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -75,6 +76,9 @@ export default class SetupPage extends Component {
     if(this.state.password != this.state.confirm){
 		this.error("Passwords do not match");
     }else{
+		this.setState({
+			setupLoading: true
+		});
     axios
       .post(`${API_URL}/setupUpdate`, this.state )
       .then(res => {
@@ -91,10 +95,16 @@ export default class SetupPage extends Component {
       
         } else {
           throw res.data.error;
-        }
+		}
+		this.setState({
+			setupLoading: false
+		});
       })
       .catch(err => {
-          this.error(err.response ? err.response.data.error : err.toString());
+		  this.error(err.response ? err.response.data.error : err.toString());
+		  this.setState({
+			setupLoading: fakse
+		});
       });
     }
   };
@@ -478,7 +488,13 @@ export default class SetupPage extends Component {
 
               
             </InputsWrap>
-            <PrimaryBtn>Submit</PrimaryBtn>
+			{
+				this.state.setupLoading ?
+				<PrimaryBtn disabled><Loader /></PrimaryBtn>
+				:
+				<PrimaryBtn>Submit</PrimaryBtn>
+			}
+            
           </form>
         </FrontRightSection>
       </Wrapper>

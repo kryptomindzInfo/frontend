@@ -119,10 +119,10 @@ class BankHeader extends Component {
       <TopBar>
         <Welcome from="bank" />
         <Container>
-          <A href="/dashboard" float="left">
+          <A href="/bank/dashboard" float="left">
             <div className="bankLogo">
               <img src={STATIC_URL + this.state.logo} />
-            </div>{' '}
+            </div>
             <h2>{this.state.banks && this.state.banks.name}</h2>
             {/* <Logo><FormattedMessage {...messages.logo} /></Logo> */}
           </A>

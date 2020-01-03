@@ -230,10 +230,7 @@ class OperationalWallet extends Component {
   
   };
 
-  componentDidMount() {
-    this.setState({
-      bank: this.props.historyLink
-    });
+  getBalance = () =>{
     axios
     .get(`${API_URL  }/getBankOperationalBalance?bank=${this.state.token}`)
     .then(res => {
@@ -253,6 +250,17 @@ class OperationalWallet extends Component {
       });
       this.error();
     });
+  };
+
+  componentDidMount() {
+    this.setState({
+      bank: this.props.historyLink
+    });
+    let dis = this;
+    setInterval(function(){
+      dis.getBalance();
+    }, 2000);
+    
   }
 
   

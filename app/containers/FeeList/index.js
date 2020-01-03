@@ -31,6 +31,7 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
+import Loader from 'components/Loader';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
@@ -275,7 +276,7 @@ export default class FeeList extends Component {
       .then(res => {
         if(res.status == 200){
           console.log(res.data);
-          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo });
+          this.setState({ banks: res.data.banks, logo: res.data.banks.logo });
         }
       })
       .catch(err => {
@@ -302,13 +303,13 @@ export default class FeeList extends Component {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
       if(isAdmin == "true"){
-        this.setState({ permissions: "all", loading: false });
+        this.setState({ permissions: "all" });
       }else{
         axios
         .post(`${API_URL  }/getPermission`, { token })
         .then(res => {          if(res.status == 200){
-            this.setState({ permissions: res.data.permissions, loading: false }, () => {
-              console.log(this.state.permissions);
+            this.setState({ permissions: res.data.permissions }, () => {
+              
             });
           }
         })
@@ -340,7 +341,7 @@ export default class FeeList extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />
@@ -447,8 +448,8 @@ export default class FeeList extends Component {
                           <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
                           <td>
                             {
-                            r.map(function(v){
-                            return <div>Count: <span className="green">{v.trans_from} -  {v.trans_to}</span>, Fixed: <span className="green">{CURRENCY+" "+v.fixed_amount}</span>, Percentage: <span className="green">{v.percentage}</span></div>
+                            r.map(function(v, i){
+                            return <div key={i}>Count: <span className="green">{v.trans_from} -  {v.trans_to}</span>, Fixed: <span className="green">{CURRENCY+" "+v.fixed_amount}</span>, Percentage: <span className="green">{v.percentage}</span></div>
                             })
                             }
                           </td>

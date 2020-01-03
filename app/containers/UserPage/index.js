@@ -18,7 +18,7 @@ import Wrapper from 'components/Wrapper';
 import Header from 'components/Header';
 import Container from 'components/Container';
 import TabSwitch from 'components/TabSwitch';
-import Nav from 'components/Header/Nav';
+import Loader from 'components/Loader';
 import Welcome from 'components/Header/Welcome';
 import SidebarOne from 'components/Sidebar/SidebarOne';
 import Main from 'components/Main';
@@ -214,6 +214,9 @@ roles:[],
         this.error();
       });
     }else{
+      this.setState({
+        addUserLoading: true
+      });
     axios
       .post(`${API_URL  }/addInfraUser`, {
         name: this.state.name,
@@ -243,10 +246,14 @@ roles:[],
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          addUserLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          addUserLoading: false
         });
         this.error();
       });
@@ -293,6 +300,9 @@ roles:[],
       });
     }
     else{
+      this.setState({
+        editUserLoading: true
+      });
     axios
       .post(`${API_URL  }/editInfraUser`, {
         name: this.state.name,
@@ -319,14 +329,19 @@ roles:[],
             });
            
           }
+         
         }else{
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          editUserLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          editUserLoading: false
         });
         this.error();
       });
@@ -386,6 +401,9 @@ roles:[],
       });
       
     }else{
+      this.setState({
+        addProfileLoading: true
+      });
     axios
       .post(`${API_URL  }/addProfile`, {
         pro_name: this.state.pro_name,
@@ -414,10 +432,14 @@ roles:[],
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          addProfileLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          addProfileLoading: true
         });
         this.error();
       });
@@ -426,6 +448,9 @@ roles:[],
 
   editProfile = event => {
     event.preventDefault();
+    this.setState({
+      editProfileLoading: true
+    });
     axios
       .post(`${API_URL  }/editProfile`, {
         pro_name: this.state.pro_name,
@@ -455,10 +480,14 @@ roles:[],
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          editProfileLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          editProfileLoading: false
         });
         this.error();
       });
@@ -484,6 +513,9 @@ roles:[],
   }
 
   fileUpload(file, key) {
+    this.setState({
+      [key] : 'main/loader.gif'
+    });
     const formData = new FormData();
     //  formData.append('token',token);
     formData.append('file', file);
@@ -510,7 +542,8 @@ roles:[],
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          [key] : ''
         });
         this.error();
       });
@@ -547,7 +580,7 @@ roles:[],
       .post(`${API_URL  }/getRoles`, { token })
       .then(res => {
         if(res.status == 200){
-          this.setState({ loading: false, roles: res.data.roles });
+          this.setState({ roles: res.data.roles });
         }
       })
       .catch(err => {
@@ -575,7 +608,7 @@ roles:[],
 
   componentDidMount() {
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      
       this.getUsers();
       this.getRoles();
     } else {
@@ -600,7 +633,7 @@ roles:[],
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />
@@ -897,10 +930,17 @@ roles:[],
 
               </FormGroup>
 
-
-              <Button filledBtn marginTop="50px">
+                {
+                  this.state.addUserLoading ?
+                  <Button filledBtn marginTop="50px" disabled>
+                <Loader />
+              </Button>
+                  :
+                  <Button filledBtn marginTop="50px">
                 <span>Add User</span>
               </Button>
+                }
+              
             </form>
             </div>
             }
@@ -1073,10 +1113,17 @@ roles:[],
 
               </FormGroup>
 
-
-              <Button filledBtn marginTop="50px">
+                    {
+                      this.state.editUserLoading ?
+                      <Button filledBtn marginTop="50px" disabled>
+                <Loader />
+              </Button>
+                      :
+                      <Button filledBtn marginTop="50px">
                 <span>Update User</span>
               </Button>
+                    }
+              
             </form>
             </div>
             }
@@ -1125,10 +1172,17 @@ roles:[],
                   </Col>
                 </Row>
                 
-
-              <Button filledBtn marginTop="50px">
+                {
+                  this.state.addProfileLoading ?
+                  <Button filledBtn marginTop="50px" disabled>
+                <Loader />
+              </Button>
+                  :
+                  <Button filledBtn marginTop="50px">
                 <span>Add Profile</span>
               </Button>
+                }
+              
             </form>
             
           </Popup>
@@ -1177,11 +1231,18 @@ roles:[],
                   <Button  type="button" className={"toggle "+ (this.state.create_fee ? 'active' : '')} onClick={this.checkBtn} data-id="create_fee" id="edit_create_fee">Create Fee</Button>          
                   </Col>
                 </Row>
-                
-
-              <Button filledBtn marginTop="50px">
+                {
+                  this.editProfileLoading ?
+                  <Button filledBtn marginTop="50px" disabled>
+                <Loader />
+              </Button>
+                  :
+                  <Button filledBtn marginTop="50px">
                 <span>Update Profile</span>
               </Button>
+                }
+
+              
             </form>
             
           </Popup>

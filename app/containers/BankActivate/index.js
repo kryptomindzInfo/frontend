@@ -26,6 +26,7 @@ import BackBtn from 'components/BackBtn';
 import PrimaryBtn from 'components/PrimaryBtn';
 import Button from 'components/Button';
 import A from 'components/A';
+import Loader from 'components/Loader';
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -70,6 +71,9 @@ export default class BankActivate extends Component {
   };
 
   activateAccount = event => {
+    this.setState({
+      activeLoading: true
+    });
     event.preventDefault();
 
     axios
@@ -88,10 +92,14 @@ export default class BankActivate extends Component {
         } else {
           throw res.data.error;
         }
+        this.setState({
+          activeLoading: false
+        });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          activeLoading: false
         }, () => {
           this.error();
       });
@@ -127,6 +135,7 @@ export default class BankActivate extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
+      return <Loader fullPage />
     }
     if (redirect) {
       return <Redirect to="/bank/dashboard" />;
@@ -176,7 +185,15 @@ export default class BankActivate extends Component {
               </FormGroup>
             </InputsWrap>
             <p className="note">Please approve the revenue policy and approve the revenue rule to activate the transaction</p>
-            <PrimaryBtn><FormattedMessage {...messages.btn2} /></PrimaryBtn>
+            {
+              this.state.activeLoading ?
+              <PrimaryBtn disabled>
+                <Loader />
+              </PrimaryBtn>
+              :
+              <PrimaryBtn><FormattedMessage {...messages.btn2} /></PrimaryBtn>
+            }
+            
           </form>
         </FrontRightSection>
       </Wrapper>

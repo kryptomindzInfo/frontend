@@ -84,6 +84,11 @@ body{
     position:absolute;
     right:0;
   }
+  .absoluteMiddleRight{
+    position:absolute;
+    right:0;
+    top: 25%;
+  }
   .absoluteTopRight{
     position:absolute;
     top:0;

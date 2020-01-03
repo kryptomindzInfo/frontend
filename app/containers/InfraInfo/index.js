@@ -17,7 +17,7 @@ import messages from './messages';
 import Wrapper from 'components/Wrapper';
 import TopBar from 'components/Header/TopBar';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
+import Loader from 'components/Loader';
 import Nav from 'components/Header/Nav';
 import Welcome from 'components/Header/Welcome';
 import SidebarTwo from 'components/Sidebar/SidebarTwo';
@@ -126,6 +126,9 @@ export default class InfraInfo extends Component {
         },
       );
     } else {
+      this.setState({
+        editBankLoading: true
+      });
       this.setState(
         {
           showEditOtp: true,
@@ -133,6 +136,9 @@ export default class InfraInfo extends Component {
         },
         () => {
           this.generateOTP();
+          this.setState({
+            editBankLoading: false
+          });
         },
       );
     }
@@ -140,6 +146,9 @@ export default class InfraInfo extends Component {
 
   verifyEditOTP = event => {
     event.preventDefault();
+    this.setState({
+      verifyLoading: true
+    });
     axios
       .post(`${API_URL}/editBank`, {
         name: this.state.name,
@@ -174,10 +183,14 @@ export default class InfraInfo extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          verifyLoading:false
+        });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          verifyLoading: false
         });
         this.error();
       });
@@ -244,16 +257,7 @@ export default class InfraInfo extends Component {
     this.setState({
       popup: false,
       showEditOtp: false,
-      name: '',
-      address1: '',
-      state: '',
-      zip: '',
-      ccode: '',
-      country: '',
-      email: '',
-      mobile: '',
-      logo: null,
-      contract: null,
+      
       otp: '',
       showOtp: false,
     });
@@ -371,6 +375,9 @@ export default class InfraInfo extends Component {
   }
 
   fileUpload(file, key) {
+    this.setState({
+      [key] : 'main/loader.gif'
+    });
     const formData = new FormData();
     //  formData.append('token',token);
     formData.append('file', file);
@@ -401,6 +408,7 @@ export default class InfraInfo extends Component {
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          [key] : ''
         });
         this.error();
       });
@@ -442,12 +450,12 @@ export default class InfraInfo extends Component {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
       if(isAdmin == "true"){
-        this.setState({ permissions: "all", loading: false });
+        this.setState({ permissions: "all" });
       }else{
         axios
         .post(`${API_URL  }/getPermission`, { token })
         .then(res => {          if(res.status == 200){
-            this.setState({ permissions: res.data.permissions, loading: false }, () => {
+            this.setState({ permissions: res.data.permissions }, () => {
               console.log(this.state.permissions);
             });
           }
@@ -478,7 +486,7 @@ export default class InfraInfo extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />;
@@ -622,11 +630,19 @@ export default class InfraInfo extends Component {
                       required
                     />
                   </FormGroup>
-                  <Button filledBtn marginTop="50px">
+                  {
+                    this.state.verifyLoading ?
+                    <Button filledBtn marginTop="50px" disabled>
+                    <Loader />
+                  </Button>
+                    :
+                    <Button filledBtn marginTop="50px">
                     <span>
                       <FormattedMessage {...messages.verify} />
                     </span>
                   </Button>
+                  }
+                  
                   <p className="resend">
                     Wait for <span className="timer">{this.state.timer}</span>{' '}
                     to{' '}
@@ -1053,7 +1069,7 @@ export default class InfraInfo extends Component {
                   </FormGroup>
 
                   <FormGroup>
-                    <UploadArea bgImg={STATIC_URL + 'main/pdf-icon.png'}>
+                    <UploadArea bgImg={STATIC_URL+ ( this.state.contract == 'main/loader.gif' ? 'main/loader.gif' : 'main/pdf-icon.png' )}>
                       {this.state.contract ? (
                         <a
                           className="uploadedImg"
@@ -1091,10 +1107,17 @@ export default class InfraInfo extends Component {
                       </div>
                     </UploadArea>
                   </FormGroup>
-
-                  <Button filledBtn marginTop="50px">
+                            {
+                              this.state.editBankLoading ?
+                              <Button filledBtn marginTop="50px" disabled>
+                    <Loader />
+                  </Button>
+                              :
+                              <Button filledBtn marginTop="50px">
                     <span>Update Bank</span>
                   </Button>
+                            }
+                  
                 </form>
               </div>
             )}

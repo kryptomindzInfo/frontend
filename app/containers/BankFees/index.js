@@ -17,7 +17,7 @@ import messages from './messages';
 import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
+import Loader from 'components/Loader';
 import Nav from 'components/Header/Nav';
 import Welcome from 'components/Header/Welcome';
 import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
@@ -186,6 +186,9 @@ export default class BankFees extends Component {
   };
 
   approve = event => {
+    this.setState({
+      approveLoading: true
+    });
     event.preventDefault();
     axios
       .post(`${API_URL  }/approveFee`, {
@@ -209,10 +212,14 @@ export default class BankFees extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          approveLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          approveLoading: false
         });
         this.error();
 
@@ -220,6 +227,9 @@ export default class BankFees extends Component {
   };
 
   decline = event => {
+    this.setState({
+      declineLoading: true
+    });
     event.preventDefault();
     axios
       .post(`${API_URL  }/declineFee`, {
@@ -244,10 +254,14 @@ export default class BankFees extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          declineLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          declineLoading: false
         });
         this.error();
       });
@@ -374,7 +388,7 @@ export default class BankFees extends Component {
   componentDidMount() {
     // this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      
       this.getBanks();
       this.getRules();
     } else {
@@ -399,7 +413,7 @@ export default class BankFees extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return null;
@@ -459,6 +473,11 @@ export default class BankFees extends Component {
                           </td>
                           <td className="tac bold" >
                             {
+                              b.active == 'Inactive' ?
+                              <span className="absoluteMiddleRight primary popMenuTrigger">
+                              <i className="material-icons ">block</i>
+                              </span>
+                              :
                               b.edit_status != 0 ?
                               b.edit_status == 1 ?
                               <a className="text-light">approved</a>
@@ -522,16 +541,32 @@ export default class BankFees extends Component {
                          <Row>
                   <Col>
                   <FormGroup>
-                  <Button filledBtn marginTop="50px" accentedBtn onClick={this.decline}>
+                    {
+                      this.state.declineLoading ? 
+                      <Button filledBtn marginTop="50px" accentedBtn onClick={this.decline} disabled>
+                <Loader />
+              </Button >
+                      :
+                      <Button filledBtn marginTop="50px" accentedBtn onClick={this.decline}>
                 <span>Decline</span>
               </Button >
+                    }
+                  
                   </FormGroup>
                   </Col>
                   <Col>
                   <FormGroup>
-                  <Button filledBtn marginTop="50px"  onClick={this.approve}>
+                    {
+                      this.state.approveLoading ?
+                      <Button filledBtn marginTop="50px"  onClick={this.approve} disabled>
+                <Loader />
+              </Button>
+                      :
+                      <Button filledBtn marginTop="50px"  onClick={this.approve}>
                 <span>Approve</span>
               </Button>
+                    }
+                  
                   </FormGroup>
                   </Col>
                 </Row>

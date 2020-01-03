@@ -18,6 +18,7 @@ import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
 import A from 'components/A';
+import Loader from 'components/Loader';
 import Main from 'components/Main';
 import Card from 'components/Card';
 import SidebarBank from 'components/Sidebar/SidebarBank';
@@ -96,7 +97,11 @@ export default class BankDashboard extends Component {
       //     });
       //     this.error();
       //   });
-      this.setState({ loading: false });
+      var dis = this;
+      setTimeout(function(){
+        dis.setState({ loading: false });
+      }, 500);
+      
     } else {
       alert('Login to continue');
       this.setState({ loading: false, redirect: true });
@@ -107,7 +112,7 @@ export default class BankDashboard extends Component {
   render() {
     const { loading, redirect, popup } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/bank" />;
