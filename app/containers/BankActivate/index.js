@@ -184,7 +184,7 @@ export default class BankActivate extends Component {
                 /> <FormattedMessage {...messages.confirm} />
               </FormGroup>
             </InputsWrap>
-            <p className="note">Please approve the revenue policy and approve the revenue rule to activate the transaction</p>
+            <p className="note">Please approve the revenue policy and revenue rule to activate the transaction</p>
             {
               this.state.activeLoading ?
               <PrimaryBtn disabled>
@@ -194,6 +194,8 @@ export default class BankActivate extends Component {
               <PrimaryBtn><FormattedMessage {...messages.btn2} /></PrimaryBtn>
             }
             
+            
+            {/* <PrimaryBtn><FormattedMessage {...messages.btn2} /></PrimaryBtn> */}
           </form>
         </FrontRightSection>
       </Wrapper>
