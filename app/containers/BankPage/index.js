@@ -162,11 +162,13 @@ export default class BankPage extends Component {
   };
 
   generateOTP = () => {
-    this.setState({ resend: false, timer: 30});
-    this.startTimer();
+
     axios
       .post(`${API_URL  }/generateOTP`, {
         name: this.state.name,
+        email: this.state.email,
+        mobile: this.state.mobile,
+        bcode: this.state.bcode,
         page: this.state.otpOpt,
         username: this.state.username,
         token,
@@ -176,15 +178,24 @@ export default class BankPage extends Component {
           if(res.data.error){
             throw res.data.error;
           }else{
+            if(this.state.otpOpt  == 'addBank'){
+              this.setState({
+                showOtp: true
+              });
+            }else{
+              this.setState({
+                showEditOtp: true
+              });
+            }
+            this.setState({ resend: false, timer: 30});
             this.setState({
               otpId: res.data.id,
-              showEditOtp: true,
               notification: 'OTP Sent'
             });
+            this.startTimer();
             this.success();
           }
         }else{
-          
           throw res.data.error;
         }
       })
@@ -222,14 +233,14 @@ export default class BankPage extends Component {
       this.setState({
         otpOpt: 'addBank'
       }, () => {
-        this.setState({
-          showOtp: true,
-        }, () =>{
+        // this.setState({
+        //   showOtp: true,
+        // }, () =>{
           this.generateOTP();
           this.setState({
             addBankLoading: false
           });
-        });
+        // });
         
       });
       
@@ -291,7 +302,6 @@ blockBank = (e, s) =>{
         editBankLoading: true
       });
       this.setState({
-        showEditOtp: true,
         otpOpt: 'editBank'
       }, () =>{
         this.generateOTP();

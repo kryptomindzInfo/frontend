@@ -225,6 +225,9 @@ export default class InfraInfo extends Component {
     axios
       .post(`${API_URL}/generateOTP`, {
         name: this.state.name,
+        email: this.state.email,
+        mobile: this.state.mobile,
+        bcode: this.state.bcode,
         page: this.state.otpOpt,
         username: this.state.username,
         token,
