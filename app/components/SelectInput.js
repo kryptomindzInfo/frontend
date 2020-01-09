@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 const SelectInput = styled.select `
   width: 100%;
-  position:relative;
+  // position:relative;
   z-index: 1;
   background: transparent;
   box-sizing:border-box;

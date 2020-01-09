@@ -43,6 +43,7 @@ import MasterHistory from 'containers/MasterHistory/Loadable';
 import InfraProfile from 'containers/InfraProfile/Loadable';
 import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
 import TermsConditions from '../../components/TermsConditions';
+import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
 
 
 import { ThemeProvider } from 'styled-components';
@@ -91,6 +92,7 @@ export default function App() {
           <InfraRoute path="/documents/:bank?" component={Documents} />
           <InfraRoute path="/operationalHistory/:bank?" component={OperationalHistory} />
           <InfraRoute path="/masterHistory/:bank?" component={MasterHistory} />
+          <InfraRoute path="/bankCreation-confirmationPage" component={BankCreationConfirmationPage} />
 
           <Route exact path="/bank" component={BankLoginPage} />
           <Route exact path="/bank/setup" component={BankSetupPage} />
@@ -105,6 +107,7 @@ export default function App() {
           <BankRoute path="/bank/fees" component={BankFees} />
           <BankRoute path="/bank/documents" component={BankDocuments} />
           <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
+          
 
           
 

@@ -666,7 +666,7 @@ export default class BankPage extends Component {
                       <FormattedMessage {...messages.otp} />*
                     </label>
                     <TextInput
-                      type="text"
+                      type="password"
                       name="otp"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
@@ -686,7 +686,7 @@ export default class BankPage extends Component {
                     to{' '}
                     {this.state.resend ? (
                       <span className="go" onClick={this.generateOTP}>
-                        Resend
+                        Resend  
                       </span>
                     ) : (
                       <span>Resend</span>

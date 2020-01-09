@@ -514,7 +514,7 @@ export default class BankOperationalHistory extends Component {
                   <i className="material-icons">playlist_add_check</i>
                 </div>
                 <div className="cardHeaderRight">
-                  <h3>Transactions</h3>
+                  <h3>Operational Wallet Transaction</h3>
                   <h5>E-wallet activity</h5>
                 </div>
               </div>
@@ -565,7 +565,10 @@ export default class BankOperationalHistory extends Component {
                               </td>
                               <td>
                                 <div className="labelGrey">
-                                {b.Value.tx_data.tx_type == 'DR' ? '-XOF' : 'XOF'} {b.Value.amount}
+                                  {b.Value.tx_data.tx_type == 'DR'
+                                    ? '-XOF'
+                                    : 'XOF'}{' '}
+                                  {b.Value.amount}
                                 </div>
                               </td>
                             </tr>

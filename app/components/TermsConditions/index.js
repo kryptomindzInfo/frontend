@@ -1,11 +1,5 @@
 import Header from '../Header';
 import React, { Component } from 'react';
-// import Logo from './Logo';
-// import Nav from './Nav';
-// import TopBar from './TopBar';
-// import Welcome from './Welcome';
-// import Container from 'components/Container';
-// import A from 'components/A';
 
 class TermsConditions extends Component {
   state = {};

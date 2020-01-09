@@ -51,7 +51,7 @@ export default class BankActivate extends Component {
       token: token,
       loading: true,
       redirect: false,
-      token: token
+      token: token,
     };
     this.error = this.error.bind(this);
   }
@@ -73,30 +73,37 @@ export default class BankActivate extends Component {
     event.preventDefault();
 
     axios
-      .post(`${API_URL}/bankActivate`, {token: token} )
+      .post(`${API_URL}/bankActivate`, { token: token })
       .then(res => {
         if (res.status == 200) {
-            this.setState({
-              notification: 'Account activated!' + res.data.walletStatus
-            }, () => {
+          this.setState(
+            {
+              notification: 'Account activated!' + res.data.walletStatus,
+            },
+            () => {
               this.success();
               let history = this.props.history;
-              setTimeout(function(){
+              setTimeout(function() {
                 history.push('/bank/dashboard');
               }, 1000);
-          });
+            },
+          );
         } else {
           throw res.data.error;
         }
       })
       .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        }, () => {
-          this.error();
+        this.setState(
+          {
+            notification: err.response
+              ? err.response.data.error
+              : err.toString(),
+          },
+          () => {
+            this.error();
+          },
+        );
       });
-      });
-    
   };
 
   componentDidMount() {
@@ -109,19 +116,20 @@ export default class BankActivate extends Component {
   }
 
   openPDF = event => {
-    document.getElementById("pdfdown").click();
+    document.getElementById('pdfdown').click();
   };
 
   render() {
     function inputFocus(e) {
       const { target } = e;
-      target.parentElement.querySelector('label').classList.add('focused');
+      console.log(target);
+      // target.parentElement.querySelector('label').classList.add('focused');
     }
 
     function inputBlur(e) {
       const { target } = e;
       if (target.value == '') {
-        target.parentElement.querySelector('label').classList.remove('focused');
+        // target.parentElement.querySelector('label').classList.remove('focused');
       }
     }
 
@@ -137,33 +145,49 @@ export default class BankActivate extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | BANK | HOME</title>
         </Helmet>
-        <FrontLeftSection from="bank" logo={STATIC_URL+logo}>
-        </FrontLeftSection>
+        <FrontLeftSection from="bank" logo={STATIC_URL + logo} />
         <FrontRightSection>
           <LoginHeader>
+            <A href="/bank" float="left">
+              <BackBtn className="material-icons">keyboard_backspace</BackBtn>
+            </A>
+            <FormattedMessage {...messages.pagetitle} />
+          </LoginHeader>
 
-          <A href="/bank"  float="left">
-          <BackBtn className="material-icons">
-            keyboard_backspace
-          </BackBtn>
-          </A>
-            <FormattedMessage {...messages.pagetitle} /></LoginHeader>
-            
-          <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
+          <FrontFormTitle>
+            <FormattedMessage {...messages.title} />
+          </FrontFormTitle>
           {/* <div className="bankLogoActivate">
           <img src={STATIC_URL+logo} />
           </div> */}
           <form action="" method="POST" onSubmit={this.activateAccount}>
             <InputsWrap>
               <FormGroup>
-                <iframe src={CONTRACT_URL+contract} width="100%" height="500px">
-                
-                </iframe>
-                <Button onClick={this.openPDF} type="button" accentedBtn bottomRight><FormattedMessage {...messages.btn1} /></Button>
-                <a target="_BLANK" href={CONTRACT_URL+contract} download="Contract" id="pdfdown" className="hide">click me</a>
+                <iframe
+                  src={CONTRACT_URL + contract}
+                  width="100%"
+                  height="500px"
+                />
+                <Button
+                  onClick={this.openPDF}
+                  type="button"
+                  accentedBtn
+                  bottomRight
+                >
+                  <FormattedMessage {...messages.btn1} />
+                </Button>
+                <a
+                  target="_BLANK"
+                  href={CONTRACT_URL + contract}
+                  download="Contract"
+                  id="pdfdown"
+                  className="hide"
+                >
+                  click me
+                </a>
               </FormGroup>
 
-              <FormGroup className="checkbox">                
+              <FormGroup className="checkbox">
                 <input
                   type="checkbox"
                   name="confirm"
@@ -172,11 +196,17 @@ export default class BankActivate extends Component {
                   value={this.state.confirm}
                   onChange={this.handleInputChange}
                   required
-                /> <FormattedMessage {...messages.confirm} />
+                />{' '}
+                <FormattedMessage {...messages.confirm} />
               </FormGroup>
             </InputsWrap>
-            <p className="note">Please approve the revenue policy and revenue rule to activate the transaction</p>
-            <PrimaryBtn><FormattedMessage {...messages.btn2} /></PrimaryBtn>
+            <p className="note">
+              Please approve the revenue policy and revenue rule to activate the
+              transaction
+            </p>
+            <PrimaryBtn>
+              <FormattedMessage {...messages.btn2} />
+            </PrimaryBtn>
           </form>
         </FrontRightSection>
       </Wrapper>

@@ -4,7 +4,7 @@
  * This is the first thing users see of our App, at the '/' route
  *
  */
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { Helmet } from 'react-helmet';
 
 import { toast } from 'react-toastify';
@@ -25,7 +25,6 @@ import PrimaryBtn from 'components/PrimaryBtn';
 import BackBtn from 'components/BackBtn';
 import A from 'components/A';
 
-
 import { API_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -38,16 +37,15 @@ toast.configure({
   draggable: true,
 });
 
-const mobile =  localStorage.getItem('bankPhone');
+const mobile = localStorage.getItem('bankPhone');
 
 export default class TPPage extends Component {
-
   constructor() {
     super();
     this.state = {
       mobile: mobile,
-      otp : '',
-      notification: ''
+      otp: '',
+      notification: '',
     };
     this.error = this.error.bind(this);
   }
@@ -71,16 +69,19 @@ export default class TPPage extends Component {
       .then(res => {
         if (res.status == 200) {
           localStorage.setItem('logged', res.data.token);
-          
-          this.setState({
-            notification: 'OTP Verified!'
-          }, () => {
-            this.success();
-            let history = this.props.history;
-            setTimeout(function(){
-              history.push('/forgot-setup');
-            }, 1000);
-        });
+
+          this.setState(
+            {
+              notification: 'OTP Verified!',
+            },
+            () => {
+              this.success();
+              let history = this.props.history;
+              setTimeout(function() {
+                history.push('/forgot-setup');
+              }, 1000);
+            },
+          );
         } else {
           throw res.data.error;
         }
@@ -93,43 +94,43 @@ export default class TPPage extends Component {
       });
   };
 
-render() {
-  function inputFocus(e) {
-    const { target } = e;
-    target.parentElement.querySelector('label').classList.add('focused');
-  }
-
-  function inputBlur(e) {
-    const { target } = e;
-    if (target.value == '') {
-      target.parentElement.querySelector('label').classList.remove('focused');
+  render() {
+    function inputFocus(e) {
+      const { target } = e;
+      target.parentElement.querySelector('label').classList.add('focused');
     }
-  }
-  return (
-    <Wrapper>
-      <Helmet>
-        <meta charSet="utf-8" />
-        <title>Verify OTP | INFRA | E-WALLET</title>
-      </Helmet>
-      <FrontLeftSection from="infra">
-        
-      </FrontLeftSection>
-      <FrontRightSection>
-        <LoginHeader>
-          <A href="/forgot-password" float="left">
-          <BackBtn className="material-icons">
-            keyboard_backspace
-          </BackBtn>
-          </A>
-          <FormattedMessage {...messages.pagetitle} />
-        </LoginHeader>
-        <FrontFormTitle><FormattedMessage {...messages.title} /> {this.state.mobile}</FrontFormTitle>
-        <form action="" method="POST" onSubmit={this.otpVerify}>
-          <InputsWrap>
-            <FormGroup>
-              <label><FormattedMessage {...messages.pagetitle} /></label>
-              <TextInput
-                  type="text"
+
+    function inputBlur(e) {
+      const { target } = e;
+      if (target.value == '') {
+        target.parentElement.querySelector('label').classList.remove('focused');
+      }
+    }
+    return (
+      <Wrapper>
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>Verify OTP | INFRA | E-WALLET</title>
+        </Helmet>
+        <FrontLeftSection from="infra" />
+        <FrontRightSection>
+          <LoginHeader>
+            <A href="/forgot-password" float="left">
+              <BackBtn className="material-icons">keyboard_backspace</BackBtn>
+            </A>
+            <FormattedMessage {...messages.pagetitle} />
+          </LoginHeader>
+          <FrontFormTitle>
+            <FormattedMessage {...messages.title} /> {this.state.mobile}
+          </FrontFormTitle>
+          <form action="" method="POST" onSubmit={this.otpVerify}>
+            <InputsWrap>
+              <FormGroup>
+                <label>
+                  <FormattedMessage {...messages.pagetitle} />
+                </label>
+                <TextInput
+                  type="password"
                   name="otp"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
@@ -137,12 +138,14 @@ render() {
                   onChange={this.handleInputChange}
                   required
                 />
-            </FormGroup>
-          </InputsWrap>
-          <PrimaryBtn><FormattedMessage {...messages.submit} /></PrimaryBtn>
-        </form>
-      </FrontRightSection>
-    </Wrapper>
-  );
-}
+              </FormGroup>
+            </InputsWrap>
+            <PrimaryBtn>
+              <FormattedMessage {...messages.submit} />
+            </PrimaryBtn>
+          </form>
+        </FrontRightSection>
+      </Wrapper>
+    );
+  }
 }
