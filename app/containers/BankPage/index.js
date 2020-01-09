@@ -30,6 +30,7 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
+// import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
@@ -686,7 +687,7 @@ export default class BankPage extends Component {
                     to{' '}
                     {this.state.resend ? (
                       <span className="go" onClick={this.generateOTP}>
-                        Resend  
+                        Resend
                       </span>
                     ) : (
                       <span>Resend</span>
@@ -1083,6 +1084,7 @@ export default class BankPage extends Component {
                           id="logo"
                           onChange={this.onChange}
                           data-key="logo"
+                          accept="image/jpeg, image/png, image/jpg"
                         />
                         {!this.state.logo ? (
                           <i className="material-icons">cloud_upload</i>
@@ -1121,6 +1123,7 @@ export default class BankPage extends Component {
                           id="contract"
                           onChange={this.onChange}
                           data-key="contract"
+                          accept=".pdf"
                         />
                         {!this.state.contract ? (
                           <i className="material-icons">cloud_upload</i>
@@ -1129,19 +1132,32 @@ export default class BankPage extends Component {
                         )}
 
                         <label>
+                          <div className="tooltip">
+                          <i
+                            className="fa fa-info-circle"
+                            style={{ margin: '5px' }}
+                          />
+                            <span className="tooltiptext">This contract will be uploaded on Blockchain.</span>
+                          </div>
+                          
                           {this.state.contract == '' ? (
                             <FormattedMessage {...messages.popup10} />
                           ) : (
                             <span>Change Contract</span>
                           )}
-                          *<p>Only PDF allowed*</p>
+                          *
+                          <p>
+                            <span style={{ color: 'red' }}>* </span>Only PDF
+                            allowed{' '}
+                          </p>
                         </label>
                       </div>
                     </UploadArea>
                   </FormGroup>
                   <p className="note">
-                    Please create the revenue policy or otherwise by default 0
-                    fee will be debited for all transctions
+                    <span style={{ color: 'red' }}>* </span>Please create the
+                    revenue policy or otherwise by default 0 fee will be debited
+                    for all transactions
                   </p>
                   <Button filledBtn marginTop="10px">
                     <span>
