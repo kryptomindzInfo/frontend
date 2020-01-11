@@ -203,17 +203,8 @@ export default class SetupPage extends Component {
             <FrontLeftSection from="infra" />
             <FrontRightSection>
               {this.state.showModal ? (
-                
                 <div
                   className="wrapperClassForModal"
-                  // style={{
-                  //   display: 'flex',
-                  //   alignItems: 'center',
-                  //   justifyContent: 'center',
-                  //   backgroundColor: 'white'
-                  //   // background:
-                  //   //   'linear-gradient(rgb(108, 172, 106), rgb(16, 41, 16)) rgb(255, 255, 255)',
-                  // }}
                 >
                   {/* <Modal
   isOpen={this.state.showModal}
@@ -226,20 +217,18 @@ export default class SetupPage extends Component {
                       borderRadius: '8px',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      textAlign: 'center'
+                      textAlign: 'center',
+                      marginTop: '65px',
                     }}
                   >
                     <p
                       style={{
                         fontSize: '50px',
                         fontFamily: 'Roboto,sans-serif',
-                        // backgroundColor: '#487947',
-                        // padding: '10px 10px',
-                        // width: '60%',
-                        // boxShadow: '1px 1px 1px  #66ffcf',
+                       
                         borderRadius: '8px',
                         color: 'black',
-                        textAlign: 'center'
+                        textAlign: 'center',
                       }}
                     >
                       Congratulations !{' '}
@@ -251,26 +240,12 @@ export default class SetupPage extends Component {
                         fontFamily: 'Serif',
                         margin: '0px',
                         color: 'black',
-                        textAlign: 'center'
-
+                        textAlign: 'center',
                       }}
                     >
-                      Your account has been created successfully. {' '}
+                      Your account has been created successfully.{' '}
                     </p>
-                    {/* <p
-                      style={{
-                        fontSize: '20px',
-                        fontFamily: 'Serif',
-                        fontStyle: 'italic',
-                        color: 'black',
-                        // paddingLeft: '15px',
-                        // paddingRight: '15px',
-                        textAlign: 'center'
-
-                      }}
-                    >
-                      for setting up an Infra-Admin account{' '}
-                    </p> */}
+                    
                     <button
                       style={{
                         backgroundColor: '#417505',
@@ -297,7 +272,7 @@ export default class SetupPage extends Component {
                   </LoginHeader>
                   <FrontFormTitle>Infra Admin Setup</FrontFormTitle>
                   <FrontFormSubTitle>
-                    Please fil the below information to begin witht the wallet
+                    Please fil the below information to begin with the wallet
                     system
                   </FrontFormSubTitle>
                   <form
@@ -1047,15 +1022,11 @@ export default class SetupPage extends Component {
                       <FormGroup>
                         <p className="bottomNote">
                           Email ID and phone number will be used for sending all
-                          the communication related to the infa admin
+                          the notifications related to the Infra admin
                         </p>
                       </FormGroup>
                     </InputsWrap>
-                    <PrimaryBtn
-                    //   onClick={() => window.open('/bankCreation-confirmationPage')}
-                    >
-                      Submit
-                    </PrimaryBtn>
+                    <PrimaryBtn>Submit</PrimaryBtn>
                   </form>
                 </div>
               )}

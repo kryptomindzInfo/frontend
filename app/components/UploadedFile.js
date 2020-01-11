@@ -2,14 +2,14 @@ import styled from 'styled-components';
 
 const UploadedFile = styled.p `
     font-size: 12px;
-    color: #417505;
+    color: ${props => props.theme.primary};
     font-weight: bold;
     line-height: 14px;
     display: block;
     position: relative;
     > a{
         font-size: 12px;
-        color: #417505;
+        color: ${props => props.theme.primary};
         font-weight: bold;
         line-height: 14px;
     }

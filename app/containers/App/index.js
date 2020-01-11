@@ -7,7 +7,7 @@
  *
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InfraRoute from './InfraRoute';
@@ -35,6 +35,7 @@ import SetupPage from 'containers/SetupPage/Loadable';
 import ForgotSetup from 'containers/ForgotSetup/Loadable';
 import BankInfo from 'containers/BankInfo/Loadable';
 import BankDocuments from 'containers/BankDocuments/Loadable';
+import BankTheme from 'containers/BankTheme/Loadable';
 import UserPage from 'containers/UserPage/Loadable';
 import BankFees from 'containers/BankFees/Loadable';
 import Documents from 'containers/Documents/Loadable';
@@ -45,14 +46,16 @@ import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
 import TermsConditions from '../../components/TermsConditions';
 import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
 
-
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
 
-import 'react-toastify/dist/ReactToastify.css';import FeeList from '../FeeList';
+import 'react-toastify/dist/ReactToastify.css';
+import FeeList from '../FeeList';
 
-const theme = {
+const appTheme = {
   primary: '#417505',
+  // primary: "#ff0000",
+  // secondary: "#ff0000",
   secondary: '#6cac69',
   accent: '#f5a623',
   light: '#9ea0a5',
@@ -63,9 +66,15 @@ const theme = {
 };
 toast.configure();
 
+export default function App(props) {
+  const [theme, setTheme] = useState(appTheme);
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setTheme({ primary: "#ff0000"})
+  //   }, 3000)
+  // }, [])
 
-export default function App() {
   const notify = () => toast('Wow so easy !');
   const token = localStorage.getItem('logged');
   const bankToken = localStorage.getItem('bankLogged');
@@ -81,7 +90,7 @@ export default function App() {
           <Route exact path="/forgot-setup" component={ForgotSetup} />
           <Route exact path="/otp" component={OTPPage} />
 
-          <InfraRoute exact path = "/dashboard" component={DashboardPage} />
+          <InfraRoute exact path="/dashboard" component={DashboardPage} />
           <InfraRoute exact path="/banks" component={BankPage} />
           <InfraRoute exact path="/profile" component={InfraProfile} />
           <InfraRoute exact path="/user" component={UserPage} />
@@ -90,26 +99,41 @@ export default function App() {
           <InfraRoute path="/createfee/:bank?" component={CreateFee} />
           <InfraRoute path="/editfee/:bank?" component={EditFee} />
           <InfraRoute path="/documents/:bank?" component={Documents} />
-          <InfraRoute path="/operationalHistory/:bank?" component={OperationalHistory} />
+          <InfraRoute
+            path="/operationalHistory/:bank?"
+            component={OperationalHistory}
+          />
           <InfraRoute path="/masterHistory/:bank?" component={MasterHistory} />
-          <InfraRoute path="/bankCreation-confirmationPage" component={BankCreationConfirmationPage} />
+          <InfraRoute
+            path="/bankCreation-confirmationPage"
+            component={BankCreationConfirmationPage}
+          />
 
           <Route exact path="/bank" component={BankLoginPage} />
           <Route exact path="/bank/setup" component={BankSetupPage} />
           <Route exact path="/bank/activate" component={BankActivate} />
-          <Route exact path="/bank/forgot-password" component={BankForgotPasswordPage}/>
+          <Route
+            exact
+            path="/bank/forgot-password"
+            component={BankForgotPasswordPage}
+          />
           <Route exact path="/bank/otp" component={BankOTPPage} />
           <Route exact path="/termsConditions" component={TermsConditions} />
-
 
           <BankRoute exact path="/bank/dashboard" component={BankDashboard} />
           <BankRoute path="/bank/info" component={BankInfo} />
           <BankRoute path="/bank/fees" component={BankFees} />
           <BankRoute path="/bank/documents" component={BankDocuments} />
-          <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
-          
-
-          
+          <BankRoute
+            path="/bank/theme"
+            component={BankTheme}
+            setTheme={setTheme}
+            appTheme={theme}
+          />
+          <BankRoute
+            path="/bank/operationalHistory"
+            component={BankOperationalHistory}
+          />
 
           <Route component={NotFoundPage} />
         </Switch>

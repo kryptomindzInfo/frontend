@@ -30,35 +30,38 @@ class BankNav extends Component {
     return (
       <React.Fragment>
         <NavTag>
-          <A href="/bank/dashboard" >
-          <Link active={dashboard}>
-          <FormattedMessage {...messages.menu1} /> 
-          </Link>
+          <A href="/bank/dashboard">
+            <Link
+              active={dashboard}
+              // style={`${props => props.theme.secondary}`}
+            >
+              <FormattedMessage {...messages.menu1} />
+            </Link>
           </A>
           <A href="/bank/branches">
-          <Link  active={branches}>
-          <FormattedMessage {...messages.bmenu1} /> 
-          </Link>
+            <Link active={branches}>
+              <FormattedMessage {...messages.bmenu1} />
+            </Link>
           </A>
-          <A href="/bank/partners" >
-          <Link active={partners}>
-          <FormattedMessage {...messages.bmenu2} /> 
-          </Link>
+          <A href="/bank/partners">
+            <Link active={partners}>
+              <FormattedMessage {...messages.bmenu2} />
+            </Link>
           </A>
-          <A href="/bank/merchants" >
-          <Link active={merchants}>
-          <FormattedMessage {...messages.menu3} /> 
-          </Link>
+          <A href="/bank/merchants">
+            <Link active={merchants}>
+              <FormattedMessage {...messages.menu3} />
+            </Link>
           </A>
-          <A href="/bank/users" >
-          <Link active={users}>
-          <FormattedMessage {...messages.bmenu3} /> 
-          </Link>
+          <A href="/bank/users">
+            <Link active={users}>
+              <FormattedMessage {...messages.bmenu3} />
+            </Link>
           </A>
-          <A href="/bank/reports" >
-          <Link active={reports}>
-          <FormattedMessage {...messages.menu4} /> 
-          </Link>
+          <A href="/bank/reports">
+            <Link active={reports}>
+              <FormattedMessage {...messages.menu4} />
+            </Link>
           </A>
         </NavTag>
       </React.Fragment>

@@ -9,7 +9,7 @@ margin-top: ${props => props.marginTop ? props.marginTop : '0' };
     font-weight:bold;
     padding: 8px;
     text-align:center;
-    background-color: #f5a623;
+    background-color: ${props => props.theme.accent};
     color: #fff;
     position:relative;
 }
@@ -21,7 +21,7 @@ margin-top: ${props => props.marginTop ? props.marginTop : '0' };
     background-color: rgba(81, 111, 10, 0.01);
     position:relative;
     &.green{
-        color: #417505;
+        color: ${props => props.theme.primary};
     }
     > a{
         font-size: 12px;
@@ -58,7 +58,7 @@ margin-top: ${props => props.marginTop ? props.marginTop : '0' };
 td > .material-icons{
     font-size: 19px;
     font-weight:bold;
-    color: #417505;
+    color:${props => props.theme.primary};
 }
 >
 .bold{

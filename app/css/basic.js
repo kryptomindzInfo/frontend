@@ -66,7 +66,7 @@ margin-top: 127px;
 const FrontFormSubTitle = styled.h4 `
 font-weight:normal;
 font-size: 14px;
-color: #9ea0a5;
+color: ${props => props.theme.secondary};
 margin:0;
 margin-top: 7px;
 `;

@@ -19,7 +19,7 @@ width: 100%;
 background:#fff;
 cursor:pointer;
 border-radius: 7.5px;
-border: dashed 1.5px #417505;
+border: dashed 1.5px ${props => props.theme.primary};
 padding: 16px 40px;
 margin-bottom: 20px; 
 
@@ -31,7 +31,7 @@ margin-bottom: 20px;
 
 > .uploaded {
     font-size: 12px;
-    color: #417505;
+    color: ${props => props.theme.primary};
     font-weight: bold;
     line-height: 14px;
     display: block;
@@ -54,7 +54,7 @@ margin-bottom: 20px;
     line-height: 56px;
     display: block;
     float: left;
-    color: #417505;
+    color: ${props => props.theme.primary};
 }
 > label {
     font-size: 18px;

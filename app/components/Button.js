@@ -10,7 +10,7 @@ background-color: ${props => props.filledBtn ? props.theme.primary : '#fff' };
 background-color: ${props => props.accentedBtn ? props.theme.accent : 'sdf' };
 background-color: ${props => props.accentedOutline ? 'transparent' : 'sdf' };
 border: ${props => props.accentedBtn ? 'none' : '1px solid #417505' };
-border: ${props => props.accentedOutline ? '1px solid #f5a623' : 'sd' };
+border: ${props => props.accentedOutline ? `1px solid ${props.theme.primary}` : 'sd' };
 color: ${props => (props.filledBtn || props.accentedBtn) ? '#fff' : props.theme.primary };
 color: ${props => (props.accentedOutline) ? props.theme.accent :  'sd' };
 font-size: ${props => props.filledBtn ? '20px' : '11px' };
@@ -27,11 +27,11 @@ right: ${props => props.bottomRight ? '2px;' : '0' };
     font-size:13px;
 }
 &.toggle{
-    border: 1px solid #f5a623;
-    color: #f5a623;
+    border: 1px solid ${props => props.theme.accent};
+    color: ${props => props.theme.accent};
 }
 &.active{
-    background-color: #f5a623;
+    background-color: ${props => props.theme.accent};
     color: #ffffff;
 }
 `;
