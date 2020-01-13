@@ -16,6 +16,10 @@ body{
 .hide{
   display:none;
 }
+.w100{width:100%;}
+.h100{height:100%;}
+.tal{text-align:left !important;}
+.small{font-size: 10px !important;}
 .text-accent{
   color: #f5a623;
 }
@@ -160,6 +164,9 @@ body{
       height: 80px;
       margin-top:20px;
     }
+  }
+  .sideNav{
+    cursor:pointer;
   }
 `;
 

@@ -159,7 +159,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
     margin-top:20px;
     margin-right: 30px;
 }
-> .cardHeader > .cardHeaderRight > h5,  > h5{
+> .cardHeader > .cardHeaderRight > h5,  h5{
     font-size: 14px;
     font-weight: 300;
     color: rgba(50, 60, 71, 0.4);
@@ -167,7 +167,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
     margin-bottom:15px;
 }
 
-> .cardValue{
+.cardValue{
     font-size: 32px;
     font-weight: bold;
     color: #417505;

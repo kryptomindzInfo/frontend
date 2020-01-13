@@ -73,7 +73,7 @@ export default class BankPage extends Component {
       popup: false,
       username: '',
       editPopup: false,
-      
+
       edit: false,
       user_id: token,
       otpId: '',
@@ -107,7 +107,7 @@ export default class BankPage extends Component {
   countryChange = event => {
     const { value, name } = event.target;
     const title = event.target.options[event.target.selectedIndex].title;
-    
+
     this.setState({
       [name]: value,
       ccode: title
@@ -206,11 +206,11 @@ export default class BankPage extends Component {
         this.error();
       });
 
-      
+
   }
 
   addBank = event => {
-  
+
     event.preventDefault();
     if(this.state.logo == null || this.state.logo == ''){
       this.setState({
@@ -241,9 +241,9 @@ export default class BankPage extends Component {
             addBankLoading: false
           });
         // });
-        
+
       });
-      
+
     }
   };
 blockBank = (e, s) =>{
@@ -278,7 +278,7 @@ blockBank = (e, s) =>{
     });
     this.error();
   });
-  
+
 };
 
   editBank = event => {
@@ -448,11 +448,11 @@ blockBank = (e, s) =>{
       },
     };
     var method = "fileUpload";
-    
+
     if(key == 'contract'){
       method = "ipfsUpload";
     }
-    
+
     axios
       .post(`${API_URL  }/${method}?token=${  token}`, formData, config)
       .then(res => {
@@ -510,7 +510,7 @@ blockBank = (e, s) =>{
       this.getBanks();
     } else {
 
-     
+
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
     }
@@ -540,7 +540,7 @@ blockBank = (e, s) =>{
     const perms = this.state.permissions;
     const ep = this;
     return (
-      
+
       <Wrapper from="infra">
         <Helmet>
           <meta charSet="utf-8" />
@@ -554,7 +554,7 @@ blockBank = (e, s) =>{
                 <i className="material-icons">search</i>
                 <input type="text" placeholder="Search" />
               </div>
-             
+
                 {
                 (this.state.permissions == "all" || this.state.permissions.create_bank) ?
                 <Button className="fr" flex onClick={this.showPopup}>
@@ -564,7 +564,7 @@ blockBank = (e, s) =>{
                 :
                 null
                 }
-              
+
             </ActionBar>
             <Card bigPadding>
               <div className="cardHeader" >
@@ -589,12 +589,12 @@ blockBank = (e, s) =>{
                   </thead>
                   <tbody>
                     {
-                      
+
                       this.state.banks && this.state.banks.length > 0
                         ? this.state.banks.map(function(b) {
                           return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td  className="tac">0</td>
                           <td className="tac bold">{b.total_trans}
-                            { 
+                            {
                             b.status != 0
                             ?
                           <span className="absoluteRight primary popMenuTrigger">
@@ -615,7 +615,7 @@ blockBank = (e, s) =>{
                               :
                               <span onClick={() => ep.blockBank(b._id, -1)}>Block</span>
                             }
-                            
+
                           </div>
                           </span>
                            :
@@ -623,7 +623,7 @@ blockBank = (e, s) =>{
                           <i className="material-icons ">block</i>
                           </span>
                            }
-                          
+
                           </td>
                           </tr>
                         })
@@ -665,11 +665,11 @@ blockBank = (e, s) =>{
                 <span><FormattedMessage {...messages.verify} /></span>
               </Button>
               }
-              
+
 
               <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
-              
-                
+
+
               </form>
               </div>
               :
@@ -746,7 +746,7 @@ blockBank = (e, s) =>{
                 <Row>
                   <Col>
                   <FormGroup>
-                  
+
                   <SelectInput
                     type="text"
                     name="country"
@@ -952,11 +952,11 @@ blockBank = (e, s) =>{
 		<option title="+1649">Turks &amp; Caicos Islands</option>
 		<option title="+688">Tuvalu</option>
 		<option title="+256">Uganda</option>
-		<option title="+44">UK</option> 
+		<option title="+44">UK</option>
 		<option title="+380">Ukraine</option>
 		<option title="+971">United Arab Emirates</option>
 		<option title="+598">Uruguay</option>
-		<option title="+1">USA</option> 
+		<option title="+1">USA</option>
 		<option title="+7">Uzbekistan</option>
 		<option title="+678">Vanuatu</option>
 		<option title="+379">Vatican City</option>
@@ -972,7 +972,7 @@ blockBank = (e, s) =>{
     </SelectInput>
                   </FormGroup>
                   </Col>
-                  
+
                   <Col>
                   <FormGroup>
                   <label><FormattedMessage {...messages.popup8} />*</label>
@@ -986,14 +986,14 @@ blockBank = (e, s) =>{
                     required
                   />
                   </FormGroup>
-      
+
                   </Col>
                 </Row>
                 <Row>
                 <Col  cW="20%" mR="2%">
-                  
+
                 <FormGroup>
-                  
+
                   <TextInput
                     type="text"
                   name="ccode"
@@ -1003,7 +1003,7 @@ blockBank = (e, s) =>{
                     required
                   />
                   </FormGroup>
-                  
+
                 </Col>
                 <Col cW="78%">
                 <FormGroup>
@@ -1020,7 +1020,7 @@ blockBank = (e, s) =>{
                     required
                   />
                   </FormGroup>
-                  
+
                 </Col>
                 </Row>
 
@@ -1050,12 +1050,12 @@ blockBank = (e, s) =>{
                     }
                     <label>
                       {
-                      this.state.logo == '' ? 
-                      <FormattedMessage {...messages.popup9} /> 
+                      this.state.logo == '' ?
+                      <FormattedMessage {...messages.popup9} />
                       :
                       <span>Change Logo</span>
                       }
-                      
+
                       *</label>
                     </div>
                   </UploadArea>
@@ -1082,22 +1082,22 @@ blockBank = (e, s) =>{
 
                     <label>
                     {
-                      this.state.contract == '' ? 
-                      <FormattedMessage {...messages.popup10} /> 
+                      this.state.contract == '' ?
+                      <FormattedMessage {...messages.popup10} />
                       :
                       <span>Change Contract</span>
                       }
                       *
                       <p>Only PDF allowed*</p>
                       </label>
-                      
+
                     </div>
                   </UploadArea>
               </FormGroup>
               <p className="note">Please create the revenue policy or otherwise by default 0 fee will be debited for all transctions</p>
-              
+
                 {
-                  this.state.addBankLoading ? 
+                  this.state.addBankLoading ?
                   <Button filledBtn marginTop="10px" disabled>
                   <Loader />
                   </Button>
@@ -1106,10 +1106,10 @@ blockBank = (e, s) =>{
                   <span><FormattedMessage {...messages.addbank} /></span>
                   </Button>
                 }
-              
-              
+
+
             </form>
-            
+
 
             </div>
             }
@@ -1136,7 +1136,7 @@ blockBank = (e, s) =>{
                 />
               </FormGroup>
               {
-                this.state.verifyEditOTPLoading ? 
+                this.state.verifyEditOTPLoading ?
                 <Button filledBtn marginTop="50px" disabled>
                 <Loader />
               </Button>
@@ -1145,7 +1145,7 @@ blockBank = (e, s) =>{
                 <span><FormattedMessage {...messages.verify} /></span>
               </Button>
               }
-              
+
               <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
               </form>
               </div>
@@ -1228,7 +1228,7 @@ blockBank = (e, s) =>{
                 <Row>
                   <Col>
                   <FormGroup>
-                  
+
                   <SelectInput
                     type="text"
                     autoFocus
@@ -1435,11 +1435,11 @@ blockBank = (e, s) =>{
 		<option title="+1649">Turks &amp; Caicos Islands</option>
 		<option title="+688">Tuvalu</option>
 		<option title="+256">Uganda</option>
-		<option title="+44">UK</option> 
+		<option title="+44">UK</option>
 		<option title="+380">Ukraine</option>
 		<option title="+971">United Arab Emirates</option>
 		<option title="+598">Uruguay</option>
-		<option title="+1">USA</option> 
+		<option title="+1">USA</option>
 		<option title="+7">Uzbekistan</option>
 		<option title="+678">Vanuatu</option>
 		<option title="+379">Vatican City</option>
@@ -1453,7 +1453,7 @@ blockBank = (e, s) =>{
 		<option title="+260">Zambia</option>
 		<option title="+263">Zimbabwe</option>
     </SelectInput>
-                
+
                   </FormGroup>
                   </Col>
                   <Col>
@@ -1474,9 +1474,9 @@ blockBank = (e, s) =>{
                 </Row>
                 <Row>
                 <Col  cW="20%" mR="2%">
-                  
+
                 <FormGroup>
-                  
+
                   <TextInput
                     type="text"
                   name="ccode"
@@ -1486,7 +1486,7 @@ blockBank = (e, s) =>{
                     required
                   />
                   </FormGroup>
-                  
+
                 </Col>
                 <Col cW="78%">
                 <FormGroup>
@@ -1504,7 +1504,7 @@ blockBank = (e, s) =>{
                     required
                   />
                   </FormGroup>
-                  
+
                 </Col>
                 </Row>
 
@@ -1534,12 +1534,12 @@ blockBank = (e, s) =>{
                     }
                     <label>
                       {
-                      this.state.logo == '' ? 
-                      <FormattedMessage {...messages.popup9} /> 
+                      this.state.logo == '' ?
+                      <FormattedMessage {...messages.popup9} />
                       :
                       <span>Change Logo</span>
                       }
-                      
+
                       *</label>
                     </div>
                   </UploadArea>
@@ -1566,8 +1566,8 @@ blockBank = (e, s) =>{
 
                     <label>
                     {
-                      this.state.contract == '' ? 
-                      <FormattedMessage {...messages.popup10} /> 
+                      this.state.contract == '' ?
+                      <FormattedMessage {...messages.popup10} />
                       :
                       <span>Change Contract</span>
                       }
@@ -1587,7 +1587,7 @@ blockBank = (e, s) =>{
                       <span>Update Bank</span>
                     </Button>
                     }
-              
+
             </form>
             </div>
             }

@@ -34,6 +34,7 @@ import BankActivate from 'containers/BankActivate/Loadable';
 import SetupPage from 'containers/SetupPage/Loadable';
 import ForgotSetup from 'containers/ForgotSetup/Loadable';
 import BankInfo from 'containers/BankInfo/Loadable';
+import BankBranchInfo from 'containers/BankBranchInfo/Loadable';
 import BankDocuments from 'containers/BankDocuments/Loadable';
 import UserPage from 'containers/UserPage/Loadable';
 import BankFees from 'containers/BankFees/Loadable';
@@ -42,7 +43,8 @@ import OperationalHistory from 'containers/OperationalHistory/Loadable';
 import MasterHistory from 'containers/MasterHistory/Loadable';
 import InfraProfile from 'containers/InfraProfile/Loadable';
 import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
-import TermsConditions from '../../components/TermsConditions';
+import BankBranchList from 'containers/BankBranchList/Loadable';
+import TermsConditions from 'components/TermsConditions';
 
 
 import { ThemeProvider } from 'styled-components';
@@ -105,8 +107,10 @@ export default function App() {
           <BankRoute path="/bank/fees" component={BankFees} />
           <BankRoute path="/bank/documents" component={BankDocuments} />
           <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
+          <BankRoute path="/bank/branches" component={BankBranchList} />
+          <BankRoute path="/branch/:branch?" component={BankBranchInfo} />
 
-          
+
 
           <Route component={NotFoundPage} />
         </Switch>

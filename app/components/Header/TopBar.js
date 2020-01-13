@@ -19,7 +19,7 @@ padding: 11px 30px;
     height: 39px;
     width: 39px;
     float:left;
-    margin-left: 100px;
+    /* margin-left: 100px; */
     background:#fff;
     img{
         max-width: 100%;

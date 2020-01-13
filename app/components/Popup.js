@@ -11,7 +11,7 @@ const PopupWrap = styled.div`
     left:0;
     &::-webkit-scrollbar { width: 0 !important }
     overflow: -moz-scrollbars-none;
--ms-overflow-style: none;
+    -ms-overflow-style: none;
     overflow-y:auto;
     form{
         display:block;
@@ -29,7 +29,7 @@ const PopupBody = styled.div`
   padding: 20px;
   margin: 30px auto;
   position:relative;
-  
+
 .popClose{
   position: absolute;
   top: 0;
@@ -58,7 +58,6 @@ const PopupBody = styled.div`
       margin-top:5px;
     }
   }
-
 `;
 
 class Popup extends Component {
