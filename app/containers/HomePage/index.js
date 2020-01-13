@@ -82,9 +82,8 @@ export default class HomePage extends Component {
           localStorage.setItem('logged', res.data.token);
           localStorage.setItem('name', res.data.name);
           localStorage.setItem('isAdmin', res.data.isAdmin);
-          
+
           this.props.history.push('/dashboard');
-            
         } else {
           throw res.data.error;
         }
@@ -106,25 +105,25 @@ export default class HomePage extends Component {
       this.setState({ loading: false, redirect: true });
     } else {
       axios
-      .get(`${API_URL}/checkInfra`, {})
-      .then(res => {
-        if (res.status == 200) {
-          
-          if(res.data.infras <= 0){
-            this.props.history.push('/setup');
+        .get(`${API_URL}/checkInfra`, {})
+        .then(res => {
+          if (res.status == 200) {
+            if (res.data.infras <= 0) {
+              this.props.history.push('/setup');
+            }
+          } else {
+            throw res.data.error;
           }
-          this.setState({ loading: false });
-        } else {
-          throw res.data.error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
+        })
+        .catch(err => {
+          this.setState({
+            notification: err.response
+              ? err.response.data.error
+              : err.toString(),
+          });
+          this.error();
         });
-        this.error();
-      });
-     
+      this.setState({ loading: false });
     }
   }
 
@@ -154,18 +153,23 @@ export default class HomePage extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | INFRA | HOME</title>
         </Helmet>
-        <FrontLeftSection from="infra">
-        </FrontLeftSection>
+        <FrontLeftSection from="infra" />
         <FrontRightSection>
           <LoginHeader>
             <FormattedMessage {...messages.pagetitle} />
           </LoginHeader>
-          <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
-          <FrontFormSubTitle><FormattedMessage {...messages.subtitle} /></FrontFormSubTitle>
+          <FrontFormTitle>
+            <FormattedMessage {...messages.title} />
+          </FrontFormTitle>
+          <FrontFormSubTitle>
+            <FormattedMessage {...messages.subtitle} />
+          </FrontFormSubTitle>
           <form action="" method="POST" onSubmit={this.loginRequest}>
             <InputsWrap>
               <FormGroup>
-                <label><FormattedMessage {...messages.userid} />*</label>
+                <label>
+                  <FormattedMessage {...messages.userid} />*
+                </label>
                 <TextInput
                   type="text"
                   name="username"
@@ -177,7 +181,9 @@ export default class HomePage extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label><FormattedMessage {...messages.password} />*</label>
+                <label>
+                  <FormattedMessage {...messages.password} />*
+                </label>
                 <TextInput
                   type="password"
                   name="password"
@@ -204,7 +210,9 @@ export default class HomePage extends Component {
           <Row marginTop>
             <Col />
             <Col textRight>
-              <A href="/forgot-password"><FormattedMessage {...messages.forgotpassword} /></A>
+              <A href="/forgot-password">
+                <FormattedMessage {...messages.forgotpassword} />
+              </A>
             </Col>
           </Row>
         </FrontRightSection>

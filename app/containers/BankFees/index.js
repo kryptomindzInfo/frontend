@@ -46,19 +46,19 @@ toast.configure({
 });
 
 const Tab = styled.div`
-background: #417505;
+background: ${props => props.theme.primary};
 width: 194px;
 padding: 15px;
 float:left;
-border: 1px solid  #417505;
+border: 1px solid  ${props => props.theme.primary};
 color: #fff;
 font-size: 20px;
 `;
 const Tab2 = styled.div`
 float:left;
 width: 194px;
-border: 1px solid  #417505;
-color: #417505;
+border: 1px solid  ${props => props.theme.primary};
+color: ${props => props.theme.primary};
 font-size: 20px;
 padding: 15px;
 `;

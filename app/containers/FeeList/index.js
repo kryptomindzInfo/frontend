@@ -406,7 +406,7 @@ export default class FeeList extends Component {
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
-                <input type="text" placeholder="Search" />
+                <input type="text" placeholder="Search Revenue Sharing Rule" />
               </div>
               {
                 (this.state.permissions == "all" || this.state.permissions.create_fee) ?

@@ -8,7 +8,7 @@ const LanguageWrap = styled.div`
     padding: 3px 0;
     > select{
         background: transparent;
-        color: #f5a623;
+        color: ${props => props.theme.accent};
         font-weight: bold;
         padding-top: 0 !important;
         padding-left: 0 !important;
@@ -33,7 +33,7 @@ const LanguageWrap = styled.div`
 
 const Icon = styled.i `
     float: left;
-    color: #f5a623;
+    color: ${props => props.theme.accent};
     font-size: 24px;
 `;
 

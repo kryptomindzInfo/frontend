@@ -57,7 +57,7 @@ toast.configure({
 
 const token = localStorage.getItem('logged');
 
-var isAdmin = localStorage.getItem("isAdmin");
+var isAdmin = localStorage.getItem('isAdmin');
 export default class CreateFee extends Component {
   constructor() {
     super();
@@ -91,7 +91,7 @@ export default class CreateFee extends Component {
       otp: '',
       showOtp: false,
       token: token,
-      permissions: {}
+      permissions: {},
     };
 
     this.success = this.success.bind(this);
@@ -450,21 +450,25 @@ export default class CreateFee extends Component {
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      if(isAdmin == "true"){
-        this.setState({ permissions: "all", loading: false });
-      }else{
+      if (isAdmin == 'true') {
+        this.setState({ permissions: 'all', loading: false });
+      } else {
         axios
-        .post(`${API_URL  }/getPermission`, { token })
-        .then(res => {          if(res.status == 200){
-            this.setState({ permissions: res.data.permissions, loading: false }, () => {
-              console.log(this.state.permissions);
-            });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+          .post(`${API_URL}/getPermission`, { token })
+          .then(res => {
+            if (res.status == 200) {
+              this.setState(
+                { permissions: res.data.permissions, loading: false },
+                () => {
+                  console.log(this.state.permissions);
+                },
+              );
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
       this.getBanks();
     } else {
       // alert('Login to continue');
@@ -511,14 +515,41 @@ export default class CreateFee extends Component {
             <A href="/dashboard" float="left">
               <div className="headerNavDash">Main Dashboard</div>
             </A>
-            <div className="bankLogo">
+            {/* <div className="bankLogo">
               <img src={STATIC_URL + this.state.logo} />
             </div>
-
-            <h2>{this.state.banks.name}</h2>
+            <h2>{this.state.banks.name}</h2> */}
           </Container>
         </TopBar>
         <Container verticalMargin>
+          <div
+            className="bankLogo"
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingBottom: '16px',
+              marginBottom: '1.2rem',
+              boxShadow: '0 0 1px black',
+              paddingTop: '16px',
+              backgroundColor: 'white',
+            }}
+          >
+            <img
+              src={STATIC_URL + this.state.logo}
+              style={{
+                width: '75px',
+              }}
+            />
+            <div
+              style={{
+                paddingLeft: '5px',
+                paddingTop: '7px',
+              }}
+            >
+              <h2>{this.state.banks && this.state.banks.name}</h2>
+            </div>
+          </div>
           <SidebarTwo bankId={this.state.bank} active="fees" />
           <Main>
             <Card bigPadding centerSmall>

@@ -7,7 +7,7 @@ margin-left: ${props => props.horizontalMargin ? props.horizontalMargin : '0' };
 margin-right: ${props => props.horizontalMargin ? props.horizontalMargin : '0' };
 padding:  ${props => props.bigPadding ? '18px 30px' : '12px 6px' };
 box-shadow: 0 4px 9px 0 rgba(0, 0, 0, 0.02);
-background-color: ${props => props.selected ? '#6cac69' : '#fff' };
+background-color: ${props => props.selected ? props.theme.primary : '#fff' };
 color: ${props => props.selected ? '#fff' : '#323c47' };
 border-radius: ${props => props.rounded ? '5px' : '0' };
 margin-bottom: ${props => props.marginBottom ? props.marginBottom : '0' };
@@ -121,7 +121,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
             font-size: 28px;
         }
         .material-icons{
-            background: #417505;
+            background: ${props => props.theme.primary};
             color: #fff;
             margin-right: 10px;
             font-size: 28px;
@@ -136,7 +136,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
 > .cardHeader > .cardHeaderLeft > .material-icons {
     width: 46px;
     height: 46px;
-    color: #417505;
+    color: ${props => props.theme.primary};
     background: transparent;
     border-radius: 50%;
     margin: 3px 17px;
@@ -153,7 +153,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
 }
 .menuTabs{
     font-size: 20px;
-    color: #417505;
+    color: ${props => props.theme.primary};
     font-weight:bold;
     float:left;
     margin-top:20px;
@@ -170,14 +170,14 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
 .cardValue{
     font-size: 32px;
     font-weight: bold;
-    color: #417505;
+    color: ${props => props.theme.primary};
 }
 
 > button{
     padding: 6px;
     border-radius: 2px;
-    border: solid 1px #417505;
-    color: #417505;
+    border: solid 1px ${props => props.theme.primary};
+    color: ${props => props.theme.primary};
     font-size: 11px;
     font-weight: bold;
     background: #fff;

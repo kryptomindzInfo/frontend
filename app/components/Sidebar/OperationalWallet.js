@@ -338,7 +338,7 @@ class OperationalWallet extends Component {
                 />
               </FormGroup>
               <p className="note">
-                I have read the{' '}
+                <span style={{ color: 'red' }}>*</span> I have read the{' '}
                 <a onClick={() => window.open('/termsConditions')}>
                   Terms and Conditions
                 </a>
@@ -348,8 +348,8 @@ class OperationalWallet extends Component {
                 <span>Proceed</span>
               </Button>
               <p className="note">
-                Total Fee {CURRENCY}0 will be
-                charged and receiver will get {CURRENCY}{' '}
+                <span style={{ color: 'red' }}>*</span> Total Fee {CURRENCY}0
+                will be charged and receiver will get {CURRENCY}{' '}
                 {this.state.amount}{' '}
               </p>
             </form>

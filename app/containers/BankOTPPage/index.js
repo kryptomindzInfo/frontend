@@ -137,7 +137,7 @@ render() {
             <FormGroup>
               <label><FormattedMessage {...messages.pagetitle} /></label>
               <TextInput
-                  type="text"
+                  type="password"
                   name="otp"
                   onFocus={inputFocus}
                   onBlur={inputBlur}

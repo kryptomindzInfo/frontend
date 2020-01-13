@@ -560,7 +560,7 @@ export default class OperationalHistory extends Component {
                   <i className="material-icons">playlist_add_check</i>
                 </div>
                 <div className="cardHeaderRight">
-                  <h3>Transactions</h3>
+                  <h3>Operational Wallet Transaction</h3>
                   <h5>E-wallet activity</h5>
                 </div>
               </div>

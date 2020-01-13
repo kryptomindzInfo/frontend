@@ -15,6 +15,7 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import history from 'utils/history';
 import 'sanitize.css/sanitize.css';
+import 'css/main.css';
 
 // Import root app
 import App from 'containers/App';
@@ -80,7 +81,7 @@ if (!window.Intl) {
 // we do not want it installed
 const runtime = require('offline-plugin/runtime');
 if (process.env.NODE_ENV === 'production') {
-    runtime.install({
+  runtime.install({
     onUpdating: () => {
       console.log('SW Event:', 'onUpdating');
     },

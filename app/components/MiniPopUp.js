@@ -45,7 +45,7 @@ const MiniPopupBody = styled.div`
     letter-spacing: 0.02px;
     color: #ffffff;
     margin-top: 0;
-    background-color: #f5a623;
+    background-color: ${props => props.theme.accent};
     margin-left: -20px;
     margin-top: -20px;
     margin-right: -20px;
