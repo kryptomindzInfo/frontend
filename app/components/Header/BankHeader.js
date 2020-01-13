@@ -133,11 +133,17 @@ class BankHeader extends Component {
       <TopBar>
         <Welcome from="bank" />
         <Container>
-          <A href="/bank/branches" float="left">
+          {
+            page == 'branch' ? 
+            <A href="/bank/branches" float="left">
             <Link>
               Back
             </Link>
           </A>
+            :
+            null
+          }
+          
           <A href="/bank/dashboard" float="left">
             <div className="bankLogo">
               <img src={STATIC_URL + this.state.logo} />
