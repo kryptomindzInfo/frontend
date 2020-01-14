@@ -359,6 +359,7 @@ class OperationalWallet extends Component {
               <p className="note">
                 * I have read the <a>Terms and Conditions</a>
               </p>
+            
 
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>

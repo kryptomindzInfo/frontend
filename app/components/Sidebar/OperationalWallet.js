@@ -319,6 +319,7 @@ class OperationalWallet extends Component {
                 />
               </FormGroup>
               <p className="note">
+                <span style={{ color: 'red', paddingRight: '3px' }}>*</span>
                 Total available {CURRENCY} {this.state.balance.toFixed(2)}
               </p>
               <FormGroup>
@@ -338,6 +339,12 @@ class OperationalWallet extends Component {
                 <a onClick={() => window.open('/termsConditions')}>
                   Terms and Conditions
                 </a>
+                <div className="tooltip">
+                  <i className="fa fa-info-circle" style={{ margin: '6px', color: '#43434a' }} />
+                  <span className="tooltiptext">
+                    This transaction will be uploaded on Blockchain.
+                  </span>
+                </div>
               </p>
 
               <Button filledBtn marginTop="50px">
