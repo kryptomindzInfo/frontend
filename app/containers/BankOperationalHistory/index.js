@@ -19,7 +19,7 @@ import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
 import Logo from 'components/Header/Logo';
 import Nav from 'components/Header/Nav';
-import Welcome from 'components/Header/Welcome';
+import Loader from 'components/Loader';
 import SidebarBank from 'components/Sidebar/SidebarBank';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
@@ -424,9 +424,12 @@ export default class BankOperationalHistory extends Component {
   componentDidMount() {
     // this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      
       // this.getBanks();
-      this.getHistory();
+      let dis = this;
+      setInterval(function(){
+        dis.getHistory();
+      }, 2000);
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -455,7 +458,7 @@ export default class BankOperationalHistory extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />;

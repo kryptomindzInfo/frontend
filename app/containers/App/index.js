@@ -34,6 +34,7 @@ import BankActivate from 'containers/BankActivate/Loadable';
 import SetupPage from 'containers/SetupPage/Loadable';
 import ForgotSetup from 'containers/ForgotSetup/Loadable';
 import BankInfo from 'containers/BankInfo/Loadable';
+import BankBranchInfo from 'containers/BankBranchInfo/Loadable';
 import BankDocuments from 'containers/BankDocuments/Loadable';
 import BankTheme from 'containers/BankTheme/Loadable';
 import UserPage from 'containers/UserPage/Loadable';
@@ -43,7 +44,8 @@ import OperationalHistory from 'containers/OperationalHistory/Loadable';
 import MasterHistory from 'containers/MasterHistory/Loadable';
 import InfraProfile from 'containers/InfraProfile/Loadable';
 import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
-import TermsConditions from '../../components/TermsConditions';
+import BankBranchList from 'containers/BankBranchList/Loadable';
+import TermsConditions from 'components/TermsConditions';
 import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
 
 import { ThemeProvider } from 'styled-components';
@@ -124,6 +126,10 @@ export default function App(props) {
           <BankRoute path="/bank/info" component={BankInfo} />
           <BankRoute path="/bank/fees" component={BankFees} />
           <BankRoute path="/bank/documents" component={BankDocuments} />
+          <BankRoute path="/bank/branches" component={BankBranchList} />
+          <BankRoute path="/branch/:branch?" component={BankBranchInfo} />
+
+
           <BankRoute
             path="/bank/theme"
             component={BankTheme}

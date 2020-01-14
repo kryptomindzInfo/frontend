@@ -17,7 +17,7 @@ import messages from './messages';
 import Wrapper from 'components/Wrapper';
 import TopBar from 'components/Header/TopBar';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
+import Loader from 'components/Loader';
 import Nav from 'components/Header/Nav';
 import Welcome from 'components/Header/Welcome';
 import SidebarTwo from 'components/Sidebar/SidebarTwo';
@@ -285,7 +285,7 @@ export default class Documents extends Component {
       .then(res => {
         if(res.status == 200){
           
-          this.setState({ loading: false, rules: res.data.rules });
+          this.setState({ rules: res.data.rules });
         }
       })
       .catch(err => {
@@ -298,7 +298,7 @@ export default class Documents extends Component {
       .post(`${API_URL  }/getDocs`, { token:token, bank_id: this.props.match.params.bank })
       .then(res => {
         if(res.status == 200){
-          console.log(res.data.docs);
+          
           this.setState({ loading: false, docs: res.data.docs });
         }
       })
@@ -311,7 +311,6 @@ export default class Documents extends Component {
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
       this.getBanks();
       this.getDocs();
     } else {
@@ -336,7 +335,7 @@ export default class Documents extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />

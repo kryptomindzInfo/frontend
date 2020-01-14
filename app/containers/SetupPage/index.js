@@ -28,6 +28,7 @@ import SelectInput from 'components/SelectInput';
 import PrimaryBtn from 'components/PrimaryBtn';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import Loader from 'components/Loader';
 import { API_URL } from '../App/constants';
 import history from 'utils/history';
 import Modal from 'react-modal';
@@ -152,7 +153,10 @@ export default class SetupPage extends Component {
           }
         } else {
           throw res.data.error;
-        }
+		}
+		this.setState({
+			setupLoading: false
+		});
       })
       .catch(err => {
         this.setState({

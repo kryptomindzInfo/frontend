@@ -26,6 +26,7 @@ import BackBtn from 'components/BackBtn';
 import PrimaryBtn from 'components/PrimaryBtn';
 import Button from 'components/Button';
 import A from 'components/A';
+import Loader from 'components/Loader';
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -70,6 +71,9 @@ export default class BankActivate extends Component {
   };
 
   activateAccount = event => {
+    this.setState({
+      activeLoading: true
+    });
     event.preventDefault();
 
     axios
@@ -91,6 +95,9 @@ export default class BankActivate extends Component {
         } else {
           throw res.data.error;
         }
+        this.setState({
+          activeLoading: false
+        });
       })
       .catch(err => {
         this.setState(
@@ -135,6 +142,7 @@ export default class BankActivate extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
+      return <Loader fullPage />
     }
     if (redirect) {
       return <Redirect to="/bank/dashboard" />;

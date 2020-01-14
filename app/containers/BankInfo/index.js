@@ -28,6 +28,7 @@ import SelectInput from 'components/SelectInput';
 import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import Loader from 'components/Loader';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
@@ -125,6 +126,7 @@ export default class BankInfo extends Component {
   };
 
   editBank = event => {
+   
     event.preventDefault();
     if (this.state.logo == null || this.state.logo == '') {
       this.setState(
@@ -422,6 +424,9 @@ export default class BankInfo extends Component {
   }
 
   fileUpload(file, key) {
+    this.setState({
+      [key] : 'main/loader.gif'
+    });
     const formData = new FormData();
     //  formData.append('token',token);
     formData.append('file', file);
@@ -502,6 +507,9 @@ export default class BankInfo extends Component {
   };
 
   verifyEditOTP = event => {
+    this.setState({
+      verifyLoading: true
+    });
     event.preventDefault();
 
     axios
@@ -538,6 +546,9 @@ export default class BankInfo extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          verifyLoading: false
+        });
       })
       .catch(err => {
         this.setState({
@@ -550,7 +561,6 @@ export default class BankInfo extends Component {
   componentDidMount() {
     this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
       this.getBanks();
       this.getRules();
     } else {
@@ -575,7 +585,7 @@ export default class BankInfo extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return null;

@@ -25,6 +25,7 @@ import MiniPopUp from 'components/MiniPopUp';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import Row from 'components/Row';
+import Loader from 'components/Loader';
 import Col from 'components/Col';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
@@ -368,7 +369,7 @@ export default class BankDocuments extends Component {
       .then(res => {
         if(res.status == 200){
           
-          this.setState({ loading: false, rules: res.data.rules });
+          this.setState({ rules: res.data.rules });
         }
       })
       .catch(err => {
@@ -396,7 +397,7 @@ export default class BankDocuments extends Component {
   componentDidMount() {
     
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      
       this.getBanks();
       this.getDocs();
     } else {
@@ -421,7 +422,7 @@ export default class BankDocuments extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return null;

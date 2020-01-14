@@ -7,6 +7,7 @@ import Container from 'components/Container';
 import A from 'components/A';
 import Logo from 'components/Header/Logo';
 import axios from 'axios';
+import styled from 'styled-components';
 
 import {
   API_URL,
@@ -16,6 +17,18 @@ import {
 
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
+
+const Link = styled.span`
+    color: #fff;
+    font-size: 18px;
+    margin: 0 40px 0 0;
+    padding-bottom: 7px;
+    display: block;
+    font-weight: normal;
+    border-radius: 8px;
+    border: solid 2px #ffffff;
+    padding: 9px 20px;
+`;
 
 const token = localStorage.getItem('bankLogged');
 
@@ -115,18 +128,36 @@ class BankHeader extends Component {
 
   render() {
     const name = localStorage.getItem('name');
+    const page = this.props.page;
     return (
       <TopBar>
         <Welcome from="bank" />
         <Container>
-          <A href="/dashboard" float="left">
+          {
+            page == 'branch' ? 
+            <A href="/bank/branches" float="left">
+            <Link>
+              Back
+            </Link>
+          </A>
+            :
+            null
+          }
+          
+          <A href="/bank/dashboard" float="left">
             <div className="bankLogo">
               <img src={STATIC_URL + this.state.logo} />
-            </div>{' '}
+            </div>
             <h2>{this.state.banks && this.state.banks.name}</h2>
             {/* <Logo><FormattedMessage {...messages.logo} /></Logo> */}
           </A>
-          <BankNav active={this.props.active} />
+          {
+            page == 'branch' ?
+            null
+            :
+            <BankNav active={this.props.active} />
+          }
+
         </Container>
       </TopBar>
     );

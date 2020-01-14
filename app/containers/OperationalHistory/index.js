@@ -24,7 +24,7 @@ import SidebarOne from 'components/Sidebar/SidebarOne';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
-import Button from 'components/Button';
+import Loader from 'components/Loader';
 import Table from 'components/Table';
 import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
@@ -343,7 +343,6 @@ export default class OperationalHistory extends Component {
       .then(res => {
         if (res.status == 200) {
           this.setState({
-            loading: false,
             banks: res.data.banks,
             logo: res.data.banks.logo,
             bank_id: this.props.match.params.bank,
@@ -426,9 +425,13 @@ export default class OperationalHistory extends Component {
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+      // this.getBanks();
+      // this.getHistory();
       this.getBanks();
-      this.getHistory();
+      let dis = this;
+      setInterval(function(){
+        dis.getHistory();
+      }, 2000);
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -457,7 +460,7 @@ export default class OperationalHistory extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />;

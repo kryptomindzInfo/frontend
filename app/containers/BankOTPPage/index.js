@@ -24,6 +24,7 @@ import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
 import BackBtn from 'components/BackBtn';
 import A from 'components/A';
+import Loader from 'components/Loader';
 
 
 import { API_URL } from '../App/constants';
@@ -65,6 +66,9 @@ export default class BankOTPPage extends Component {
   };
 
   otpVerify = event => {
+    this.setState({
+      otpLoading: true
+    });
     event.preventDefault();
     axios
       .post(`${API_URL}/verifyOTP`, this.state)
@@ -84,10 +88,14 @@ export default class BankOTPPage extends Component {
         } else {
           throw res.data.error;
         }
+        this.setState({
+          otpLoading: false
+        });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          otpLoading: false
         });
         this.error();
       });
@@ -139,7 +147,13 @@ render() {
                 />
             </FormGroup>
           </InputsWrap>
-          <PrimaryBtn><FormattedMessage {...messages.submit} /></PrimaryBtn>
+          {
+            this.state.otpLoading ?
+            <PrimaryBtn disabled><Loader /></PrimaryBtn>
+            :
+            <PrimaryBtn><FormattedMessage {...messages.submit} /></PrimaryBtn>
+          }
+          
         </form>
       </FrontRightSection>
     </Wrapper>

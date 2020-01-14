@@ -27,6 +27,7 @@ import PrimaryBtn from 'components/PrimaryBtn';
 import A from 'components/A';
 import Col from 'components/Col';
 import { API_URL } from '../App/constants';
+import Loader from 'components/Loader';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -70,6 +71,7 @@ export default class ForgotSetup extends Component {
 
   setupUpdate = event => {
     event.preventDefault();
+  
     if(this.state.password != this.state.confirm){
       this.setState({
         notification: 'Passwords do not match'
@@ -78,6 +80,9 @@ export default class ForgotSetup extends Component {
     });
       
     }else{
+      this.setState({
+        otpLoading: true
+      });
     axios
       .post(`${API_URL}/infraSetupUpdate`, this.state )
       .then(res => {
@@ -97,10 +102,14 @@ export default class ForgotSetup extends Component {
         } else {
           throw res.data.error;
         }
+        this.setState({
+          otpLoading: false
+        });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          otpLoading: false
         }, () => {
           this.error();
       });
@@ -194,7 +203,13 @@ export default class ForgotSetup extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            <PrimaryBtn><FormattedMessage {...messages.update} /></PrimaryBtn>
+            {
+              this.state.otpLoading ? 
+              <PrimaryBtn disabled><Loader /></PrimaryBtn>
+              :
+              <PrimaryBtn><FormattedMessage {...messages.update} /></PrimaryBtn>
+            }
+            
           </form>
         </FrontRightSection>
       </Wrapper>

@@ -24,6 +24,7 @@ import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
 import BackBtn from 'components/BackBtn';
 import A from 'components/A';
+import Loader from 'components/Loader';
 
 import { API_URL } from '../App/constants';
 
@@ -64,6 +65,9 @@ export default class TPPage extends Component {
 
   otpVerify = event => {
     event.preventDefault();
+    this.setState({
+      otpLoading: true
+    });
     axios
       .post(`${API_URL}/infraVrifyOTP`, this.state)
       .then(res => {
@@ -85,10 +89,14 @@ export default class TPPage extends Component {
         } else {
           throw res.data.error;
         }
+        this.setState({
+          otpLoading: false
+        });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          otpLoading: false
         });
         this.error();
       });

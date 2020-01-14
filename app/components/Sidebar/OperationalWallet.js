@@ -205,8 +205,8 @@ class OperationalWallet extends Component {
                   this.success();
                   setTimeout(function() {
                     tis.closePopup();
-                    tis.getBalance();
-                    tis.props.reload();
+                    // tis.getBalance();
+                    // tis.props.reload();
                   }, 1000);
                 },
               );
@@ -231,7 +231,11 @@ class OperationalWallet extends Component {
     this.setState({
       bank: this.props.historyLink,
     });
-    this.getBalance();
+    
+    let dis = this;
+      setInterval(function(){
+        dis.getBalance();
+      }, 2000);
   }
 
   render() {

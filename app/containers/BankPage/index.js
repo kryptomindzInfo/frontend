@@ -16,6 +16,7 @@ import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import Header from 'components/Header/index';
+import Loader from 'components/Loader';
 import Container from 'components/Container';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
@@ -73,6 +74,7 @@ export default class BankPage extends Component {
       popup: false,
       username: '',
       editPopup: false,
+
       edit: false,
       user_id: token,
       otpId: '',
@@ -181,6 +183,9 @@ export default class BankPage extends Component {
     axios
       .post(`${API_URL}/generateOTP`, {
         name: this.state.name,
+        email: this.state.email,
+        mobile: this.state.mobile,
+        bcode: this.state.bcode,
         page: this.state.otpOpt,
         username: this.state.username,
         token,
@@ -195,6 +200,7 @@ export default class BankPage extends Component {
               showEditOtp: true,
               notification: 'OTP Sent',
             });
+            this.startTimer();
             this.success();
           }
         } else {
@@ -210,6 +216,7 @@ export default class BankPage extends Component {
   };
 
   addBank = event => {
+
     event.preventDefault();
     if (this.state.logo == null || this.state.logo == '') {
       this.setState(
@@ -315,6 +322,9 @@ export default class BankPage extends Component {
   };
 
   verifyOTP = event => {
+    this.setState({
+      verifyOTPLoading: true
+    });
     event.preventDefault();
     axios
       .post(`${API_URL}/addBank`, {
@@ -349,6 +359,9 @@ export default class BankPage extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          verifyOTPLoading: false
+        });
       })
       .catch(err => {
         this.setState({
@@ -359,6 +372,9 @@ export default class BankPage extends Component {
   };
 
   verifyEditOTP = event => {
+    this.setState({
+      verifyEditOTPLoading: true
+    });
     event.preventDefault();
     axios
       .post(`${API_URL}/editBank`, {
@@ -398,6 +414,9 @@ export default class BankPage extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          verifyEditOTPLoading: false
+        });
       })
       .catch(err => {
         this.setState({
@@ -519,7 +538,7 @@ export default class BankPage extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />;

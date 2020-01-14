@@ -20,7 +20,7 @@ import Container from 'components/Container';
 import A from 'components/A';
 import Main from 'components/Main';
 import Card from 'components/Card';
-import OperationalWallet from 'components/Sidebar/OperationalWallet';
+import Loader from 'components/Loader';
 import MasterWallet from 'components/Sidebar/MasterWallet';
 import { API_URL } from '../App/constants';
 
@@ -108,7 +108,7 @@ export default class DashboardPage extends Component {
   render() {
     const { loading, redirect, popup } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />;

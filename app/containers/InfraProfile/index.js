@@ -22,7 +22,7 @@ import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
 import Button from 'components/Button';
-import Table from 'components/Table';
+import Loader from 'components/Loader';
 import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
@@ -243,6 +243,9 @@ export default class InfraProfile extends Component {
 
   editProfile = event => {
     event.preventDefault();
+    this.setState({
+      editLoading: true
+    });
     axios
       .post(`${API_URL  }/editInfraProfile`, {
         name: this.state.name,
@@ -271,10 +274,14 @@ export default class InfraProfile extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
+        this.setState({
+          editLoading: false
+        });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          editLoading: false
         });
         this.error();
       });
@@ -335,12 +342,12 @@ export default class InfraProfile extends Component {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
       if(isAdmin == "true"){
-        this.setState({ permissions: "all", loading: false });
+        this.setState({ permissions: "all" });
       }else{
         axios
         .post(`${API_URL  }/getPermission`, { token })
         .then(res => {          if(res.status == 200){
-            this.setState({ permissions: res.data.permissions, loading: false }, () => {
+            this.setState({ permissions: res.data.permissions }, () => {
               console.log(this.state.permissions);
             });
           }
@@ -372,7 +379,7 @@ export default class InfraProfile extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />
@@ -766,10 +773,17 @@ export default class InfraProfile extends Component {
               </FormGroup>
                 </Col>
               </Row>
-
-              <Button filledBtn marginTop="50px">
-                <span>Update Profile</span>
-              </Button>
+          {
+            this.state.editLoading ?
+            <Button filledBtn marginTop="50px" disabled>
+            <Loader />
+          </Button>
+            :
+            <Button filledBtn marginTop="50px">
+            <span>Update Profile</span>
+          </Button>
+          }
+            
             </form>
           </Popup>
           : null }
