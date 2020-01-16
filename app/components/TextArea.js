@@ -7,7 +7,6 @@ const TextArea = styled.textarea `
   box-sizing:border-box;
   padding:12px 18px;
   border: solid 1px rgba(0, 0, 0, 0.32);
-  
   border-radius: 4px;
   display:block;
   margin-bottom: 14px;
