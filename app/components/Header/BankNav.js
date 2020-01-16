@@ -25,6 +25,7 @@ class BankNav extends Component {
     const partners = this.props.active == 'partners' ? 'true' : '';
     const merchants = this.props.active == 'merchants' ? 'true' : '';
     const users = this.props.active == 'users' ? 'true' : '';
+    const bankusers = this.props.active == 'bankusers' ? 'true' : '';
     const reports = this.props.active == 'reports' ? 'true' : '';
 
     return (
@@ -43,6 +44,11 @@ class BankNav extends Component {
               <FormattedMessage {...messages.bmenu1} />
             </Link>
           </A>
+          <A href="/bank/users">
+            <Link active={bankusers}>
+              Bank User
+            </Link>
+          </A>
           <A href="/bank/partners">
             <Link active={partners}>
               <FormattedMessage {...messages.bmenu2} />
@@ -53,7 +59,7 @@ class BankNav extends Component {
               <FormattedMessage {...messages.menu3} />
             </Link>
           </A>
-          <A href="/bank/users">
+          <A href="/bank/user">
             <Link active={users}>
               <FormattedMessage {...messages.bmenu3} />
             </Link>

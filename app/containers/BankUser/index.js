@@ -593,7 +593,7 @@ roles:[],
           <meta charSet="utf-8" />
           <title>Bank Users | BANK | E-WALLET</title>
         </Helmet>
-        <BankHeader active="users" />
+        <BankHeader active="bankusers" />
         <Container verticalMargin>
           <SidebarBank />
           <Main>
