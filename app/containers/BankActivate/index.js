@@ -209,6 +209,7 @@ export default class BankActivate extends Component {
               </FormGroup>
             </InputsWrap>
             <p className="note">
+              <span style={{ color: 'red', paddingRight: '7px', paddingTop: '5px' }}>*</span>
               Please approve the revenue policy and revenue rule to activate the
               transaction
             </p>

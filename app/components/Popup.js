@@ -28,18 +28,18 @@ const PopupBody = styled.div`
   max-width: 648px;
   padding: 20px;
   margin: 30px auto;
-  position:relative;
+  position: relative;
 
-.popClose{
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 10px;
-  cursor: pointer;
-  font-size: 22px;
-  background: #af731145;
-  color: #fff;
-}
+  .popClose {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 22px;
+    background: #af731145;
+    color: #fff;
+  }
   h1 {
     text-align: center;
     font-size: 26px;
@@ -52,10 +52,10 @@ const PopupBody = styled.div`
     margin-top: -20px;
     margin-right: -20px;
     padding: 6px;
-    &.normalH1{
-      background-color: transparent;
-      color:#111;
-      margin-top:5px;
+    &.normalH1 {
+      background-color: ${props => props.theme.accent};
+      color: white;
+      padding-top: 6px;
     }
   }
 `;
@@ -71,9 +71,14 @@ class Popup extends Component {
     return (
       <PopupWrap className="popupwrap" onClick={this.sendCloseSignal}>
         <PopupBody id="popupBody">
-          <i className="material-icons popClose" onClick={ () => this.props.close()}>close</i>
+          <i
+            className="material-icons popClose"
+            onClick={() => this.props.close()}
+          >
+            close
+          </i>
           {this.props.children}
-          </PopupBody>
+        </PopupBody>
       </PopupWrap>
     );
   }
