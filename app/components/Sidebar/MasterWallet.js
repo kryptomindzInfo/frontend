@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
@@ -32,10 +32,10 @@ class MasterWallet extends Component {
       from: '',
       to: '',
       amount: '',
-      notification: "",
+      notification: '',
       balance: 0,
       note: '',
-      token
+      token,
     };
 
     this.success = this.success.bind(this);
@@ -57,111 +57,113 @@ class MasterWallet extends Component {
       [name]: value,
     });
   };
-  sendMoney = (e) => {
+  sendMoney = e => {
     e.preventDefault();
-   
-    axios
-    .post(`${API_URL  }/getWalletsMaster`, {
-      bank_id : this.props.historyLink,
-      token
-    })
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-          throw res.data.error;
-        }else{
-          this.setState({
-            from: res.data.from,
-            to: res.data.to,
-            popup: true
-          });
-          document.getElementById("popfrom").focus()
-          document.getElementById("popto").focus()
-        }
-      }else{
-        const error = new Error(res.data.error);
-        throw error;
-      }
-    })
-    .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
-      });
-      this.error();
-    });
- 
 
-  
+    axios
+      .post(`${API_URL}/getWalletsMaster`, {
+        bank_id: this.props.historyLink,
+        token,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              from: res.data.from,
+              to: res.data.to,
+              popup: true,
+            });
+            document.getElementById('popfrom').focus();
+            document.getElementById('popto').focus();
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+        });
+        this.error();
+      });
   };
 
-  submitMoney = (e) => {
+  submitMoney = e => {
     e.preventDefault();
-    if(this.state.amount > this.state.balance){
-      this.setState({
-        notification: 'Insufficient Balance'
-      }, function(){
-        this.error();
-      });
-    }
-    else if(this.state.amount == ''){
-      this.setState({
-        notification: 'Invalid Amount'
-      }, function(){
-        this.error();
-      });
-    }
-    else{
+    if (this.state.amount > this.state.balance) {
+      this.setState(
+        {
+          notification: 'Insufficient Balance',
+        },
+        function() {
+          this.error();
+        },
+      );
+    } else if (this.state.amount == '') {
+      this.setState(
+        {
+          notification: 'Invalid Amount',
+        },
+        function() {
+          this.error();
+        },
+      );
+    } else {
       axios
-    .post(`${API_URL  }/transferMoney`, {
-      from: this.state.from,
-      to: this.state.to,
-      amount: this.state.amount,
-      note: this.state.note,
-      auth: "infra",
-      token
-    })
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-          throw res.data.error;
-        }else{
+        .post(`${API_URL}/transferMoney`, {
+          from: this.state.from,
+          to: this.state.to,
+          amount: this.state.amount,
+          note: this.state.note,
+          auth: 'infra',
+          token,
+        })
+        .then(res => {
+          if (res.status == 200) {
+            if (res.data.error) {
+              throw res.data.error;
+            } else {
+              this.setState(
+                {
+                  balance: 900,
+                  notification:
+                    'Successfully Transfered' + res.data.walletStatus,
+                },
+                function() {
+                  this.success();
+                  //this.closePopup();
+                },
+              );
+            }
+          } else {
+            const error = new Error(res.data.error);
+            throw error;
+          }
+        })
+        .catch(err => {
           this.setState({
-            balance: 900,
-            notification: "Successfully Transfered" + res.data.walletStatus
-          }, function(){
-            this.success();
-            //this.closePopup();
+            notification: err.response
+              ? err.response.data.error
+              : err.toString(),
           });
-      }
+          this.error();
+        });
     }
-      else{
-        const error = new Error(res.data.error);
-        throw error;
-      }
-    })
-    .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
-      });
-      this.error();
-    });
-    }
-    
- 
-
-  
   };
 
   closePopup = () => {
     this.setState({
-      popup: false
+      popup: false,
     });
   };
 
   verifyOTP = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/addBank`, {
+      .post(`${API_URL}/addBank`, {
         name: this.state.name,
         address1: this.state.address1,
         state: this.state.state,
@@ -176,25 +178,25 @@ class MasterWallet extends Component {
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              notification: "Bank added successfully!",
+              notification: 'Bank added successfully!',
             });
             this.success();
             this.closePopup();
             this.getBanks();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
@@ -202,41 +204,39 @@ class MasterWallet extends Component {
 
   getBalance = () => {
     axios
-    .get(`${API_URL  }/getInfraMasterBalance?bank=${this.props.historyLink}`)
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-          throw res.data.error;
-        }else{
-          this.setState({
-            balance: res.data.balance,
-          });
+      .get(`${API_URL}/getInfraMasterBalance?bank=${this.props.historyLink}`)
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              balance: res.data.balance,
+            });
+          }
         }
-      }
-    })
-    .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString()
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+        });
+        this.error();
       });
-      this.error();
-    });
   };
   componentDidMount() {
     this.setState({
-      bank: this.props.historyLink
+      bank: this.props.historyLink,
     });
     let dis = this;
-      setInterval(function(){
-        dis.getBalance();
-      }, 2000);
-    
+    setInterval(function() {
+      dis.getBalance();
+    }, 2000);
   }
 
   render() {
-    
     function inputFocus(e) {
       const { target } = e;
-      target.parentElement.querySelector("label").classList.add("focused");
+      target.parentElement.querySelector('label').classList.add('focused');
     }
 
     function inputBlur(e) {
@@ -246,32 +246,38 @@ class MasterWallet extends Component {
       }
     }
     return (
-        <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
-            <h3><FormattedMessage {...messages.master} /></h3>
-            <h5><FormattedMessage {...messages.available} /></h5>
-            <div className="cardValue">{CURRENCY} {this.state.balance.toFixed(2)}</div>
-            {
-              this.props.activateNeeded ?
-              <button className="fullWidth">
+      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
+        <h3>
+          <FormattedMessage {...messages.master} />
+        </h3>
+        <h5>
+          <FormattedMessage {...messages.available} />
+        </h5>
+        <div className="cardValue">
+          {CURRENCY} {this.state.balance.toFixed(2)}
+        </div>
+        {this.props.activateNeeded ? (
+          <button className="fullWidth">
             <FormattedMessage {...messages.activate} />
-            </button>
-              :
-              <button >
-            <i className="material-icons">send</i> <FormattedMessage {...messages.sendmoney} />
-            </button>
-            }
-              <A href={"/masterHistory/"+this.props.historyLink}>
-                <span  className="history">History</span>
-                </A>
-             { this.state.popup ? 
+          </button>
+        ) : (
+          <button className="sendMoneyButton">
+            <i className="material-icons">send</i>{' '}
+            <FormattedMessage {...messages.sendmoney} />
+          </button>
+        )}
+        <A href={'/masterHistory/' + this.props.historyLink}>
+          <span className="history">History</span>
+        </A>
+        {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)} roundedCorner>
-          <h1 className="normalH1">Transfer the amount</h1>
-          <form action="" method="post" onSubmit={this.submitMoney}>
+            <h1 className="normalH1">Transfer the amount</h1>
+            <form action="" method="post" onSubmit={this.submitMoney}>
               <FormGroup>
                 <label>From*</label>
                 <TextInput
-                readOnly
-                id="popfrom"
+                  readOnly
+                  id="popfrom"
                   type="text"
                   name="from"
                   onFocus={inputFocus}
@@ -284,8 +290,8 @@ class MasterWallet extends Component {
               <FormGroup>
                 <label>To*</label>
                 <TextInput
-                readOnly
-                id="popto"
+                  readOnly
+                  id="popto"
                   type="text"
                   name="to"
                   onFocus={inputFocus}
@@ -307,7 +313,9 @@ class MasterWallet extends Component {
                   required
                 />
               </FormGroup>
-              <p className="note">Total available {CURRENCY} {this.state.balance}</p>
+              <p className="note">
+                Total available {CURRENCY} {this.state.balance}
+              </p>
               <FormGroup>
                 <label>Note*</label>
                 <TextArea
@@ -320,20 +328,20 @@ class MasterWallet extends Component {
                   required
                 />
               </FormGroup>
-              <p className="note">I have read the  <a>Terms and Conditions</a></p>
+              <p className="note">
+                I have read the <a>Terms and Conditions</a>
+              </p>
 
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>
               </Button>
               {/* <p className="note">Total Fee {CURRENCY}200 will be charges</p> */}
             </form>
-
-              </Popup>
-          : null }
-        </Card>
+          </Popup>
+        ) : null}
+      </Card>
     );
   }
 }
- 
-export default MasterWallet;
 
+export default MasterWallet;

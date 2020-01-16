@@ -48,8 +48,7 @@ toast.configure({
 
 const token = localStorage.getItem('logged');
 
-
-var isAdmin = localStorage.getItem("isAdmin");
+var isAdmin = localStorage.getItem('isAdmin');
 
 export default class InfraInfo extends Component {
   constructor() {
@@ -77,7 +76,7 @@ export default class InfraInfo extends Component {
       rules: [],
       otp: '',
       permissions: {},
-      showOtp: false
+      showOtp: false,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -127,7 +126,7 @@ export default class InfraInfo extends Component {
       );
     } else {
       this.setState({
-        editBankLoading: true
+        editBankLoading: true,
       });
       this.setState(
         {
@@ -137,7 +136,7 @@ export default class InfraInfo extends Component {
         () => {
           this.generateOTP();
           this.setState({
-            editBankLoading: false
+            editBankLoading: false,
           });
         },
       );
@@ -147,7 +146,7 @@ export default class InfraInfo extends Component {
   verifyEditOTP = event => {
     event.preventDefault();
     this.setState({
-      verifyLoading: true
+      verifyLoading: true,
     });
     axios
       .post(`${API_URL}/editBank`, {
@@ -184,13 +183,13 @@ export default class InfraInfo extends Component {
           throw error;
         }
         this.setState({
-          verifyLoading:false
+          verifyLoading: false,
         });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
-          verifyLoading: false
+          verifyLoading: false,
         });
         this.error();
       });
@@ -260,7 +259,7 @@ export default class InfraInfo extends Component {
     this.setState({
       popup: false,
       showEditOtp: false,
-      
+
       otp: '',
       showOtp: false,
     });
@@ -379,7 +378,7 @@ export default class InfraInfo extends Component {
 
   fileUpload(file, key) {
     this.setState({
-      [key] : 'main/loader.gif'
+      [key]: 'main/loader.gif',
     });
     const formData = new FormData();
     //  formData.append('token',token);
@@ -411,7 +410,7 @@ export default class InfraInfo extends Component {
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
-          [key] : ''
+          [key]: '',
         });
         this.error();
       });
@@ -452,21 +451,22 @@ export default class InfraInfo extends Component {
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      if(isAdmin == "true"){
-        this.setState({ permissions: "all" });
-      }else{
+      if (isAdmin == 'true') {
+        this.setState({ permissions: 'all' });
+      } else {
         axios
-        .post(`${API_URL  }/getPermission`, { token })
-        .then(res => {          if(res.status == 200){
-            this.setState({ permissions: res.data.permissions }, () => {
-              console.log(this.state.permissions);
-            });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+          .post(`${API_URL}/getPermission`, { token })
+          .then(res => {
+            if (res.status == 200) {
+              this.setState({ permissions: res.data.permissions }, () => {
+                console.log(this.state.permissions);
+              });
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
       this.getBanks();
     } else {
       // alert('Login to continue');
@@ -555,7 +555,7 @@ export default class InfraInfo extends Component {
                 inputWidth="calc(100% - 241px)"
                 className="clr"
               >
-                <Button className="fr" flex onClick={this.showPopup}>
+                <Button className="addBankButton" flex onClick={this.showPopup}>
                   <span>Edit</span>
                 </Button>
               </ActionBar>
@@ -633,19 +633,18 @@ export default class InfraInfo extends Component {
                       required
                     />
                   </FormGroup>
-                  {
-                    this.state.verifyLoading ?
+                  {this.state.verifyLoading ? (
                     <Button filledBtn marginTop="50px" disabled>
-                    <Loader />
-                  </Button>
-                    :
+                      <Loader />
+                    </Button>
+                  ) : (
                     <Button filledBtn marginTop="50px">
-                    <span>
-                      <FormattedMessage {...messages.verify} />
-                    </span>
-                  </Button>
-                  }
-                  
+                      <span>
+                        <FormattedMessage {...messages.verify} />
+                      </span>
+                    </Button>
+                  )}
+
                   <p className="resend">
                     Wait for <span className="timer">{this.state.timer}</span>{' '}
                     to{' '}
@@ -1072,7 +1071,14 @@ export default class InfraInfo extends Component {
                   </FormGroup>
 
                   <FormGroup>
-                    <UploadArea bgImg={STATIC_URL+ ( this.state.contract == 'main/loader.gif' ? 'main/loader.gif' : 'main/pdf-icon.png' )}>
+                    <UploadArea
+                      bgImg={
+                        STATIC_URL +
+                        (this.state.contract == 'main/loader.gif'
+                          ? 'main/loader.gif'
+                          : 'main/pdf-icon.png')
+                      }
+                    >
                       {this.state.contract ? (
                         <a
                           className="uploadedImg"
@@ -1099,28 +1105,25 @@ export default class InfraInfo extends Component {
                         )}
 
                         <label>
-                          {this.state.contract == '' ? (
+                          {this.state.contract === '' ? (
                             <FormattedMessage {...messages.popup10} />
                           ) : (
                             <span>Change Contract</span>
                           )}
-                          *
-                          <p>Only PDF allowed*</p>
+                          *<p>Only PDF allowed*</p>
                         </label>
                       </div>
                     </UploadArea>
                   </FormGroup>
-                            {
-                              this.state.editBankLoading ?
-                              <Button filledBtn marginTop="50px" disabled>
-                    <Loader />
-                  </Button>
-                              :
-                              <Button filledBtn marginTop="50px">
-                    <span>Update Bank</span>
-                  </Button>
-                            }
-                  
+                  {this.state.editBankLoading ? (
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="50px">
+                      <span>Update Bank</span>
+                    </Button>
+                  )}
                 </form>
               </div>
             )}

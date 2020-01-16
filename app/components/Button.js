@@ -34,6 +34,11 @@ right: ${props => props.bottomRight ? '2px;' : '0' };
     background-color: ${props => props.theme.accent};
     color: #ffffff;
 }
+
+${props => props.filledBtn && `:hover{background-color: #1c3302}`}
+
+
+
 `;
 
 export default Button;

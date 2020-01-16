@@ -267,7 +267,7 @@ class OperationalWallet extends Component {
             <FormattedMessage {...messages.activate} />
           </button>
         ) : (
-          <button onClick={this.sendMoney}>
+          <button  className="sendMoneyButton" onClick={this.sendMoney}>
             <i className="material-icons">send</i>{' '}
             <FormattedMessage {...messages.sendmoney} />
           </button>
@@ -277,7 +277,7 @@ class OperationalWallet extends Component {
         </A>
 
         {this.state.popup ? (
-          <Popup close={this.closePopup.bind(this)} roundedCorner>
+          <Popup className="modal-dialog modal-dialog-centered" close={this.closePopup.bind(this)} roundedCorner>
             <h1 className="normalH1">Transfer the amount</h1>
             <form action="" method="post" onSubmit={this.submitMoney}>
               <FormGroup>

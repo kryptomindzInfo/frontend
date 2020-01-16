@@ -987,7 +987,7 @@ export default class UserPage extends Component {
                           type="file"
                           accept="image/jpg, image/jpeg, image/png"
                         >
-                          {this.state.logo == '' ? (
+                          {!this.state.logo ? (
                             <FormattedMessage {...messages.popup9} />
                           ) : (
                             <span>Change Logo</span>

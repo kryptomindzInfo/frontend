@@ -72,7 +72,7 @@
   "boilerplate.containers.BankPage.menu2": "frDocuments",
   "boilerplate.containers.BankPage.menu3": "frRevenue Rules",
   "boilerplate.containers.BankPage.popup1": "frName",
-  "boilerplate.containers.BankPage.popup2": "frAddress line - 1",
+  "boilerplate.containers.BankPage.popup2": "frAddress",
   "boilerplate.containers.BankPage.popup3": "frState",
   "boilerplate.containers.BankPage.popup4": "frZip Code",
   "boilerplate.containers.BankPage.popup5": "frCountry",

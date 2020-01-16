@@ -288,7 +288,7 @@ class OperationalWallet extends Component {
           // <FormattedMessage {...messages.activate} />
           // </button>
           //   :
-          <button>
+          <button className="sendMoneyButton">
             <i className="material-icons">send</i>{' '}
             <FormattedMessage {...messages.sendmoney} />
           </button>

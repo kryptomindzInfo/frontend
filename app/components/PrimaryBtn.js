@@ -13,6 +13,9 @@ const PrimaryBtn = styled.button `
   text-transform: uppercase;
   font-weight: bold;
   font-size: 18px;
+  :hover{
+    background-color: #1c3302;
+  }
 `;
 
 export default PrimaryBtn;
