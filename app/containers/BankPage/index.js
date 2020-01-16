@@ -566,7 +566,7 @@ export default class BankPage extends Component {
 
               {this.state.permissions == 'all' ||
               this.state.permissions.create_bank ? (
-                <Button className="fr" flex onClick={this.showPopup}>
+                <Button className="addBankButton" flex onClick={this.showPopup}>
                   <i className="material-icons">add</i>
                   <span>
                     <FormattedMessage {...messages.addbank} />

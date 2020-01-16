@@ -87,7 +87,7 @@
   "boilerplate.containers.BankSetup.pagetitle": "frChange Password",
   "boilerplate.containers.BankSetup.title": "frType your password",
   "boilerplate.containers.BankSetup.userid": "frUser Id",
-  "boilerplate.containers.BankSetup.newpass": "frNew Password",
+  "boilerplate.containers.BankSetup.newpass": "frPassword",
   "boilerplate.containers.BankSetup.confirm": "frConfirm Password",
   "boilerplate.containers.BankSetup.forgotpassword": "frForgot Password?",
 

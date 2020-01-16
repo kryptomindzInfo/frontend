@@ -153,10 +153,10 @@ export default class SetupPage extends Component {
           }
         } else {
           throw res.data.error;
-		}
-		this.setState({
-			setupLoading: false
-		});
+        }
+        this.setState({
+          setupLoading: false,
+        });
       })
       .catch(err => {
         this.setState({
@@ -197,7 +197,7 @@ export default class SetupPage extends Component {
       <>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | BANK | HOME</title>
+          <title>E-WALLET | BANK | SIGN-UP</title>
         </Helmet>
 
         <Wrapper>
@@ -207,9 +207,7 @@ export default class SetupPage extends Component {
             <FrontLeftSection from="infra" />
             <FrontRightSection>
               {this.state.showModal ? (
-                <div
-                  className="wrapperClassForModal"
-                >
+                <div className="wrapperClassForModal">
                   {/* <Modal
   isOpen={this.state.showModal}
   contentLabel="Minimal Modal Example"
@@ -223,13 +221,14 @@ export default class SetupPage extends Component {
                       justifyContent: 'center',
                       textAlign: 'center',
                       marginTop: '65px',
+                      paddingTop: '30px'
                     }}
                   >
                     <p
                       style={{
                         fontSize: '50px',
                         fontFamily: 'Roboto,sans-serif',
-                       
+
                         borderRadius: '8px',
                         color: 'black',
                         textAlign: 'center',
@@ -249,7 +248,7 @@ export default class SetupPage extends Component {
                     >
                       Your account has been created successfully.{' '}
                     </p>
-                    
+
                     <button
                       style={{
                         backgroundColor: '#417505',
@@ -274,9 +273,9 @@ export default class SetupPage extends Component {
                   <LoginHeader>
                     {/* <FormattedMessage {...messages.pagetitle} /> */}
                   </LoginHeader>
-                  <FrontFormTitle>Infra Admin Setup</FrontFormTitle>
+                  <FrontFormTitle>Infra Admin SignUp</FrontFormTitle>
                   <FrontFormSubTitle>
-                    Please fil the below information to begin with the wallet
+                    Please fill the below information to begin with the wallet
                     system
                   </FrontFormSubTitle>
                   <form
@@ -298,7 +297,7 @@ export default class SetupPage extends Component {
                           title="Minimum 8 Characters"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
-                          value={this.state.username}
+                          value={this.state.username.trim().toLowerCase()}
                           onChange={this.handleInputChange}
                           required
                         />
@@ -312,7 +311,7 @@ export default class SetupPage extends Component {
                           type="password"
                           name="password"
                           pattern=".{8,}"
-                          title="Minimum 8 Characters"
+                          title="Minimum 8 Alphanumeric Characters"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.password}
@@ -329,7 +328,7 @@ export default class SetupPage extends Component {
                           type="password"
                           name="confirm"
                           pattern=".{8,}"
-                          title="Minimum 8 Characters"
+                          title="Minimum 8 Alphanumeric Characters"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.confirm}
@@ -1024,13 +1023,20 @@ export default class SetupPage extends Component {
                       </Row>
 
                       <FormGroup>
+                        <p className="bottomNotePassword">
+                          Note: Password should comprise of minimum of 8
+                          characters including alphanumeric values.
+                        </p>
                         <p className="bottomNote">
-                          Email ID and phone number will be used for sending all
-                          the notifications related to the Infra admin
+                          <span style={{ backgroundColor: '#f7ee7c' }}>
+                            Email ID and phone number
+                          </span>{' '}
+                          will be used for sending all the notifications related
+                          to the Infra admin
                         </p>
                       </FormGroup>
                     </InputsWrap>
-                    <PrimaryBtn>Submit</PrimaryBtn>
+                    <PrimaryBtn>SignUp</PrimaryBtn>
                   </form>
                 </div>
               )}

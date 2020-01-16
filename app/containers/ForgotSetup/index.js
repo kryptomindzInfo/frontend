@@ -149,7 +149,7 @@ export default class ForgotSetup extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | INFRA | HOME</title>
+          <title>E-WALLET | INFRA | LOGIN</title>
         </Helmet>
         <FrontLeftSection from="infra">
         </FrontLeftSection>
