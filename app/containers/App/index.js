@@ -47,6 +47,7 @@ import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
 import BankBranchList from 'containers/BankBranchList/Loadable';
 import TermsConditions from 'components/TermsConditions';
 import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
+import BankUser from 'containers/BankUser'
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
@@ -128,6 +129,7 @@ export default function App(props) {
           <BankRoute path="/bank/documents" component={BankDocuments} />
           <BankRoute path="/bank/branches" component={BankBranchList} />
           <BankRoute path="/branch/:branch?" component={BankBranchInfo} />
+          <BankRoute path="/bank/users" component={BankUser} />
 
 
           <BankRoute
