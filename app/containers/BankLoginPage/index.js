@@ -142,7 +142,7 @@ export default class BankLoginPage extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | BANK | HOME</title>
+          <title>E-WALLET | BANK | SIGNUP</title>
         </Helmet>
         <FrontLeftSection from="bank"></FrontLeftSection>
         <FrontRightSection>

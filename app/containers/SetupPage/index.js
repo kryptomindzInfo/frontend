@@ -197,7 +197,7 @@ export default class SetupPage extends Component {
       <>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | BANK | HOME</title>
+          <title>E-WALLET | BANK | SIGN-UP</title>
         </Helmet>
 
         <Wrapper>
@@ -221,6 +221,7 @@ export default class SetupPage extends Component {
                       justifyContent: 'center',
                       textAlign: 'center',
                       marginTop: '65px',
+                      paddingTop: '30px'
                     }}
                   >
                     <p
@@ -272,9 +273,9 @@ export default class SetupPage extends Component {
                   <LoginHeader>
                     {/* <FormattedMessage {...messages.pagetitle} /> */}
                   </LoginHeader>
-                  <FrontFormTitle>Infra Admin Setup</FrontFormTitle>
+                  <FrontFormTitle>Infra Admin SignUp</FrontFormTitle>
                   <FrontFormSubTitle>
-                    Please fil the below information to begin with the wallet
+                    Please fill the below information to begin with the wallet
                     system
                   </FrontFormSubTitle>
                   <form
@@ -296,7 +297,7 @@ export default class SetupPage extends Component {
                           title="Minimum 8 Characters"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
-                          value={this.state.username}
+                          value={this.state.username.trim().toLowerCase()}
                           onChange={this.handleInputChange}
                           required
                         />
@@ -1023,16 +1024,19 @@ export default class SetupPage extends Component {
 
                       <FormGroup>
                         <p className="bottomNotePassword">
-                          Note: Password should comprise of minimum of 8 characters
-                          including alphanumeric values.
+                          Note: Password should comprise of minimum of 8
+                          characters including alphanumeric values.
                         </p>
                         <p className="bottomNote">
-                          Email ID and phone number will be used for sending all
-                          the notifications related to the Infra admin
+                          <span style={{ backgroundColor: '#f7ee7c' }}>
+                            Email ID and phone number
+                          </span>{' '}
+                          will be used for sending all the notifications related
+                          to the Infra admin
                         </p>
                       </FormGroup>
                     </InputsWrap>
-                    <PrimaryBtn>Submit</PrimaryBtn>
+                    <PrimaryBtn>SignUp</PrimaryBtn>
                   </form>
                 </div>
               )}

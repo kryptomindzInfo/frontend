@@ -151,7 +151,7 @@ export default class HomePage extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | INFRA | HOME</title>
+          <title>E-WALLET | INFRA | SIGN-IN</title>
         </Helmet>
         <FrontLeftSection from="infra" />
         <FrontRightSection>
@@ -175,7 +175,7 @@ export default class HomePage extends Component {
                   name="username"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
-                  value={this.state.username}
+                  value={this.state.username.trim().toLowerCase()}
                   onChange={this.handleInputChange}
                   required
                 />

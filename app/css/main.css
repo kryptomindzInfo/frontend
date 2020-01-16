@@ -23,9 +23,9 @@ body {
   color: #fff;
   text-align: center;
   border-radius: 6px;
-  padding:  0px;
+  padding: 0px;
   font-size: 12px;
-  
+
   /* Position the tooltip */
   position: absolute;
   z-index: 1;
@@ -36,4 +36,28 @@ body {
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
+}
+
+.addBankButton {
+  float: right;
+  min-width: 110px;
+  padding: 7px;
+  text-align: center;
+  border-radius: 4px;
+  background-color: #fff;
+  border: 1px solid #417505;
+  color: #417505;
+  font-size: 13px;
+  font-weight: normal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0;
+  position: relative;
+  bottom: 0;
+  right: 0;
+}
+.addBankButton:hover {
+  background-color: rgb(193, 231, 156);
+  color: #081c05;
 }
