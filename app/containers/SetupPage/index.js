@@ -153,10 +153,10 @@ export default class SetupPage extends Component {
           }
         } else {
           throw res.data.error;
-		}
-		this.setState({
-			setupLoading: false
-		});
+        }
+        this.setState({
+          setupLoading: false,
+        });
       })
       .catch(err => {
         this.setState({
@@ -207,9 +207,7 @@ export default class SetupPage extends Component {
             <FrontLeftSection from="infra" />
             <FrontRightSection>
               {this.state.showModal ? (
-                <div
-                  className="wrapperClassForModal"
-                >
+                <div className="wrapperClassForModal">
                   {/* <Modal
   isOpen={this.state.showModal}
   contentLabel="Minimal Modal Example"
@@ -229,7 +227,7 @@ export default class SetupPage extends Component {
                       style={{
                         fontSize: '50px',
                         fontFamily: 'Roboto,sans-serif',
-                       
+
                         borderRadius: '8px',
                         color: 'black',
                         textAlign: 'center',
@@ -249,7 +247,7 @@ export default class SetupPage extends Component {
                     >
                       Your account has been created successfully.{' '}
                     </p>
-                    
+
                     <button
                       style={{
                         backgroundColor: '#417505',
@@ -312,7 +310,7 @@ export default class SetupPage extends Component {
                           type="password"
                           name="password"
                           pattern=".{8,}"
-                          title="Minimum 8 Characters"
+                          title="Minimum 8 Alphanumeric Characters"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.password}
@@ -329,7 +327,7 @@ export default class SetupPage extends Component {
                           type="password"
                           name="confirm"
                           pattern=".{8,}"
-                          title="Minimum 8 Characters"
+                          title="Minimum 8 Alphanumeric Characters"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.confirm}
@@ -1024,6 +1022,10 @@ export default class SetupPage extends Component {
                       </Row>
 
                       <FormGroup>
+                        <p className="bottomNotePassword">
+                          Note: Password should comprise of minimum of 8 characters
+                          including alphanumeric values.
+                        </p>
                         <p className="bottomNote">
                           Email ID and phone number will be used for sending all
                           the notifications related to the Infra admin

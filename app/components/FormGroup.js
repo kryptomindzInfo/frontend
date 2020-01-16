@@ -7,6 +7,11 @@ const FormGroup = styled.div`
     font-size: 14px;
     margin-bottom: 50px;
   }
+  .bottomNotePassword{
+    color: ${props => props.theme.secondary};
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
   > label{
     position:absolute;
     top:11px;
