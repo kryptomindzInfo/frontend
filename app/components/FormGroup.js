@@ -3,7 +3,7 @@ const FormGroup = styled.div`
   display: block;
   position:relative;
   .bottomNote{
-    color: ${props => props.theme.secondary};
+    color: ${props => props.theme.greyLine};
     font-size: 14px;
     margin-bottom: 50px;
   }

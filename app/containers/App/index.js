@@ -62,6 +62,7 @@ const appTheme = {
   secondary: '#6cac69',
   accent: '#f5a623',
   light: '#9ea0a5',
+  greyLine: '#666565 ',
   vGradient: 'linear-gradient(to bottom, #6cac6a, #102910)',
   hGradient: 'linear-gradient(to right, #6cac6a 1%, #102910)',
   font: 'Roboto',

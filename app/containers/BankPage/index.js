@@ -560,7 +560,7 @@ export default class BankPage extends Component {
             >
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
-                <input type="text" placeholder="Search" />
+                <input type="text" placeholder="Search Bank" />
               </div>
 
               {this.state.permissions == 'all' ||
