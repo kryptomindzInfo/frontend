@@ -726,6 +726,8 @@ export default class BankPage extends Component {
                     <TextInput
                       type="text"
                       name="name"
+                      pattern=".{4,12}"
+                      title="Minimum 4 characters"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
                       value={this.state.name}

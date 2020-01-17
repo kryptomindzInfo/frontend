@@ -24,7 +24,7 @@ const PopupWrap = styled.div`
 const PopupBody = styled.div`
   background: #fff;
   border-radius: 6px;
-  width: 90%;
+  width: 35%;
   max-width: 648px;
   padding: 20px;
   margin: 45px auto;
