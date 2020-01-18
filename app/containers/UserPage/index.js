@@ -706,7 +706,11 @@ export default class UserPage extends Component {
                       </div>
                     )}
 
-                    <Button className="fr" flex onClick={this.showPopup}>
+                    <Button
+                      className="addBankButton"
+                      flex
+                      onClick={this.showPopup}
+                    >
                       <i className="material-icons">add</i>
                       <span>Add Infra User</span>
                     </Button>
@@ -762,7 +766,7 @@ export default class UserPage extends Component {
                       </div>
 
                       <Button
-                        className="fr"
+                        className="addBankButton"
                         flex
                         onClick={this.showProfilePopup}
                       >
@@ -868,6 +872,8 @@ export default class UserPage extends Component {
                     <TextInput
                       type="text"
                       name="name"
+                      pattern=".{4,12}"
+                      title="Minimum 4 characters"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
                       value={this.state.name}
@@ -908,8 +914,8 @@ export default class UserPage extends Component {
                     <TextInput
                       type="text"
                       name="username"
-                      pattern=".{8,}"
-                      title="Minimum 8 Characters"
+                      pattern=".{4,12}"
+                      title="Minimum 4 characters"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
                       value={this.state.username}
@@ -922,8 +928,8 @@ export default class UserPage extends Component {
                     <label>Temporary Password*</label>
                     <TextInput
                       type="password"
-                      pattern=".{8,}"
-                      title="Minimum 8 Characters"
+                      pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{8,16})"
+                      title="Minimum 8 Alphanumeric Characters"
                       name="password"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
@@ -977,17 +983,15 @@ export default class UserPage extends Component {
                           id="logo"
                           onChange={this.onChange}
                           data-key="logo"
+                          accept="image/jpeg, image/png, image/jpg"
                         />
                         {!this.state.logo ? (
                           <i className="material-icons">cloud_upload</i>
                         ) : (
                           ' '
                         )}
-                        <label
-                          type="file"
-                          accept="image/jpg, image/jpeg, image/png"
-                        >
-                          {this.state.logo == '' ? (
+                        <label>
+                          {!this.state.logo ? (
                             <FormattedMessage {...messages.popup9} />
                           ) : (
                             <span>Change Logo</span>

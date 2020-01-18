@@ -24,10 +24,10 @@ const PopupWrap = styled.div`
 const PopupBody = styled.div`
   background: #fff;
   border-radius: 6px;
-  width: 90%;
+  width: 35%;
   max-width: 648px;
   padding: 20px;
-  margin: 30px auto;
+  margin: 45px auto;
   position: relative;
 
   .popClose {
@@ -37,7 +37,7 @@ const PopupBody = styled.div`
     padding: 10px;
     cursor: pointer;
     font-size: 22px;
-    background: #af731145;
+    background: ${props => props.theme.accent};
     color: #fff;
   }
   h1 {

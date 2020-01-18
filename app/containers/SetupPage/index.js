@@ -221,7 +221,7 @@ export default class SetupPage extends Component {
                       justifyContent: 'center',
                       textAlign: 'center',
                       marginTop: '65px',
-                      paddingTop: '30px'
+                      paddingTop: '30px',
                     }}
                   >
                     <p
@@ -310,12 +310,13 @@ export default class SetupPage extends Component {
                         <TextInput
                           type="password"
                           name="password"
-                          pattern=".{8,}"
+                          pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{8,16})"
                           title="Minimum 8 Alphanumeric Characters"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.password}
                           onChange={this.handleInputChange}
+                          // pauseOnHover="hiiiii"
                           required
                         />
                       </FormGroup>
@@ -327,8 +328,8 @@ export default class SetupPage extends Component {
                         <TextInput
                           type="password"
                           name="confirm"
-                          pattern=".{8,}"
-                          title="Minimum 8 Alphanumeric Characters"
+                          pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{8,16})"
+                          // title="Minimum 8 Alphanumeric Characters"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.confirm}
@@ -1023,16 +1024,16 @@ export default class SetupPage extends Component {
                       </Row>
 
                       <FormGroup>
-                        <p className="bottomNotePassword">
+                        {/* <p className="bottomNotePassword">
                           Note: Password should comprise of minimum of 8
                           characters including alphanumeric values.
-                        </p>
+                        </p> */}
                         <p className="bottomNote">
-                          <span style={{ backgroundColor: '#f7ee7c' }}>
-                            Email ID and phone number
-                          </span>{' '}
-                          will be used for sending all the notifications related
-                          to the Infra admin
+                          <span style={{ color: 'red', paddingRight: '5px' }}>
+                            *
+                          </span>
+                          Email ID and phone number will be used for sending all
+                          the notifications related to the Infra admin
                         </p>
                       </FormGroup>
                     </InputsWrap>

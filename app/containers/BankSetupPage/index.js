@@ -184,7 +184,7 @@ export default class BankSetupPage extends Component {
                 <TextInput
                   type="password"
                   name="password"
-                  pattern=".{8,}"
+                  pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{8,16})"
                   title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
@@ -199,8 +199,8 @@ export default class BankSetupPage extends Component {
                 <TextInput
                   type="password"
                   name="confirm"
-                  pattern=".{8,}"
-                  title= "Minimum 8 Characters"
+                  pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{8,16})"
+                  // title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.confirm}

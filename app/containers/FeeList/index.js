@@ -410,7 +410,7 @@ export default class FeeList extends Component {
               </div>
               {
                 (this.state.permissions == "all" || this.state.permissions.create_fee) ?
-              <Button className="fr" flex onClick={this.showPopup}>
+              <Button className="addBankButton" flex onClick={this.showPopup}>
                 <i className="material-icons">add</i>
                 <span>Create Rules</span>
               </Button>

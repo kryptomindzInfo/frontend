@@ -216,7 +216,6 @@ export default class BankPage extends Component {
   };
 
   addBank = event => {
-
     event.preventDefault();
     if (this.state.logo == null || this.state.logo == '') {
       this.setState(
@@ -323,7 +322,7 @@ export default class BankPage extends Component {
 
   verifyOTP = event => {
     this.setState({
-      verifyOTPLoading: true
+      verifyOTPLoading: true,
     });
     event.preventDefault();
     axios
@@ -360,7 +359,7 @@ export default class BankPage extends Component {
           throw error;
         }
         this.setState({
-          verifyOTPLoading: false
+          verifyOTPLoading: false,
         });
       })
       .catch(err => {
@@ -374,7 +373,7 @@ export default class BankPage extends Component {
 
   verifyEditOTP = event => {
     this.setState({
-      verifyEditOTPLoading: true
+      verifyEditOTPLoading: true,
     });
     event.preventDefault();
     axios
@@ -416,7 +415,7 @@ export default class BankPage extends Component {
           throw error;
         }
         this.setState({
-          verifyEditOTPLoading: false
+          verifyEditOTPLoading: false,
         });
       })
       .catch(err => {
@@ -563,7 +562,7 @@ export default class BankPage extends Component {
             >
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
-                <input type="text" placeholder="Search" />
+                <input type="text" placeholder="Search Bank" />
               </div>
 
               {this.state.permissions == 'all' ||
@@ -737,6 +736,8 @@ export default class BankPage extends Component {
                     <TextInput
                       type="text"
                       name="name"
+                      pattern=".{4,12}"
+                      title="Minimum 4 characters"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
                       value={this.state.name}
@@ -1121,7 +1122,7 @@ export default class BankPage extends Component {
                           ' '
                         )}
                         <label>
-                          {this.state.logo == '' ? (
+                          {!this.state.logo ? (
                             <FormattedMessage {...messages.popup9} />
                           ) : (
                             <span>Change Logo</span>
@@ -1162,14 +1163,15 @@ export default class BankPage extends Component {
 
                         <label>
                           <div className="tooltip">
-                          <i
-                            className="fa fa-info-circle"
-                            style={{ margin: '5px' }}
-                          />
-                            <span className="tooltiptext">This contract will be uploaded on Blockchain.</span>
+                            <i
+                              className="fa fa-info-circle"
+                              style={{ margin: '5px' }}
+                            />
+                            <span className="tooltiptext">
+                              This contract will be uploaded on Blockchain.
+                            </span>
                           </div>
-
-                          {this.state.contract == '' ? (
+                          {!this.state.contract ? (
                             <FormattedMessage {...messages.popup10} />
                           ) : (
                             <span>Change Contract</span>
@@ -1185,7 +1187,7 @@ export default class BankPage extends Component {
                   </FormGroup>
                   <p className="note">
                     <span style={{ color: 'red' }}>* </span>Please create the
-                    revenue policy or otherwise by default 0 fee will be debited
+                    revenue policy or otherwise by default zero fee will be debited
                     for all transactions
                   </p>
 
@@ -1689,6 +1691,15 @@ export default class BankPage extends Component {
                         )}
 
                         <label>
+                          {/* <div className="tooltip">
+                            <i
+                              className="fa fa-info-circle"
+                              style={{ margin: '5px' }}
+                            />
+                            <span className="tooltiptext">
+                              This contract will be uploaded on Blockchain.
+                            </span>
+                          </div> */}
                           {this.state.contract == '' ? (
                             <FormattedMessage {...messages.popup10} />
                           ) : (

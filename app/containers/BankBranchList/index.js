@@ -513,7 +513,7 @@ export default class BankBranchList extends Component {
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
-                <input type="text" placeholder="Search" />
+                <input type="text" placeholder="Search Branches" />
               </div>
 
 

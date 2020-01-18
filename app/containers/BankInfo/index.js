@@ -126,7 +126,6 @@ export default class BankInfo extends Component {
   };
 
   editBank = event => {
-   
     event.preventDefault();
     if (this.state.logo == null || this.state.logo == '') {
       this.setState(
@@ -425,7 +424,7 @@ export default class BankInfo extends Component {
 
   fileUpload(file, key) {
     this.setState({
-      [key] : 'main/loader.gif'
+      [key]: 'main/loader.gif',
     });
     const formData = new FormData();
     //  formData.append('token',token);
@@ -508,7 +507,7 @@ export default class BankInfo extends Component {
 
   verifyEditOTP = event => {
     this.setState({
-      verifyLoading: true
+      verifyLoading: true,
     });
     event.preventDefault();
 
@@ -547,7 +546,7 @@ export default class BankInfo extends Component {
           throw error;
         }
         this.setState({
-          verifyLoading: false
+          verifyLoading: false,
         });
       })
       .catch(err => {
@@ -606,7 +605,7 @@ export default class BankInfo extends Component {
               inputWidth="calc(100% - 241px)"
               className="clr"
             >
-              <Button className="fr" flex onClick={this.showPopup}>
+              <Button className="addBankButton" flex onClick={this.showPopup}>
                 <span>Edit</span>
               </Button>
             </ActionBar>
