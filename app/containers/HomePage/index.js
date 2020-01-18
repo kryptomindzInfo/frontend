@@ -151,7 +151,7 @@ export default class HomePage extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | INFRA | SIGN-IN</title>
+          <title>E-WALLET | INFRA | SIGNIN</title>
         </Helmet>
         <FrontLeftSection from="infra" />
         <FrontRightSection>

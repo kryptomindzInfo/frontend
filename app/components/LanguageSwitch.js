@@ -24,6 +24,7 @@ const LanguageWrap = styled.div`
         text-overflow: '';
         margin: 3px 0;
         outline:0;
+        width: 2.5rem;
     }
     >select option{
         background: #1e3d1d;

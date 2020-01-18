@@ -62,7 +62,7 @@
 
   "boilerplate.containers.BankPage.addbank": "Add Bank",
   "boilerplate.containers.BankPage.title": "Bank List",
-  "boilerplate.containers.BankPage.subtitle": "Your friends and family",
+  "boilerplate.containers.BankPage.subtitle": "Your Friends and Family",
   "boilerplate.containers.BankPage.th1": "Bank Name",
   "boilerplate.containers.BankPage.th2": "Total Branches",
   "boilerplate.containers.BankPage.th3": "Total Partners",
@@ -80,7 +80,7 @@
   "boilerplate.containers.BankPage.popup7": "Authorized mobile number",
   "boilerplate.containers.BankPage.popup8": "Authorized email id",
   "boilerplate.containers.BankPage.popup9": "Upload Logo",
-  "boilerplate.containers.BankPage.popup10": "Contract",
+  "boilerplate.containers.BankPage.popup10": "Upload Contract",
   "boilerplate.containers.BankPage.verify": "Verify OTP",
   "boilerplate.containers.BankPage.otp": "OTP",
 
@@ -92,7 +92,7 @@
   "boilerplate.containers.BankSetup.forgotpassword": "Forgot Password?",
 
   "boilerplate.containers.BankActivate.pagetitle": "Contract with Infra",
-  "boilerplate.containers.BankActivate.title": "Please review the bellow contract submmited by Infra",
+  "boilerplate.containers.BankActivate.title": "Please review the below contract submitted by Infra",
   "boilerplate.containers.BankActivate.confirm": "Agree to the contract",
   "boilerplate.containers.BankActivate.btn1": "Download",
   "boilerplate.containers.BankActivate.btn2": "Activate my account"
