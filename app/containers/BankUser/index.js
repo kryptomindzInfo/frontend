@@ -93,7 +93,7 @@ export default class BankUser extends Component {
       otpId: '',
       banks: [],
       users: [],
-roles:[],
+      roles:[],
       profiles: [],
       otp: '',
       showOtp: false
@@ -123,37 +123,9 @@ roles:[],
     this.setState({ popup: true });
   };
   showEditPopup = (v) => {
-    this.setState({ editPopup: true, name: v.name, email: v.email, mobile: v.mobile, user_id:v._id, username: v.username, password: v.password, profile_id: v.profile_id, logo: v.logo });
+    this.setState({ editPopup: true, name: v.name, otpEmail: v.email, otpMobile: v.mobile, email: v.email, mobile: v.mobile, user_id:v._id, username: v.username, password: v.password, branch_id: v.branch_id, logo: v.logo });
   };
 
-  showEditProfilePopup = (v) => {
-
-    if(v.permissions && v.permissions != ""){
-      var p = JSON.parse(v.permissions);
-      console.log(p.edit_bank);
-      if(p.create_bank){
-        this.setState({ create_bank: true});
-      }else{
-        this.setState({ create_bank: false});
-      }
-      if(p.edit_bank){
-        this.setState({ edit_bank: true});
-      }else{
-        this.setState({ edit_bank: false});
-      }
-      if(p.create_fee){
-        this.setState({ create_fee: true});
-      }else{
-        this.setState({ create_fee: false});
-      }
-      }
-
-    this.setState({ profile_popup_edit: true, pro_name: v.name, pro_description: v.description, profile_id : v._id });
-
-  };
-  showProfilePopup = () => {
-    this.setState({ profile_popup: true });
-  };
 
   closePopup = () => {
     this.setState({
@@ -185,24 +157,7 @@ roles:[],
     });
   };
 
-  logout = () => {
-    // event.preventDefault();
-    // axios.post(API_URL+'/logout', {token: token})
-    // .then(res => {
-    //    if(res.status == 200){
-    localStorage.removeItem("logged");
-    localStorage.removeItem("name");
-    this.setState({ redirect: true });
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    // })
-    // .catch(err => {
-    //   alert('Login to continue');
-    //   this.setState({ redirect: true });
-    // });
-  };
+
 
   addBankUser = event => {
 
@@ -217,7 +172,6 @@ roles:[],
       this.setState({
         addUserLoading: true
       });
-      console.log(this.state.branch_id);
     axios
       .post(`${API_URL  }/addBankUser`, {
         name: this.state.name,
@@ -258,36 +212,7 @@ roles:[],
         });
         this.error();
       });
-    // event.preventDefault();
-    // axios
-    //   .post(`${API_URL  }/generateOTP`, {
-    //     name: this.state.name,
-    //     page: 'addBankUser',
-    //     token,
-    //   })
-    //   .then(res => {
-    //     if(res.status == 200){
-    //       if(res.data.error){
-    //         throw res.data.error;
-    //       }else{
-    //         this.setState({
-    //           otpId: res.data.id,
-    //           showOtp: true,
-    //           notification: 'OTP Sent'
-    //         });
-    //         this.success();
-    //       }
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    //   })
-    //   .catch(err => {
-    //     this.setState({
-    //       notification: (err.response) ? err.response.data.error : err.toString()
-    //     });
-    //     this.error();
-    //   });
+
     }
   };
 
@@ -301,9 +226,72 @@ roles:[],
       });
     }
     else{
-      this.setState({
-        editUserLoading: true
+      this.setState(
+        {
+          showEditOtp: true,
+          otpOpt: 'editUser',
+          otpTxt: 'Your OTP to edit Bank User is '
+        },
+        () => {
+          this.generateOTP();
+        },
+      );
+    }
+  };
+  startTimer = () => {
+    var dis = this;
+    var timer = setInterval(function() {
+      if (dis.state.timer <= 0) {
+        clearInterval(timer);
+        dis.setState({ resend: true });
+      } else {
+        var time = Number(dis.state.timer) - 1;
+        dis.setState({ timer: time });
+      }
+    }, 1000);
+  };
+
+  generateOTP = () => {
+    this.setState({ resend: false, timer: 30 });
+
+    axios
+      .post(`${API_URL}/generateBankOTP`, {
+        email: this.state.otpEmail,
+        mobile: this.state.otpMobile,
+        page: this.state.otpOpt,
+        txt: this.state.otpTxt,
+        token,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              otpId: res.data.id,
+              showEditOtp: true,
+              notification: 'OTP Sent',
+            });
+            this.startTimer();
+            this.success();
+          }
+        } else {
+          throw res.data.error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+        });
+        this.error();
       });
+  };
+
+  verifyEditOTP = event => {
+    this.setState({
+      verifyEditOTPLoading: true
+    });
+    event.preventDefault();
     axios
       .post(`${API_URL  }/editBankUser`, {
         name: this.state.name,
@@ -336,122 +324,19 @@ roles:[],
           throw error;
         }
         this.setState({
-          editUserLoading: false
+          verifyEditOTPLoading: false
         });
       })
       .catch(err => {
         this.setState({
           notification: (err.response) ? err.response.data.error : err.toString(),
-          editUserLoading: false
-        });
-        this.error();
-      });
-    }
-  };
-
-  
-
-  addProfile = event => {
-    event.preventDefault();
-    if(!this.state.create_bank && !this.state.edit_bank && !this.state.create_fee){
-      this.setState({
-        notification: "You need to select at least one role"
-      }, () => {
-        this.error();
-      });
-
-    }else{
-      this.setState({
-        addProfileLoading: true
-      });
-    axios
-      .post(`${API_URL  }/addProfile`, {
-        pro_name: this.state.pro_name,
-        pro_description: this.state.pro_description,
-        create_bank: this.state.create_bank,
-        edit_bank: this.state.edit_bank,
-        create_fee: this.state.create_fee,
-        token,
-      })
-      .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
-            throw res.data.error;
-          }else{
-            this.setState({
-              notification: "Profile added successfully!",
-            }, () => {
-              this.success();
-              this.closePopup();
-              this.getRoles();
-            });
-
-
-          }
-        }else{
-          const error = new Error(res.data.error);
-          throw error;
-        }
-        this.setState({
-          addProfileLoading: false
-        });
-      })
-      .catch(err => {
-        this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          addProfileLoading: true
-        });
-        this.error();
-      });
-    }
-  };
-
-  editProfile = event => {
-    event.preventDefault();
-    this.setState({
-      editProfileLoading: true
-    });
-    axios
-      .post(`${API_URL  }/editProfile`, {
-        pro_name: this.state.pro_name,
-        pro_description: this.state.pro_description,
-        create_bank: this.state.create_bank,
-        edit_bank: this.state.edit_bank,
-        create_fee: this.state.create_fee,
-        profile_id: this.state.profile_id,
-        token,
-      })
-      .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
-            throw res.data.error;
-          }else{
-            this.setState({
-              notification: "Profile updated successfully!",
-            }, () => {
-              this.success();
-              this.closePopup();
-              this.getRoles();
-            });
-
-
-          }
-        }else{
-          const error = new Error(res.data.error);
-          throw error;
-        }
-        this.setState({
-          editProfileLoading: false
-        });
-      })
-      .catch(err => {
-        this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          editProfileLoading: false
+          verifyEditOTPLoading: false
         });
         this.error();
       });
   };
+
+
 
 
 
@@ -797,7 +682,7 @@ roles:[],
                       *</label>
                     </div>
                   </UploadArea>
-                   
+
               </FormGroup>
               <Icon className="material-icons">fingerprint</Icon>
                 {
@@ -820,10 +705,10 @@ roles:[],
 { this.state.editPopup ?
           <Popup close={this.closePopup.bind(this)} accentedH1>
             {
-              this.state.showOtp ?
+              this.state.showEditOtp ?
               <div>
               <h1 ><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyOTP} >
+            <form action="" method="post" onSubmit={this.verifyEditOTP} >
               <FormGroup>
                 <label><FormattedMessage {...messages.otp} />*</label>
                 <TextInput
@@ -836,9 +721,28 @@ roles:[],
                   required
                 />
               </FormGroup>
-              <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.verify} /></span>
-              </Button>
+              {
+                this.verifyEditOTPLoading ?
+                <Button filledBtn marginTop="50px" disabled>
+                  <Loader />
+                </Button>
+                :
+                <Button filledBtn marginTop="50px">
+                  <span><FormattedMessage {...messages.verify} /></span>
+                </Button>
+              }
+
+              <p className="resend">
+                Wait for <span className="timer">{this.state.timer}</span>{' '}
+                to{' '}
+                {this.state.resend ? (
+                  <span className="go" onClick={this.generateOTP}>
+                    Resend
+                  </span>
+                ) : (
+                  <span>Resend</span>
+                )}
+              </p>
               </form>
               </div>
               :
@@ -983,138 +887,15 @@ roles:[],
 
               </FormGroup>
               <Icon className="material-icons">fingerprint</Icon>
-                    {
-                      this.state.editUserLoading ?
-                      <Button filledBtn marginTop="20px" disabled>
-                <Loader />
-              </Button>
-                      :
+
                       <Button filledBtn marginTop="20px">
                 <span>Update User</span>
               </Button>
-                    }
+
 
             </form>
             </div>
             }
-          </Popup>
-          : null }
-
-{ this.state.profile_popup ?
-          <Popup close={this.closePopup.bind(this)} accentedH1>
-
-            <h1 >Create Profile</h1>
-            <form action="" method="post" onSubmit={this.addProfile}>
-              <FormGroup>
-                <label>Profile Name*</label>
-                <TextInput
-                  type="text"
-                  name="pro_name"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.pro_name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Description*</label>
-                <TextInput
-                  type="text"
-                  name="pro_description"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.pro_description}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-
-                <Row>
-                  <Col cW="33%">
-                  <Button type="button" className="toggle" onClick={this.checkBtn} data-id="create_bank">Create Bank</Button>
-                  </Col>
-                  <Col cW="33%">
-                  <Button  type="button" className="toggle" onClick={this.checkBtn} data-id="edit_bank">Edit Bank</Button>
-                  </Col>
-                  <Col cW="33%">
-                  <Button  type="button" className="toggle" onClick={this.checkBtn} data-id="create_fee">Create Fee</Button>
-                  </Col>
-                </Row>
-
-                {
-                  this.state.addProfileLoading ?
-                  <Button filledBtn marginTop="50px" disabled>
-                <Loader />
-              </Button>
-                  :
-                  <Button filledBtn marginTop="50px">
-                <span>Add Profile</span>
-              </Button>
-                }
-
-            </form>
-
-          </Popup>
-          : null }
-
-{ this.state.profile_popup_edit ?
-          <Popup close={this.closePopup.bind(this)} accentedH1>
-
-            <h1 >Edit Profile</h1>
-            <form action="" method="post" onSubmit={this.editProfile}>
-              <FormGroup>
-                <label>Profile Name*</label>
-                <TextInput
-                  type="text"
-                  name="pro_name"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  autoFocus
-                  value={this.state.pro_name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Description*</label>
-                <TextInput
-                  type="text"
-                  name="pro_description"
-                  onFocus={inputFocus}
-                  autoFocus
-                  onBlur={inputBlur}
-                  value={this.state.pro_description}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-
-                <Row>
-                  <Col cW="33%">
-                  <Button type="button" className={"toggle "+ (this.state.create_bank ? 'active' : '')} onClick={this.checkBtn} data-id="create_bank" id="edit_create_bank">Create Bank</Button>
-                  </Col>
-                  <Col cW="33%">
-                  <Button  type="button" className={"toggle "+ (this.state.edit_bank ? 'active' : '')} onClick={this.checkBtn} data-id="edit_bank" id="edit_edit_bank">Edit Bank</Button>
-                  </Col>
-                  <Col cW="33%">
-                  <Button  type="button" className={"toggle "+ (this.state.create_fee ? 'active' : '')} onClick={this.checkBtn} data-id="create_fee" id="edit_create_fee">Create Fee</Button>
-                  </Col>
-                </Row>
-                {
-                  this.editProfileLoading ?
-                  <Button filledBtn marginTop="50px" disabled>
-                <Loader />
-              </Button>
-                  :
-                  <Button filledBtn marginTop="50px">
-                <span>Update Profile</span>
-              </Button>
-                }
-
-
-            </form>
-
           </Popup>
           : null }
 

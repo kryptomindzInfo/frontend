@@ -46,17 +46,28 @@ class Welcome extends Component {
     //this.props.history.push('/bank');
   };
 
+  logoutBranch = () => {
+    localStorage.removeItem('branchLogged');
+    localStorage.removeItem('branchName');
+    history.push('/branch/'+this.props.bankName);
+    //this.props.history.push('/bank');
+  };
+
   render() {
     let name = '';
     let isAdmin = false;
       if( this.props.from == 'bank'){
         name = localStorage.getItem("bankName");
-      }else{
+      }
+      else if( this.props.from == 'branch'){
+        name = localStorage.getItem("branchName");
+      }
+      else{
         isAdmin = localStorage.getItem("isAdmin");
         name = localStorage.getItem("name");
       }
 
-
+      const bankName = this.props.bankName;
     return (
 
         <WelcomeWrap className="clr" >
@@ -76,12 +87,20 @@ class Welcome extends Component {
                     <span onClick={this.logoutInfra} >Logout</span>
                 </SubNav>
                 :
+                this.props.from == 'branch'?
+                <SubNav className="infraSubNav">
+                    {/* { isAdmin ?  */}
+                    <A href={"/branch/"+bankName+"/info"}>Profile</A>
+                    {/* //  : null } */}
+                    <span onClick={this.logoutBranch} >Logout</span>
+                </SubNav>
+                :
                 <SubNav className="bankSubNav">
                     <A href="/bank/info">Settings</A>
                     <span onClick={this.logoutBank} >Logout</span>
                 </SubNav>
               }
-                
+
 
               </div>
             <LanguageSwitch></LanguageSwitch>

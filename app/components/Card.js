@@ -120,31 +120,35 @@ const Card = styled.div`
     text-align: center;
     letter-spacing: 0.09px;
     color: #9b9b9b;
-  }
-  > .cardHeader > .cardHeaderLeft {
-    float: left;
-    &.flex {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      flex-direction: row;
-      h3 {
-        font-size: 28px;
-      }
-      .material-icons {
-        background: ${props => props.theme.primary};
-        color: #fff;
-        margin-right: 10px;
-        font-size: 28px;
-        padding: 4px;
-        border-radius: 50%;
-      }
+}
+.miniTitle{
+  color:#f5a623;
+}
+> .cardHeader  > .cardHeaderLeft{
+    float:left;
+    &.flex{
+        display:flex;
+        align-items:center;
+        justify-content: flex-start;
+        flex-direction: row;
+        h3{
+            font-size: 28px;
+        }
+        .material-icons{
+            background: ${props => props.theme.primary};
+            color: #fff;
+            margin-right: 10px;
+            font-size: 28px;
+    padding: 4px;
+    border-radius: 50%;
+        }
     }
-  }
-  > .cardHeader > .cardHeaderRight {
-    float: left;
-  }
-  > .cardHeader > .cardHeaderLeft > .material-icons {
+}
+> .cardHeader  > .cardHeaderRight{
+    float:left;
+}
+
+> .cardHeader > .cardHeaderLeft > .material-icons {
     width: 46px;
     height: 46px;
     color: ${props => props.theme.primary};
@@ -179,13 +183,13 @@ const Card = styled.div`
     margin-bottom: 15px;
   }
 
-  .cardValue {
-    font-size: 32px;
+.cardValue{
+    font-size: ${props => props.smallValue ? '20px' : '32px'};
     font-weight: bold;
     color: ${props => props.theme.primary};
   }
 
-  > button {
+ button{
     padding: 6px;
     border-radius: 2px;
     border: solid 1px ${props => props.theme.primary};

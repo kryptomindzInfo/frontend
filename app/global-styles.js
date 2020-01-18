@@ -168,6 +168,11 @@ body{
   .sideNav{
     cursor:pointer;
   }
+  .borderedTD{
+    border: 1px solid #ddd;
+    margin-bottom:10px;
+    border-radius: 6px;
+  }
 `;
 
 export default GlobalStyle;

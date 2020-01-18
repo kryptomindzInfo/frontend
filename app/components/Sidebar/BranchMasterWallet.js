@@ -24,7 +24,7 @@ toast.configure({
 });
 const token = localStorage.getItem('bankLogged');
 
-class BankOperationalWallet extends Component {
+class BranchMasterWallet extends Component {
   constructor() {
     super();
     this.state = {
@@ -238,25 +238,7 @@ class BankOperationalWallet extends Component {
     this.setState({
       bank: this.props.historyLink,
     });
-    axios
-      .get(`${API_URL}/getBankOperationalBalance?bank=${this.state.token}`)
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              balance: res.data.balance,
-            });
-          }
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
+
   }
 
   render() {
@@ -274,7 +256,7 @@ class BankOperationalWallet extends Component {
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
         <h3>
-          <FormattedMessage {...messages.operational} />
+          <FormattedMessage {...messages.master} />
         </h3>
         <h5>
           <FormattedMessage {...messages.available} />
@@ -288,14 +270,12 @@ class BankOperationalWallet extends Component {
           // <FormattedMessage {...messages.activate} />
           // </button>
           //   :
-          <button className="sendMoneyButton">
+          <button>
             <i className="material-icons">send</i>{' '}
             <FormattedMessage {...messages.sendmoney} />
           </button>
         }
-        <A href={'/bank/operationalHistory'}>
-          <span className="history">History</span>
-        </A>
+    
 
         {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)} roundedCorner>
@@ -373,4 +353,4 @@ class BankOperationalWallet extends Component {
   }
 }
 
-export default BankOperationalWallet;
+export default BranchMasterWallet;

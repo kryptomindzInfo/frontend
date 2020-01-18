@@ -10,6 +10,8 @@ import TextArea from 'components/TextArea';
 import FormGroup from 'components/FormGroup';
 import Button from 'components/Button';
 import A from 'components/A';
+import Row from 'components/Row';
+import Col from 'components/Col';
 
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
@@ -24,7 +26,7 @@ toast.configure({
 });
 const token = localStorage.getItem('bankLogged');
 
-class BankOperationalWallet extends Component {
+class BranchOperationalWallet extends Component {
   constructor() {
     super();
     this.state = {
@@ -238,25 +240,7 @@ class BankOperationalWallet extends Component {
     this.setState({
       bank: this.props.historyLink,
     });
-    axios
-      .get(`${API_URL}/getBankOperationalBalance?bank=${this.state.token}`)
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              balance: res.data.balance,
-            });
-          }
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
+
   }
 
   render() {
@@ -282,20 +266,20 @@ class BankOperationalWallet extends Component {
         <div className="cardValue">
           {CURRENCY} {this.state.balance.toFixed(2)}
         </div>
-        {
-          //   this.props.activateNeeded ?
-          //   <button className="fullWidth">
-          // <FormattedMessage {...messages.activate} />
-          // </button>
-          //   :
-          <button className="sendMoneyButton">
-            <i className="material-icons">send</i>{' '}
-            <FormattedMessage {...messages.sendmoney} />
-          </button>
-        }
-        <A href={'/bank/operationalHistory'}>
-          <span className="history">History</span>
-        </A>
+
+        <Row>
+        <Col><button>
+          <i className="material-icons">send</i>{' '}
+          <FormattedMessage {...messages.sendmoney} />
+        </button></Col>
+        <Col><button>
+          <i className="material-icons">send</i>{' '}
+          Claim Money
+        </button></Col>
+        </Row>
+
+
+
 
         {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)} roundedCorner>
@@ -373,4 +357,4 @@ class BankOperationalWallet extends Component {
   }
 }
 
-export default BankOperationalWallet;
+export default BranchOperationalWallet;

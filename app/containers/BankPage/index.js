@@ -179,7 +179,7 @@ export default class BankPage extends Component {
 
   generateOTP = () => {
     this.setState({ resend: false, timer: 30 });
-    this.startTimer();
+
     axios
       .post(`${API_URL}/generateOTP`, {
         name: this.state.name,
@@ -365,6 +365,7 @@ export default class BankPage extends Component {
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          verifyOTPLoading: false
         });
         this.error();
       });
@@ -420,6 +421,7 @@ export default class BankPage extends Component {
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
+          verifyEditOTPLoading: false
         });
         this.error();
       });
@@ -694,11 +696,19 @@ export default class BankPage extends Component {
                       required
                     />
                   </FormGroup>
-                  <Button filledBtn marginTop="50px">
-                    <span>
-                      <FormattedMessage {...messages.verify} />
-                    </span>
-                  </Button>
+                  {
+                    this.verifyOTPLoading ?
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                    :
+                    <Button filledBtn marginTop="50px">
+                      <span>
+                        <FormattedMessage {...messages.verify} />
+                      </span>
+                    </Button>
+                  }
+
 
                   <p className="resend">
                     Wait for <span className="timer">{this.state.timer}</span>{' '}
@@ -1180,11 +1190,13 @@ export default class BankPage extends Component {
                     revenue policy or otherwise by default zero fee will be debited
                     for all transactions
                   </p>
-                  <Button filledBtn marginTop="10px">
-                    <span>
-                      <FormattedMessage {...messages.addbank} />
-                    </span>
-                  </Button>
+
+                    <Button filledBtn marginTop="10px">
+                      <span>
+                        <FormattedMessage {...messages.addbank} />
+                      </span>
+                    </Button>
+
                 </form>
               </div>
             )}
@@ -1213,11 +1225,19 @@ export default class BankPage extends Component {
                       required
                     />
                   </FormGroup>
-                  <Button filledBtn marginTop="50px">
-                    <span>
-                      <FormattedMessage {...messages.verify} />
-                    </span>
-                  </Button>
+                  {
+                    this.verifyEditOTPLoading ?
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                    :
+                    <Button filledBtn marginTop="50px">
+                      <span>
+                        <FormattedMessage {...messages.verify} />
+                      </span>
+                    </Button>
+                  }
+
                   <p className="resend">
                     Wait for <span className="timer">{this.state.timer}</span>{' '}
                     to{' '}
@@ -1691,9 +1711,11 @@ export default class BankPage extends Component {
                     </UploadArea>
                   </FormGroup>
 
-                  <Button filledBtn marginTop="10px">
-                    <span>Update Bank</span>
-                  </Button>
+                    <Button filledBtn marginTop="10px">
+                      <span>Update Bank</span>
+                    </Button>
+
+
                 </form>
               </div>
             )}

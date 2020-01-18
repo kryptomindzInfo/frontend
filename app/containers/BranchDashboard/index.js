@@ -16,12 +16,12 @@ import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import A from 'components/A';
-import BankHeader from 'components/Header/BankHeader';
+import BranchHeader from 'components/Header/BranchHeader';
 import Container from 'components/Container';
 import Loader from 'components/Loader';
 import Nav from 'components/Header/Nav';
 import Welcome from 'components/Header/Welcome';
-import SidebarBank from 'components/Sidebar/SidebarBank';
+import SidebarBranch from 'components/Sidebar/SidebarBranch';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
@@ -49,15 +49,16 @@ toast.configure({
 });
 
 
-const token = localStorage.getItem('bankLogged');
-const bid = localStorage.getItem('bankId');
+const token = localStorage.getItem('branchLogged');
+const bid = localStorage.getItem('branchId');
+const logo = localStorage.getItem('bankLogo');
 
-export default class BankBranchList extends Component {
+export default class BranchDashboard extends Component {
   constructor() {
     super();
     this.state = {
       sid: '',
-      bank: bid,
+      branch: bid,
       name: '',
       address1: '',
       html: '',
@@ -79,7 +80,7 @@ export default class BankBranchList extends Component {
       notification: 'Welcome',
       popup: false,
       user_id: token,
-      banks: [],
+      branchs: [],
       branches: [],
       otp: '',
       showOtp: false
@@ -134,7 +135,7 @@ export default class BankBranchList extends Component {
   showMiniPopUp = (b, r) => {
 
     this.setState({ popname: b.name, poptype: b.trans_type, sid: b._id, popup: true, html: r  });
-    //this.props.history.push('/createfee/'+this.state.bank_id);
+    //this.props.history.push('/createfee/'+this.state.branch_id);
   };
 
   closeMiniPopUp = () => {
@@ -467,14 +468,9 @@ export default class BankBranchList extends Component {
 
 
   componentDidMount() {
-    // this.setState({ bank: this.state.bank_id });
-    if (token !== undefined && token !== null) {
-      this.getBanks();
-      this.getBranches();
-    } else {
-      // alert('Login to continue');
-      // this.setState({loading: false, redirect: true });
-    }
+
+      this.setState({loading:false});
+
   }
 
   render() {
@@ -501,55 +497,85 @@ export default class BankBranchList extends Component {
     const dis = this;
     return (
 
-      <Wrapper  from="bank">
+      <Wrapper  from="branch">
         <Helmet>
           <meta charSet="utf-8" />
-          <title>Banks | INFRA | E-WALLET</title>
+          <title>Dashboard | BRANCH | E-WALLET</title>
         </Helmet>
-        <BankHeader active="branches" />
+        <BranchHeader active="dashboard" bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
         <Container verticalMargin>
-          <SidebarBank />
+          <SidebarBranch />
           <Main>
-            <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-              <div className="iconedInput fl">
-                <i className="material-icons">search</i>
-                <input type="text" placeholder="Search Branches" />
+            <Row>
+            <Col>
+            <Card marginBottom="54px" buttonMarginTop="32px" bigPadding >
+              <h4>
+                Cash Received
+              </h4>
+
+              <div className="cardValue">
+                {CURRENCY} 0
               </div>
 
+            </Card>
+            </Col>
+            <Col>
+              <Card marginBottom="54px" buttonMarginTop="32px" bigPadding >
+                <h4>
+                  Paid in Cash
+                </h4>
 
-                <Button className="addBankButton" flex onClick={this.showPopup}>
-                <i className="material-icons">add</i>
-                <span>Add Branch</span>
-                </Button>
+                <div className="cardValue">
+                  {CURRENCY} 0
+                </div>
 
-            </ActionBar>
+              </Card>
+            </Col>
+            <Col>
+              <Card marginBottom="54px" buttonMarginTop="32px" bigPadding >
+                <h4>
+                  Total Merchant
+                </h4>
+
+                <div className="cardValue">
+                  0
+                </div>
+
+              </Card>
+            </Col>
+            <Col>
+              <Card marginBottom="54px" buttonMarginTop="32px" bigPadding >
+                <h4>
+                  Total Cashier
+                </h4>
+
+                <div className="cardValue">
+                  0
+                </div>
+
+              </Card>
+            </Col>
+            </Row>
             <Card bigPadding>
               <div className="cardHeader" >
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>
                 </div>
                 <div className="cardHeaderRight">
-                  <h3>Branch List</h3>
-                  <h5>Your friends and family</h5>
+                  <h3>Cashiers</h3>
+                  <h5>E-Wallet Activity</h5>
+
                 </div>
+                <Button float="right">Today</Button>
               </div>
               <div className="cardBody">
                 <Table marginTop="34px" smallTd>
                   <thead>
                     <tr>
-                    <th>Branch Name</th>
-                    <th>Total Cashier</th>
-                    <th>Wallet Balance ({CURRENCY})</th>
-                    <th>Credit limit ({CURRENCY})</th>
-                    <th className="tal">No. of Transaction
-                      <Row className="small">
-                        <Col>Yearly</Col>
-                        <Col>Monthly</Col>
-                        <Col>Weekly</Col>
-                        <Col>Daily</Col>
-                      </Row>
-
-                    </th>
+                    <th>Cashier</th>
+                    <th>No. of Transactions</th>
+                    <th>Total Amount of Transactions</th>
+                    <th>Cash in Hand</th>
                     </tr>
                   </thead>
                   <tbody>

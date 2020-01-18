@@ -10,6 +10,9 @@ import TextArea from 'components/TextArea';
 import FormGroup from 'components/FormGroup';
 import Button from 'components/Button';
 import A from 'components/A';
+import Row from 'components/Row';
+import Col from 'components/Col';
+
 
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
@@ -24,7 +27,7 @@ toast.configure({
 });
 const token = localStorage.getItem('bankLogged');
 
-class BankOperationalWallet extends Component {
+class BranchCreditLimit extends Component {
   constructor() {
     super();
     this.state = {
@@ -238,25 +241,7 @@ class BankOperationalWallet extends Component {
     this.setState({
       bank: this.props.historyLink,
     });
-    axios
-      .get(`${API_URL}/getBankOperationalBalance?bank=${this.state.token}`)
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              balance: res.data.balance,
-            });
-          }
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
+
   }
 
   render() {
@@ -272,30 +257,30 @@ class BankOperationalWallet extends Component {
       }
     }
     return (
-      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
+      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
         <h3>
-          <FormattedMessage {...messages.operational} />
+          Credit Limit
         </h3>
-        <h5>
-          <FormattedMessage {...messages.available} />
-        </h5>
-        <div className="cardValue">
+        <Row>
+        <Col><h3 className="miniTitle">Maximum</h3><div className="cardValue">
           {CURRENCY} {this.state.balance.toFixed(2)}
-        </div>
+        </div></Col>
+        <Col><h3 className="miniTitle">Remaining</h3><div className="cardValue">
+          {CURRENCY} {this.state.balance.toFixed(2)}
+        </div></Col>
+        </Row>
+
         {
           //   this.props.activateNeeded ?
           //   <button className="fullWidth">
           // <FormattedMessage {...messages.activate} />
           // </button>
           //   :
-          <button className="sendMoneyButton">
-            <i className="material-icons">send</i>{' '}
-            <FormattedMessage {...messages.sendmoney} />
+          <button>
+          Request for more credit
           </button>
         }
-        <A href={'/bank/operationalHistory'}>
-          <span className="history">History</span>
-        </A>
+
 
         {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)} roundedCorner>
@@ -373,4 +358,4 @@ class BankOperationalWallet extends Component {
   }
 }
 
-export default BankOperationalWallet;
+export default BranchCreditLimit;
