@@ -6,6 +6,7 @@ min-width: ${props => props.noMin ? '0' : 'sdd' };
 padding: ${props => props.accentedBtn ? '7px' : '5px' };
 text-align:center;
 border-radius: 4px;
+float: ${props => props.float? props.float : 'none'};
 background-color: ${props => props.filledBtn ? props.theme.primary : '#fff' };
 background-color: ${props => props.accentedBtn ? props.theme.accent : 'sdf' };
 background-color: ${props => props.accentedOutline ? 'transparent' : 'sdf' };

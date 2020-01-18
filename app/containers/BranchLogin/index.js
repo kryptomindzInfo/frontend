@@ -1,5 +1,5 @@
 /*
- * BankLoginPage
+ * BranchLogin
  *
  * This is the first thing users see of our App, at the '/' route
  *
@@ -30,7 +30,7 @@ import Col from 'components/Col';
 import A from 'components/A';
 import Loader from 'components/Loader';
 
-import { API_URL } from '../App/constants';
+import { API_URL, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -41,10 +41,11 @@ toast.configure({
   pauseOnHover: true,
   draggable: true,
 });
-localStorage.removeItem('bankLogged');
-const token = localStorage.getItem('bankLogged');
 
-export default class BankLoginPage extends Component {
+// localStorage.removeItem('bankLogged');
+// const token = localStorage.getItem('bankLogged');
+
+export default class BranchLogin extends Component {
   constructor() {
     super();
     this.state = {
@@ -76,25 +77,17 @@ export default class BankLoginPage extends Component {
     });
     event.preventDefault();
     axios
-      .post(`${API_URL}/bankLogin`, this.state)
+      .post(`${API_URL}/branchLogin`, this.state)
       .then(res => {
         if (res.status == 200) {
-          console.log(res.data.token);
-          localStorage.setItem('bankLogged', res.data.token);
-          localStorage.setItem('bankName', res.data.name);
-          localStorage.setItem('bankUserName', res.data.username);
-          localStorage.setItem('bankContract', res.data.contract);
+          localStorage.setItem('branchLogged', res.data.token);
+          localStorage.setItem('branchName', res.data.name);
+          localStorage.setItem('branchUserName', res.data.username);
+          localStorage.setItem('branchId', res.data.id);
           localStorage.setItem('bankLogo', res.data.logo);
-          localStorage.setItem('bankId', res.data.id);
-          if (!res.data.initial_setup) {
-            this.props.history.push('/bank/setup');
-          } 
-          else if (!res.data.status || res.data.status == 0 || res.data.status == '') {
-            this.props.history.push('/bank/activate');
-          } 
-          else {
-            this.props.history.push('/bank/dashboard');
-          }
+
+            this.props.history.push('/branch/'+this.props.match.params.bank+'/dashboard');
+
         } else {
           throw res.data.error;
         }
@@ -112,12 +105,18 @@ export default class BankLoginPage extends Component {
   };
 
   componentDidMount() {
-    if (token !== undefined && token !== null) {
-      this.setState({ loading: false, redirect: true });
-    } else {
-      this.setState({ loading: false });
-    }
-    localStorage.clear();
+    axios
+      .post(`${API_URL}/getBankByName`, {name: this.props.match.params.bank})
+      .then(res => {
+        if (res.status == 200) {
+          this.setState({ bank: res.data.banks, loading:false });
+        } else {
+          throw res.data.error;
+        }
+      })
+      .catch(err => {
+        this.history.push("/");
+      });
   }
 
   render() {
@@ -144,9 +143,9 @@ export default class BankLoginPage extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | BANK | SIGNUP</title>
+          <title>E-WALLET | BRANCH | LOGIN</title>
         </Helmet>
-        <FrontLeftSection from="bank"></FrontLeftSection>
+        <FrontLeftSection from="branch" title={this.state.bank.name} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
           <FormattedMessage {...messages.pagetitle} />
@@ -186,12 +185,12 @@ export default class BankLoginPage extends Component {
               :
               <PrimaryBtn><FormattedMessage {...messages.pagetitle} /></PrimaryBtn>
             }
-            
+
           </form>
           <Row marginTop>
             <Col />
             <Col textRight>
-              <A href="/bank/forgot-password"><FormattedMessage {...messages.forgotpassword} /></A>
+              <A href={"/branch/"+this.props.match.params.bank+"/forgot-password"}><FormattedMessage {...messages.forgotpassword} /></A>
             </Col>
           </Row>
         </FrontRightSection>

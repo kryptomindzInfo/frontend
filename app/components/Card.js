@@ -110,6 +110,9 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
         letter-spacing: 0.09px;
     color: #9b9b9b;
 }
+.miniTitle{
+  color:#f5a623;
+}
 > .cardHeader  > .cardHeaderLeft{
     float:left;
     &.flex{
@@ -133,6 +136,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
 > .cardHeader  > .cardHeaderRight{
     float:left;
 }
+
 > .cardHeader > .cardHeaderLeft > .material-icons {
     width: 46px;
     height: 46px;
@@ -168,12 +172,12 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
 }
 
 .cardValue{
-    font-size: 32px;
+    font-size: ${props => props.smallValue ? '20px' : '32px'};
     font-weight: bold;
     color: ${props => props.theme.primary};
 }
 
-> button{
+ button{
     padding: 6px;
     border-radius: 2px;
     border: solid 1px ${props => props.theme.primary};

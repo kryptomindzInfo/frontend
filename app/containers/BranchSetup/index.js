@@ -1,5 +1,5 @@
 /*
- * BankLoginPage
+ * BranchSetup
  *
  * This is the first thing users see of our App, at the '/' route
  *
@@ -13,24 +13,21 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
-import messages from '../HomePage/messages';
+import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import FrontLeftSection from 'components/FrontLeftSection';
 import FrontRightSection from 'components/FrontRightSection';
 import LoginHeader from 'components/LoginHeader';
 import FrontFormTitle from 'components/FrontFormTitle';
-import FrontFormSubTitle from 'components/FrontFormSubTitle';
 import InputsWrap from 'components/InputsWrap';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import PrimaryBtn from 'components/PrimaryBtn';
-import Row from 'components/Row';
-import Col from 'components/Col';
+import BackBtn from 'components/BackBtn';
 import A from 'components/A';
 import Loader from 'components/Loader';
-
-import { API_URL } from '../App/constants';
+import { API_URL, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -41,18 +38,21 @@ toast.configure({
   pauseOnHover: true,
   draggable: true,
 });
-localStorage.removeItem('bankLogged');
-const token = localStorage.getItem('bankLogged');
 
-export default class BankLoginPage extends Component {
+const token = localStorage.getItem('branchLogged');
+console.log(token);
+const username = localStorage.getItem('branchUserName');
+export default class BranchSetup extends Component {
   constructor() {
     super();
     this.state = {
-      username: '',
+      username,
       password: '',
+      confirm: '',
       notification: '',
       loading: true,
       redirect: false,
+      token: token
     };
     this.error = this.error.bind(this);
   }
@@ -70,54 +70,68 @@ export default class BankLoginPage extends Component {
     });
   };
 
-  loginRequest = event => {
-    this.setState({
-      loginLoading: true
-    });
+  setupUpdate = event => {
+
     event.preventDefault();
+    if(this.state.password != this.state.confirm){
+      this.setState({
+        notification: 'Passwords do not match'
+      }, () => {
+        this.error();
+    });
+
+    }else{
+      this.setState({
+        setupLoading: true
+      });
     axios
-      .post(`${API_URL}/bankLogin`, this.state)
+      .post(`${API_URL}/branchSetupUpdate`, this.state )
       .then(res => {
         if (res.status == 200) {
-          console.log(res.data.token);
-          localStorage.setItem('bankLogged', res.data.token);
-          localStorage.setItem('bankName', res.data.name);
-          localStorage.setItem('bankUserName', res.data.username);
-          localStorage.setItem('bankContract', res.data.contract);
-          localStorage.setItem('bankLogo', res.data.logo);
-          localStorage.setItem('bankId', res.data.id);
-          if (!res.data.initial_setup) {
-            this.props.history.push('/bank/setup');
-          } 
-          else if (!res.data.status || res.data.status == 0 || res.data.status == '') {
-            this.props.history.push('/bank/activate');
-          } 
-          else {
-            this.props.history.push('/bank/dashboard');
-          }
+            localStorage.removeItem('branchLogged');
+            localStorage.removeItem('branchName');
+            localStorage.removeItem('branchUserName');
+            this.setState({
+              notification: 'Details updated, you will be redirected to the login screen'
+            }, () => {
+              this.success();
+              let history = this.props.history;
+              let bankName = this.props.match.params.bank;
+              setTimeout(function(){
+                history.push('/branch/'+bankName);
+              }, 3000);
+          });
         } else {
           throw res.data.error;
         }
         this.setState({
-          loginLoading: false
+          setupLoading: false
         });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
-          loginLoading: false
-        });
-        this.error();
+          setupLoading: false
+        }, () => {
+          this.error();
       });
+      });
+    }
   };
 
   componentDidMount() {
-    if (token !== undefined && token !== null) {
-      this.setState({ loading: false, redirect: true });
-    } else {
-      this.setState({ loading: false });
-    }
-    localStorage.clear();
+    axios
+      .post(`${API_URL}/getBankByName`, {name: this.props.match.params.bank})
+      .then(res => {
+        if (res.status == 200) {
+          this.setState({ bank: res.data.banks, loading:false });
+        } else {
+          throw res.data.error;
+        }
+      })
+      .catch(err => {
+        this.history.push("/");
+      });
   }
 
   render() {
@@ -144,34 +158,29 @@ export default class BankLoginPage extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | BANK | SIGNUP</title>
+          <title>E-WALLET | BANK | HOME</title>
         </Helmet>
-        <FrontLeftSection from="bank"></FrontLeftSection>
+        <FrontLeftSection from="branch" title={this.state.bank.name} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
+
         <FrontRightSection>
           <LoginHeader>
-          <FormattedMessage {...messages.pagetitle} />
-          </LoginHeader>
+            <A href={"/branch/"+this.state.bank.name+"/otp"} float="left">
+          <BackBtn className="material-icons">
+            keyboard_backspace
+          </BackBtn>
+          </A>
+            <FormattedMessage {...messages.pagetitle} /></LoginHeader>
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
-          <FrontFormSubTitle><FormattedMessage {...messages.subtitle2} /></FrontFormSubTitle>
-          <form action="" method="POST" onSubmit={this.loginRequest}>
+          <form action="" method="POST" onSubmit={this.setupUpdate}>
             <InputsWrap>
+
               <FormGroup>
-                <label><FormattedMessage {...messages.userid} />*</label>
-                <TextInput
-                  type="text"
-                  name="username"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.username}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label><FormattedMessage {...messages.password} />*</label>
+                <label><FormattedMessage {...messages.newpass} />*</label>
                 <TextInput
                   type="password"
                   name="password"
+                  pattern=".{8,}"
+                  title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.password}
@@ -179,22 +188,30 @@ export default class BankLoginPage extends Component {
                   required
                 />
               </FormGroup>
+
+              <FormGroup>
+                <label><FormattedMessage {...messages.confirm} />*</label>
+                <TextInput
+                  type="password"
+                  name="confirm"
+                  pattern=".{8,}"
+                  title= "Minimum 8 Characters"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.confirm}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
             </InputsWrap>
             {
-              this.loginLoading ?
+              this.state.setupLoading ?
               <PrimaryBtn disabled><Loader /></PrimaryBtn>
               :
-              <PrimaryBtn><FormattedMessage {...messages.pagetitle} /></PrimaryBtn>
+              <PrimaryBtn><FormattedMessage {...messages.update} /></PrimaryBtn>
             }
-            
-          </form>
-          <Row marginTop>
-            <Col />
-            <Col textRight>
-              <A href="/bank/forgot-password"><FormattedMessage {...messages.forgotpassword} /></A>
-            </Col>
-          </Row>
-        </FrontRightSection>
+
+          </form>       </FrontRightSection>
       </Wrapper>
     );
   }
