@@ -34,7 +34,7 @@ const PopupBody = styled.div`
     position: absolute;
     top: 0;
     right: 0;
-    padding: 10px;
+    padding: 9px;
     cursor: pointer;
     font-size: 22px;
     background: ${props => props.theme.accent};

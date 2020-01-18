@@ -607,9 +607,9 @@ roles:[],
                     </div>
 
 
-              <Button className="fr" flex onClick={this.showPopup}>
+              <Button className='addBankButton' flex onClick={this.showPopup}>
                 <i className="material-icons">add</i>
-                <span>Add Bank User</span>
+                <span >Add Bank User</span>
               </Button>
             </ActionBar>
             <div className="cardBody clr">
