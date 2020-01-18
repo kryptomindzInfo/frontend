@@ -517,7 +517,7 @@ export default class BankBranchList extends Component {
               </div>
 
 
-                <Button className="fr" flex onClick={this.showPopup}>
+                <Button className="addBankButton" flex onClick={this.showPopup}>
                 <i className="material-icons">add</i>
                 <span>Add Branch</span>
                 </Button>
@@ -644,7 +644,7 @@ export default class BankBranchList extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>Bank ID*</label>
+                <label>Branch ID*</label>
                 <TextInput
                   type="text"
                   name="bcode"
@@ -1048,7 +1048,7 @@ export default class BankBranchList extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>Bank ID*</label>
+                <label>Branch ID*</label>
                 <TextInput
                   type="text"
                   name="bcode"

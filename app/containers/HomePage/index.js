@@ -13,7 +13,6 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import Loader from 'components/Loader';
@@ -29,6 +28,7 @@ import PrimaryBtn from 'components/PrimaryBtn';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
+import messages from './messages';
 import { API_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -73,7 +73,7 @@ export default class HomePage extends Component {
   loginRequest = event => {
     event.preventDefault();
     this.setState({
-      loginLoading: true
+      loginLoading: true,
     });
     axios
       .post(`${API_URL}/login`, this.state)
@@ -88,13 +88,13 @@ export default class HomePage extends Component {
           throw res.data.error;
         }
         this.setState({
-          loginLoading: false
+          loginLoading: false,
         });
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
-          loginLoading: false
+          loginLoading: false,
         });
         this.error();
       });
@@ -195,17 +195,15 @@ export default class HomePage extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            {
-              this.loginLoading ?
-              <PrimaryBtn disabled>
-              <Loader />
-            </PrimaryBtn>
-              :
-              <PrimaryBtn>
-              <FormattedMessage {...messages.pagetitle} />
-            </PrimaryBtn>
-            }
-            
+            {this.loginLoading ? (
+                <PrimaryBtn disabled>
+                  <Loader />
+              </PrimaryBtn>
+                :
+                <PrimaryBtn>
+                <FormattedMessage {...messages.pagetitle} />
+                </PrimaryBtn>
+            )}
           </form>
           <Row marginTop>
             <Col />

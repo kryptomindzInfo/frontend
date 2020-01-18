@@ -79,6 +79,7 @@ export default class BankLoginPage extends Component {
       .post(`${API_URL}/bankLogin`, this.state)
       .then(res => {
         if (res.status == 200) {
+          console.log(res.data.token);
           localStorage.setItem('bankLogged', res.data.token);
           localStorage.setItem('bankName', res.data.name);
           localStorage.setItem('bankUserName', res.data.username);
@@ -116,6 +117,7 @@ export default class BankLoginPage extends Component {
     } else {
       this.setState({ loading: false });
     }
+    localStorage.clear();
   }
 
   render() {

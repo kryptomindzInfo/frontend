@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import LocaleToggle from 'containers/LocaleToggle';
 
@@ -32,22 +32,21 @@ const LanguageWrap = styled.div`
     }
 `;
 
-const Icon = styled.i `
-    float: left;
-    color: ${props => props.theme.accent};
-    font-size: 24px;
+const Icon = styled.i`
+  float: left;
+  color: ${props => props.theme.accent};
+  font-size: 24px;
 `;
 
 class LanguageSwitch extends Component {
   render() {
     return (
-        <LanguageWrap className="clr">
-            <LocaleToggle />
-            <Icon className="material-icons fl">g_translate</Icon>
-        </LanguageWrap>
-        
+      <LanguageWrap className="clr">
+        <LocaleToggle />
+        <Icon className="material-icons fl">g_translate</Icon>
+      </LanguageWrap>
     );
   }
 }
- 
+
 export default LanguageSwitch;

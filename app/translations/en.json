@@ -61,6 +61,8 @@
   "boilerplate.containers.BankDashboardPage.box5": "Total Partners",
 
   "boilerplate.containers.BankPage.addbank": "Add Bank",
+  "boilerplate.containers.BankFee.createFee": "Create Fee",
+
   "boilerplate.containers.BankPage.title": "Bank List",
   "boilerplate.containers.BankPage.subtitle": "Your Friends and Family",
   "boilerplate.containers.BankPage.th1": "Bank Name",

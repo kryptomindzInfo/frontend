@@ -58,6 +58,16 @@ font-size: 20px;
 padding: 15px;
 `;
 
+// const ActiveTab = styled.div`
+// background: ${props => props.theme.primary};
+// width: 194px;
+// padding: 15px;
+// float:left;
+// border: 1px solid  ${props => props.theme.primary};
+// color: #fff;
+// font-size: 20px;
+// `;
+
 const token = localStorage.getItem('bankLogged');
 const bid = localStorage.getItem('bankId');
 console.log(bid);

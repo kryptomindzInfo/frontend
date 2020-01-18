@@ -48,8 +48,6 @@ h2{
     border-radius:8px;
     font-size: 18px;
 }
-.headerNavDash:hover{
-    background-color:#7ba051;
-}
+
 `;
 export default TopBar;

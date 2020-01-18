@@ -24,7 +24,7 @@ toast.configure({
 });
 const token = localStorage.getItem('bankLogged');
 
-class OperationalWallet extends Component {
+class BankOperationalWallet extends Component {
   constructor() {
     super();
     this.state = {
@@ -359,7 +359,7 @@ class OperationalWallet extends Component {
               <p className="note">
                 * I have read the <a>Terms and Conditions</a>
               </p>
-            
+
 
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>
@@ -373,4 +373,4 @@ class OperationalWallet extends Component {
   }
 }
 
-export default OperationalWallet;
+export default BankOperationalWallet;

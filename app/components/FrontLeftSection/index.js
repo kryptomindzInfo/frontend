@@ -23,30 +23,39 @@ justify-content:center;
 
 class FrontLeftSection extends Component {
   render() {
-      console.log(this.props);
-      const logo = 'sdf';
     return (
         <FrontLeftWrap>
           <CircularLogo>
             {
-              (this.props.logo) ? 
+              (this.props.logo) ?
               <img src={this.props.logo} />
               :
               (this.props.from == 'bank')  ?
                 <FormattedMessage {...messages.bank} />
               :
-              (this.props.from == 'user')  ? 
+              (this.props.from == 'user')  ?
               <FormattedMessage {...messages.user} />
               :
               <FormattedMessage {...messages.infra} />
-              
+
             }
           </CircularLogo>
           <Title>
-            <FormattedMessage {...messages.title} />
+            {
+              this.props.title ?
+              <span>{this.props.title}</span>
+              :
+              <FormattedMessage {...messages.title} />
+            }
+
           </Title>
           <SubTitle>
-            <FormattedMessage {...messages.subTitle1} />
+            Welcome to {
+              this.props.title ?
+              <span>{this.props.title}</span>
+              :
+              <span>E-WALLET</span>
+            }
             <br />
             <FormattedMessage {...messages.subTitle2} />
             <br />
@@ -56,5 +65,5 @@ class FrontLeftSection extends Component {
     );
   }
 }
- 
+
 export default FrontLeftSection;
