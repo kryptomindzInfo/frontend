@@ -488,7 +488,7 @@ export default class BankUser extends Component {
 
                       <div className="iconedInput fl">
                       <i className="material-icons">search</i>
-                      <input type="text" placeholder="Search" />
+                      <input type="text" placeholder="Search Bank User" />
                     </div>
 
 

@@ -48,7 +48,7 @@ import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
 import BankBranchList from 'containers/BankBranchList/Loadable';
 import TermsConditions from 'components/TermsConditions';
 import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
-import BankUser from 'containers/BankUser'
+// import BankUser from 'containers/BankUser'
 import BankCreateFee from 'containers/BankCreateFee/Loadable';
 
 import BankUser from 'containers/BankUser';

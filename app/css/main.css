@@ -39,7 +39,7 @@ body {
 }
 
 .addBankButton {
-  float: right;
+  float: right !important;
   min-width: 110px;
   padding: 7px;
   text-align: center;
