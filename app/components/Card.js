@@ -62,8 +62,7 @@ const Card = styled.div`
     i {
       margin-right: 10px;
       margin-top: 0;
-      color: #4da1ff;
-      background-color: ${props => (props.selected ? '#fff' : 'transparent')};
+      color: ${props => (props.selected ? '#fff' : '#417505')};
     }
     h3 {
       font-size: 13px;
@@ -73,7 +72,13 @@ const Card = styled.div`
     }
   }
   &.sideNav:hover {
-    background-color: #75d506;
+    background-color: #417505;
+    i{
+      color: #fff;
+    }
+    h3 {
+      color: #fff !important;
+    }
   }
   > .cardHeader:after {
     content: '';

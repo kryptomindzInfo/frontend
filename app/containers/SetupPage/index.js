@@ -13,7 +13,6 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import FrontLeftSection from 'components/FrontLeftSection';
@@ -29,9 +28,10 @@ import PrimaryBtn from 'components/PrimaryBtn';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import Loader from 'components/Loader';
-import { API_URL } from '../App/constants';
 import history from 'utils/history';
 import Modal from 'react-modal';
+import { API_URL } from '../App/constants';
+import messages from './messages';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -91,7 +91,9 @@ export default class SetupPage extends Component {
   }
 
   success = txt => toast.success(txt);
+
   error = txt => toast.error(txt);
+
   warn = txt => toast.warn(txt);
 
   handleInputChange = event => {
@@ -101,6 +103,7 @@ export default class SetupPage extends Component {
       [name]: value,
     });
   };
+
   handleOpenModal() {
     this.setState({ showModal: true });
   }
@@ -122,7 +125,7 @@ export default class SetupPage extends Component {
               throw res.data.error;
             } else {
               this.setState({ showModal: true });
-              //open confirmation modal
+              // open confirmation modal
               //   this.success(
               //     'Details updated, you will be redirected to the login screen',
               //   );
@@ -197,7 +200,7 @@ export default class SetupPage extends Component {
       <>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | BANK | SIGN-UP</title>
+          <title>E-WALLET | BANK | SIGNUP</title>
         </Helmet>
 
         <Wrapper>
@@ -293,8 +296,15 @@ export default class SetupPage extends Component {
                           id="username"
                           type="text"
                           name="username"
-                          pattern=".{8,}"
-                          title="Minimum 8 Characters"
+                          pattern="(^[a-z][a-z0-9._-]{3,19}$)"
+                          // pattern=".{4,8}"
+                          // title="Minimum 4 Characters"
+                          onInput={e => e.target.setCustomValidity('')}
+                          onInvalid={e =>
+                            e.target.setCustomValidity(
+                              'Username must be minimum 4 characters, should start with an alphabet, can contain number and special character(-_.)',
+                            )
+                          }
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.username.trim().toLowerCase()}
@@ -310,8 +320,14 @@ export default class SetupPage extends Component {
                         <TextInput
                           type="password"
                           name="password"
-                          pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{8,16})"
-                          title="Minimum 8 Alphanumeric Characters"
+                          pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_.]).{8,20})"
+                          // title="Minimum 8 Alphanumeric Characters"
+                          onInput={e => e.target.setCustomValidity('')}
+                          onInvalid={e =>
+                            e.target.setCustomValidity(
+                              'Password must be minimum 8 characters, should contain atleast one lowercase, uppercase, number and special character(@$_.)',
+                            )
+                          }
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.password}
@@ -328,13 +344,13 @@ export default class SetupPage extends Component {
                         <TextInput
                           type="password"
                           name="confirm"
-                          pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{8,16})"
+                          // pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_.]).{8,20})"
                           // title="Minimum 8 Alphanumeric Characters"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.confirm}
                           onChange={this.handleInputChange}
-                          required
+                          // required
                         />
                       </FormGroup>
 
@@ -343,6 +359,13 @@ export default class SetupPage extends Component {
                         <TextInput
                           type="email"
                           name="email"
+                          pattern="(^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$)"
+                          onInput={e => e.target.setCustomValidity('')}
+                          onInvalid={e =>
+                            e.target.setCustomValidity(
+                              'Enter a valid email address',
+                            )
+                          }
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.email}
@@ -1010,9 +1033,16 @@ export default class SetupPage extends Component {
                             <label>Authorized Phone Number*</label>
                             <TextInput
                               type="text"
-                              pattern="[0-9]{10}"
-                              title="10 Digit numeric value"
+                              pattern="^[2-9]{2}\d{8}$"
+                              // title="10 Digit numeric value"
                               name="mobile"
+                              onInput={e => e.target.setCustomValidity('')}
+                              onInvalid={e =>
+                                e.target.setCustomValidity(
+                                  'Enter a valid phone number',
+                                )
+                              }
+                              // onKeyDown={e => /[2-9]{2}\d{8}/.test(e.key) && e.preventDefault()}
                               onFocus={inputFocus}
                               onBlur={inputBlur}
                               value={this.state.mobile}

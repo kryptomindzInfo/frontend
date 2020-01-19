@@ -27,6 +27,8 @@ import Card from 'components/Card';
 import Button from 'components/Button';
 import Table from 'components/Table';
 import MiniPopUp from 'components/MiniPopUp';
+import Popup from 'components/Popup';
+
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import UploadArea from 'components/UploadArea';
@@ -46,21 +48,21 @@ toast.configure({
 });
 
 const Tab = styled.div`
-background: ${props => props.theme.primary};
-width: 194px;
-padding: 15px;
-float:left;
-border: 1px solid  ${props => props.theme.primary};
-color: #fff;
-font-size: 20px;
+  background: ${props => props.theme.primary};
+  width: 194px;
+  padding: 15px;
+  float: left;
+  border: 1px solid ${props => props.theme.primary};
+  color: #fff;
+  font-size: 20px;
 `;
 const Tab2 = styled.div`
-float:left;
-width: 194px;
-border: 1px solid  ${props => props.theme.primary};
-color: ${props => props.theme.primary};
-font-size: 20px;
-padding: 15px;
+  float: left;
+  width: 194px;
+  border: 1px solid ${props => props.theme.primary};
+  color: ${props => props.theme.primary};
+  font-size: 20px;
+  padding: 15px;
 `;
 
 const token = localStorage.getItem('bankLogged');
@@ -96,12 +98,12 @@ export default class BankFees extends Component {
       banks: [],
       rules: [],
       otp: '',
-      showOtp: false
+      showOtp: false,
+      isInfraFeeVisible: true,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
-    
 
     this.onChange = this.onChange.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
@@ -121,15 +123,19 @@ export default class BankFees extends Component {
   };
 
   showMiniPopUp = (b, r) => {
-    
-    this.setState({ popname: b.name, poptype: b.trans_type, sid: b._id, popup: true, html: r  });
+    this.setState({
+      popname: b.name,
+      poptype: b.trans_type,
+      sid: b._id,
+      popup: true,
+      html: r,
+    });
     //this.props.history.push('/createfee/'+this.state.bank_id);
   };
 
   closeMiniPopUp = () => {
     this.setState({
       popup: false,
-     
     });
   };
 
@@ -138,8 +144,8 @@ export default class BankFees extends Component {
     // axios.post(API_URL+'/logout', {token: token})
     // .then(res => {
     //    if(res.status == 200){
-    localStorage.removeItem("logged");
-    localStorage.removeItem("name");
+    localStorage.removeItem('logged');
+    localStorage.removeItem('name');
     this.setState({ redirect: true });
     //     }else{
     //       const error = new Error(res.data.error);
@@ -155,31 +161,31 @@ export default class BankFees extends Component {
   addBank = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/generateOTP`, {
+      .post(`${API_URL}/generateOTP`, {
         name: this.state.name,
         mobile: this.state.mobile,
         page: 'addBank',
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
               showOtp: true,
-              notification: 'OTP Sent'
+              notification: 'OTP Sent',
             });
             this.success();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
@@ -187,96 +193,98 @@ export default class BankFees extends Component {
 
   approve = event => {
     this.setState({
-      approveLoading: true
+      approveLoading: true,
     });
     event.preventDefault();
     axios
-      .post(`${API_URL  }/approveFee`, {
+      .post(`${API_URL}/approveFee`, {
         id: this.state.sid,
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
-            this.setState({
-              notification: 'Approved'
-            }, () => {
-              this.success();
-              this.closeMiniPopUp();
-              this.getRules();
-            });
+          } else {
+            this.setState(
+              {
+                notification: 'Approved',
+              },
+              () => {
+                this.success();
+                this.closeMiniPopUp();
+                this.getRules();
+              },
+            );
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
         this.setState({
-          approveLoading: false
+          approveLoading: false,
         });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          approveLoading: false
+          notification: err.response ? err.response.data.error : err.toString(),
+          approveLoading: false,
         });
         this.error();
-
       });
   };
 
   decline = event => {
     this.setState({
-      declineLoading: true
+      declineLoading: true,
     });
     event.preventDefault();
     axios
-      .post(`${API_URL  }/declineFee`, {
+      .post(`${API_URL}/declineFee`, {
         id: this.state.sid,
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
-            this.setState({
-              notification: 'Declined'
-            }, () => {
-              this.success();
-              this.closeMiniPopUp();
-              this.getRules();
-            });
-            
+          } else {
+            this.setState(
+              {
+                notification: 'Declined',
+              },
+              () => {
+                this.success();
+                this.closeMiniPopUp();
+                this.getRules();
+              },
+            );
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
         this.setState({
-          declineLoading: false
+          declineLoading: false,
         });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          declineLoading: false
+          notification: err.response ? err.response.data.error : err.toString(),
+          declineLoading: false,
         });
         this.error();
       });
   };
 
-
   showWallet = event => {
     event.preventDefault();
-
   };
 
   verifyOTP = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/addBank`, {
+      .post(`${API_URL}/addBank`, {
         name: this.state.name,
         address1: this.state.address1,
         state: this.state.state,
@@ -291,30 +299,29 @@ export default class BankFees extends Component {
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              notification: "Bank added successfully!",
+              notification: 'Bank added successfully!',
             });
             this.success();
             this.closeMiniPopUp();
             this.getBanks();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
   };
-
 
   removeFile = key => {
     this.setState({
@@ -329,7 +336,7 @@ export default class BankFees extends Component {
 
   onChange(e) {
     if (e.target.files && e.target.files[0] != null) {
-      this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
+      this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
     }
   }
 
@@ -339,56 +346,50 @@ export default class BankFees extends Component {
     formData.append('file', file);
     const config = {
       headers: {
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     };
 
     axios
-      .post(`${API_URL  }/fileUpload?token=${  token}`, formData, config)
+      .post(`${API_URL}/fileUpload?token=${token}`, formData, config)
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              [key] : res.data.name
+              [key]: res.data.name,
             });
           }
-        }else{
+        } else {
           throw res.data.error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
   }
 
-  getBanks = () => {
-
-  };
+  getBanks = () => {};
 
   getRules = () => {
     axios
-      .post(`${API_URL  }/getBankRules`, { bank_id: this.state.bank })
+      .post(`${API_URL}/getBankRules`, { bank_id: this.state.bank })
       .then(res => {
-        if(res.status == 200){
+        if (res.status == 200) {
           console.log(res.data);
           this.setState({ loading: false, rules: res.data.rules });
         }
       })
-      .catch(err => {
-
-      });
+      .catch(err => {});
   };
-
 
   componentDidMount() {
     // this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
-      
       this.getBanks();
       this.getRules();
     } else {
@@ -397,11 +398,45 @@ export default class BankFees extends Component {
     }
   }
 
+  showInfraFeeView = () => {
+    console.log('working!!');
+    this.setState({ isInfraFeeVisible: true });
+  };
+  showBankFeeView = () => {
+    console.log('working bank!!');
+    this.setState({ isInfraFeeVisible: false });
+  };
+
+  showPopup = () => {
+    this.setState({ popup: true });
+  };
+  closePopup = () => {
+    this.setState({
+      popup: false,
+      // editPopup: false,
+      // name: '',
+      // address1: '',
+      // state: '',
+      // zip: '',
+      // bcode: '',
+      // country: '',
+      // email: '',
+      // mobile: '',
+      // logo: null,
+      // contract: null,
+      // otp: '',
+      // showOtp: false,
+      // showEditOtp: false,
+    });
+  };
+  try = () => {
+    this.props.history.push('/bank/create-fee');
+  };
   render() {
     console.log(this.props);
     function inputFocus(e) {
       const { target } = e;
-      target.parentElement.querySelector("label").classList.add("focused");
+      target.parentElement.querySelector('label').classList.add('focused');
     }
 
     function inputBlur(e) {
@@ -410,6 +445,12 @@ export default class BankFees extends Component {
         target.parentElement.querySelector('label').classList.remove('focused');
       }
     }
+
+    // function showInfraFeeView() {
+    //   console.log('working!!')
+    // }
+
+    // function showBankFeeView() {}
 
     const { loading, redirect } = this.state;
     if (loading) {
@@ -420,8 +461,7 @@ export default class BankFees extends Component {
     }
     const dis = this;
     return (
-
-      <Wrapper  from="bank">
+      <Wrapper from="bank">
         <Helmet>
           <meta charSet="utf-8" />
           <title>Banks | INFRA | E-WALLET</title>
@@ -430,14 +470,37 @@ export default class BankFees extends Component {
         <Container verticalMargin>
           <BankSidebarTwo active="fees" />
           <Main>
-            <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
+            <ActionBar
+              marginBottom="33px"
+              inputWidth="calc(100% - 241px)"
+              className="clr"
+            >
               <div className="clr">
-                <Tab>Bank and Infra</Tab>
-                <Tab2>Bank and Users</Tab2>
+                <div
+                  className={`${
+                    this.state.isInfraFeeVisible ? 'ActiveTab' : 'InactiveTab'
+                  }`}
+                  onClick={this.showInfraFeeView}
+                >
+                  Bank and Infra
+                </div>
+                <div
+                  className={`${
+                    this.state.isInfraFeeVisible ? 'InactiveTab' : 'ActiveTab'
+                  }`}
+                  onClick={this.showBankFeeView}
+                >
+                  Bank and Users
+                </div>
               </div>
-                        </ActionBar>
-            <Card bigPadding>
-              <div className="cardHeader" >
+            </ActionBar>
+            <Card
+              bigPadding
+              style={{
+                display: `${this.state.isInfraFeeVisible ? 'block' : 'none'}`,
+              }}
+            >
+              <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>
                 </div>
@@ -450,133 +513,292 @@ export default class BankFees extends Component {
                 <Table marginTop="34px" smallTd>
                   <thead>
                     <tr>
-                    <th>Name</th>
-                     <th>Transaction Type</th>
-                     <th>Ranges</th>
-                     <th></th>
-                      </tr>
+                      <th>Name</th>
+                      <th>Transaction Type</th>
+                      <th>Ranges</th>
+                      <th />
+                    </tr>
                   </thead>
                   <tbody>
-                  {
-                      this.state.rules && this.state.rules.length > 0
-                        ? this.state.rules.map(function(b) {
+                    {this.state.rules && this.state.rules.length > 0
+                      ? this.state.rules.map(function(b) {
                           var r = JSON.parse(b.editedRanges);
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td>
-                          {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
+                          return (
+                            <tr key={b._id}>
+                              <td>{b.name}</td>
+                              <td className="tac">{b.trans_type}</td>
+                              {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
                           <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
-                          <td>
-                            {
-                            r.map(function(v){
-                            return <div>Count: <span className="green">{v.trans_from} -  {v.trans_to}</span>, Fixed: <span className="green">{CURRENCY+" "+v.fixed_amount}</span>, Percentage: <span className="green">{v.percentage}</span></div>
-                            })
-                            }
-                          </td>
-                          <td className="tac bold" >
-                            {
-                              b.active == 'Inactive' ?
-                              <span className="absoluteMiddleRight primary popMenuTrigger">
-                              <i className="material-icons ">block</i>
-                              </span>
-                              :
-                              b.edit_status != 0 ?
-                              b.edit_status == 1 ?
-                              <a className="text-light">approved</a>
-                              :
-                              <a className="text-accent">declined</a>
-                              :
-                              <Button onClick={() => dis.showMiniPopUp(b, r)}>
-                                <span>Approve</span>
-                              </Button>
-                            }
-
-                            </td></tr>
+                              <td>
+                                {r.map(function(v) {
+                                  return (
+                                    <div>
+                                      Count:{' '}
+                                      <span className="green">
+                                        {v.trans_from} - {v.trans_to}
+                                      </span>
+                                      , Fixed:{' '}
+                                      <span className="green">
+                                        {CURRENCY + ' ' + v.fixed_amount}
+                                      </span>
+                                      , Percentage:{' '}
+                                      <span className="green">
+                                        {v.percentage}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </td>
+                              <td className="tac bold">
+                                {b.active == 'Inactive' ? (
+                                  <span className="absoluteMiddleRight primary popMenuTrigger">
+                                    <i className="material-icons ">block</i>
+                                  </span>
+                                ) : b.edit_status != 0 ? (
+                                  b.edit_status == 1 ? (
+                                    <a className="text-light">approved</a>
+                                  ) : (
+                                    <a className="text-accent">declined</a>
+                                  )
+                                ) : (
+                                  <Button
+                                    onClick={() => dis.showMiniPopUp(b, r)}
+                                    className="addBankButton"
+                                  >
+                                    <span>Approve</span>
+                                  </Button>
+                                )}
+                              </td>
+                            </tr>
+                          );
                         })
-                        :
-                        null
-                    }
+                      : null}
                   </tbody>
                 </Table>
               </div>
             </Card>
+            <div
+              style={{
+                display: `${this.state.isInfraFeeVisible ? 'none' : 'block'}`,
+              }}
+            >
+              <ActionBar
+                marginBottom="33px"
+                inputWidth="calc(100% - 241px)"
+                className="clr"
+              >
+                <div className="iconedInput fl">
+                  <i className="material-icons">search</i>
+                  <input type="text" placeholder="Search" />
+                </div>
+
+                <Button className="addBankButton" flex onClick={this.try}>
+                  <i className="material-icons">add</i>
+                  <span>
+                    {/* <FormattedMessage {...messages.addbank} /> */}
+                    <span>Create Fee</span>
+                  </span>
+                </Button>
+              </ActionBar>
+              <Card bigPadding>
+                <div className="cardHeader">
+                  <div className="cardHeaderLeft">
+                    <i className="material-icons">supervised_user_circle</i>
+                  </div>
+                  <div className="cardHeaderRight">
+                    <h3>Fee Rules</h3>
+                    <h5>Fees created by the bank</h5>
+                  </div>
+                </div>
+                <div className="cardBody">
+                  <Table marginTop="34px" smallTd>
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Transaction Type</th>
+                        <th>Amount of transaction</th>
+                        <th>Transaction Count</th>
+                        <th>Fixed Amount</th>
+                        <th>Percentage</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.state.rules && this.state.rules.length > 0
+                        ? this.state.rules.map(function(b) {
+                            var r = JSON.parse(b.editedRanges);
+                            return (
+                              <tr key={b._id}>
+                                <td>{b.name}</td>
+                                <td className="tac">{b.trans_type}</td>
+                                {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
+                          <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
+                                <td>
+                                  {r.map(function(v) {
+                                    return (
+                                      <div>
+                                        Count:{' '}
+                                        <span className="green">
+                                          {v.trans_from} - {v.trans_to}
+                                        </span>
+                                        , Fixed:{' '}
+                                        <span className="green">
+                                          {CURRENCY + ' ' + v.fixed_amount}
+                                        </span>
+                                        , Percentage:{' '}
+                                        <span className="green">
+                                          {v.percentage}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                </td>
+                                <td className="tac bold">
+                                  {b.active == 'Inactive' ? (
+                                    <span className="absoluteMiddleRight primary popMenuTrigger">
+                                      <i className="material-icons ">block</i>
+                                    </span>
+                                  ) : b.edit_status != 0 ? (
+                                    b.edit_status == 1 ? (
+                                      <a className="text-light">approved</a>
+                                    ) : (
+                                      <a className="text-accent">declined</a>
+                                    )
+                                  ) : (
+                                    <Button
+                                      onClick={() => dis.showMiniPopUp(b, r)}
+                                      className="addBankButton"
+                                    >
+                                      <span>Approve</span>
+                                    </Button>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })
+                        : null}
+                    </tbody>
+                  </Table>
+                </div>
+              </Card>
+            </div>
           </Main>
         </Container>
-        { this.state.popup ?
+        {/* {this.state.popup ? (
+         
+          <div>
+            <Main style={{ display: 'none' }} />
+            <Card bigPadding>hiiiiiii</Card>
+          </div>
+        ) : null} */}
+        {/* {this.state.popup ? (
           <MiniPopUp close={this.closeMiniPopUp.bind(this)}>
-            {
-              this.state.showOtp ?
+            {this.state.showOtp ? (
               <div>
-              <h1><FormattedMessage {...messages.verify} /></h1>
-            <form >
-              <FormGroup>
-                <label><FormattedMessage {...messages.otp} />*</label>
-                <TextInput
-                  type="text"
-                  name="otp"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.otp}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.verify} /></span>
-              </Button>
-              </form>
+                <h1>
+                  <FormattedMessage {...messages.verify} />
+                </h1>
+                <form>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.otp} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <Button filledBtn marginTop="50px">
+                    <span>
+                      <FormattedMessage {...messages.verify} />
+                    </span>
+                  </Button>
+                </form>
               </div>
-              :
+            ) : (
               <div>
-
-            <form >
-              <p><span  id="popname">{this.state.popname}</span></p>
-              <p > Sending from <span id="poptype">{this.state.poptype}</span></p>
-              {/* <div dangerouslySetInnerHTML={{__html: this.state.html}} /> */}
-              {
-                this.state.html.map(function(v){
-                  return <div>Count: <span className="green">{v.trans_from} -  {v.trans_to}</span>, Fixed: <span className="green">{CURRENCY+" "+v.fixed_amount}</span>, Percentage: <span className="green">{v.percentage}</span></div>
-                  })
-              }
-              {/* <p > Transaction range<span id="poprange">{this.state.poprange}</span></p>
-              <p > Fee <span id="poppercent">{this.state.poppercent}</span> &nbsp; &nbsp; Priority: <span>100</span></p> */}
-                         <Row>
-                  <Col>
-                  <FormGroup>
-                    {
-                      this.state.declineLoading ? 
-                      <Button filledBtn marginTop="50px" accentedBtn onClick={this.decline} disabled>
-                <Loader />
-              </Button >
-                      :
-                      <Button filledBtn marginTop="50px" accentedBtn onClick={this.decline}>
-                <span>Decline</span>
-              </Button >
-                    }
+                <form>
+                  <p>
+                    <span id="popname">{this.state.popname}</span>
+                  </p>
+                  <p>
+                    {' '}
+                    Sending from <span id="poptype">{this.state.poptype}</span>
+                  </p>
+                  {this.state.html.map(function(v) {
+                    return (
+                      <div>
+                        Count:{' '}
+                        <span className="green">
+                          {v.trans_from} - {v.trans_to}
+                        </span>
+                        , Fixed:{' '}
+                        <span className="green">
+                          {CURRENCY + ' ' + v.fixed_amount}
+                        </span>
+                        , Percentage:{' '}
+                        <span className="green">{v.percentage}</span>
+                      </div>
+                    );
+                  })}
                   
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                    {
-                      this.state.approveLoading ?
-                      <Button filledBtn marginTop="50px"  onClick={this.approve} disabled>
-                <Loader />
-              </Button>
-                      :
-                      <Button filledBtn marginTop="50px"  onClick={this.approve}>
-                <span>Approve</span>
-              </Button>
-                    }
-                  
-                  </FormGroup>
-                  </Col>
-                </Row>
-
-
-            </form>
-            </div>
-            }
+                  <Row>
+                    <Col>
+                      <FormGroup>
+                        {this.state.declineLoading ? (
+                          <Button
+                            filledBtn
+                            marginTop="50px"
+                            accentedBtn
+                            onClick={this.decline}
+                            disabled
+                          >
+                            <Loader />
+                          </Button>
+                        ) : (
+                          <Button
+                            filledBtn
+                            marginTop="50px"
+                            accentedBtn
+                            onClick={this.decline}
+                          >
+                            <span>Decline</span>
+                          </Button>
+                        )}
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        {this.state.approveLoading ? (
+                          <Button
+                            filledBtn
+                            marginTop="50px"
+                            onClick={this.approve}
+                            disabled
+                          >
+                            <Loader />
+                          </Button>
+                        ) : (
+                          <Button
+                            filledBtn
+                            marginTop="50px"
+                            onClick={this.approve}
+                          >
+                            <span>Approve</span>
+                          </Button>
+                        )}
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </form>
+              </div>
+            )}
           </MiniPopUp>
-          : null }
+        ) : null} */}
       </Wrapper>
     );
   }

@@ -488,13 +488,13 @@ export default class BankUser extends Component {
 
                       <div className="iconedInput fl">
                       <i className="material-icons">search</i>
-                      <input type="text" placeholder="Search" />
+                      <input type="text" placeholder="Search Bank User" />
                     </div>
 
 
-              <Button className="fr" flex onClick={this.showPopup}>
+              <Button className='addBankButton' flex onClick={this.showPopup}>
                 <i className="material-icons">add</i>
-                <span>Add Bank User</span>
+                <span >Add Bank User</span>
               </Button>
             </ActionBar>
             <div className="cardBody clr">
