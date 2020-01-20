@@ -4,7 +4,7 @@
  * This is the first thing users see of our App, at the '/' route
  *
  */
-
+ 
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
@@ -85,6 +85,8 @@ export default class BranchLogin extends Component {
           localStorage.setItem('branchUserName', res.data.username);
           localStorage.setItem('branchId', res.data.id);
           localStorage.setItem('bankLogo', res.data.logo);
+          localStorage.setItem('branchEmail', res.data.email);
+          localStorage.setItem('branchMobile', res.data.mobile);
 
             this.props.history.push('/branch/'+this.props.match.params.bank+'/dashboard');
 

@@ -28,7 +28,7 @@ color: #417505;
 text-align: center;
 `;
 
-class BankSidebarThree extends Component {
+class BankSidebarCashier extends Component {
   editSignal = event => {
       this.props.edit();
   };
@@ -44,19 +44,13 @@ class BankSidebarThree extends Component {
     const bt = this.props.blockTxt == 1 ? 'Block' : 'Unblock';
     return (
         <Sidebar marginRight>
-            
-            <A href={"/bank/branch/"+this.props.branchId}>
+            <A href="/bank/info">
             <Card rounded selected={info} className="sideNav">
                 <i className="material-icons">person_add</i>
-                <h3>Branch Info</h3>
+                <h3>Cashier Info</h3>
             </Card >
             </A>
-            <A href={"/bank/cashiers/"+this.props.branchId}>
-            <Card rounded selected={cashier} className="sideNav">
-            <i className="material-icons">folder</i>
-                <h3>Cashier</h3>
-            </Card>
-            </A>
+          
             <A href="/reports/">
             <Card rounded selected={reports} className="sideNav">
             <i className="material-icons">insert_chart_outlined</i>
@@ -79,4 +73,4 @@ class BankSidebarThree extends Component {
   }
 }
 
-export default BankSidebarThree;
+export default BankSidebarCashier;

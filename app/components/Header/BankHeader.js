@@ -135,7 +135,7 @@ class BankHeader extends Component {
         <Container>
           {
             page == 'branch' ? 
-            <A href="/bank/branches" float="left">
+            <A href={this.props.goto} float="left">
             <Link>
               Back
             </Link>
@@ -149,8 +149,13 @@ class BankHeader extends Component {
               <img src={STATIC_URL + this.state.logo} />
             </div>
             <h2>{this.state.banks && this.state.banks.name}</h2>
-            {/* <Logo><FormattedMessage {...messages.logo} /></Logo> */}
           </A>
+          {
+            this.props.middleTitle ?
+            <div className="middleTitle">{this.props.middleTitle}</div>
+            :
+            null
+          }
           {
             page == 'branch' ?
             null

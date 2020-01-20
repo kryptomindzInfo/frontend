@@ -135,7 +135,7 @@ class BranchHeader extends Component {
         <Container>
           {
             page == 'branch' ?
-            <A href={"/branch/"+this.props.bankName+"/dashboard"} float="left">
+            <A href={this.props.goto} float="left">
             <Link>
               Back
             </Link>
@@ -151,6 +151,12 @@ class BranchHeader extends Component {
             <h2>{this.props.bankName}</h2>
             {/* <Logo><FormattedMessage {...messages.logo} /></Logo> */}
           </A>
+          {
+            this.props.middleTitle ?
+            <div className="middleTitle">{this.props.middleTitle}</div>
+            :
+            null
+          }
           {
             page == 'branch' ?
             null

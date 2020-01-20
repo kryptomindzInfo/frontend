@@ -29,6 +29,7 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
 import Loader from 'components/Loader';
+import history from 'utils/history';
 
 import { API_URL } from '../App/constants';
 
@@ -86,15 +87,17 @@ export default class BankLoginPage extends Component {
           localStorage.setItem('bankContract', res.data.contract);
           localStorage.setItem('bankLogo', res.data.logo);
           localStorage.setItem('bankId', res.data.id);
+          console.log(localStorage.getItem("bankLogged"));
           if (!res.data.initial_setup) {
-            this.props.history.push('/bank/setup');
+            history.push('/bank/setup');
           } 
           else if (!res.data.status || res.data.status == 0 || res.data.status == '') {
-            this.props.history.push('/bank/activate');
+            history.push('/bank/activate');
           } 
           else {
-            this.props.history.push('/bank/dashboard');
+            history.push('/bank/dashboard');
           }
+     
         } else {
           throw res.data.error;
         }
@@ -112,12 +115,12 @@ export default class BankLoginPage extends Component {
   };
 
   componentDidMount() {
-    if (token !== undefined && token !== null) {
-      this.setState({ loading: false, redirect: true });
-    } else {
+    // if (token !== undefined && token !== null) {
+    //   this.setState({ loading: false, redirect: true });
+    // } else {
       this.setState({ loading: false });
-    }
-    localStorage.clear();
+    //}
+    //localStorage.clear();
   }
 
   render() {

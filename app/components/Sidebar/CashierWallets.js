@@ -22,62 +22,67 @@ class BranchWallets extends Component {
     return (
       <Row>
       <Col>
-      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding bordered>
-        <h3>
-          <FormattedMessage {...messages.operational} />
-        </h3>
+      <Card marginBottom="54px" buttonMarginTop="32px"  bordered>
+        <h4>
+          Transaction Limit
+        </h4>
         <h5>
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} 0
+          {CURRENCY} {this.props.limit}
         </div>
-        <A href={'/operationalHistory/' + this.props.historyLink} float="right">
-          <span className="history">History</span>
-        </A>
+   
       </Card>
       </Col>
-      <Col>
-      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding bordered>
-        <h3>
-          Master Wallet
-        </h3>
-        <h5>
-          <FormattedMessage {...messages.available} />
-        </h5>
-        <div className="cardValue">
-          {CURRENCY} 0
-        </div>
-        <A href={'/operationalHistory/' + this.props.historyLink} float="right">
-          <span className="history">History</span>
-        </A>
-      </Card>
-      </Col>
-      <Col>
-      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding  bordered>
-        <h3>
-          Credit Limit
-        </h3>
-        <Row>
-        <Col><h5>
-          <FormattedMessage {...messages.available} />
-        </h5>
-        <div className="cardValue">
-          {CURRENCY} 0
-        </div></Col>
-        <Col><h5>
-          Total
-        </h5>
-        <div className="cardValue">
-          {CURRENCY} 0
-        </div></Col>
-        </Row>
 
-        <A href={'/operationalHistory/' + this.props.historyLink} float="right">
-          &nbsp;
+      <Col>
+      <Card marginBottom="54px" buttonMarginTop="32px"  bordered>
+        <h4>
+          Cash in Hand
+        </h4>
+        <h5>
+          <FormattedMessage {...messages.available} />
+        </h5>
+        <div className="cardValue">
+          {CURRENCY} 0
+        </div>
+   
+      </Card>
+      </Col>
+      <Col>
+      <Card marginBottom="54px" buttonMarginTop="32px"  bordered>
+        <h4>
+          Money Paid Today
+        </h4>
+        <h5>
+          <FormattedMessage {...messages.available} />
+        </h5>
+        <div className="cardValue">
+          {CURRENCY} 0
+        </div>
+        <A href={'/#/' + this.props.historyLink} float="right">
+          <span className="history">History</span>
         </A>
       </Card>
       </Col>
+      <Col>
+      <Card marginBottom="54px" buttonMarginTop="32px"  bordered>
+        <h4>
+         Money Claimed Today
+        </h4>
+        <h5>
+          <FormattedMessage {...messages.available} />
+        </h5>
+        <div className="cardValue">
+          {CURRENCY} 0
+        </div>
+        <A href={'/#/' + this.props.historyLink} float="right">
+          <span className="history">History</span>
+        </A>
+      </Card>
+      </Col>
+
       </Row>
 
     );

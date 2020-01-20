@@ -173,6 +173,12 @@ body{
     margin-bottom:10px;
     border-radius: 6px;
   }
+
+  .middleTitle{
+    text-align: center;
+    font-size: 24px;
+    padding: 6px;
+  }
 `;
 
 export default GlobalStyle;

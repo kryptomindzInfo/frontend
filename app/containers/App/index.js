@@ -48,9 +48,8 @@ import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
 import BankBranchList from 'containers/BankBranchList/Loadable';
 import TermsConditions from 'components/TermsConditions';
 import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
-// import BankUser from 'containers/BankUser'
 import BankCreateFee from 'containers/BankCreateFee/Loadable';
-
+import BankCashierList from 'containers/BankCashierList/Loadable';
 import BankUser from 'containers/BankUser';
 import BranchLogin from 'containers/BranchLogin';
 import BranchForgotPassword from 'containers/BranchForgotPassword';
@@ -58,6 +57,9 @@ import BranchOTPPage from 'containers/BranchOTPPage';
 import BranchSetup from 'containers/BranchSetup';
 import BranchDashboard from 'containers/BranchDashboard';
 import BranchInfo from 'containers/BranchInfo';
+import BankCashierInfo from 'containers/BankCashierInfo';
+import BranchCashierList from 'containers/BranchCashierList';
+import BranchCashierInfo from 'containers/BranchCashierInfo';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
@@ -130,10 +132,12 @@ export default function App(props) {
           <BankRoute path="/bank/documents" component={BankDocuments} />
           <BankRoute path="/bank/branches" component={BankBranchList} />
           <BankRoute path="/bank/branch/:branch?" component={BankBranchInfo} />
+          <BankRoute path="/bank/cashiers/:branch?" component={BankCashierList} />
           <BankRoute path="/bank/users" component={BankUser} />
           <BankRoute path="/bank/create-fee" component={BankCreateFee} />
           <BankRoute path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
           <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
+          <BankRoute exact path="/bank/cashier/:branch?/:cashier?" component={BankCashierInfo} />
 
           <Route exact path="/branch/:bank?" component={BranchLogin} />
           <Route exact path="/branch/:bank?/forgot-password" component={BranchForgotPassword} />
@@ -141,6 +145,8 @@ export default function App(props) {
           <Route exact path="/branch/:bank?/setup" component={BranchSetup} />
           <BranchRoute exact path="/branch/:bank?/dashboard" component={BranchDashboard} />
           <BranchRoute exact path="/branch/:bank?/info" component={BranchInfo} />
+          <BranchRoute exact path="/branch/:bank?/cashiers" component={BranchCashierList} />
+          <BranchRoute exact path="/branch/:bank?/cashier/:cashier?" component={BranchCashierInfo} />
 
           <Route component={NotFoundPage} />
         </Switch>
