@@ -692,9 +692,9 @@ export default class BankBranchInfo extends Component {
           <meta charSet="utf-8" />
           <title>Branch | INFRA | E-WALLET</title>
         </Helmet>
-        <BankHeader page="branch" />
+        <BankHeader page="branch" middleTitle={this.state.name} goto="/bank/branches/"  />
         <Container verticalMargin>
-          <BankSidebarThree active="info" blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.state.name}/>
+          <BankSidebarThree active="info" branchId={this.props.match.params.branch}  blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.state.name}/>
           <Main>
 
             <BranchWallets />

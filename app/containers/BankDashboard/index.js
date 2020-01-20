@@ -40,6 +40,8 @@ export default class BankDashboard extends Component {
   constructor() {
     super();
     this.state = {
+      otp: '',
+      showOtp: false,
       loading: true,
       redirect: false,
       totalBanks: 0,
@@ -58,56 +60,27 @@ export default class BankDashboard extends Component {
 
   warn = () => toast.warn(this.state.notification);
 
-  logout = () => {
-    // event.preventDefault();
-    // axios.post(API_URL+'/logout', {token: token})
-    // .then(res => {
-    //    if(res.status == 200){
-    localStorage.removeItem('logged');
-    localStorage.removeItem('name');
-    this.setState({ redirect: true });
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    // })
-    // .catch(err => {
-    //   alert('Login to continue');
-    //   this.setState({ redirect: true });
-    // });
-  };
 
   componentDidMount() {
     if (token !== undefined && token !== null) {
-      // axios
-      //   .post(`${API_URL}/getDashStats`, { token })
-      //   .then(res => {
-      //     if (res.status == 200) {
-      //       this.setState({ loading: false, totalBanks: res.data.totalBanks });
-      //     } else {
-      //       this.setState({ loading: false, redirect: true });
-      //       //this.setState({ loading: false, totalBanks: res.data.totalBanks });
-      //     }
-      //   })
-      //   .catch(err => {
-      //     this.setState({
-      //       notification: err.response
-      //         ? err.response.data.error
-      //         : err.toString(),
-      //     });
-      //     this.error();
-      //   });
-      var dis = this;
-      setTimeout(function(){
-        dis.setState({ loading: false });
-      }, 500);
-      
-    } else {
-      alert('Login to continue');
-      this.setState({ loading: false, redirect: true });
-    }
-    //this.setState({ loading: false });
+      axios
+        .post(`${API_URL}/getBankDashStats`, { token })
+        .then(res => {
+          if (res.status == 200) {
+            this.setState({ loading: false, totalBranches: res.data.totalBranches });
+          }
+        })
+        .catch(err => {
+          this.setState({
+            notification: err.response
+              ? err.response.data.error
+              : err.toString(),
+          });
+          this.error();
+        });
+
   }
+}
 
   render() {
     const { loading, redirect, popup } = this.state;
@@ -128,7 +101,7 @@ export default class BankDashboard extends Component {
           <SidebarBank />
           <Main>
             <div className="clr">
-              <A href="/banks">
+              <A href="/bank/branches" float="left">
                 <Card
                   horizontalMargin="7px"
                   cardWidth="151px"
@@ -136,7 +109,7 @@ export default class BankDashboard extends Component {
                   col
                 >
                   <h4><FormattedMessage {...messages.bbox1} /></h4>
-                  <div className="cardValue">{this.state.totalBanks}</div>
+                  <div className="cardValue">{this.state.totalBranches}</div>
                 </Card>
               </A>
               <Card

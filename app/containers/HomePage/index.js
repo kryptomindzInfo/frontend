@@ -195,7 +195,7 @@ export default class HomePage extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            {this.loginLoading ? (
+            { this.loginLoading ? 
                 <PrimaryBtn disabled>
                   <Loader />
               </PrimaryBtn>
@@ -203,7 +203,7 @@ export default class HomePage extends Component {
                 <PrimaryBtn>
                 <FormattedMessage {...messages.pagetitle} />
                 </PrimaryBtn>
-            )}
+             }
           </form>
           <Row marginTop>
             <Col />

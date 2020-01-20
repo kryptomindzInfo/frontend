@@ -569,7 +569,7 @@ export default class BankBranchList extends Component {
                             <span className="absoluteMiddleRight primary popMenuTrigger">
                             <i className="material-icons ">more_vert</i>
                             <div className="popMenu">
-                              <A href={"/branch/"+b._id}>Branch Info</A>
+                              <A href={"/bank/branch/"+b._id}>Branch Info</A>
                               <span onClick={() => dis.showEditPopup(b)}>Edit</span>
                               {
                                 b.status == -1 ?
