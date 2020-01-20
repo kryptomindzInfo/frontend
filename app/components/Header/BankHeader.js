@@ -19,15 +19,15 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 const Link = styled.span`
-    color: #fff;
-    font-size: 18px;
-    margin: 0 40px 0 0;
-    padding-bottom: 7px;
-    display: block;
-    font-weight: normal;
-    border-radius: 8px;
-    border: solid 2px #ffffff;
-    padding: 9px 20px;
+  color: #fff;
+  font-size: 18px;
+  margin: 0 40px 0 0;
+  padding-bottom: 7px;
+  display: block;
+  font-weight: normal;
+  border-radius: 8px;
+  border: solid 2px #ffffff;
+  padding: 9px 20px;
 `;
 
 const token = localStorage.getItem('bankLogged');
@@ -83,7 +83,7 @@ class BankHeader extends Component {
     axios
       .post(`${API_URL}/getBank`, {
         token: token,
-        bank_id: localStorage.getItem("bankId"),
+        bank_id: localStorage.getItem('bankId'),
       })
       .then(res => {
         if (res.status == 200) {
@@ -127,42 +127,29 @@ class BankHeader extends Component {
   // }
 
   render() {
-    const name = localStorage.getItem('name');
+    const name = localStorage.getItem('name').toUpperCase('name');
     const page = this.props.page;
     return (
       <TopBar>
-        <Welcome from="bank" />
+        {/* <Welcome from={toUpperCase(`${'bank'}`)} /> */}
+        <Welcome from="bank"/>
         <Container>
-          {
-            page == 'branch' ? 
+          {page == 'branch' ? (
             <A href={this.props.goto} float="left">
-            <Link>
-              Back
-            </Link>
-          </A>
-            :
-            null
-          }
-          
+              <Link>Back</Link>
+            </A>
+          ) : null}
+
           <A href="/bank/dashboard" float="left">
             <div className="bankLogo">
               <img src={STATIC_URL + this.state.logo} />
             </div>
-            <h2>{this.state.banks && this.state.banks.name}</h2>
+            <h2>{this.state.banks && this.state.banks.name.toUpperCase()}</h2>
           </A>
-          {
-            this.props.middleTitle ?
+          {this.props.middleTitle ? (
             <div className="middleTitle">{this.props.middleTitle}</div>
-            :
-            null
-          }
-          {
-            page == 'branch' ?
-            null
-            :
-            <BankNav active={this.props.active} />
-          }
-
+          ) : null}
+          {page == 'branch' ? null : <BankNav active={this.props.active} />}
         </Container>
       </TopBar>
     );

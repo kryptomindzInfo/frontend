@@ -232,7 +232,7 @@ export default class CreateFee extends Component {
       );
     } else {
       this.setState({
-        createRulesLoading : true
+        createRulesLoading: true,
       });
       axios
         .post(`${API_URL}/createRules`, this.state)
@@ -260,7 +260,7 @@ export default class CreateFee extends Component {
             throw error;
           }
           this.setState({
-            createRulesLoading : false
+            createRulesLoading: false,
           });
         })
         .catch(err => {
@@ -268,7 +268,7 @@ export default class CreateFee extends Component {
             notification: err.response
               ? err.response.data.error
               : err.toString(),
-              createRulesLoading: false
+            createRulesLoading: false,
           });
           this.error();
         });
@@ -721,17 +721,15 @@ export default class CreateFee extends Component {
                   >
                     <span>Add Another Range</span>
                   </Button>
-                  {
-                    this.createRulesLoading ?
+                  {this.createRulesLoading ? (
                     <Button filledBtn marginTop="100px" disabled>
-                    <Loader />
-                  </Button>
-                    :
+                      <Loader />
+                    </Button>
+                  ) : (
                     <Button filledBtn marginTop="100px">
-                    <span>Create Rules</span>
-                  </Button>
-                  }
-                  
+                      <span>Create Rules</span>
+                    </Button>
+                  )}
                 </form>
               </div>
             </Card>

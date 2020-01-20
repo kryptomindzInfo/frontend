@@ -47,11 +47,10 @@ toast.configure({
   draggable: true,
 });
 
-
 var options = {
-  'First': false,
-  'Second': false,
-  'Third': true
+  First: false,
+  Second: false,
+  Third: true,
 };
 const token = localStorage.getItem('bankLogged');
 
@@ -82,9 +81,9 @@ export default class BankUser extends Component {
       pro_name: '',
       pro_description: '',
       pro_permissions: {
-        'create_bank' : false,
-        'edit_bank' : false,
-        'create_fee' : false
+        create_bank: false,
+        edit_bank: false,
+        create_fee: false,
       },
       create_bank: false,
       edit_bank: false,
@@ -93,10 +92,10 @@ export default class BankUser extends Component {
       otpId: '',
       banks: [],
       users: [],
-      roles:[],
+      roles: [],
       profiles: [],
       otp: '',
-      showOtp: false
+      showOtp: false,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -122,10 +121,21 @@ export default class BankUser extends Component {
   showPopup = () => {
     this.setState({ popup: true });
   };
-  showEditPopup = (v) => {
-    this.setState({ editPopup: true, name: v.name, otpEmail: v.email, otpMobile: v.mobile, email: v.email, mobile: v.mobile, user_id:v._id, username: v.username, password: v.password, branch_id: v.branch_id, logo: v.logo });
+  showEditPopup = v => {
+    this.setState({
+      editPopup: true,
+      name: v.name,
+      otpEmail: v.email,
+      otpMobile: v.mobile,
+      email: v.email,
+      mobile: v.mobile,
+      user_id: v._id,
+      username: v.username,
+      password: v.password,
+      branch_id: v.branch_id,
+      logo: v.logo,
+    });
   };
-
 
   closePopup = () => {
     this.setState({
@@ -139,7 +149,7 @@ export default class BankUser extends Component {
       name: '',
       address1: '',
       username: '',
-      password:'',
+      password: '',
       state: '',
       zip: '',
       profile_id: '',
@@ -153,84 +163,89 @@ export default class BankUser extends Component {
       logo: null,
       contract: null,
       otp: '',
-      showOtp: false
+      showOtp: false,
     });
   };
 
-
-
   addBankUser = event => {
-
     event.preventDefault();
-    if(this.state.logo == null || this.state.logo == ''){
+    if (this.state.logo == null || this.state.logo == '') {
+      this.setState(
+        {
+          notification: 'You need to upload a profile photo',
+        },
+        () => {
+          this.error();
+        },
+      );
+    } else {
       this.setState({
-        notification: "You need to upload a profile photo"
-      }, () =>{
-        this.error();
+        addUserLoading: true,
       });
-    }else{
-      this.setState({
-        addUserLoading: true
-      });
-    axios
-      .post(`${API_URL  }/addBankUser`, {
-        name: this.state.name,
-        email: this.state.email,
-        mobile: this.state.mobile,
-        username: this.state.username,
-        password: this.state.password,
-        branch_id: this.state.branch_id,
-        logo: this.state.logo,
-        token
-      })
-      .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
-            throw res.data.error;
-          }else{
-            this.setState({
-              notification: "Bank User added successfully!",
-            }, () => {
-              this.success();
-              this.closePopup();
-              this.getUsers();
-            });
-
+      axios
+        .post(`${API_URL}/addBankUser`, {
+          name: this.state.name,
+          email: this.state.email,
+          mobile: this.state.mobile,
+          username: this.state.username,
+          password: this.state.password,
+          branch_id: this.state.branch_id,
+          logo: this.state.logo,
+          token,
+        })
+        .then(res => {
+          if (res.status == 200) {
+            if (res.data.error) {
+              throw res.data.error;
+            } else {
+              this.setState(
+                {
+                  notification: 'Bank User added successfully!',
+                },
+                () => {
+                  this.success();
+                  this.closePopup();
+                  this.getUsers();
+                },
+              );
+            }
+          } else {
+            const error = new Error(res.data.error);
+            throw error;
           }
-        }else{
-          const error = new Error(res.data.error);
-          throw error;
-        }
-        this.setState({
-          addUserLoading: false
+          this.setState({
+            addUserLoading: false,
+          });
+        })
+        .catch(err => {
+          this.setState({
+            notification: err.response
+              ? err.response.data.error
+              : err.toString(),
+            addUserLoading: false,
+          });
+          this.error();
         });
-      })
-      .catch(err => {
-        this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          addUserLoading: false
-        });
-        this.error();
-      });
-
     }
   };
 
   editUser = event => {
     event.preventDefault();
-    if(this.state.logo == null || this.state.logo == ''){
-      this.setState({
-        notification: "You need to upload a profile photo"
-      }, () =>{
-        this.error();
-      });
-    }
-    else{
+    if (this.state.logo == null || this.state.logo == '') {
+      this.setState(
+        {
+          notification: 'You need to upload a profile photo',
+        },
+        () => {
+          this.error();
+        },
+      );
+    } else {
       this.setState(
         {
           showEditOtp: true,
           otpOpt: 'editUser',
-          otpTxt: 'Your OTP to edit Bank User is '
+          otpTxt: 'Your OTP to edit Bank User is ',
         },
         () => {
           this.generateOTP();
@@ -289,11 +304,11 @@ export default class BankUser extends Component {
 
   verifyEditOTP = event => {
     this.setState({
-      verifyEditOTPLoading: true
+      verifyEditOTPLoading: true,
     });
     event.preventDefault();
     axios
-      .post(`${API_URL  }/editBankUser`, {
+      .post(`${API_URL}/editBankUser`, {
         name: this.state.name,
         email: this.state.email,
         mobile: this.state.mobile,
@@ -302,43 +317,40 @@ export default class BankUser extends Component {
         branch_id: this.state.branch_id,
         user_id: this.state.user_id,
         logo: this.state.logo,
-        token
+        token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
-            this.setState({
-              notification: "Bank User updated successfully!",
-            }, function(){
-              this.success();
-              this.closePopup();
-              this.getUsers();
-            });
-
+          } else {
+            this.setState(
+              {
+                notification: 'Bank User updated successfully!',
+              },
+              function() {
+                this.success();
+                this.closePopup();
+                this.getUsers();
+              },
+            );
           }
-
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
         this.setState({
-          verifyEditOTPLoading: false
+          verifyEditOTPLoading: false,
         });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          verifyEditOTPLoading: false
+          notification: err.response ? err.response.data.error : err.toString(),
+          verifyEditOTPLoading: false,
         });
         this.error();
       });
   };
-
-
-
-
 
   removeFile = key => {
     this.setState({
@@ -353,54 +365,52 @@ export default class BankUser extends Component {
 
   onChange(e) {
     if (e.target.files && e.target.files[0] != null) {
-      this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
+      this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
     }
   }
 
   fileUpload(file, key) {
     this.setState({
-      [key] : 'main/loader.gif'
+      [key]: 'main/loader.gif',
     });
     const formData = new FormData();
     //  formData.append('token',token);
     formData.append('file', file);
     const config = {
       headers: {
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     };
 
     axios
-      .post(`${API_URL  }/fileUpload?token=${token}&from=bank`, formData, config)
+      .post(`${API_URL}/fileUpload?token=${token}&from=bank`, formData, config)
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              [key] : res.data.name
+              [key]: res.data.name,
             });
           }
-        }else{
+        } else {
           throw res.data.error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          [key] : ''
+          notification: err.response ? err.response.data.error : err.toString(),
+          [key]: '',
         });
         this.error();
       });
   }
 
-
-
   getUsers = () => {
     axios
-      .post(`${API_URL  }/getBankUsers`, { token })
+      .post(`${API_URL}/getBankUsers`, { token })
       .then(res => {
-        if(res.status == 200){
+        if (res.status == 200) {
           this.setState({ loading: false, users: res.data.users });
         }
       })
@@ -411,9 +421,9 @@ export default class BankUser extends Component {
 
   getBranches = () => {
     axios
-      .post(`${API_URL  }/getBranches`, { token })
+      .post(`${API_URL}/getBranches`, { token })
       .then(res => {
-        if(res.status == 200){
+        if (res.status == 200) {
           this.setState({ branches: res.data.branches });
         }
       })
@@ -422,18 +432,18 @@ export default class BankUser extends Component {
       });
   };
 
-  checkBtn = (event) => {
+  checkBtn = event => {
     const target = event.target;
-    const tid = target.getAttribute("data-id");
-    if(target.classList.contains("active")){
-      target.classList.remove("active");
+    const tid = target.getAttribute('data-id');
+    if (target.classList.contains('active')) {
+      target.classList.remove('active');
       this.setState({
-        [tid] : false
+        [tid]: false,
       });
-    }else{
-      target.classList.add("active");
+    } else {
+      target.classList.add('active');
       this.setState({
-        [tid] : true
+        [tid]: true,
       });
     }
 
@@ -454,7 +464,7 @@ export default class BankUser extends Component {
     const ep = this;
     function inputFocus(e) {
       const { target } = e;
-      target.parentElement.querySelector("label").classList.add("focused");
+      target.parentElement.querySelector('label').classList.add('focused');
     }
 
     function inputBlur(e) {
@@ -469,7 +479,7 @@ export default class BankUser extends Component {
       return <Loader fullPage />;
     }
     if (redirect) {
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
 
     return (
@@ -482,424 +492,446 @@ export default class BankUser extends Component {
         <Container verticalMargin>
           <SidebarBank />
           <Main>
+            <ActionBar
+              marginBottom="33px"
+              inputWidth="calc(100% - 241px)"
+              className="clr"
+            >
+              <div className="iconedInput fl">
+                <i className="material-icons">search</i>
+                <input type="text" placeholder="Search Bank User" />
+              </div>
 
-                <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
-
-
-                      <div className="iconedInput fl">
-                      <i className="material-icons">search</i>
-                      <input type="text" placeholder="Search Bank User" />
-                    </div>
-
-
-              <Button className='addBankButton' flex onClick={this.showPopup}>
+              <Button className="addBankButton" flex onClick={this.showPopup}>
                 <i className="material-icons">add</i>
-                <span >Add Bank User</span>
+                <span>Add Bank User</span>
               </Button>
             </ActionBar>
             <div className="cardBody clr">
-            {
-                      this.state.users && this.state.users.length > 0
-                        ? this.state.users.map(function(b) {
-                          if(!b.isAdmin){
-                            var pic = (b.logo && b.logo != '' && b.logo != undefined) ?  STATIC_URL+b.logo  : CONTRACT_URL+"main/default-profile.png";
-                          return <Card key={b._id} col horizontalMargin="10px" cardWidth="192px">
-                            <div className="profile">
-                              <img src={pic} />
-                              </div>
-                            <Row>
-                              <Col cW="80%">
+              {this.state.users && this.state.users.length > 0
+                ? this.state.users.map(function(b) {
+                    if (!b.isAdmin) {
+                      var pic =
+                        b.logo && b.logo != '' && b.logo != undefined
+                          ? STATIC_URL + b.logo
+                          : CONTRACT_URL + 'main/default-profile.png';
+                      return (
+                        <Card
+                          key={b._id}
+                          col
+                          horizontalMargin="10px"
+                          cardWidth="192px"
+                        >
+                          <div className="profile">
+                            <img src={pic} />
+                          </div>
+                          <Row>
+                            <Col cW="80%">
                               <h4 className="hh">{b.name}</h4>
-                              </Col>
-                              <Col cW="20%">
-                              <Button noMin className="fr" onClick={() => ep.showEditPopup(b)} >Edit</Button>
-                              </Col>
-                            </Row>
-                          </Card>
-                          }
-                        })
-                        :
-                        null
+                            </Col>
+                            <Col cW="20%">
+                              <Button
+                                noMin
+                                className="fr"
+                                onClick={() => ep.showEditPopup(b)}
+                              >
+                                Edit
+                              </Button>
+                            </Col>
+                          </Row>
+                        </Card>
+                      );
                     }
-
+                  })
+                : null}
             </div>
-
           </Main>
         </Container>
-        { this.state.popup ?
+        {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)} accentedH1>
-            {
-              this.state.showOtp ?
+            {this.state.showOtp ? (
               <div>
-              <h1 ><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyOTP} >
-              <FormGroup>
-                <label><FormattedMessage {...messages.otp} />*</label>
-                <TextInput
-                  type="text"
-                  name="otp"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.otp}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.verify} /></span>
-              </Button>
-              </form>
+                <h1>
+                  <FormattedMessage {...messages.verify} />
+                </h1>
+                <form action="" method="post" onSubmit={this.verifyOTP}>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.otp} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <Button filledBtn marginTop="50px">
+                    <span>
+                      <FormattedMessage {...messages.verify} />
+                    </span>
+                  </Button>
+                </form>
               </div>
-              :
+            ) : (
               <div>
-            <h1 >Create Bank User</h1>
-            <form action="" method="post" onSubmit={this.addBankUser}>
-              <FormGroup>
-                <label><FormattedMessage {...messages.popup1} />*</label>
-                <TextInput
-                  type="text"
-                  name="name"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Email*</label>
-                <TextInput
-                  type="email"
-                  name="email"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.email}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-
-              <FormGroup>
-                  <label>Mobile Number*</label>
-                  <TextInput
-                     type="text"
-                     pattern="[0-9]{10}"
-                     title="10 Digit numeric value"
-                    name="mobile"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.mobile}
-                    onChange={this.handleInputChange}
-                    required
-                  />
+                <h1>Create Bank User</h1>
+                <form action="" method="post" onSubmit={this.addBankUser}>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.popup1} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="name"
+                      pattern=".{4,15}"
+                      title="Minimum 4 characters"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.name}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Email*</label>
+                    <TextInput
+                      type="email"
+                      name="email"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.email}
+                      onChange={this.handleInputChange}
+                      required
+                    />
                   </FormGroup>
 
                   <FormGroup>
-                  <label>User Id*</label>
-                  <TextInput
-                    type="text"
-                    name="username"
-                    pattern=".{8,}"
-                    title= "Minimum 8 Characters"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.username}
-                    onChange={this.handleInputChange}
-                    required
-                  />
+                    <label>Mobile Number*</label>
+                    <TextInput
+                      type="text"
+                      pattern="[0-9]{10}"
+                      title="10 Digit numeric value"
+                      name="mobile"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.mobile}
+                      onChange={this.handleInputChange}
+                      required
+                    />
                   </FormGroup>
 
                   <FormGroup>
-                  <label>Temporary Password*</label>
-                  <TextInput
-                    type="password"
-                    pattern=".{8,}"
-                    title= "Minimum 8 Characters"
-                    name="password"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.password}
-                    onChange={this.handleInputChange}
-                    required
-                  />
+                    <label>User Id*</label>
+                    <TextInput
+                      type="text"
+                      name="username"
+                      pattern=".{4,15}"
+                      title="Minimum 4 characters"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.username}
+                      onChange={this.handleInputChange}
+                      required
+                    />
                   </FormGroup>
 
                   <FormGroup>
-                  <SelectInput
-                    type="text"
-                    name="branch_id"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.branch_id}
-                    onChange={this.handleInputChange}
-                    required
-                  >
-                    <option value="">Select Branch*</option>
-                    {
-                      this.state.branches && this.state.branches.length > 0
+                    <label>Temporary Password*</label>
+                    <TextInput
+                      type="password"
+                      pattern=".{8,}"
+                      title="Minimum 8 Characters"
+                      name="password"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.password}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <SelectInput
+                      type="text"
+                      name="branch_id"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.branch_id}
+                      onChange={this.handleInputChange}
+                      required
+                    >
+                      <option value="">Select Branch*</option>
+                      {this.state.branches && this.state.branches.length > 0
                         ? this.state.branches.map(function(b) {
-                          return  <option value={b._id}>{b.name}</option>
-                        })
-                        :
-                        null
-                    }
+                            return <option value={b._id}>{b.name}</option>;
+                          })
+                        : null}
                     </SelectInput>
                   </FormGroup>
 
-
-
-              <FormGroup>
-
-                  {/* <UploadedFile>
+                  <FormGroup>
+                    {/* <UploadedFile>
 
                       <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
                     </UploadedFile>
                   : */}
-                  <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
-                    {
-                    this.state.logo ?
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
-                    </a>
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
-                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
-                    {
-                    !this.state.logo ?
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
+                    <UploadArea bgImg={STATIC_URL + this.state.logo}>
+                      {this.state.logo ? (
+                        <a
+                          className="uploadedImg"
+                          href={STATIC_URL + this.state.logo}
+                          target="_BLANK"
+                        />
+                      ) : (
+                        ' '
+                      )}
+                      <div
+                        className="uploadTrigger"
+                        onClick={() => this.triggerBrowse('logo')}
+                      >
+                        <input
+                          type="file"
+                          id="logo"
+                          onChange={this.onChange}
+                          data-key="logo"
+                        />
+                        {!this.state.logo ? (
+                          <i className="material-icons">cloud_upload</i>
+                        ) : (
+                          ' '
+                        )}
+                        <label>
+                          {this.state.logo == '' ? (
+                            <span>Profile Photo</span>
+                          ) : (
+                            <span>Change Profile Photo</span>
+                          )}
+                          *
+                        </label>
+                      </div>
+                    </UploadArea>
+                  </FormGroup>
+                  <Icon className="material-icons">fingerprint</Icon>
+                  {this.state.addUserLoading ? (
+                    <Button filledBtn marginTop="20px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="20px">
+                      <span>Add User</span>
+                    </Button>
+                  )}
+                </form>
+              </div>
+            )}
+          </Popup>
+        ) : null}
+
+        {this.state.editPopup ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+            {this.state.showEditOtp ? (
+              <div>
+                <h1>
+                  <FormattedMessage {...messages.verify} />
+                </h1>
+                <form action="" method="post" onSubmit={this.verifyEditOTP}>
+                  <FormGroup>
                     <label>
-                      {
-                      this.state.logo == '' ?
-                      <span>Profile Photo</span>
-                      :
-                      <span>Change Profile Photo</span>
-                      }
+                      <FormattedMessage {...messages.otp} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  {this.verifyEditOTPLoading ? (
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="50px">
+                      <span>
+                        <FormattedMessage {...messages.verify} />
+                      </span>
+                    </Button>
+                  )}
 
-                      *</label>
-                    </div>
-                  </UploadArea>
+                  <p className="resend">
+                    Wait for <span className="timer">{this.state.timer}</span>{' '}
+                    to{' '}
+                    {this.state.resend ? (
+                      <span className="go" onClick={this.generateOTP}>
+                        Resend
+                      </span>
+                    ) : (
+                      <span>Resend</span>
+                    )}
+                  </p>
+                </form>
+              </div>
+            ) : (
+              <div>
+                <h1>Edit Bank User</h1>
+                <form action="" method="post" onSubmit={this.editUser}>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.popup1} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="name"
+                      pattern=".{8,}"
+                      title="Minimum 8 Characters"
+                      onFocus={inputFocus}
+                      autoFocus
+                      onBlur={inputBlur}
+                      value={this.state.name}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Email*</label>
+                    <TextInput
+                      type="email"
+                      name="email"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      autoFocus
+                      value={this.state.email}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
 
-              </FormGroup>
-              <Icon className="material-icons">fingerprint</Icon>
-                {
-                  this.state.addUserLoading ?
-                  <Button filledBtn marginTop="20px" disabled>
-                <Loader />
-              </Button>
-                  :
+                  <FormGroup>
+                    <label>Mobile Number*</label>
+                    <TextInput
+                      type="text"
+                      pattern="[0-9]{10}"
+                      title="10 Digit numeric value"
+                      name="mobile"
+                      autoFocus
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.mobile}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <label>User Id*</label>
+                    <TextInput
+                      type="text"
+                      pattern=".{8,}"
+                      title="Minimum 8 Characters"
+                      name="username"
+                      onFocus={inputFocus}
+                      autoFocus
+                      onBlur={inputBlur}
+                      value={this.state.username}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <label>Temporary Password*</label>
+                    <TextInput
+                      type="password"
+                      pattern=".{8,}"
+                      title="Minimum 8 Characters"
+                      name="password"
+                      onFocus={inputFocus}
+                      autoFocus
+                      onBlur={inputBlur}
+                      value={this.state.password}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+
+                  <FormGroup>
+                    <SelectInput
+                      type="text"
+                      name="branch_id"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.branch_id}
+                      onChange={this.handleInputChange}
+                      required
+                    >
+                      <option value="">Select Branch*</option>
+                      {this.state.branches && this.state.branches.length > 0
+                        ? this.state.branches.map(function(b) {
+                            return <option value={b._id}>{b.name}</option>;
+                          })
+                        : null}
+                    </SelectInput>
+                  </FormGroup>
+
+                  <FormGroup>
+                    {/* <UploadedFile>
+
+                      <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
+                    </UploadedFile>
+                  : */}
+                    <UploadArea bgImg={STATIC_URL + this.state.logo}>
+                      {this.state.logo ? (
+                        <a
+                          className="uploadedImg"
+                          href={STATIC_URL + this.state.logo}
+                          target="_BLANK"
+                        />
+                      ) : (
+                        ' '
+                      )}
+                      <div
+                        className="uploadTrigger"
+                        onClick={() => this.triggerBrowse('logo')}
+                      >
+                        <input
+                          type="file"
+                          id="logo"
+                          onChange={this.onChange}
+                          data-key="logo"
+                        />
+                        {!this.state.logo ? (
+                          <i className="material-icons">cloud_upload</i>
+                        ) : (
+                          ' '
+                        )}
+                        <label>
+                          {this.state.logo == '' ? (
+                            <span>Profile Photo</span>
+                          ) : (
+                            <span>Change Profile Photo</span>
+                          )}
+                          *
+                        </label>
+                      </div>
+                    </UploadArea>
+                  </FormGroup>
+                  <Icon className="material-icons">fingerprint</Icon>
+
                   <Button filledBtn marginTop="20px">
-                <span>Add User</span>
-              </Button>
-                }
-
-            </form>
-            </div>
-            }
-          </Popup>
-          : null }
-
-{ this.state.editPopup ?
-          <Popup close={this.closePopup.bind(this)} accentedH1>
-            {
-              this.state.showEditOtp ?
-              <div>
-              <h1 ><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyEditOTP} >
-              <FormGroup>
-                <label><FormattedMessage {...messages.otp} />*</label>
-                <TextInput
-                  type="text"
-                  name="otp"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.otp}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              {
-                this.verifyEditOTPLoading ?
-                <Button filledBtn marginTop="50px" disabled>
-                  <Loader />
-                </Button>
-                :
-                <Button filledBtn marginTop="50px">
-                  <span><FormattedMessage {...messages.verify} /></span>
-                </Button>
-              }
-
-              <p className="resend">
-                Wait for <span className="timer">{this.state.timer}</span>{' '}
-                to{' '}
-                {this.state.resend ? (
-                  <span className="go" onClick={this.generateOTP}>
-                    Resend
-                  </span>
-                ) : (
-                  <span>Resend</span>
-                )}
-              </p>
-              </form>
+                    <span>Update User</span>
+                  </Button>
+                </form>
               </div>
-              :
-              <div>
-            <h1 >Edit Bank User</h1>
-            <form action="" method="post" onSubmit={this.editUser}>
-              <FormGroup>
-                <label><FormattedMessage {...messages.popup1} />*</label>
-                <TextInput
-                  type="text"
-                  name="name"
-                    pattern=".{8,}"
-                    title= "Minimum 8 Characters"
-                  onFocus={inputFocus}
-                  autoFocus
-                  onBlur={inputBlur}
-                  value={this.state.name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Email*</label>
-                <TextInput
-                  type="email"
-                  name="email"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  autoFocus
-                  value={this.state.email}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-
-              <FormGroup>
-                  <label>Mobile Number*</label>
-                  <TextInput
-                     type="text"
-                     pattern="[0-9]{10}"
-                     title="10 Digit numeric value"
-                    name="mobile"
-                    autoFocus
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.mobile}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-
-                  <FormGroup>
-                  <label>User Id*</label>
-                  <TextInput
-                    type="text"
-                    pattern=".{8,}"
-                    title= "Minimum 8 Characters"
-                    name="username"
-                    onFocus={inputFocus}
-                    autoFocus
-                    onBlur={inputBlur}
-                    value={this.state.username}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-
-                  <FormGroup>
-                  <label>Temporary Password*</label>
-                  <TextInput
-                    type="password"
-                    pattern=".{8,}"
-                    title= "Minimum 8 Characters"
-                    name="password"
-                    onFocus={inputFocus}
-                    autoFocus
-                    onBlur={inputBlur}
-                    value={this.state.password}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-
-                  <FormGroup>
-                  <SelectInput
-                    type="text"
-                    name="branch_id"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.branch_id}
-                    onChange={this.handleInputChange}
-                    required
-                  >
-                    <option value="">Select Branch*</option>
-                    {
-                      this.state.branches && this.state.branches.length > 0
-                        ? this.state.branches.map(function(b) {
-                          return  <option value={b._id}>{b.name}</option>
-                        })
-                        :
-                        null
-                    }
-                    </SelectInput>
-                  </FormGroup>
-
-
-
-              <FormGroup>
-
-                  {/* <UploadedFile>
-
-                      <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
-                    </UploadedFile>
-                  : */}
-                  <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
-                    {
-                    this.state.logo ?
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
-                    </a>
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
-                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
-                    {
-                    !this.state.logo ?
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
-                    <label>
-                      {
-                      this.state.logo == '' ?
-                      <span>Profile Photo</span>
-                      :
-                      <span>Change Profile Photo</span>
-                      }
-
-                      *</label>
-                    </div>
-                  </UploadArea>
-
-              </FormGroup>
-              <Icon className="material-icons">fingerprint</Icon>
-
-                      <Button filledBtn marginTop="20px">
-                <span>Update User</span>
-              </Button>
-
-
-            </form>
-            </div>
-            }
+            )}
           </Popup>
-          : null }
-
-
+        ) : null}
       </Wrapper>
     );
   }

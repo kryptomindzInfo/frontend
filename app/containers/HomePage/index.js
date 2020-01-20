@@ -198,7 +198,7 @@ export default class HomePage extends Component {
             {/* {this.loginLoading ? (
               <PrimaryBtn disabled>
                 <Loader /> */}
-            { this.loginLoading ? 
+            { this.loginLoading ? (
                 <PrimaryBtn disabled>
                   <Loader />
               </PrimaryBtn>

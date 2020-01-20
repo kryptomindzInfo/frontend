@@ -39,7 +39,11 @@ const PopupBody = styled.div`
     font-size: 22px;
     background: ${props => props.theme.accent};
     color: #fff;
+    :hover{
+      background-color: #cc8819
+    }
   }
+  
   h1 {
     text-align: center;
     font-size: 26px;
