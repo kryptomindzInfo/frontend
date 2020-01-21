@@ -702,7 +702,7 @@ export default class UserPage extends Component {
                     ) : (
                       <div className="iconedInput fl">
                         <i className="material-icons">search</i>
-                        <input type="text" placeholder="Search" />
+                        <input type="text" placeholder="Search Infra User" />
                       </div>
                     )}
 
@@ -912,13 +912,21 @@ export default class UserPage extends Component {
                   <FormGroup>
                     <label>User Id*</label>
                     <TextInput
+                      id="username"
                       type="text"
                       name="username"
-                      pattern=".{4,12}"
-                      title="Minimum 4 characters"
+                      pattern="(^[a-z][a-z0-9._-]{3,19}$)"
+                      // pattern=".{4,8}"
+                      // title="Minimum 4 Characters"
+                      onInput={e => e.target.setCustomValidity('')}
+                      onInvalid={e =>
+                        e.target.setCustomValidity(
+                          'Username must be minimum 4 characters, should start with an alphabet, can contain number and special character(-_.)',
+                        )
+                      }
                       onFocus={inputFocus}
                       onBlur={inputBlur}
-                      value={this.state.username}
+                      value={this.state.username.trim().toLowerCase()}
                       onChange={this.handleInputChange}
                       required
                     />
