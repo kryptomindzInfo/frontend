@@ -130,7 +130,7 @@ class BankHeader extends Component {
   // }
 
   render() {
-    const name = localStorage.getItem('name').toUpperCase('name');
+    const name = localStorage.getItem('name');
     const page = this.props.page;
     return (
       <TopBar>
