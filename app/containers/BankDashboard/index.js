@@ -37,6 +37,7 @@ toast.configure({
 const token = localStorage.getItem('bankLogged');
 
 export default class BankDashboard extends Component {
+  _isMounted = false;
   constructor() {
     super();
     this.state = {
@@ -62,25 +63,32 @@ export default class BankDashboard extends Component {
 
 
   componentDidMount() {
-    if (token !== undefined && token !== null) {
+    this._isMounted = true;
+    console.log(token);
+
       axios
         .post(`${API_URL}/getBankDashStats`, { token })
         .then(res => {
-          if (res.status == 200) {
-            this.setState({ loading: false, totalBranches: res.data.totalBranches });
+          if(this._isMounted){
+            if (res.status == 200) {
+              this.setState({ loading: false, totalBranches: res.data.totalBranches });
+            }
           }
         })
         .catch(err => {
           this.setState({
             notification: err.response
-              ? err.response.data.error
+              ? err.response.data.error.toString()
               : err.toString(),
           });
           this.error();
         });
-
-  }
 }
+
+componentWillUnmount() {
+  this._isMounted = false;
+}
+
 
   render() {
     const { loading, redirect, popup } = this.state;

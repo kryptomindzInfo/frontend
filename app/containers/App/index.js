@@ -60,6 +60,10 @@ import BranchInfo from 'containers/BranchInfo';
 import BankCashierInfo from 'containers/BankCashierInfo';
 import BranchCashierList from 'containers/BranchCashierList';
 import BranchCashierInfo from 'containers/BranchCashierInfo';
+import CashierLogin from 'containers/CashierLogin';
+import CashierForgotPassword from 'containers/CashierForgotPassword';
+import CashierOTPPage from 'containers/CashierOTPPage';
+import CashierSetup from 'containers/CashierSetup';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
@@ -147,6 +151,11 @@ export default function App(props) {
           <BranchRoute exact path="/branch/:bank?/info" component={BranchInfo} />
           <BranchRoute exact path="/branch/:bank?/cashiers" component={BranchCashierList} />
           <BranchRoute exact path="/branch/:bank?/cashier/:cashier?" component={BranchCashierInfo} />
+
+          <Route exact path="/cashier/:bank?" component={CashierLogin} />
+          <Route exact path="/cashier/:bank?/forgot-password" component={CashierForgotPassword} />
+          <Route exact path="/cashier/:bank?/otp" component={CashierOTPPage} />
+          <Route exact path="/cashier/:bank?/setup" component={CashierSetup} />
 
           <Route component={NotFoundPage} />
         </Switch>

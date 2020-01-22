@@ -3,7 +3,7 @@ const SelectInput = styled.select`
   width: 100%;
   // position:relative;
   z-index: 1;
-  // background: transparent;
+  background: transparent;
   box-sizing: border-box;
   padding: 10px;
   padding-right: 0;

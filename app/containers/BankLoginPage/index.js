@@ -42,10 +42,9 @@ toast.configure({
   pauseOnHover: true,
   draggable: true,
 });
-localStorage.removeItem('bankLogged');
-const token = localStorage.getItem('bankLogged');
-
 export default class BankLoginPage extends Component {
+  _isMounted = false;
+
   constructor() {
     super();
     this.state = {
@@ -72,55 +71,59 @@ export default class BankLoginPage extends Component {
   };
 
   loginRequest = event => {
-    this.setState({
-      loginLoading: true
-    });
     event.preventDefault();
-    axios
-      .post(`${API_URL}/bankLogin`, this.state)
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res.data.token);
-          localStorage.setItem('bankLogged', res.data.token);
-          localStorage.setItem('bankName', res.data.name);
-          localStorage.setItem('bankUserName', res.data.username);
-          localStorage.setItem('bankContract', res.data.contract);
-          localStorage.setItem('bankLogo', res.data.logo);
-          localStorage.setItem('bankId', res.data.id);
-          console.log(localStorage.getItem("bankLogged"));
-          if (!res.data.initial_setup) {
-            history.push('/bank/setup');
-          } 
-          else if (!res.data.status || res.data.status == 0 || res.data.status == '') {
-            history.push('/bank/activate');
-          } 
-          else {
-            history.push('/bank/dashboard');
+    this.setState({
+      loginLoading: true,
+    }, () => {
+      axios
+        .post(`${API_URL}/bankLogin`, this.state)
+        .then(res => {
+          if (res.status == 200) {
+            console.log(res.data.token);
+            localStorage.setItem('bankLogged', res.data.token);
+            localStorage.setItem('bankName', res.data.name);
+            localStorage.setItem('bankUserName', res.data.username);
+            localStorage.setItem('bankContract', res.data.contract);
+            localStorage.setItem('bankLogo', res.data.logo);
+            localStorage.setItem('bankId', res.data.id);
+            console.log(localStorage.getItem('bankLogged'));
+            if (!res.data.initial_setup) {
+              history.push('/bank/setup');
+            } else if (
+              !res.data.status ||
+              res.data.status == 0 ||
+              res.data.status == ''
+            ) {
+              history.push('/bank/activate');
+            } else {
+              history.push('/bank/dashboard');
+            }
+          } else {
+            throw res.data.error;
+
           }
-     
-        } else {
-          throw res.data.error;
-        }
-        this.setState({
-          loginLoading: false
+
+        })
+        .catch(err => {
+          this.setState({
+            notification: err.response ? err.response.data.error : err.toString(),
+            loginLoading: false,
+          });
+          this.error();
         });
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-          loginLoading: false
-        });
-        this.error();
-      });
+    });
+
   };
 
   componentDidMount() {
-    // if (token !== undefined && token !== null) {
-    //   this.setState({ loading: false, redirect: true });
-    // } else {
+    this._isMounted = true;
+    if (this._isMounted) {
       this.setState({ loading: false });
-    //}
-    //localStorage.clear();
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   render() {
@@ -149,17 +152,23 @@ export default class BankLoginPage extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | BANK | SIGNUP</title>
         </Helmet>
-        <FrontLeftSection from="bank"></FrontLeftSection>
+        <FrontLeftSection from="bank" />
         <FrontRightSection>
           <LoginHeader>
-          <FormattedMessage {...messages.pagetitle} />
+            <FormattedMessage {...messages.pagetitle} />
           </LoginHeader>
-          <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
-          <FrontFormSubTitle><FormattedMessage {...messages.subtitle2} /></FrontFormSubTitle>
+          <FrontFormTitle>
+            <FormattedMessage {...messages.title} />
+          </FrontFormTitle>
+          <FrontFormSubTitle>
+            <FormattedMessage {...messages.subtitle2} />
+          </FrontFormSubTitle>
           <form action="" method="POST" onSubmit={this.loginRequest}>
             <InputsWrap>
               <FormGroup>
-                <label><FormattedMessage {...messages.userid} />*</label>
+                <label>
+                  <FormattedMessage {...messages.userid} />*
+                </label>
                 <TextInput
                   type="text"
                   name="username"
@@ -171,7 +180,9 @@ export default class BankLoginPage extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label><FormattedMessage {...messages.password} />*</label>
+                <label>
+                  <FormattedMessage {...messages.password} />*
+                </label>
                 <TextInput
                   type="password"
                   name="password"
@@ -183,18 +194,22 @@ export default class BankLoginPage extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            {
-              this.loginLoading ?
-              <PrimaryBtn disabled><Loader /></PrimaryBtn>
-              :
-              <PrimaryBtn><FormattedMessage {...messages.pagetitle} /></PrimaryBtn>
-            }
-            
+            {this.loginLoading ? (
+              <PrimaryBtn disabled>
+                <Loader />
+              </PrimaryBtn>
+            ) : (
+              <PrimaryBtn>
+                <FormattedMessage {...messages.pagetitle} />
+              </PrimaryBtn>
+            )}
           </form>
           <Row marginTop>
             <Col />
             <Col textRight>
-              <A href="/bank/forgot-password"><FormattedMessage {...messages.forgotpassword} /></A>
+              <A href="/bank/forgot-password">
+                <FormattedMessage {...messages.forgotpassword} />
+              </A>
             </Col>
           </Row>
         </FrontRightSection>

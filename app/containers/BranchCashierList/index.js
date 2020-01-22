@@ -9,6 +9,7 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
 
+
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
@@ -62,6 +63,7 @@ export default class BranchCashierList extends Component {
       otp: '',
       popup: false,
       showOtp: false,
+      assignPop:false,
       token,
       otpEmail: email,
       otpMobile: mobile
@@ -88,8 +90,15 @@ export default class BranchCashierList extends Component {
     });
   };
 
+  selectInputChange = selectedOption => {
+    this.setState({ bank_user_id: selectedOption });
+  };
+
   showPopup = () => {
     this.setState({ popup: true });
+  };
+  showAssignPopup = (v) => {
+    this.setState({ assignPop: true, name: v.name, bcode: v.bcode, working_from: v.working_from, working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id});
   };
   showEditPopup = (v) => {
     this.setState({ editPopup: true, name: v.name, bcode: v.bcode, working_from: v.working_from, working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id});
@@ -99,6 +108,7 @@ export default class BranchCashierList extends Component {
     this.setState({
       popup: false,
       editPopup: false,
+      assignPop: false,
       name: '',
       bcode: '',
       working_from: '',
@@ -124,25 +134,42 @@ export default class BranchCashierList extends Component {
     });
   };
 
-  logout = () => {
-    // event.preventDefault();
-    // axios.post(API_URL+'/logout', {token: token})
-    // .then(res => {
-    //    if(res.status == 200){
-    localStorage.removeItem("logged");
-    localStorage.removeItem("name");
-    this.setState({ redirect: true });
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    // })
-    // .catch(err => {
-    //   alert('Login to continue');
-    //   this.setState({ redirect: true });
-    // });
-  };
+  assignUser = event => {
+    event.preventDefault();
 
+    this.setState({
+      assignLoading: true
+    });
+
+    axios
+      .put(`${API_URL  }/updateOne`, {page_id: this.state.cashier_id, updateData: {bank_user_id: this.state.bank_user_id}, page: 'cashier', type: 'branch', token: token})
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              notification: "User Assigned successfully!",
+              assignLoading: false
+            });
+            this.success();
+            this.closePopup();
+            this.getBranches();
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          assignLoading: false
+        });
+        this.error();
+      });
+
+  };
   addBranch = event => {
     event.preventDefault();
 
@@ -194,7 +221,7 @@ export default class BranchCashierList extends Component {
           this.generateOTP();
         },
       );
-    
+
   };
   startTimer = () => {
     var dis = this;
@@ -421,8 +448,18 @@ export default class BranchCashierList extends Component {
       });
   }
 
-  getBanks = () => {
+  getUsers = () => {
+    axios
+      .post(`${API_URL  }/getAll`, { page: 'bankuser', type: 'branch', token: token })
+      .then(res => {
+        if(res.status == 200){
 
+          this.setState({ loading: false, users: res.data.rows });
+        }
+      })
+      .catch(err => {
+
+      });
   };
 
   getBranches = () => {
@@ -441,14 +478,8 @@ export default class BranchCashierList extends Component {
 
 
   componentDidMount() {
-    // this.setState({ bank: this.state.bank_id });
-    if (token !== undefined && token !== null) {
-      this.getBanks();
       this.getBranches();
-    } else {
-      // alert('Login to continue');
-      // this.setState({loading: false, redirect: true });
-    }
+      this.getUsers();
   }
 
   render() {
@@ -491,10 +522,10 @@ export default class BranchCashierList extends Component {
               </div>
 
 
-                <Button className="addBankButton" flex onClick={this.showPopup}>
+                {/*<Button className="addBankButton" flex onClick={this.showPopup}>
                 <i className="material-icons">add</i>
                 <span>Create Cashier</span>
-                </Button>
+                </Button>*/}
 
             </ActionBar>
             <Card bigPadding>
@@ -532,6 +563,7 @@ export default class BranchCashierList extends Component {
                             <div className="popMenu">
                               <A href={"/branch/"+dis.props.match.params.bank+"/cashier/"+b._id}>Cashier Info</A>
                               <span onClick={() => dis.showEditPopup(b)}>Edit</span>
+                              <span onClick={() => dis.showAssignPopup(b)}>Assign User</span>
                               {
                                 b.status == -1 ?
                                 <span onClick={() => dis.blockBranch(b._id, 1)}>Unblock</span>
@@ -551,6 +583,73 @@ export default class BranchCashierList extends Component {
             </Card>
           </Main>
         </Container>
+        { this.state.assignPop ?
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+
+            <h1>Assign User</h1>
+            <form action="" method="post" onSubmit={this.assignUser}>
+              <FormGroup>
+                <label>Cashier Name*</label>
+                <TextInput
+                  type="text"
+                  name="name"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.name}
+                  readOnly
+                  autoFocus
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <label>Cashier Code*</label>
+                <TextInput
+                  type="text"
+                  name="bcode"
+                  autoFocus
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.bcode}
+                  onChange={this.handleInputChange}
+                  readOnly
+                  required
+                />
+              </FormGroup>
+              <FormGroup>
+                <label>Assign User*</label>
+              <SelectInput onFocus={inputFocus}
+              autoFocus
+              onChange={this.handleInputChange}
+              onBlur={inputBlur} value={this.state.bank_user_id} name="bank_user_id"
+              placeholder="Assign User*" required >
+              {
+                this.state.users.map(function(b) {
+                  return  <option value={b._id}>{b.name}</option>
+                })
+              }
+              </SelectInput>
+
+              </FormGroup>
+
+
+
+                {
+                  this.state.assignLoading ?
+                  <Button filledBtn marginTop="50px" disabled>
+                  <Loader />
+                  </Button>
+                  :
+                  <Button filledBtn marginTop="50px">
+                  <span>Assign User</span>
+                  </Button>
+                }
+
+
+            </form>
+
+          </Popup>
+          : null }
         { this.state.popup ?
           <Popup close={this.closePopup.bind(this)} accentedH1>
             {
@@ -617,7 +716,7 @@ export default class BranchCashierList extends Component {
               </FormGroup>
               <label>Working Hours</label>
               <Row>
-              
+
                 <Col  cW="30%" mR="2%">
 
                 <FormGroup>
@@ -687,7 +786,7 @@ export default class BranchCashierList extends Component {
                   required
                 />
               </FormGroup>
-              
+
 
 
                 {
@@ -785,7 +884,7 @@ export default class BranchCashierList extends Component {
               </FormGroup>
               <label>Working Hours</label>
               <Row>
-              
+
                 <Col  cW="30%" mR="2%">
 
                 <FormGroup>

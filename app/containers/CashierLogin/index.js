@@ -1,5 +1,5 @@
 /*
- * BranchLogin
+ * CashierLogin
  *
  * This is the first thing users see of our App, at the '/' route
  *
@@ -43,10 +43,9 @@ toast.configure({
   draggable: true,
 });
 
-// localStorage.removeItem('bankLogged');
-// const token = localStorage.getItem('bankLogged');
+localStorage.clear();
 
-export default class BranchLogin extends Component {
+export default class CashierLogin extends Component {
   constructor() {
     super();
     this.state = {
@@ -78,18 +77,19 @@ export default class BranchLogin extends Component {
     });
     event.preventDefault();
     axios
-      .post(`${API_URL}/branchLogin`, this.state)
+      .post(`${API_URL}/cashierLogin`, this.state)
       .then(res => {
         if (res.status == 200) {
-          localStorage.setItem('branchLogged', res.data.token);
-          localStorage.setItem('branchName', res.data.name);
-          localStorage.setItem('branchUserName', res.data.username);
-          localStorage.setItem('branchId', res.data.id);
-          localStorage.setItem('bankLogo', res.data.logo);
-          localStorage.setItem('branchEmail', res.data.email);
-          localStorage.setItem('branchMobile', res.data.mobile);
+          localStorage.setItem('cashierLogged', res.data.token);
+          localStorage.setItem('cashierName', res.data.name);
+          localStorage.setItem('cashierUserName', res.data.username);
+          localStorage.setItem('userId', res.data.id);
+          localStorage.setItem('cashierId', res.data.cashier_id);
+          localStorage.setItem('bankLogo', this.state.bank.logo);
+          localStorage.setItem('cashierEmail', res.data.email);
+          localStorage.setItem('cashierMobile', res.data.mobile);
 
-            this.props.history.push('/branch/'+this.props.match.params.bank+'/dashboard');
+            this.props.history.push('/cashier/'+this.props.match.params.bank+'/dashboard');
 
         } else {
           throw res.data.error;
@@ -109,7 +109,7 @@ export default class BranchLogin extends Component {
 
   componentDidMount() {
     axios
-      .post(`${API_URL}/getBankByName`, {name: this.props.match.params.bank})
+      .post(`${API_URL}/getBranchByName`, {name: this.props.match.params.bank})
       .then(res => {
         if (res.status == 200) {
           this.setState({ bank: res.data.banks, loading:false });
@@ -148,7 +148,7 @@ export default class BranchLogin extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | BRANCH | LOGIN</title>
         </Helmet>
-        <FrontLeftSection from="branch" title={this.state.bank.name} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
+        <FrontLeftSection from="cashier" title={this.state.bank.name} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
           <FormattedMessage {...messages.pagetitle} />
@@ -193,7 +193,7 @@ export default class BranchLogin extends Component {
           <Row marginTop>
             <Col />
             <Col textRight>
-              <A href={"/branch/"+this.props.match.params.bank+"/forgot-password"}><FormattedMessage {...messages.forgotpassword} /></A>
+              <A href={"/cashier/"+this.props.match.params.bank+"/forgot-password"}><FormattedMessage {...messages.forgotpassword} /></A>
             </Col>
           </Row>
         </FrontRightSection>

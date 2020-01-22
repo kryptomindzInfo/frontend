@@ -38,6 +38,8 @@ if (permissions != 'all' && permissions != '') {
 }
 
 class BankHeader extends Component {
+  _isMounted = false;
+
   constructor() {
     super();
     this.state = {
@@ -80,12 +82,14 @@ class BankHeader extends Component {
   };
 
   getBanks = () => {
+
     axios
       .post(`${API_URL}/getBank`, {
         token: token,
         bank_id: localStorage.getItem("bankId"),
       })
       .then(res => {
+
         if (res.status == 200) {
           this.setState({
             loading: false,
@@ -112,16 +116,15 @@ class BankHeader extends Component {
   };
 
   componentDidMount() {
-    // this.setState({ bank: this.props.match.params.bank });
-    if (token !== undefined && token !== null) {
-      this.setState({ loading: false });
+    this._isMounted = true;
+    if(this._isMounted){
       this.getBanks();
-    } else {
-      // alert('Login to continue');
-      // this.setState({loading: false, redirect: true });
     }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   // componentWillUnmount() {
 
   // }
@@ -134,7 +137,7 @@ class BankHeader extends Component {
         <Welcome from="bank" />
         <Container>
           {
-            page == 'branch' ? 
+            page == 'branch' ?
             <A href={this.props.goto} float="left">
             <Link>
               Back
@@ -143,10 +146,10 @@ class BankHeader extends Component {
             :
             null
           }
-          
+
           <A href="/bank/dashboard" float="left">
             <div className="bankLogo">
-              <img src={STATIC_URL + this.state.logo} />
+              <img src={STATIC_URL + this.state.logo} alt="Bank Logo"/>
             </div>
             <h2>{this.state.banks && this.state.banks.name}</h2>
           </A>
