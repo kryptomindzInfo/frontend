@@ -50,6 +50,13 @@ class Welcome extends Component {
     //this.props.history.push('/bank');
   };
 
+
+  logoutCashier = () => {
+    localStorage.clear();
+    history.push('/cashier/' + this.props.bankName);
+    //this.props.history.push('/bank');
+  };
+
   render() {
     let name = '';
     let isAdmin = false;
@@ -57,6 +64,8 @@ class Welcome extends Component {
       name = localStorage.getItem('bankName');
     } else if (this.props.from == 'branch') {
       name = localStorage.getItem('branchName');
+    }else if (this.props.from == 'cashier') {
+      name = localStorage.getItem('bankName');
     } else {
       isAdmin = localStorage.getItem('isAdmin');
       name = localStorage.getItem('name');
@@ -84,7 +93,17 @@ class Welcome extends Component {
               {/* //  : null } */}
               <span onClick={this.logoutBranch}>Logout</span>
             </SubNav>
-          ) : (
+          ) :
+            this.props.from == 'cashier' ?
+            <SubNav className="infraSubNav">
+              {/* { isAdmin ?  */}
+              <A href={'/cashier/' + bankName + '/info'}>Profile</A>
+              {/* //  : null } */}
+              <span onClick={this.logoutCashier}>Logout</span>
+            </SubNav>
+            :
+          (
+
             <SubNav className="bankSubNav">
               <A href="/bank/info">Settings</A>
               <span onClick={this.logoutBank}>Logout</span>

@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import InfraRoute from './InfraRoute';
 import BankRoute from './BankRoute';
 import BranchRoute from './BranchRoute';
+import CashierRoute from './CashierRoute';
 
 import HomePage from 'containers/HomePage/Loadable';
 import SignupPage from 'containers/SignupPage/Loadable';
@@ -64,6 +65,8 @@ import CashierLogin from 'containers/CashierLogin';
 import CashierForgotPassword from 'containers/CashierForgotPassword';
 import CashierOTPPage from 'containers/CashierOTPPage';
 import CashierSetup from 'containers/CashierSetup';
+import CashierDashboard from 'containers/CashierDashboard';
+import CashierInfo from 'containers/CashierInfo';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
@@ -156,6 +159,8 @@ export default function App(props) {
           <Route exact path="/cashier/:bank?/forgot-password" component={CashierForgotPassword} />
           <Route exact path="/cashier/:bank?/otp" component={CashierOTPPage} />
           <Route exact path="/cashier/:bank?/setup" component={CashierSetup} />
+          <CashierRoute exact path="/cashier/:bank?/dashboard" component={CashierDashboard} />
+          <CashierRoute exact path="/cashier/:bank?/info" component={CashierInfo} />
 
           <Route component={NotFoundPage} />
         </Switch>
