@@ -65,7 +65,7 @@ class Welcome extends Component {
     } else if (this.props.from == 'branch') {
       name = localStorage.getItem('branchName');
     }else if (this.props.from == 'cashier') {
-      name = localStorage.getItem('bankName');
+      name = localStorage.getItem('cashierName');
     } else {
       isAdmin = localStorage.getItem('isAdmin');
       name = localStorage.getItem('name');

@@ -21,17 +21,15 @@ const Link = styled.span`
 class CashierNav extends Component {
   render() {
     const dashboard = this.props.active == 'dashboard' ? 'true' : '';
-    const branches = this.props.active == 'branches' ? 'true' : '';
     const cashier = this.props.active == 'cashier' ? 'true' : '';
     const merchants = this.props.active == 'merchants' ? 'true' : '';
     const users = this.props.active == 'users' ? 'true' : '';
-    const bankusers = this.props.active == 'bankusers' ? 'true' : '';
     const reports = this.props.active == 'reports' ? 'true' : '';
-
+    const bankName = this.props.bankName;
     return (
       <React.Fragment>
         <NavTag>
-          <A href="/bank/dashboard">
+          <A href={"/cashier/"+bankName+"/dashboard"}>
             <Link
               active={dashboard}
               // style={`${props => props.theme.secondary}`}
@@ -39,18 +37,17 @@ class CashierNav extends Component {
               <FormattedMessage {...messages.menu1} />
             </Link>
           </A>
-
-          <A href="/bank/merchants">
+          <A href={"/cashier/"+bankName+"/merchants"}>
             <Link active={merchants}>
               <FormattedMessage {...messages.menu3} />
             </Link>
           </A>
-          <A href="/bank/user">
+          <A href={"/cashier/"+bankName+"/users"}>
             <Link active={users}>
               <FormattedMessage {...messages.bmenu3} />
             </Link>
           </A>
-          <A href="/bank/reports">
+          <A href={"/cashier/"+bankName+"/reports"}>
             <Link active={reports}>
               <FormattedMessage {...messages.menu4} />
             </Link>

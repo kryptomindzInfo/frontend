@@ -14,11 +14,11 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
-import BranchHeader from 'components/Header/BranchHeader';
+import CashierHeader from 'components/Header/CashierHeader';
 import CashierWallets from 'components/Sidebar/CashierWallets';
 import Container from 'components/Container';
 import Popup from 'components/Popup';
-import BankSidebarCashier from 'components/Sidebar/BankSidebarCashier';
+import CashierSidebarInfo from 'components/Sidebar/CashierSidebarInfo';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import A from 'components/A';
@@ -62,12 +62,12 @@ font-size: 20px;
 padding: 15px;
 `;
 
-const token = localStorage.getItem('branchLogged');
-const bid = localStorage.getItem('branchId');
+const token = localStorage.getItem('cashierLogged');
+const bid = localStorage.getItem('cashierId');
 const logo = localStorage.getItem('bankLogo');
-const email = localStorage.getItem('branchEmail');
-const mobile = localStorage.getItem('branchMobile');
-
+const email = localStorage.getItem('cashierEmail');
+const mobile = localStorage.getItem('cashierMobile');
+const cashierId = localStorage.getItem('cashierId');
 export default class CashierInfo extends Component {
   constructor() {
     super();
@@ -222,7 +222,7 @@ export default class CashierInfo extends Component {
         email: this.state.otpEmail,
         mobile: this.state.otpMobile,
         page: this.state.otpOpt,
-        type: 'branch',
+        type: 'cashier',
         txt: this.state.otpTxt,
         token,
       })
@@ -501,10 +501,10 @@ export default class CashierInfo extends Component {
 
   getBranches = () => {
     axios
-      .post(`${API_URL  }/getOne`, { token:token, page_id: this.state.cashier_id, type: 'branch', page: 'cashier' })
+      .post(`${API_URL  }/getCashier`, { token:token })
       .then(res => {
         if(res.status == 200){
-          this.setState({ loading: false, banks: res.data.row, name: res.data.row.name, bcode: res.data.row.bcode, working_from: res.data.row.working_from, working_to: res.data.row.working_to, per_trans_amt: res.data.row.per_trans_amt, max_trans_count: res.data.row.max_trans_count, max_trans_amt: res.data.row.max_trans_amt, cashier_id: res.data.row._id, status: res.data.row.status});
+          this.setState({ loading: false, banks: res.data.row, name: res.data.row.name, bcode: res.data.row.bcode, working_from: res.data.row.working_from, working_to: res.data.row.working_to, per_trans_amt: res.data.row.per_trans_amt, max_trans_count: res.data.row.max_trans_count, max_trans_amt: res.data.row.max_trans_amt, cashier_id: res.data.row._id, mobile: res.data.row2.mobile, username: res.data.row2.username, ccode: res.data.row2.ccode, email: res.data.row2.email, });
         }
       })
       .catch(err => {
@@ -540,14 +540,11 @@ export default class CashierInfo extends Component {
 
   componentDidMount() {
 
-    this.setState({ cashier_id: this.props.match.params.cashier }, () => {
-      if (token !== undefined && token !== null) {
+    this.setState({ cashier_id: cashierId }, () => {
+
         this.getBranches();
 
-      } else {
-        // alert('Login to continue');
-        // this.setState({loading: false, redirect: true });
-      }
+
     });
 
   }
@@ -582,10 +579,10 @@ export default class CashierInfo extends Component {
           <meta charSet="utf-8" />
           <title>Branch | INFRA | E-WALLET</title>
         </Helmet>
-        <BranchHeader active="cashier" middleTitle={this.state.name} page="branch" goto={"/branch/"+this.props.match.params.bank+"/cashiers"} bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
+        <CashierHeader active="cashier" middleTitle={this.state.name} page="branch" goto={"/cashier/"+this.props.match.params.bank+"/dashboard"} bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
         <Container verticalMargin>
 
-          <BankSidebarCashier active="info" blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.state.name}/>
+          <CashierSidebarInfo active="info" blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.state.name}/>
           <Main>
 
             <CashierWallets limit={this.state.transaction_limit} />
@@ -613,58 +610,40 @@ export default class CashierInfo extends Component {
 
               <Row>
                 <Col className="infoLeft">
-                Worrking Hours
+                Cashier User ID
                 </Col>
                 <Col className="infoRight">
-
-                </Col>
-              </Row>
-
-
-              <Row>
-                <Col className="infoLeft">
-                From
-                </Col>
-                <Col className="infoRight">
-                {this.state.working_from}
+                {this.state.username}
                 </Col>
               </Row>
 
               <Row>
                 <Col className="infoLeft">
-                To
+                Country Code
                 </Col>
                 <Col className="infoRight">
-                {this.state.working_to}
+                {this.state.ccode}
                 </Col>
               </Row>
 
               <Row>
                 <Col className="infoLeft">
-                Maximum per transaction amount
+                Email
                 </Col>
                 <Col className="infoRight">
-                {this.state.per_trans_amt}
+                {this.state.email}
                 </Col>
               </Row>
 
               <Row>
                 <Col className="infoLeft">
-                Maximum daily transaction amount
+                Phone Number
                 </Col>
                 <Col className="infoRight">
-                {this.state.max_trans_amt}
+                {this.state.mobile}
                 </Col>
               </Row>
 
-              <Row>
-                <Col className="infoLeft">
-                Maximum daily transaction count
-                </Col>
-                <Col className="infoRight">
-                {this.state.max_trans_count}
-                </Col>
-              </Row>
 
 
             </div>

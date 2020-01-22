@@ -131,7 +131,7 @@ class CashierHeader extends Component {
     const page = this.props.page;
     return (
       <TopBar>
-        <Welcome from="branch" bankName={this.props.bankName}/>
+        <Welcome from="cashier" bankName={this.props.bankName}/>
         <Container>
           {
             page == 'branch' ?
