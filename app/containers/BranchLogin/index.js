@@ -148,7 +148,7 @@ export default class BranchLogin extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | BRANCH | LOGIN</title>
         </Helmet>
-        <FrontLeftSection from="branch" title={this.state.bank.name} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
+        <FrontLeftSection from="branch" title={this.state.bank.name.toUpperCase()} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
           <FormattedMessage {...messages.pagetitle} />

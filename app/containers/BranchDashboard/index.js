@@ -532,7 +532,7 @@ export default class BranchDashboard extends Component {
           <meta charSet="utf-8" />
           <title>Dashboard | BRANCH | E-WALLET</title>
         </Helmet>
-        <BranchHeader active="dashboard" bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
+        <BranchHeader active="dashboard" bankName={this.props.match.params.bank.toUpperCase()} bankLogo={STATIC_URL+logo} />
         <Container verticalMargin>
           <SidebarBranch />
           <Main>
@@ -596,7 +596,7 @@ export default class BranchDashboard extends Component {
                   <h5>E-Wallet Activity</h5>
 
                 </div>
-                <Button float="right">Today</Button>
+                <Button className="addBankButton" float="right">Today</Button>
               </div>
               <div className="cardBody">
                 <Table marginTop="34px" smallTd>

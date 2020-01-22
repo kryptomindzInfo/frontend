@@ -83,6 +83,9 @@ export default class BankPage extends Component {
       showOtp: false,
       showEditOtp: false,
       permissions: {},
+      query: '',
+      data: [],
+      filteredData: [],
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -103,6 +106,37 @@ export default class BankPage extends Component {
     this.setState({
       [name]: value,
     });
+  };
+
+  handleSearchInputChange = event => {
+    const query = event.target.value;
+
+    this.setState(prevState => {
+      const filteredData = prevState.data.filter(element => {
+        return element.name.toLowerCase().includes(query.toLowerCase());
+      });
+
+      return {
+        query,
+        filteredData,
+      };
+    });
+  };
+
+  getData = () => {
+    fetch(`http://localhost:4000/restaurants`)
+      .then(response => response.json())
+      .then(data => {
+        const { query } = this.state;
+        const filteredData = data.filter(element => {
+          return element.name.toLowerCase().includes(query.toLowerCase());
+        });
+
+        this.setState({
+          data,
+          filteredData,
+        });
+      });
   };
 
   countryChange = event => {
@@ -365,7 +399,7 @@ export default class BankPage extends Component {
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
-          verifyOTPLoading: false
+          verifyOTPLoading: false,
         });
         this.error();
       });
@@ -421,7 +455,7 @@ export default class BankPage extends Component {
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
-          verifyEditOTPLoading: false
+          verifyEditOTPLoading: false,
         });
         this.error();
       });
@@ -496,6 +530,7 @@ export default class BankPage extends Component {
   };
 
   componentDidMount() {
+    this.getData();
     if (token !== undefined && token !== null) {
       if (isAdmin == 'true') {
         this.setState({ permissions: 'all', loading: false });
@@ -562,7 +597,12 @@ export default class BankPage extends Component {
             >
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
-                <input type="text" placeholder="Search Bank" />
+                <input
+                  type="text"
+                  placeholder="Search Bank"
+                  value={this.state.query}
+                  onChange={this.handleSearchInputChange}
+                />
               </div>
 
               {this.state.permissions == 'all' ||
@@ -584,9 +624,9 @@ export default class BankPage extends Component {
                   <h3>
                     <FormattedMessage {...messages.title} />
                   </h3>
-                  <h5>
+                  {/* <h5>
                     <FormattedMessage {...messages.subtitle} />
-                  </h5>
+                  </h5> */}
                 </div>
               </div>
               <div className="cardBody">
@@ -672,6 +712,11 @@ export default class BankPage extends Component {
                 </Table>
               </div>
             </Card>
+            <div>
+              {this.state.filteredData.map(i => (
+                <p>{i.name}</p>
+              ))}
+            </div>
           </Main>
         </Container>
         {this.state.popup ? (
@@ -696,19 +741,17 @@ export default class BankPage extends Component {
                       required
                     />
                   </FormGroup>
-                  {
-                    this.verifyOTPLoading ?
+                  {this.verifyOTPLoading ? (
                     <Button filledBtn marginTop="50px" disabled>
                       <Loader />
                     </Button>
-                    :
+                  ) : (
                     <Button filledBtn marginTop="50px">
                       <span>
                         <FormattedMessage {...messages.verify} />
                       </span>
                     </Button>
-                  }
-
+                  )}
 
                   <p className="resend">
                     Wait for <span className="timer">{this.state.timer}</span>{' '}
@@ -736,8 +779,8 @@ export default class BankPage extends Component {
                     <TextInput
                       type="text"
                       name="name"
-                      pattern=".{4,12}"
-                      title="Minimum 4 characters"
+                      pattern=".{3,12}"
+                      title="Minimum 3 characters"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
                       value={this.state.name}
@@ -1187,16 +1230,15 @@ export default class BankPage extends Component {
                   </FormGroup>
                   <p className="note">
                     <span style={{ color: 'red' }}>* </span>Please create the
-                    revenue policy or otherwise by default zero fee will be debited
-                    for all transactions
+                    revenue policy or otherwise by default zero fee will be
+                    debited for all transactions
                   </p>
 
-                    <Button filledBtn marginTop="10px">
-                      <span>
-                        <FormattedMessage {...messages.addbank} />
-                      </span>
-                    </Button>
-
+                  <Button filledBtn marginTop="10px">
+                    <span>
+                      <FormattedMessage {...messages.addbank} />
+                    </span>
+                  </Button>
                 </form>
               </div>
             )}
@@ -1225,18 +1267,17 @@ export default class BankPage extends Component {
                       required
                     />
                   </FormGroup>
-                  {
-                    this.verifyEditOTPLoading ?
+                  {this.verifyEditOTPLoading ? (
                     <Button filledBtn marginTop="50px" disabled>
                       <Loader />
                     </Button>
-                    :
+                  ) : (
                     <Button filledBtn marginTop="50px">
                       <span>
                         <FormattedMessage {...messages.verify} />
                       </span>
                     </Button>
-                  }
+                  )}
 
                   <p className="resend">
                     Wait for <span className="timer">{this.state.timer}</span>{' '}
@@ -1264,7 +1305,7 @@ export default class BankPage extends Component {
                       name="name"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
-                      value={this.state.name}
+                      value={this.state.name.slice(" ", -1)}
                       autoFocus
                       onChange={this.handleInputChange}
                       required
@@ -1711,11 +1752,9 @@ export default class BankPage extends Component {
                     </UploadArea>
                   </FormGroup>
 
-                    <Button filledBtn marginTop="10px">
-                      <span>Update Bank</span>
-                    </Button>
-
-
+                  <Button filledBtn marginTop="10px">
+                    <span>Update Bank</span>
+                  </Button>
                 </form>
               </div>
             )}
