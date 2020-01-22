@@ -4,6 +4,7 @@ import { Route, Redirect } from 'react-router-dom';
 const BankRoute = ({ component: Component, ...rest }) => {
   function isLogin() {
     var token = localStorage.getItem('bankLogged');
+    console.log("route: "+token);
     if (!token || token == null || token == undefined || token == '') {
       return false;
     } else {

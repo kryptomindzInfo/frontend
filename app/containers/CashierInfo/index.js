@@ -582,7 +582,7 @@ export default class CashierInfo extends Component {
         <CashierHeader active="cashier" middleTitle={this.state.name} page="branch" goto={"/cashier/"+this.props.match.params.bank+"/dashboard"} bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
         <Container verticalMargin>
 
-          <CashierSidebarInfo active="info" blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.state.name}/>
+          <CashierSidebarInfo active="info" blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.props.match.params.bank}/>
           <Main>
 
             <CashierWallets limit={this.state.transaction_limit} />

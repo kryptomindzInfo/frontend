@@ -29,7 +29,7 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
 import Loader from 'components/Loader';
-import history from 'utils/history';
+
 
 import { API_URL } from '../App/constants';
 
@@ -42,9 +42,8 @@ toast.configure({
   pauseOnHover: true,
   draggable: true,
 });
-export default class BankLoginPage extends Component {
-  _isMounted = false;
 
+export default class BankLoginPage extends Component {
   constructor() {
     super();
     this.state = {
@@ -88,15 +87,15 @@ export default class BankLoginPage extends Component {
             localStorage.setItem('bankId', res.data.id);
             console.log(localStorage.getItem('bankLogged'));
             if (!res.data.initial_setup) {
-              history.push('/bank/setup');
+              window.location.href ='/bank/setup';
             } else if (
               !res.data.status ||
               res.data.status == 0 ||
               res.data.status == ''
             ) {
-              history.push('/bank/activate');
+              window.location.href ='/bank/activate';
             } else {
-              history.push('/bank/dashboard');
+              window.location.href ='/bank/dashboard';
             }
           } else {
             throw res.data.error;

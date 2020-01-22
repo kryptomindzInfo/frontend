@@ -52,7 +52,7 @@ class Welcome extends Component {
 
 
   logoutCashier = () => {
-    localStorage.clear();
+    localStorage.removeItem('cashierLogged');
     history.push('/cashier/' + this.props.bankName);
     //this.props.history.push('/bank');
   };

@@ -132,6 +132,7 @@ export default class BankUser extends Component {
       user_id: v._id,
       username: v.username,
       password: v.password,
+      ccode: v.ccode,
       branch_id: v.branch_id,
       logo: v.logo,
     });
@@ -141,6 +142,7 @@ export default class BankUser extends Component {
     this.setState({
       popup: false,
       editPopup: false,
+      showEditOtp: false,
       profile_popup: false,
       profile_popup_edit: false,
       pro_name: '',
@@ -189,6 +191,7 @@ export default class BankUser extends Component {
           mobile: this.state.mobile,
           username: this.state.username,
           password: this.state.password,
+          ccode: this.state.ccode,
           branch_id: this.state.branch_id,
           logo: this.state.logo,
           token,
@@ -609,20 +612,44 @@ export default class BankUser extends Component {
                     />
                   </FormGroup>
 
-                  <FormGroup>
-                    <label>Mobile Number*</label>
-                    <TextInput
-                      type="text"
-                      pattern="[0-9]{10}"
-                      title="10 Digit numeric value"
-                      name="mobile"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.mobile}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                  <Row>
+                    <Col cW="30%" mR="2%">
+                      <FormGroup>
+                      <label>
+                          Country Code*
+                        </label>
+                        <TextInput
+                          type="text"
+                          name="ccode"
+                          
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.ccode}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col cW="68%">
+                      <FormGroup>
+                        <label>
+                          <FormattedMessage {...messages.popup7} />*
+                        </label>
+                        <TextInput
+                          type="text"
+                          pattern="[0-9]{10}"
+                          title="10 Digit numeric value"
+                          name="mobile"
+                          
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.mobile}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
 
                   <FormGroup>
                     <label>User Id*</label>
@@ -658,8 +685,6 @@ export default class BankUser extends Component {
                     <SelectInput
                       type="text"
                       name="branch_id"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
                       value={this.state.branch_id}
                       onChange={this.handleInputChange}
                       required
@@ -667,7 +692,7 @@ export default class BankUser extends Component {
                       <option value="">Select Branch*</option>
                       {this.state.branches && this.state.branches.length > 0
                         ? this.state.branches.map(function(b) {
-                            return <option value={b._id}>{b.name}</option>;
+                            return <option value={b._id} key={b._id}>{b.name}</option>;
                           })
                         : null}
                     </SelectInput>
@@ -813,21 +838,44 @@ export default class BankUser extends Component {
                     />
                   </FormGroup>
 
-                  <FormGroup>
-                    <label>Mobile Number*</label>
-                    <TextInput
-                      type="text"
-                      pattern="[0-9]{10}"
-                      title="10 Digit numeric value"
-                      name="mobile"
-                      autoFocus
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.mobile}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+               <Row>
+                    <Col cW="30%" mR="2%">
+                      <FormGroup>
+                      <label>
+                          Country Code*
+                        </label>
+                        <TextInput
+                          type="text"
+                          name="ccode"
+                          autoFocus
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.ccode}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col cW="68%">
+                      <FormGroup>
+                        <label>
+                          <FormattedMessage {...messages.popup7} />*
+                        </label>
+                        <TextInput
+                          type="text"
+                          pattern="[0-9]{10}"
+                          title="10 Digit numeric value"
+                          name="mobile"
+                          autoFocus
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.mobile}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
 
                   <FormGroup>
                     <label>User Id*</label>
@@ -865,8 +913,6 @@ export default class BankUser extends Component {
                     <SelectInput
                       type="text"
                       name="branch_id"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
                       value={this.state.branch_id}
                       onChange={this.handleInputChange}
                       required
@@ -874,7 +920,7 @@ export default class BankUser extends Component {
                       <option value="">Select Branch*</option>
                       {this.state.branches && this.state.branches.length > 0
                         ? this.state.branches.map(function(b) {
-                            return <option value={b._id}>{b.name}</option>;
+                            return <option value={b._id} key={b._id}>{b.name}</option>;
                           })
                         : null}
                     </SelectInput>

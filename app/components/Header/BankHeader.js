@@ -31,6 +31,8 @@ const Link = styled.span`
 `;
 
 const token = localStorage.getItem('bankLogged');
+const name = localStorage.getItem('bankName');
+const logo = localStorage.getItem('bankLogo');
 
 var permissions = localStorage.getItem('permissions');
 if (permissions != 'all' && permissions != '') {
@@ -38,96 +40,21 @@ if (permissions != 'all' && permissions != '') {
 }
 
 class BankHeader extends Component {
-  _isMounted = false;
-
+  
   constructor() {
     super();
     this.state = {
-      logo: null,
-      name: '',
+     logo,
+     name,
+     token
     };
   }
-
-  addBank = event => {
-    event.preventDefault();
-    axios
-      .post(`${API_URL}/generateOTP`, {
-        name: this.state.name,
-        mobile: this.state.mobile,
-        page: 'addBank',
-        token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              showOtp: true,
-              notification: 'OTP Sent',
-            });
-            this.success();
-          }
-        } else {
-          const error = new Error(res.data.error);
-          throw error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
-  };
-
-  getBanks = () => {
-
-    axios
-      .post(`${API_URL}/getBank`, {
-        token: token,
-        bank_id: localStorage.getItem('bankId'),
-      })
-      .then(res => {
-
-        if (res.status == 200) {
-          this.setState({
-            loading: false,
-            banks: res.data.banks,
-            logo: res.data.banks.logo,
-            bcode: res.data.banks.bcode,
-            name: res.data.banks.name,
-            address1: res.data.banks.address1,
-            state: res.data.banks.state,
-            zip: res.data.banks.zip,
-            country: res.data.banks.country,
-            ccode: res.data.banks.ccode,
-            mobile: res.data.banks.mobile,
-            email: res.data.banks.email,
-            // logo: res.data.banks.logo,
-            contract: res.data.banks.contract,
-            username: res.data.banks.contract,
-            bank_id: res.data.banks._id,
-            username: res.data.banks.username,
-          });
-        }
-      })
-      .catch(err => {});
-  };
+  
 
   componentDidMount() {
-    this._isMounted = true;
-    if(this._isMounted){
-      this.getBanks();
-    }
+    
   }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-  }
-  // componentWillUnmount() {
-
-  // }
 
   render() {
     const name = localStorage.getItem('name');
@@ -152,9 +79,9 @@ class BankHeader extends Component {
             <div className="bankLogo">
               <img src={STATIC_URL + this.state.logo} alt="Bank Logo"/>
             </div>
-            <h2>{this.state.banks && this.state.banks.name.toUpperCase()}</h2>
+            <h2>{this.state.name.toUpperCase()}</h2>
           </A>
-          {this.props.middleTitle ? (
+          { this.props.middleTitle ? (
             <div className="middleTitle">{this.props.middleTitle}</div>
           ) : null}
           {page == 'branch' ? null : <BankNav active={this.props.active} />}
