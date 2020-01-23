@@ -142,7 +142,7 @@ export default function App(props) {
           <BankRoute path="/bank/branch/:branch?" component={BankBranchInfo} />
           <BankRoute path="/bank/cashiers/:branch?" component={BankCashierList} />
           <BankRoute path="/bank/users" component={BankUser} />
-          <BankRoute path="/bank/create-fee" component={BankCreateFee} />
+          <BankRoute exact path="/bank/create-fee" component={BankCreateFee} />
           <BankRoute path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
           <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
           <BankRoute exact path="/bank/cashier/:branch?/:cashier?" component={BankCashierInfo} />

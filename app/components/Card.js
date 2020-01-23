@@ -189,7 +189,7 @@ const Card = styled.div`
     color: ${props => props.theme.primary};
   }
 
- button{
+ > button{
     padding: 6px;
     border-radius: 2px;
     border: solid 1px ${props => props.theme.primary};

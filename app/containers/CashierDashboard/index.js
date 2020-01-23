@@ -54,7 +54,7 @@ const bid = localStorage.getItem('cashierId');
 const logo = localStorage.getItem('bankLogo');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
-console.log(localStorage);
+
 export default class CashierDashboard extends Component {
   constructor() {
     super();

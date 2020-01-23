@@ -11,29 +11,16 @@ import { Helmet } from 'react-helmet';
 
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
-
 import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
+import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 import Container from 'components/Container';
 import Loader from 'components/Loader';
-import Nav from 'components/Header/Nav';
-import Welcome from 'components/Header/Welcome';
-import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Table from 'components/Table';
-import MiniPopUp from 'components/MiniPopUp';
-import Popup from 'components/Popup';
-
-import FormGroup from 'components/FormGroup';
-import TextInput from 'components/TextInput';
-import UploadArea from 'components/UploadArea';
-import Row from 'components/Row';
-import Col from 'components/Col';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
@@ -67,7 +54,7 @@ const Tab2 = styled.div`
 
 const token = localStorage.getItem('bankLogged');
 const bid = localStorage.getItem('bankId');
-console.log(bid);
+
 export default class BankFees extends Component {
   constructor() {
     super();
@@ -616,10 +603,8 @@ export default class BankFees extends Component {
                       <tr>
                         <th>Name</th>
                         <th>Transaction Type</th>
-                        <th>Amount of transaction</th>
-                        <th>Transaction Count</th>
-                        <th>Fixed Amount</th>
-                        <th>Percentage</th>
+                        <th>Ranges</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -653,25 +638,14 @@ export default class BankFees extends Component {
                                   })}
                                 </td>
                                 <td className="tac bold">
-                                  {b.active == 'Inactive' ? (
-                                    <span className="absoluteMiddleRight primary popMenuTrigger">
-                                      <i className="material-icons ">block</i>
-                                    </span>
-                                  ) : b.edit_status != 0 ? (
-                                    b.edit_status == 1 ? (
-                                      <a className="text-light">approved</a>
-                                    ) : (
-                                      <a className="text-accent">declined</a>
-                                    )
-                                  ) : (
-                                    <Button
-                                      onClick={() => dis.showMiniPopUp(b, r)}
-                                      className="addBankButton"
-                                    >
-                                      <span>Approve</span>
-                                    </Button>
-                                  )}
-                                </td>
+                            {
+                              b.status == 0 ?
+                              <span className="material-icons">block</span>
+                              :
+                              <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
+                            }
+                            
+                            </td>
                               </tr>
                             );
                           })

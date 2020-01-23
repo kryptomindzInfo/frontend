@@ -15,12 +15,8 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
-import TopBar from 'components/Header/TopBar';
 import Container from 'components/Container';
 import A from 'components/A';
-import Nav from 'components/Header/Nav';
-import Welcome from 'components/Header/Welcome';
-import SidebarTwo from 'components/Sidebar/SidebarTwo';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
@@ -58,14 +54,15 @@ toast.configure({
   draggable: true,
 });
 
-const token = localStorage.getItem('logged');
 
-var isAdmin = localStorage.getItem('isAdmin');
-export default class CreateFee extends Component {
+const token = localStorage.getItem('bankLogged');
+const bid = localStorage.getItem('bankId');
+
+export default class BankCreateFee extends Component {
   constructor() {
     super();
     this.state = {
-      bank_id: '',
+      bank_id: bid,
       logo: null,
       contract: null,
       loading: true,
@@ -138,7 +135,7 @@ export default class CreateFee extends Component {
 
   showPopup = () => {
     //this.setState({ popup: true });
-    this.props.history.push('/createfee/' + this.props.match.params.bank);
+    this.props.history.push('/BankCreateFee/' + this.props.match.params.bank);
   };
 
   closePopup = () => {
@@ -238,7 +235,7 @@ export default class CreateFee extends Component {
         createRulesLoading: true,
       });
       axios
-        .post(`${API_URL}/createRules`, this.state)
+        .post(`${API_URL}/createBankRules`, this.state)
         .then(res => {
           if (res.status == 200) {
             if (res.data.error) {
@@ -253,7 +250,7 @@ export default class CreateFee extends Component {
                   let ba = this.state.bank;
                   let history = this.props.history;
                   setTimeout(function() {
-                    history.push('/fees/' + ba);
+                    history.push('/bank/fees/' + ba);
                   }, 1000);
                 },
               );
@@ -451,36 +448,10 @@ export default class CreateFee extends Component {
   };
 
   componentDidMount() {
-    this.setState({ bank: this.props.match.params.bank });
-    if (token !== undefined && token !== null) {
-      if (isAdmin == 'true') {
-        this.setState({ permissions: 'all', loading: false });
-      } else {
-        axios
-          .post(`${API_URL}/getPermission`, { token })
-          .then(res => {
-            if (res.status == 200) {
-              this.setState(
-                { permissions: res.data.permissions, loading: false },
-                () => {
-                  console.log(this.state.permissions);
-                },
-              );
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }
-      this.getBanks();
-    } else {
-      // alert('Login to continue');
-      // this.setState({loading: false, redirect: true });
-    }
-  }
-  try = () => {
-    this.props.history.push('/bank/fees');
-}
+    this.setState({
+      loading: false,
+    });
+  };
 
   render() {
     function inputFocus(e) {
@@ -503,7 +474,7 @@ export default class CreateFee extends Component {
 
     const { loading, redirect } = this.state;
     if (loading) {
-      return null;
+      return <Loader fullPage />;
     }
     if (redirect) {
       return <Redirect to="/" />;
@@ -522,8 +493,8 @@ export default class CreateFee extends Component {
             <Card bigPadding centerSmall>
               <div className="cardHeader">
                 <div className="cardHeaderLeft flex">
-                  <A>
-                    <i className="material-icons" onClick={this.try}>arrow_back</i>
+                  <A href="/bank/fees">
+                    <i className="material-icons" >arrow_back</i>
                   </A>
                   <h3>Create Fee Rules</h3>
                 </div>
@@ -678,7 +649,8 @@ export default class CreateFee extends Component {
                         </Col>
                       </Row>
                     );
-                  })}
+                  })
+                  }
                   <Button
                     type="button"
                     accentedBtn
