@@ -69,6 +69,7 @@ const Card = styled.div`
       font-weight: bold;
       margin: 0;
       color: ${props => (props.selected ? '#fff' : '#323c47')};
+    
     }
   }
   &.sideNav:hover {
@@ -92,6 +93,12 @@ const Card = styled.div`
     font-weight: normal;
     margin-top: 0;
     margin-bottom: 20px;
+    .anchor{
+      color:${props => props.theme.accent};
+      right: 10px;
+      position: absolute;
+      top: 25px;
+    }
   }
   > .cardHeader > .cardHeaderRight > h3 {
     margin-bottom: 1px;
@@ -189,7 +196,7 @@ const Card = styled.div`
     color: ${props => props.theme.primary};
   }
 
- > button{
+ > button, .sendMoneyButton{
     padding: 6px;
     border-radius: 2px;
     border: solid 1px ${props => props.theme.primary};

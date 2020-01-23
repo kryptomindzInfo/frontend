@@ -68,6 +68,7 @@ import CashierOTPPage from 'containers/CashierOTPPage';
 import CashierSetup from 'containers/CashierSetup';
 import CashierDashboard from 'containers/CashierDashboard';
 import CashierInfo from 'containers/CashierInfo';
+import BankEditFee from 'containers/BankEditFee';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
@@ -146,6 +147,7 @@ export default function App(props) {
           <BankRoute path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
           <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
           <BankRoute exact path="/bank/cashier/:branch?/:cashier?" component={BankCashierInfo} />
+          <BankRoute exact path="/bank/edit-fee/:fee?" component={BankEditFee} />
 
           <Route exact path="/branch/:bank?" component={BranchLogin} />
           <Route exact path="/branch/:bank?/forgot-password" component={BranchForgotPassword} />

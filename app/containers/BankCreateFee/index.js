@@ -250,7 +250,7 @@ export default class BankCreateFee extends Component {
                   let ba = this.state.bank;
                   let history = this.props.history;
                   setTimeout(function() {
-                    history.push('/bank/fees/' + ba);
+                    history.push('/bank/fees/');
                   }, 1000);
                 },
               );
@@ -273,48 +273,6 @@ export default class BankCreateFee extends Component {
           this.error();
         });
     }
-  };
-
-  verifyOTP = event => {
-    event.preventDefault();
-    axios
-      .post(`${API_URL}/addBank`, {
-        name: this.state.name,
-        address1: this.state.address1,
-        state: this.state.state,
-        zip: this.state.zip,
-        country: this.state.country,
-        ccode: this.state.ccode,
-        email: this.state.email,
-        mobile: this.state.mobile,
-        logo: this.state.logo,
-        contract: this.state.contract,
-        otp: this.state.otp,
-        token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              notification: 'Bank added successfully!',
-            });
-            this.success();
-            this.closePopup();
-            this.getBanks();
-          }
-        } else {
-          const error = new Error(res.data.error);
-          throw error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
   };
 
   removeFile = key => {

@@ -21,6 +21,7 @@ import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Table from 'components/Table';
+import A from 'components/A';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
@@ -107,6 +108,10 @@ export default class BankFees extends Component {
     this.setState({
       [name]: value,
     });
+  };
+
+  goBankEdit = (b) => {
+    this.props.history.push('/bank/edit-fee/'+b);
   };
 
   showMiniPopUp = (b, r) => {
@@ -360,15 +365,25 @@ export default class BankFees extends Component {
       });
   }
 
-  getBanks = () => {};
-
   getRules = () => {
     axios
       .post(`${API_URL}/getBankRules`, { bank_id: this.state.bank })
       .then(res => {
         if (res.status == 200) {
           console.log(res.data);
-          this.setState({ loading: false, rules: res.data.rules });
+          this.setState({ rules: res.data.rules });
+        }
+      })
+      .catch(err => {});
+  };
+
+  getBankRules = () => {
+    axios
+      .post(`${API_URL}/getAll`, { type: 'bank', token:token, page: 'bankfee' })
+      .then(res => {
+        if (res.status == 200) {
+          console.log(res.data);
+          this.setState({ loading: false, bankRules: res.data.rows });
         }
       })
       .catch(err => {});
@@ -377,8 +392,8 @@ export default class BankFees extends Component {
   componentDidMount() {
     // this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
-      this.getBanks();
       this.getRules();
+      this.getBankRules();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -416,11 +431,8 @@ export default class BankFees extends Component {
       // showEditOtp: false,
     });
   };
-  try = () => {
-    this.props.history.push('/bank/create-fee');
-  };
+
   render() {
-    console.log(this.props);
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector('label').classList.add('focused');
@@ -579,13 +591,15 @@ export default class BankFees extends Component {
                   <input type="text" placeholder="Search" />
                 </div>
 
+                <A href="/bank/create-fee" float="right">
                 <Button className="addBankButton" flex onClick={this.try}>
                   <i className="material-icons">add</i>
                   <span>
-                    {/* <FormattedMessage {...messages.addbank} /> */}
                     <span>Create Fee</span>
                   </span>
                 </Button>
+                </A>
+
               </ActionBar>
               <Card bigPadding>
                 <div className="cardHeader">
@@ -608,8 +622,8 @@ export default class BankFees extends Component {
                       </tr>
                     </thead>
                     <tbody>
-                      {this.state.rules && this.state.rules.length > 0
-                        ? this.state.rules.map(function(b) {
+                      {this.state.bankRules && this.state.bankRules.length > 0
+                        ? this.state.bankRules.map(function(b) {
                             var r = JSON.parse(b.editedRanges);
                             return (
                               <tr key={b._id}>
@@ -642,7 +656,7 @@ export default class BankFees extends Component {
                               b.status == 0 ?
                               <span className="material-icons">block</span>
                               :
-                              <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
+                              <span onClick={ () => dis.goBankEdit(b._id)} className="pointer">Edit</span>
                             }
                             
                             </td>

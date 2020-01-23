@@ -81,6 +81,9 @@ body{
   .mt10{
     margin-top:10px;
   }
+  .mt20{
+    margin-top:20px;
+  }
   .m0{
     margin:0;
   }
