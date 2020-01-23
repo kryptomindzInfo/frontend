@@ -60,12 +60,14 @@ import BranchInfo from 'containers/BranchInfo';
 import BankCashierInfo from 'containers/BankCashierInfo';
 import BranchCashierList from 'containers/BranchCashierList';
 import BranchCashierInfo from 'containers/BranchCashierInfo';
+import CashierSendMoney from 'containers/CashierSendMoney';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
 
 import 'react-toastify/dist/ReactToastify.css';
 import FeeList from '../FeeList';
+// import { CashierSendMoney } from '../CashierSendMoney';
 
 const appTheme = {
   primary: '#417505',
@@ -98,6 +100,8 @@ export default function App(props) {
     <ThemeProvider theme={theme}>
       <div>
         <Switch>
+          <BranchRoute exact path="/send-money" component={CashierSendMoney} />
+
           <Route exact path="/" component={HomePage} notify={notify} />
           <Route exact path="/setup" component={SetupPage} notify={notify} />
           <Route exact path="/lang" component={LocaleToggle} />
@@ -116,14 +120,24 @@ export default function App(props) {
           <InfraRoute path="/createfee/:bank?" component={CreateFee} />
           <InfraRoute path="/editfee/:bank?" component={EditFee} />
           <InfraRoute path="/documents/:bank?" component={Documents} />
-          <InfraRoute path="/operationalHistory/:bank?" component={OperationalHistory} />
+          <InfraRoute
+            path="/operationalHistory/:bank?"
+            component={OperationalHistory}
+          />
           <InfraRoute path="/masterHistory/:bank?" component={MasterHistory} />
-          <InfraRoute path="/bankCreation-confirmationPage" component={BankCreationConfirmationPage} />
+          <InfraRoute
+            path="/bankCreation-confirmationPage"
+            component={BankCreationConfirmationPage}
+          />
 
           <Route exact path="/bank" component={BankLoginPage} />
           <Route exact path="/bank/setup" component={BankSetupPage} />
           <Route exact path="/bank/activate" component={BankActivate} />
-          <Route exact path="/bank/forgot-password" component={BankForgotPasswordPage} />
+          <Route
+            exact
+            path="/bank/forgot-password"
+            component={BankForgotPasswordPage}
+          />
           <Route exact path="/bank/otp" component={BankOTPPage} />
 
           <BankRoute exact path="/bank/dashboard" component={BankDashboard} />
@@ -132,21 +146,57 @@ export default function App(props) {
           <BankRoute path="/bank/documents" component={BankDocuments} />
           <BankRoute path="/bank/branches" component={BankBranchList} />
           <BankRoute path="/bank/branch/:branch?" component={BankBranchInfo} />
-          <BankRoute path="/bank/cashiers/:branch?" component={BankCashierList} />
+          <BankRoute
+            path="/bank/cashiers/:branch?"
+            component={BankCashierList}
+          />
           <BankRoute path="/bank/users" component={BankUser} />
           <BankRoute path="/bank/create-fee" component={BankCreateFee} />
-          <BankRoute path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
-          <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
-          <BankRoute exact path="/bank/cashier/:branch?/:cashier?" component={BankCashierInfo} />
+          <BankRoute
+            path="/bank/theme"
+            component={BankTheme}
+            setTheme={setTheme}
+            appTheme={theme}
+          />
+          <BankRoute
+            path="/bank/operationalHistory"
+            component={BankOperationalHistory}
+          />
+          <BankRoute
+            exact
+            path="/bank/cashier/:branch?/:cashier?"
+            component={BankCashierInfo}
+          />
 
           <Route exact path="/branch/:bank?" component={BranchLogin} />
-          <Route exact path="/branch/:bank?/forgot-password" component={BranchForgotPassword} />
+          <Route
+            exact
+            path="/branch/:bank?/forgot-password"
+            component={BranchForgotPassword}
+          />
           <Route exact path="/branch/:bank?/otp" component={BranchOTPPage} />
           <Route exact path="/branch/:bank?/setup" component={BranchSetup} />
-          <BranchRoute exact path="/branch/:bank?/dashboard" component={BranchDashboard} />
-          <BranchRoute exact path="/branch/:bank?/info" component={BranchInfo} />
-          <BranchRoute exact path="/branch/:bank?/cashiers" component={BranchCashierList} />
-          <BranchRoute exact path="/branch/:bank?/cashier/:cashier?" component={BranchCashierInfo} />
+          <BranchRoute
+            exact
+            path="/branch/:bank?/dashboard"
+            component={BranchDashboard}
+          />
+          <BranchRoute
+            exact
+            path="/branch/:bank?/info"
+            component={BranchInfo}
+          />
+          <BranchRoute
+            exact
+            path="/branch/:bank?/cashiers"
+            component={BranchCashierList}
+          />
+          <BranchRoute
+            exact
+            path="/branch/:bank?/cashier/:cashier?"
+            component={BranchCashierInfo}
+          />
+          <BranchRoute exact path="/branch/:bank?/dashboard/send-money" component={CashierSendMoney} />
 
           <Route component={NotFoundPage} />
         </Switch>

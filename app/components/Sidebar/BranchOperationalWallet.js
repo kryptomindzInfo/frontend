@@ -52,6 +52,8 @@ class BranchOperationalWallet extends Component {
 
   warn = () => toast.warn(this.state.notification);
 
+ 
+
   handleInputChange = event => {
     const { value, name } = event.target;
     this.setState({
@@ -240,8 +242,10 @@ class BranchOperationalWallet extends Component {
     this.setState({
       bank: this.props.historyLink,
     });
-
   }
+  try = () => {
+    this.props.history.push('/branch/:bank?/dashboard/send-money');
+  };
 
   render() {
     function inputFocus(e) {
@@ -268,18 +272,18 @@ class BranchOperationalWallet extends Component {
         </div>
 
         <Row>
-        <Col><button>
-          <i className="material-icons">send</i>{' '}
-          <FormattedMessage {...messages.sendmoney} />
-        </button></Col>
-        <Col><button>
-          <i className="material-icons">send</i>{' '}
-          Claim Money
-        </button></Col>
+          <Col>
+            <button>
+              <i className="material-icons">send</i>{' '}
+              <FormattedMessage {...messages.sendmoney} />
+            </button>
+          </Col>
+          <Col>
+            <button onClick={this.try}>
+              <i className="material-icons">send</i> Claim Money
+            </button>
+          </Col>
         </Row>
-
-
-
 
         {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)} roundedCorner>
@@ -343,7 +347,6 @@ class BranchOperationalWallet extends Component {
               <p className="note">
                 * I have read the <a>Terms and Conditions</a>
               </p>
-
 
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>

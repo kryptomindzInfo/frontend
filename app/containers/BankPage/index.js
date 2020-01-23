@@ -1305,7 +1305,7 @@ export default class BankPage extends Component {
                       name="name"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
-                      value={this.state.name.slice(" ", -1)}
+                      value={this.state.name.slice(' ', -1)}
                       autoFocus
                       onChange={this.handleInputChange}
                       required
