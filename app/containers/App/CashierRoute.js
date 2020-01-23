@@ -1,10 +1,9 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-const BankRoute = ({ component: Component, ...rest }) => {
+const CashierRoute = ({ component: Component, ...rest }) => {
   function isLogin() {
-    var token = localStorage.getItem('bankLogged');
-    console.log("route: "+token);
+    var token = localStorage.getItem('cashierLogged');
     if (!token || token == null || token == undefined || token == '') {
       return false;
     } else {
@@ -15,10 +14,10 @@ const BankRoute = ({ component: Component, ...rest }) => {
     <Route
       {...rest}
       render={props =>
-        isLogin() ? <Component {...props} {...rest} /> : <Redirect to="/bank" />
+        isLogin() ? <Component {...props} {...rest} /> : <Redirect to={"/cashier/"+this.props.match.params.bank} />
       }
     />
   );
 };
 
-export default BankRoute;
+export default CashierRoute;

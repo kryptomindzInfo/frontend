@@ -13,7 +13,7 @@ const InfraRoute = ({component: Component, ...rest}) => {
     return (
         <Route {...rest} render={props => (
             isLogin() ?
-                <Component {...props} />
+              <Component {...props} />
             : <Redirect to="/" />
         )} />
     );

@@ -49,9 +49,8 @@ const LoaderWrap = styled.div`
 
 
 class Loader extends Component {
-  
+
   render() {
-    console.log(this.props);
     return (
       <LoaderWrap fullPage={this.props.fullPage}>
           <div className="lds-ring"><div></div><div></div><div></div><div></div></div>

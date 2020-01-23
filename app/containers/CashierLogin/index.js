@@ -1,5 +1,5 @@
 /*
- * BankLoginPage
+ * CashierLogin
  *
  * This is the first thing users see of our App, at the '/' route
  *
@@ -29,9 +29,9 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
 import Loader from 'components/Loader';
+import history from 'utils/history';
 
-
-import { API_URL } from '../App/constants';
+import { API_URL, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -43,7 +43,9 @@ toast.configure({
   draggable: true,
 });
 
-export default class BankLoginPage extends Component {
+
+
+export default class CashierLogin extends Component {
   constructor() {
     super();
     this.state = {
@@ -70,59 +72,56 @@ export default class BankLoginPage extends Component {
   };
 
   loginRequest = event => {
-    event.preventDefault();
     this.setState({
-      loginLoading: true,
-    }, () => {
-      axios
-        .post(`${API_URL}/bankLogin`, this.state)
-        .then(res => {
-          if (res.status == 200) {
-            console.log(res.data.token);
-            localStorage.setItem('bankLogged', res.data.token);
-            localStorage.setItem('bankName', res.data.name);
-            localStorage.setItem('bankUserName', res.data.username);
-            localStorage.setItem('bankContract', res.data.contract);
-            localStorage.setItem('bankLogo', res.data.logo);
-            localStorage.setItem('bankId', res.data.id);
-            console.log(localStorage.getItem('bankLogged'));
-            if (!res.data.initial_setup) {
-              window.location.href ='/bank/setup';
-            } else if (
-              !res.data.status ||
-              res.data.status == 0 ||
-              res.data.status == ''
-            ) {
-              window.location.href ='/bank/activate';
-            } else {
-              window.location.href ='/bank/dashboard';
-            }
-          } else {
-            throw res.data.error;
-
-          }
-
-        })
-        .catch(err => {
-          this.setState({
-            notification: err.response ? err.response.data.error : err.toString(),
-            loginLoading: false,
-          });
-          this.error();
-        });
+      loginLoading: true
     });
+    event.preventDefault();
+    axios
+      .post(`${API_URL}/cashierLogin`, this.state)
+      .then(res => {
+        if (res.status == 200) {
+          localStorage.setItem('cashierLogged', res.data.token);
+          localStorage.setItem('cashierName', res.data.name);
+          localStorage.setItem('cashierUserName', res.data.username);
+          localStorage.setItem('userId', res.data.id);
+          localStorage.setItem('cashierId', res.data.cashier_id);
+          console.log(this.state.bank.logo);
+          localStorage.setItem('bankLogo', this.state.bank.logo);
+          localStorage.setItem('cashierEmail', res.data.email);
+          localStorage.setItem('cashierMobile', res.data.mobile);
 
+            window.location.href = '/cashier/'+this.props.match.params.bank+'/dashboard';
+
+        } else {
+          throw res.data.error;
+        }
+        this.setState({
+          loginLoading: false
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          loginLoading: false
+        });
+        this.error();
+      });
   };
 
   componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      this.setState({ loading: false });
-    }
-  }
+    axios
+      .post(`${API_URL}/getBranchByName`, {name: this.props.match.params.bank})
+      .then(res => {
+        if (res.status == 200) {
 
-  componentWillUnmount() {
-    this._isMounted = false;
+          this.setState({ bank: res.data.banks, loading:false });
+        } else {
+          throw res.data.error;
+        }
+      })
+      .catch(err => {
+        history.push("/");
+      });
   }
 
   render() {
@@ -149,25 +148,19 @@ export default class BankLoginPage extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | BANK | SIGNUP</title>
+          <title>E-WALLET | BRANCH | LOGIN</title>
         </Helmet>
-        <FrontLeftSection from="bank" />
+        <FrontLeftSection from="cashier" title={this.state.bank.name} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
-            <FormattedMessage {...messages.pagetitle} />
+          <FormattedMessage {...messages.pagetitle} />
           </LoginHeader>
-          <FrontFormTitle>
-            <FormattedMessage {...messages.title} />
-          </FrontFormTitle>
-          <FrontFormSubTitle>
-            <FormattedMessage {...messages.subtitle2} />
-          </FrontFormSubTitle>
+          <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
+          <FrontFormSubTitle><FormattedMessage {...messages.subtitle2} /></FrontFormSubTitle>
           <form action="" method="POST" onSubmit={this.loginRequest}>
             <InputsWrap>
               <FormGroup>
-                <label>
-                  <FormattedMessage {...messages.userid} />*
-                </label>
+                <label><FormattedMessage {...messages.userid} />*</label>
                 <TextInput
                   type="text"
                   name="username"
@@ -179,9 +172,7 @@ export default class BankLoginPage extends Component {
                 />
               </FormGroup>
               <FormGroup>
-                <label>
-                  <FormattedMessage {...messages.password} />*
-                </label>
+                <label><FormattedMessage {...messages.password} />*</label>
                 <TextInput
                   type="password"
                   name="password"
@@ -193,22 +184,18 @@ export default class BankLoginPage extends Component {
                 />
               </FormGroup>
             </InputsWrap>
-            {this.loginLoading ? (
-              <PrimaryBtn disabled>
-                <Loader />
-              </PrimaryBtn>
-            ) : (
-              <PrimaryBtn>
-                <FormattedMessage {...messages.pagetitle} />
-              </PrimaryBtn>
-            )}
+            {
+              this.loginLoading ?
+              <PrimaryBtn disabled><Loader /></PrimaryBtn>
+              :
+              <PrimaryBtn><FormattedMessage {...messages.pagetitle} /></PrimaryBtn>
+            }
+
           </form>
           <Row marginTop>
             <Col />
             <Col textRight>
-              <A href="/bank/forgot-password">
-                <FormattedMessage {...messages.forgotpassword} />
-              </A>
+              <A href={"/cashier/"+this.props.match.params.bank+"/forgot-password"}><FormattedMessage {...messages.forgotpassword} /></A>
             </Col>
           </Row>
         </FrontRightSection>

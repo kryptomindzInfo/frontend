@@ -18,7 +18,7 @@ import BranchHeader from 'components/Header/BranchHeader';
 import BranchWallets from 'components/Sidebar/BranchWallets';
 import Container from 'components/Container';
 import Popup from 'components/Popup';
-import BankSidebarThree from 'components/Sidebar/BankSidebarThree';
+import BranchSidebarTwo from 'components/Sidebar/BranchSidebarTwo';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import A from 'components/A';
@@ -696,7 +696,7 @@ export default class BranchInfo extends Component {
         </Helmet>
         <BranchHeader page="branch" goto={"/branch/"+this.props.match.params.bank+"/dashboard"} bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
         <Container verticalMargin>
-          <BankSidebarThree active="info" blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.state.name}/>
+          <BranchSidebarTwo active="info" blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.props.match.params.bank}/>
           <Main>
 
             <BranchWallets />

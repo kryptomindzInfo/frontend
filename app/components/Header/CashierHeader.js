@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import Logo from './Logo';
-import BranchNav from './BranchNav';
+import CashierNav from './CashierNav';
 import TopBar from './TopBar';
 import Welcome from './Welcome';
 import Container from 'components/Container';
@@ -30,14 +30,14 @@ const Link = styled.span`
     padding: 9px 20px;
 `;
 
-
+const token = localStorage.getItem('cashierLogged');
 
 var permissions = localStorage.getItem('permissions');
 if (permissions != 'all' && permissions != '') {
   permissions = JSON.parse(permissions);
 }
 
-class BranchHeader extends Component {
+class CashierHeader extends Component {
   constructor() {
     super();
     this.state = {
@@ -46,21 +46,17 @@ class BranchHeader extends Component {
     };
   }
 
-
   componentDidMount() {
     
   }
 
-  // componentWillUnmount() {
-
-  // }
 
   render() {
     const name = localStorage.getItem('name');
     const page = this.props.page;
     return (
       <TopBar>
-        <Welcome from="branch" bankName={this.props.bankName}/>
+        <Welcome from="cashier" bankName={this.props.bankName}/>
         <Container>
           {
             page == 'branch' ?
@@ -90,7 +86,7 @@ class BranchHeader extends Component {
             page == 'branch' ?
             null
             :
-            <BranchNav active={this.props.active} bankName={this.props.bankName} />
+            <CashierNav active={this.props.active} bankName={this.props.bankName} />
           }
 
         </Container>
@@ -99,4 +95,4 @@ class BranchHeader extends Component {
   }
 }
 
-export default BranchHeader;
+export default CashierHeader;
