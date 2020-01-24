@@ -204,7 +204,7 @@ class MasterWallet extends Component {
 
   getBalance = () => {
     axios
-      .get(`${API_URL}/getInfraMasterBalance?bank=${this.props.historyLink}`)
+      .get(`${API_URL}/getInfraMasterBalance?bank=${this.props.historyLink}&token=${this.state.token}`)
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {

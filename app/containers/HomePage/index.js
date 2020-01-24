@@ -83,7 +83,7 @@ export default class HomePage extends Component {
           localStorage.setItem('name', res.data.name);
           localStorage.setItem('isAdmin', res.data.isAdmin);
 
-          this.props.history.push('/dashboard');
+          window.location.href = '/dashboard';
         } else {
           throw res.data.error;
         }
