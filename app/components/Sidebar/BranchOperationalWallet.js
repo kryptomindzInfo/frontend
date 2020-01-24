@@ -24,7 +24,7 @@ toast.configure({
   pauseOnHover: true,
   draggable: true,
 });
-const token = localStorage.getItem('bankLogged');
+const token = localStorage.getItem('branchLogged');
 
 class BranchOperationalWallet extends Component {
   constructor() {
@@ -236,9 +236,32 @@ class BranchOperationalWallet extends Component {
     }
   };
 
+  getBalance = () => {
+    axios
+      .get(
+        `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${this.state.token}&type=branch&page=operational`,
+      )
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              balance: res.data.balance,
+            });
+          }
+        }
+      })
+      .catch(err => {
+  
+      });
+  };
+
   componentDidMount() {
     this.setState({
       bank: this.props.historyLink,
+    }, () => {
+      this.getBalance();
     });
 
   }
@@ -268,11 +291,11 @@ class BranchOperationalWallet extends Component {
         </div>
 
         <Row>
-        <Col><button>
+        <Col><button className="sendMoneyButton">
           <i className="material-icons">send</i>{' '}
           <FormattedMessage {...messages.sendmoney} />
         </button></Col>
-        <Col><button>
+        <Col><button className="sendMoneyButton">
           <i className="material-icons">send</i>{' '}
           Claim Money
         </button></Col>

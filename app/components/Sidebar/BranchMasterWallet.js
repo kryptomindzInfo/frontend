@@ -22,7 +22,7 @@ toast.configure({
   pauseOnHover: true,
   draggable: true,
 });
-const token = localStorage.getItem('bankLogged');
+const token = localStorage.getItem('branchLogged');
 
 class BranchMasterWallet extends Component {
   constructor() {
@@ -234,9 +234,32 @@ class BranchMasterWallet extends Component {
     }
   };
 
+  getBalance = () => {
+    axios
+      .get(
+        `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${this.state.token}&type=branch&page=master`,
+      )
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              balance: res.data.balance,
+            });
+          }
+        }
+      })
+      .catch(err => {
+  
+      });
+  };
+
   componentDidMount() {
     this.setState({
       bank: this.props.historyLink,
+    }, () => {
+      this.getBalance();
     });
 
   }

@@ -511,6 +511,37 @@ export default class BankCreateFee extends Component {
                       </FormGroup>
                     </Col>
                   </Row>
+                  <H4>Transaction Range</H4>
+                  <Row>
+                    <Col>
+                      <FormGroup>
+                      <TextInput
+                      type="text"
+                      name="trans_from"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.trans_from}
+                      onChange={this.handleInputChange}
+                      placeholder="From"
+                      required
+                    />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                      <TextInput
+                      type="text"
+                      name="trans_to"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.trans_to}
+                      onChange={this.handleInputChange}
+                      placeholder="To"
+                      required
+                    />
+                      </FormGroup>
+                    </Col>
+                  </Row>
 
                   <H4>Transaction Count</H4>
                   {this.state.ranges.map(function(v, i) {

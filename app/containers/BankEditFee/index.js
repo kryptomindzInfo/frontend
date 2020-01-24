@@ -457,7 +457,7 @@ export default class BankEditFee extends Component {
       .then(res => {
         if(res.status == 200){
           var temp = JSON.parse(res.data.row.ranges);
-          this.setState({ loading:false, name: res.data.row.name, trans_type: res.data.row.trans_type, active: res.data.row.active, ranges: temp, loading: false}, ()=>{
+          this.setState({ loading:false, name: res.data.row.name, trans_type: res.data.row.trans_type, active: res.data.row.active, ranges: temp, trans_from: res.data.row.trans_from, trans_to: res.data.row.trans_to}, ()=>{
             
           });
         }
@@ -583,7 +583,37 @@ Edit Revenue sharing Rule</h3>
                   </FormGroup>
                   </Col>
                 </Row>
-   
+                <H4>Transaction Range</H4>
+                  <Row>
+                    <Col>
+                      <FormGroup>
+                      <TextInput
+                      type="text"
+                      name="trans_from"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.trans_from}
+                      onChange={this.handleInputChange}
+                      placeholder="From"
+                      required
+                    />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                      <TextInput
+                      type="text"
+                      name="trans_to"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.trans_to}
+                      onChange={this.handleInputChange}
+                      placeholder="To"
+                      required
+                    />
+                      </FormGroup>
+                    </Col>
+                  </Row>
 
                 <H4>Transaction Count</H4>
                 {
