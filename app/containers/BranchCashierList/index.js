@@ -513,7 +513,7 @@ export default class BranchCashierList extends Component {
         </Helmet>
         <BranchHeader active="cashier" bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
         <Container verticalMargin>
-          <SidebarBranch />
+          <SidebarBranch bankName={this.props.match.params.bank}/>
           <Main>
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
               <div className="iconedInput fl">

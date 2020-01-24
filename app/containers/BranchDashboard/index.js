@@ -534,7 +534,7 @@ export default class BranchDashboard extends Component {
         </Helmet>
         <BranchHeader active="dashboard" bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
         <Container verticalMargin>
-          <SidebarBranch />
+          <SidebarBranch bankName={this.props.match.params.bank}/>
           <Main>
             <Row>
             <Col>

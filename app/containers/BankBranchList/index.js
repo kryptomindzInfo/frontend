@@ -200,11 +200,11 @@ export default class BankBranchList extends Component {
             throw res.data.error;
           }else{
             this.setState({
-              notification: "Branch added successfully!",
+              notification: res.data.status+" "+res.data.walletStatus,
             });
             this.success();
             this.closePopup();
-            //this.getBanks();
+            this.getBranches();
           }
         }else{
           const error = new Error(res.data.error);
@@ -232,7 +232,6 @@ export default class BankBranchList extends Component {
     axios
       .post(`${API_URL  }/editBranch`, {
         name: this.state.name,
-        bcode: this.state.bcode,
         username: this.state.username,
         credit_limit: this.state.credit_limit,
         address1: this.state.address1,
@@ -1052,6 +1051,7 @@ export default class BankBranchList extends Component {
                 <TextInput
                   type="text"
                   name="bcode"
+                  readOnly
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.bcode}
