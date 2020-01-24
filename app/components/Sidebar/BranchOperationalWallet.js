@@ -55,14 +55,14 @@ class BranchOperationalWallet extends Component {
       contract: '',
       popupSendMoney: false,
       popupClaimMoney: false,
-      name: '',
-      givenname: '',
-      familyname: '',
+      name: 'hatim',
+      givenname: 'hatim',
+      familyname: 'hatim',
       note: '',
       senderIdentificationCountry: '',
       senderIdentificationType: '',
-      address1: '',
-      state: '',
+      address1: 'hatim',
+      state: 'hatim',
       zip: '',
       bcode: '',
       country: '',
@@ -373,7 +373,9 @@ class BranchOperationalWallet extends Component {
   getBalance = () => {
     axios
       .get(
-        `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${this.state.token}&type=branch&page=operational`,
+        `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${
+          this.state.token
+        }&type=branch&page=operational`,
       )
       .then(res => {
         if (res.status == 200) {
@@ -386,21 +388,20 @@ class BranchOperationalWallet extends Component {
           }
         }
       })
-      .catch(err => {
-  
-      });
+      .catch(err => {});
   };
 
   componentDidMount() {
-    this.setState({
-      bank: this.props.historyLink,
-    }, () => {
-      this.getBalance();
-    });
+    this.setState(
+      {
+        bank: this.props.historyLink,
+      },
+      () => {
+        this.getBalance();
+      },
+    );
   }
-  try = () => {
-    history.push('/send-money');
-  };
+
   triggerBrowse = inp => {
     const input = document.getElementById(inp);
     input.click();
@@ -450,13 +451,19 @@ class BranchOperationalWallet extends Component {
 
         <Row>
           <Col>
-            <Button className="sendMoneybutton" onClick={this.showPopupSendMoney}>
+            <Button
+              className="sendMoneybutton"
+              onClick={this.showPopupSendMoney}
+            >
               <i className="material-icons">send</i> {/* Send Money */}
               <FormattedMessage {...messages.sendmoney} />
             </Button>
           </Col>
           <Col>
-            <Button className="sendMoneybutton" onClick={this.showClaimMoneyPopup}>
+            <Button
+              className="sendMoneybutton"
+              onClick={this.showClaimMoneyPopup}
+            >
               <i className="material-icons">send</i> Claim Money
             </Button>
           </Col>
@@ -545,99 +552,239 @@ class BranchOperationalWallet extends Component {
             <form action="" method="post" onSubmit={this.saveClaimMoneyDetails}>
               <Container>
                 <Row>
-                  <Col sm="12" md="12">
+                  <Col md="4" />
+                  <Col sm="12" md="4">
+                    <FormGroup>
+                      <label>
+                        Enter the transfer code
+                        {/* <FormattedMessage {...messages.popup1} />* */}
+                      </label>
+                      <TextInput
+                        type="text"
+                        name="transferCode"
+                        pattern=".{3,12}"
+                        // title="Minimum 3 characters"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.transferCode}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col md="4" />
+                </Row>
+              </Container>
+              <Container>
+                <Row>
+                  <Col sm="12" md="4">
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        padding: '25px 0px',
+                        color: '#417505',
+                      }}
+                    >
+                      Sender's Info
+                    </div>
                     <Row>
-                      <Col>
-                        <FormGroup>
-                          <label>
-                            Enter the transfer code
-                            {/* <FormattedMessage {...messages.popup1} />* */}
-                          </label>
-                          <TextInput
-                            type="text"
-                            name="transferCode"
-                            pattern=".{3,12}"
-                            // title="Minimum 3 characters"
-                            onFocus={inputFocus}
-                            onBlur={inputBlur}
-                            value={this.state.transferCode}
-                            onChange={this.handleInputChange}
-                            required
-                          />
-                        </FormGroup>
+                      <Col className="infoLeft">Mobile Number</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.mobile}
                       </Col>
                     </Row>
                     <Row>
-                      <Col>
-                        <FormGroup>
-                          <label>
-                            ID number
-                            {/* <FormattedMessage {...messages.popup1} />* */}
-                          </label>
-                          <TextInput
-                            type="text"
-                            name="IDNumber"
-                            // pattern="[0-9]"
-                            title="Minimum 3 characters"
-                            onFocus={inputFocus}
-                            onBlur={inputBlur}
-                            value={this.state.IDNumber}
-                            onChange={this.handleInputChange}
-                            required
-                          />
-                        </FormGroup>
+                      <Col className="infoLeft">Given Name</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.givenname}
                       </Col>
                     </Row>
                     <Row>
-                      <Col>
-                        <FormGroup>
-                          <label>
-                            Amount
-                            {/* <FormattedMessage {...messages.popup1} />* */}
-                          </label>
-                          <TextInput
-                            type="text"
-                            name="amount"
-                            pattern="[0-9]"
-                            // title="Minimum 3 characters"
-                            onFocus={inputFocus}
-                            onBlur={inputBlur}
-                            value={this.state.amount}
-                            onChange={this.handleInputChange}
-                            required
-                          />
-                        </FormGroup>
+                      <Col className="infoLeft">Family Name</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.familyname}
                       </Col>
                     </Row>
                     <Row>
-                      <Col>
-                        <FormGroup>
-                          <label>
-                            Note
-                            {/* <FormattedMessage {...messages.popup1} />* */}
-                          </label>
-                          <TextInput
-                            type="text"
-                            name="note"
-                            pattern=".{3,12}"
-                            title="Minimum 3 characters"
-                            onFocus={inputFocus}
-                            onBlur={inputBlur}
-                            value={this.state.note}
-                            onChange={this.handleInputChange}
-                            required
-                          />
-                        </FormGroup>
+                      <Col className="infoLeft">Address</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.address1}
+                      </Col>
+                    </Row>{' '}
+                    <Row>
+                      <Col className="infoLeft">State</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.state}
+                      </Col>
+                    </Row>{' '}
+                    <Row>
+                      <Col className="infoLeft">Zip Code</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.zip}
+                      </Col>
+                    </Row>{' '}
+                    <Row>
+                      <Col className="infoLeft">Country</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.country}
+                      </Col>
+                    </Row>{' '}
+                    <Row>
+                      <Col className="infoLeft">Email ID</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.email}
+                      </Col>
+                    </Row>{' '}
+                    <Row>
+                      <Col className="infoLeft">Notes</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.note}
                       </Col>
                     </Row>
-
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        padding: '13px 0px',
+                      }}
+                    >
+                      Sender's Identification
+                    </div>
+                    <Row>
+                      <Col className="infoLeft">Country</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.senderIdentificationCountry}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">Type</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.senderIdentificationType}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">Number</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.senderIdentificationNumber}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">Valid till</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.senderIdentificationValidTill}
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col sm="12" md="4">
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        padding: '25px 0px',
+                        color: '#417505',
+                      }}
+                    >
+                      Receiver's Info
+                    </div>
+                    <Row>
+                      <Col className="infoLeft">Mobile Number</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.receiverMobile}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">Given Name</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.receiverGivenName}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">Family Name</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.receiverFamilyName}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">Country</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.receiverCountry}
+                      </Col>
+                    </Row>{' '}
+                    <Row>
+                      <Col className="infoLeft">Email ID</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.receiverEmail}
+                      </Col>
+                    </Row>{' '}
+                    <Row /> <Row /> <Row />{' '}
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        padding: '20px 0px',
+                      }}
+                    >
+                      Receiver's Identification
+                    </div>
+                    <Row>
+                      <Col className="infoLeft">Country</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.receiverIdentificationCountry}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">Type</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.receiverIdentificationType}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">Number</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.receiverIdentificationNumber}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">Valid till</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.receiverIdentificationValidTill}
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col sm="12" md="4">
+                    <Row>                    
+                      <Col className="infoLeft">Amount</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.receiverIdentificationAmount}
+                      </Col>
+                    </Row>{' '}
+                    <Row>
+                      <Col className="infoLeft">Date</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.dateClaimMoney}
+                      </Col>
+                    </Row>{' '}
+                    <Row>
+                      <Col className="infoLeft">Transaction ID</Col>
+                      <Col className="infoRightClaimMoneyPopup">
+                        {this.state.transactionIDClaimMoney}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">ID Required</Col>
+                      <Col className="infoRightClaimMoneyPopup">Yes</Col>
+                    </Row>
+                    <Row>
+                      <Col className="infoLeft">OTP Required</Col>
+                      <Col className="infoRightClaimMoneyPopup">Yes</Col>
+                    </Row>
                     <p className="note">
                       <span style={{ color: 'red' }}>*</span> I have read the{' '}
                       <a onClick={() => window.open('/termsConditions')}>
                         Terms and Conditions
                       </a>
                     </p>
-
                     <FormGroup>
                       <UploadArea bgImg={STATIC_URL + 'main/pdf-icon.png'}>
                         {this.state.contract ? (
@@ -691,7 +838,6 @@ class BranchOperationalWallet extends Component {
                         </div>
                       </UploadArea>
                     </FormGroup>
-
                     <Button filledBtn marginTop="20px">
                       <span>
                         Proceed
@@ -1604,7 +1750,7 @@ class BranchOperationalWallet extends Component {
                       </div>
                       <Row>
                         <Col>
-                        <FormGroup>
+                          <FormGroup>
                             <SelectInput
                               type="text"
                               name="receiverIdentificationCountry"

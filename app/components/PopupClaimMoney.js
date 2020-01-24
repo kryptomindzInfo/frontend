@@ -23,7 +23,7 @@ const PopupClaimMoneyWrap = styled.div`
 const PopupClaimMoneyBody = styled.div`
   background: #fff;
   border-radius: 6px;
-  width: 34%;
+  width: 88%;
   padding: 20px;
   margin: 20px auto;
   position: relative;

@@ -36,6 +36,16 @@ const Card = styled.div`
     margin-bottom: 30px;
     color: green;
   }
+  .infoRightClaimMoneyPopup {
+    .font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 30px;
+    color: green;
+  }
+
+
+
   .profile {
     img {
       max-width: 100%;
