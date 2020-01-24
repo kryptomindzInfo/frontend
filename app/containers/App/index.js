@@ -69,12 +69,13 @@ import CashierSetup from 'containers/CashierSetup';
 import CashierDashboard from 'containers/CashierDashboard';
 import CashierInfo from 'containers/CashierInfo';
 import BankEditFee from 'containers/BankEditFee';
+import FeeList from 'containers/FeeList';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
 
 import 'react-toastify/dist/ReactToastify.css';
-import FeeList from '../FeeList';
+
 
 const appTheme = {
   primary: '#417505',
@@ -93,16 +94,8 @@ toast.configure();
 
 export default function App(props) {
   const [theme, setTheme] = useState(appTheme);
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setTheme({ primary: "#ff0000"})
-  //   }, 3000)
-  // }, [])
-
   const notify = () => toast('Wow so easy !');
-  const token = localStorage.getItem('logged');
-  const bankToken = localStorage.getItem('bankLogged');
+
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -120,14 +113,14 @@ export default function App(props) {
           <InfraRoute exact path="/banks" component={BankPage} />
           <InfraRoute exact path="/profile" component={InfraProfile} />
           <InfraRoute exact path="/user" component={UserPage} />
-          <InfraRoute path="/fees/:bank?" component={FeeList} />
-          <InfraRoute path="/info/:bank?" component={InfraInfo} />
-          <InfraRoute path="/createfee/:bank?" component={CreateFee} />
-          <InfraRoute path="/editfee/:bank?" component={EditFee} />
-          <InfraRoute path="/documents/:bank?" component={Documents} />
-          <InfraRoute path="/operationalHistory/:bank?" component={OperationalHistory} />
-          <InfraRoute path="/masterHistory/:bank?" component={MasterHistory} />
-          <InfraRoute path="/bankCreation-confirmationPage" component={BankCreationConfirmationPage} />
+          <InfraRoute exact path="/fees/:bank?" component={FeeList} />
+          <InfraRoute exact path="/info/:bank?" component={InfraInfo} />
+          <InfraRoute exact path="/createfee/:bank?" component={CreateFee} />
+          <InfraRoute exact path="/editfee/:bank?" component={EditFee} />
+          <InfraRoute exact path="/documents/:bank?" component={Documents} />
+          <InfraRoute exact path="/operationalHistory/:bank?" component={OperationalHistory} />
+          <InfraRoute exact path="/masterHistory/:bank?" component={MasterHistory} />
+          <InfraRoute exact path="/bankCreation-confirmationPage" component={BankCreationConfirmationPage} />
 
           <Route exact path="/bank" component={BankLoginPage} />
           <Route exact path="/bank/setup" component={BankSetupPage} />
@@ -136,16 +129,16 @@ export default function App(props) {
           <Route exact path="/bank/otp" component={BankOTPPage} />
 
           <BankRoute exact path="/bank/dashboard" component={BankDashboard} />
-          <BankRoute path="/bank/info" component={BankInfo} />
-          <BankRoute path="/bank/fees" component={BankFees} />
-          <BankRoute path="/bank/documents" component={BankDocuments} />
-          <BankRoute path="/bank/branches" component={BankBranchList} />
-          <BankRoute path="/bank/branch/:branch?" component={BankBranchInfo} />
-          <BankRoute path="/bank/cashiers/:branch?" component={BankCashierList} />
-          <BankRoute path="/bank/users" component={BankUser} />
+          <BankRoute exact path="/bank/info" component={BankInfo} />
+          <BankRoute exact path="/bank/fees" component={BankFees} />
+          <BankRoute exact path="/bank/documents" component={BankDocuments} />
+          <BankRoute exact path="/bank/branches" component={BankBranchList} />
+          <BankRoute exact path="/bank/branch/:branch?" component={BankBranchInfo} />
+          <BankRoute exact path="/bank/cashiers/:branch?" component={BankCashierList} />
+          <BankRoute exact path="/bank/users" component={BankUser} />
           <BankRoute exact path="/bank/create-fee" component={BankCreateFee} />
-          <BankRoute path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
-          <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
+          <BankRoute exact path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
+          <BankRoute exact path="/bank/operationalHistory" component={BankOperationalHistory} />
           <BankRoute exact path="/bank/cashier/:branch?/:cashier?" component={BankCashierInfo} />
           <BankRoute exact path="/bank/edit-fee/:fee?" component={BankEditFee} />
 
