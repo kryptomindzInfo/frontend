@@ -98,10 +98,10 @@ export default class BranchCashierList extends Component {
     this.setState({ popup: true });
   };
   showAssignPopup = (v) => {
-    this.setState({ assignPop: true, name: v.name, bcode: v.bcode, working_from: v.working_from, working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id});
+    this.setState({ assignPop: true, name: v.name, bcode: v.bcode, working_from: v.working_from, working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id, bank_user_id: v.bank_user_id});
   };
   showEditPopup = (v) => {
-    this.setState({ editPopup: true, name: v.name, bcode: v.bcode, working_from: v.working_from, working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id});
+    this.setState({ editPopup: true, name: v.name, bcode: v.bcode, working_from: v.working_from, working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id, bank_user_id: v.bank_user_id});
   };
 
   closePopup = () => {
@@ -623,6 +623,7 @@ export default class BranchCashierList extends Component {
               onChange={this.handleInputChange}
               onBlur={inputBlur} value={this.state.bank_user_id} name="bank_user_id"
               placeholder="Assign User*" required >
+                <option value="">Select User</option>
               {
                 this.state.users.map(function(b) {
                   return  <option value={b._id}>{b.name}</option>
