@@ -23,7 +23,7 @@ const PopupSendMoneyWrap = styled.div`
 const PopupSendMoneyBody = styled.div`
   background: #fff;
   border-radius: 6px;
-  width: 88%;
+  width: 82%;
   padding: 20px;
   margin: 20px auto;
   position: relative;

@@ -215,7 +215,6 @@ export default class BranchDashboard extends Component {
   editCashier = event => {
     event.preventDefault();
 
-<<<<<<< HEAD
     this.setState(
       {
         showEditOtp: true,
@@ -226,19 +225,6 @@ export default class BranchDashboard extends Component {
         this.generateOTP();
       },
     );
-=======
-      this.setState(
-        {
-          showEditOtp: true,
-          otpOpt: 'editCashier',
-          otpTxt: 'Your OTP to edit Cashier is '
-        },
-        () => {
-          this.generateOTP();
-        },
-      );
-
->>>>>>> 6730ec3435491b94aab861561a5581548390b133
   };
   startTimer = () => {
     var dis = this;
@@ -328,10 +314,6 @@ export default class BranchDashboard extends Component {
         this.error();
       });
   };
-<<<<<<< HEAD
-=======
-
->>>>>>> 6730ec3435491b94aab861561a5581548390b133
 
   blockBranch = (e, s) => {
     var dis = this;
@@ -558,15 +540,11 @@ export default class BranchDashboard extends Component {
           <meta charSet="utf-8" />
           <title>Dashboard | BRANCH | E-WALLET</title>
         </Helmet>
-<<<<<<< HEAD
         <BranchHeader
           active="dashboard"
           bankName={this.props.match.params.bank.toUpperCase()}
           bankLogo={STATIC_URL + logo}
         />
-=======
-        <BranchHeader active="dashboard" bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
->>>>>>> 6730ec3435491b94aab861561a5581548390b133
         <Container verticalMargin>
           <SidebarBranch />
           <Main>
@@ -1172,7 +1150,6 @@ export default class BranchDashboard extends Component {
               </div>
             ) : (
               <div>
-<<<<<<< HEAD
                 <h1>Edit Cashier</h1>
                 <form action="" method="post" onSubmit={this.editCashier}>
                   <FormGroup>
@@ -1187,53 +1164,6 @@ export default class BranchDashboard extends Component {
                       onChange={this.handleInputChange}
                       required
                     />
-=======
-            <h1 >Edit Cashier</h1>
-            <form action="" method="post" onSubmit={this.editCashier}>
-            <FormGroup>
-                <label>Cashier Name*</label>
-                <TextInput
-                  type="text"
-                  name="name"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  autoFocus
-                  value={this.state.name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Cashier Code*</label>
-                <TextInput
-                  type="text"
-                  autoFocus
-                  name="bcode"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.bcode}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <label>Working Hours</label>
-              <Row>
-
-                <Col  cW="30%" mR="2%">
-
-                <FormGroup>
-                <label>From*</label>
-                  <TextInput
-                    type="text"
-                    autoFocus
-                    name="working_from"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.working_from}
-                    onChange={this.handleInputChange}
-                    required
-                  />
->>>>>>> 6730ec3435491b94aab861561a5581548390b133
                   </FormGroup>
                   <FormGroup>
                     <label>Cashier Code*</label>
@@ -1264,72 +1194,103 @@ export default class BranchDashboard extends Component {
                           required
                         />
                       </FormGroup>
-                    </Col>
-                    <Col cW="68%">
                       <FormGroup>
-                        <label>To*</label>
+                        <label>Cashier Code*</label>
                         <TextInput
                           type="text"
                           autoFocus
-                          title="10 Digit numeric value"
-                          name="working_to"
+                          name="bcode"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
-                          value={this.state.working_to}
+                          value={this.state.bcode}
                           onChange={this.handleInputChange}
                           required
                         />
                       </FormGroup>
+                      <label>Working Hours</label>
+                      <Row>
+                        <Col cW="30%" mR="2%">
+                          <FormGroup>
+                            <label>From*</label>
+                            <TextInput
+                              type="text"
+                              autoFocus
+                              name="working_from"
+                              onFocus={inputFocus}
+                              onBlur={inputBlur}
+                              value={this.state.working_from}
+                              onChange={this.handleInputChange}
+                              required
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col cW="68%">
+                          <FormGroup>
+                            <label>To*</label>
+                            <TextInput
+                              type="text"
+                              autoFocus
+                              title="10 Digit numeric value"
+                              name="working_to"
+                              onFocus={inputFocus}
+                              onBlur={inputBlur}
+                              value={this.state.working_to}
+                              onChange={this.handleInputChange}
+                              required
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <FormGroup>
+                        <label>Maximum per transaction amount*</label>
+                        <TextInput
+                          type="text"
+                          name="per_trans_amt"
+                          autoFocus
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.per_trans_amt}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <label>Maximum daily transaction amount*</label>
+                        <TextInput
+                          type="text"
+                          name="max_trans_amt"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          autoFocus
+                          value={this.state.max_trans_amt}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                      <FormGroup>
+                        <label>Maximum daily transaction count*</label>
+                        <TextInput
+                          type="text"
+                          name="max_trans_count"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.max_trans_count}
+                          autoFocus
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                      {this.state.editBranchLoading ? (
+                        <Button filledBtn marginTop="50px" disabled>
+                          <Loader />
+                        </Button>
+                      ) : (
+                        <Button filledBtn marginTop="50px">
+                          <span>Update Cashier</span>
+                        </Button>
+                      )}
                     </Col>
                   </Row>
-                  <FormGroup>
-                    <label>Maximum per transaction amount*</label>
-                    <TextInput
-                      type="text"
-                      name="per_trans_amt"
-                      autoFocus
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.per_trans_amt}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <label>Maximum daily transaction amount*</label>
-                    <TextInput
-                      type="text"
-                      name="max_trans_amt"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      autoFocus
-                      value={this.state.max_trans_amt}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <label>Maximum daily transaction count*</label>
-                    <TextInput
-                      type="text"
-                      name="max_trans_count"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.max_trans_count}
-                      autoFocus
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  {this.state.editBranchLoading ? (
-                    <Button filledBtn marginTop="50px" disabled>
-                      <Loader />
-                    </Button>
-                  ) : (
-                    <Button filledBtn marginTop="50px">
-                      <span>Update Cashier</span>
-                    </Button>
-                  )}
                 </form>
               </div>
             )}
