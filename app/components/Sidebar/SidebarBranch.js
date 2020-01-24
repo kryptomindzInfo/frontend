@@ -14,9 +14,9 @@ class SidebarBank extends Component {
   render() {
     return (
         <Sidebar marginRight>
-            <BranchOperationalWallet />
-            <BranchMasterWallet />
-            <BranchCreditLimit />
+            <BranchOperationalWallet bankName={this.props.bankName}/>
+            <BranchMasterWallet bankName={this.props.bankName}/>
+            <BranchCreditLimit bankName={this.props.bankName}/>
         </Sidebar>
     );
   }

@@ -22,6 +22,10 @@ import Card from 'components/Card';
 import Button from 'components/Button';
 import Table from 'components/Table';
 import A from 'components/A';
+import MiniPopUp from 'components/MiniPopUp';
+import Row from 'components/Row';
+import Col from 'components/Col';
+import FormGroup from 'components/FormGroup';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
@@ -617,7 +621,8 @@ export default class BankFees extends Component {
                       <tr>
                         <th>Name</th>
                         <th>Transaction Type</th>
-                        <th>Ranges</th>
+                        <th>Transaction Range</th>
+                        <th>Transaction Count</th>
                         <th></th>
                       </tr>
                     </thead>
@@ -625,10 +630,12 @@ export default class BankFees extends Component {
                       {this.state.bankRules && this.state.bankRules.length > 0
                         ? this.state.bankRules.map(function(b) {
                             var r = JSON.parse(b.editedRanges);
+                            
                             return (
                               <tr key={b._id}>
                                 <td>{b.name}</td>
                                 <td className="tac">{b.trans_type}</td>
+                                <td className="tac">{CURRENCY} <span className='green'>{b.trans_from}</span> - {CURRENCY} <span className='green'>{b.trans_to}</span> </td>
                                 {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
                           <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
                                 <td>
@@ -678,7 +685,7 @@ export default class BankFees extends Component {
             <Card bigPadding>hiiiiiii</Card>
           </div>
         ) : null} */}
-        {/* {this.state.popup ? (
+        {this.state.popup ? (
           <MiniPopUp close={this.closeMiniPopUp.bind(this)}>
             {this.state.showOtp ? (
               <div>
@@ -786,7 +793,7 @@ export default class BankFees extends Component {
               </div>
             )}
           </MiniPopUp>
-        ) : null} */}
+        ) : null} 
       </Wrapper>
     );
   }
