@@ -6,7 +6,7 @@
  */
 import React, {Component} from 'react';
 import { Helmet } from 'react-helmet';
-
+import { Redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
@@ -40,7 +40,6 @@ toast.configure({
 });
 
 const mobile =  localStorage.getItem('cashierPhone');
-console.log(mobile);
 export default class CashierOTPPage extends Component {
 
   constructor() {

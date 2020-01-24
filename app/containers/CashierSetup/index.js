@@ -40,7 +40,6 @@ toast.configure({
 });
 
 const token = localStorage.getItem('cashierLogged');
-console.log(token);
 const username = localStorage.getItem('cashierUserName');
 export default class CashierSetup extends Component {
   constructor() {

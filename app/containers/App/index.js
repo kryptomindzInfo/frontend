@@ -70,6 +70,7 @@ import CashierSetup from 'containers/CashierSetup';
 import CashierDashboard from 'containers/CashierDashboard';
 import CashierInfo from 'containers/CashierInfo';
 import BankEditFee from 'containers/BankEditFee';
+import FeeList from 'containers/FeeList';
 
 import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
@@ -77,6 +78,7 @@ import GlobalStyle from '../../global-styles';
 import 'react-toastify/dist/ReactToastify.css';
 import FeeList from '../FeeList';
 // import { CashierSendMoney } from '../CashierSendMoney';
+
 
 const appTheme = {
   primary: '#417505',
@@ -95,16 +97,8 @@ toast.configure();
 
 export default function App(props) {
   const [theme, setTheme] = useState(appTheme);
-
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setTheme({ primary: "#ff0000"})
-  //   }, 3000)
-  // }, [])
-
   const notify = () => toast('Wow so easy !');
-  const token = localStorage.getItem('logged');
-  const bankToken = localStorage.getItem('bankLogged');
+
   return (
     <ThemeProvider theme={theme}>
       <div>
@@ -177,8 +171,8 @@ export default function App(props) {
             component={BankCashierInfo}
           />
           <BankRoute exact path="/bank/create-fee" component={BankCreateFee} />
-          <BankRoute path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
-          <BankRoute path="/bank/operationalHistory" component={BankOperationalHistory} />
+          <BankRoute exact path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
+          <BankRoute exact path="/bank/operationalHistory" component={BankOperationalHistory} />
           <BankRoute exact path="/bank/cashier/:branch?/:cashier?" component={BankCashierInfo} />
           <BankRoute exact path="/bank/edit-fee/:fee?" component={BankEditFee} />
 
