@@ -294,7 +294,7 @@ export default class CashierSendMoney extends Component {
           <meta name="description" content="Description of CashierSendMoney" />
         </Helmet>
         {/* <FormattedMessage {...messages.header} /> */}
-        {this.state.popup ? (
+        {this.state.popupSendMoney ? (
           <PopupSendMoney
             close={this.closePopupSendMoney.bind(this)}
             accentedH1
