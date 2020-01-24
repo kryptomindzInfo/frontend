@@ -43,7 +43,7 @@ toast.configure({
   draggable: true,
 });
 
-localStorage.clear();
+
 
 export default class CashierLogin extends Component {
   constructor() {
@@ -85,11 +85,12 @@ export default class CashierLogin extends Component {
           localStorage.setItem('cashierUserName', res.data.username);
           localStorage.setItem('userId', res.data.id);
           localStorage.setItem('cashierId', res.data.cashier_id);
+          console.log(this.state.bank.logo);
           localStorage.setItem('bankLogo', this.state.bank.logo);
           localStorage.setItem('cashierEmail', res.data.email);
           localStorage.setItem('cashierMobile', res.data.mobile);
 
-            this.props.history.push('/cashier/'+this.props.match.params.bank+'/dashboard');
+            window.location.href = '/cashier/'+this.props.match.params.bank+'/dashboard';
 
         } else {
           throw res.data.error;
@@ -112,6 +113,7 @@ export default class CashierLogin extends Component {
       .post(`${API_URL}/getBranchByName`, {name: this.props.match.params.bank})
       .then(res => {
         if (res.status == 200) {
+
           this.setState({ bank: res.data.banks, loading:false });
         } else {
           throw res.data.error;

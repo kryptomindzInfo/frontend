@@ -11,29 +11,17 @@ import { Helmet } from 'react-helmet';
 
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
-
 import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
+import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 import Container from 'components/Container';
 import Loader from 'components/Loader';
-import Nav from 'components/Header/Nav';
-import Welcome from 'components/Header/Welcome';
-import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Table from 'components/Table';
-import MiniPopUp from 'components/MiniPopUp';
-import Popup from 'components/Popup';
-
-import FormGroup from 'components/FormGroup';
-import TextInput from 'components/TextInput';
-import UploadArea from 'components/UploadArea';
-import Row from 'components/Row';
-import Col from 'components/Col';
+import A from 'components/A';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
@@ -67,7 +55,7 @@ const Tab2 = styled.div`
 
 const token = localStorage.getItem('bankLogged');
 const bid = localStorage.getItem('bankId');
-console.log(bid);
+
 export default class BankFees extends Component {
   constructor() {
     super();
@@ -120,6 +108,10 @@ export default class BankFees extends Component {
     this.setState({
       [name]: value,
     });
+  };
+
+  goBankEdit = (b) => {
+    this.props.history.push('/bank/edit-fee/'+b);
   };
 
   showMiniPopUp = (b, r) => {
@@ -373,15 +365,25 @@ export default class BankFees extends Component {
       });
   }
 
-  getBanks = () => {};
-
   getRules = () => {
     axios
       .post(`${API_URL}/getBankRules`, { bank_id: this.state.bank })
       .then(res => {
         if (res.status == 200) {
           console.log(res.data);
-          this.setState({ loading: false, rules: res.data.rules });
+          this.setState({ rules: res.data.rules });
+        }
+      })
+      .catch(err => {});
+  };
+
+  getBankRules = () => {
+    axios
+      .post(`${API_URL}/getAll`, { type: 'bank', token:token, page: 'bankfee' })
+      .then(res => {
+        if (res.status == 200) {
+          console.log(res.data);
+          this.setState({ loading: false, bankRules: res.data.rows });
         }
       })
       .catch(err => {});
@@ -390,8 +392,8 @@ export default class BankFees extends Component {
   componentDidMount() {
     // this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
-      this.getBanks();
       this.getRules();
+      this.getBankRules();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -429,11 +431,8 @@ export default class BankFees extends Component {
       // showEditOtp: false,
     });
   };
-  try = () => {
-    this.props.history.push('/bank/create-fee');
-  };
+
   render() {
-    console.log(this.props);
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector('label').classList.add('focused');
@@ -592,13 +591,15 @@ export default class BankFees extends Component {
                   <input type="text" placeholder="Search" />
                 </div>
 
+                <A href="/bank/create-fee" float="right">
                 <Button className="addBankButton" flex onClick={this.try}>
                   <i className="material-icons">add</i>
                   <span>
-                    {/* <FormattedMessage {...messages.addbank} /> */}
                     <span>Create Fee</span>
                   </span>
                 </Button>
+                </A>
+
               </ActionBar>
               <Card bigPadding>
                 <div className="cardHeader">
@@ -616,15 +617,13 @@ export default class BankFees extends Component {
                       <tr>
                         <th>Name</th>
                         <th>Transaction Type</th>
-                        <th>Amount of transaction</th>
-                        <th>Transaction Count</th>
-                        <th>Fixed Amount</th>
-                        <th>Percentage</th>
+                        <th>Ranges</th>
+                        <th></th>
                       </tr>
                     </thead>
                     <tbody>
-                      {this.state.rules && this.state.rules.length > 0
-                        ? this.state.rules.map(function(b) {
+                      {this.state.bankRules && this.state.bankRules.length > 0
+                        ? this.state.bankRules.map(function(b) {
                             var r = JSON.parse(b.editedRanges);
                             return (
                               <tr key={b._id}>
@@ -653,25 +652,14 @@ export default class BankFees extends Component {
                                   })}
                                 </td>
                                 <td className="tac bold">
-                                  {b.active == 'Inactive' ? (
-                                    <span className="absoluteMiddleRight primary popMenuTrigger">
-                                      <i className="material-icons ">block</i>
-                                    </span>
-                                  ) : b.edit_status != 0 ? (
-                                    b.edit_status == 1 ? (
-                                      <a className="text-light">approved</a>
-                                    ) : (
-                                      <a className="text-accent">declined</a>
-                                    )
-                                  ) : (
-                                    <Button
-                                      onClick={() => dis.showMiniPopUp(b, r)}
-                                      className="addBankButton"
-                                    >
-                                      <span>Approve</span>
-                                    </Button>
-                                  )}
-                                </td>
+                            {
+                              b.status == 0 ?
+                              <span className="material-icons">block</span>
+                              :
+                              <span onClick={ () => dis.goBankEdit(b._id)} className="pointer">Edit</span>
+                            }
+                            
+                            </td>
                               </tr>
                             );
                           })

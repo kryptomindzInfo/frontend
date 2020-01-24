@@ -89,7 +89,7 @@ export default class BranchLogin extends Component {
           localStorage.setItem('branchEmail', res.data.email);
           localStorage.setItem('branchMobile', res.data.mobile);
 
-            this.props.history.push('/branch/'+this.props.match.params.bank+'/dashboard');
+            window.location.href = '/branch/'+this.props.match.params.bank+'/dashboard';
 
         } else {
           throw res.data.error;
@@ -148,7 +148,7 @@ export default class BranchLogin extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | BRANCH | LOGIN</title>
         </Helmet>
-        <FrontLeftSection from="branch" title={this.state.bank.name.toUpperCase()} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
+        <FrontLeftSection from="branch" title={this.state.bank.name} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
           <FormattedMessage {...messages.pagetitle} />

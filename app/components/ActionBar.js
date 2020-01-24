@@ -9,8 +9,15 @@ background-color: #ffffff;
 text-align: ${props => props.textRight ? 'right' : 'left' };
 padding: 15px 20px;
 margin-bottom: ${props => props.marginBottom ? props.marginBottom : '0' };
+margin-top: ${props => props.marginTop ? props.marginTop : '0' };
 input.small{
     width: 75% !important;
+}
+.notification{
+    font-size: 20px;
+    strong{
+        color: ${props => props.theme.primary};
+    }
 }
 .dateinput{
     border: 1px solid #e0e7ee;

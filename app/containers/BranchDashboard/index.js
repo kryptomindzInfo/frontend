@@ -214,7 +214,7 @@ export default class BranchDashboard extends Component {
           this.generateOTP();
         },
       );
-    
+
   };
   startTimer = () => {
     var dis = this;
@@ -301,7 +301,7 @@ export default class BranchDashboard extends Component {
         this.error();
       });
   };
-  
+
 
   blockBranch = (e, s) =>{
     var dis = this;
@@ -532,7 +532,7 @@ export default class BranchDashboard extends Component {
           <meta charSet="utf-8" />
           <title>Dashboard | BRANCH | E-WALLET</title>
         </Helmet>
-        <BranchHeader active="dashboard" bankName={this.props.match.params.bank.toUpperCase()} bankLogo={STATIC_URL+logo} />
+        <BranchHeader active="dashboard" bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
         <Container verticalMargin>
           <SidebarBranch />
           <Main>
@@ -1150,7 +1150,7 @@ export default class BranchDashboard extends Component {
               </FormGroup>
               <label>Working Hours</label>
               <Row>
-              
+
                 <Col  cW="30%" mR="2%">
 
                 <FormGroup>

@@ -43,7 +43,7 @@ class FrontLeftSection extends Component {
           <Title>
             {
               this.props.title ?
-              <span>{this.props.title}</span>
+              <span>{this.props.title.toUpperCase()}</span>
               :
               <FormattedMessage {...messages.title} />
             }
