@@ -40,7 +40,7 @@ toast.configure({
 });
 
 const token = localStorage.getItem('branchLogged');
-console.log(token);
+// console.log(token);
 const username = localStorage.getItem('branchUserName');
 export default class BranchSetup extends Component {
   constructor() {

@@ -40,7 +40,6 @@ toast.configure({
 });
 
 const mobile =  localStorage.getItem('cashierPhone');
-console.log(mobile);
 export default class CashierOTPPage extends Component {
 
   constructor() {
