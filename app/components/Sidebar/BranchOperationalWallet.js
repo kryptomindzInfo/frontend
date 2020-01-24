@@ -292,11 +292,11 @@ class BranchOperationalWallet extends Component {
 
         <Row>
         <Col><button className="sendMoneyButton">
-          <i className="material-icons">send</i>{' '}
+          <i className="material-icons">send</i>
           <FormattedMessage {...messages.sendmoney} />
         </button></Col>
         <Col><button className="sendMoneyButton">
-          <i className="material-icons">send</i>{' '}
+          <i className="material-icons">send</i>
           Claim Money
         </button></Col>
         </Row>
