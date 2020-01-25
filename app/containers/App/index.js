@@ -76,7 +76,7 @@ import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
 
 import 'react-toastify/dist/ReactToastify.css';
-import FeeList from '../FeeList';
+//import FeeList from '../FeeList';
 // import { CashierSendMoney } from '../CashierSendMoney';
 
 

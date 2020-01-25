@@ -8,6 +8,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import { Redirect } from 'react-router-dom';
 // import { FormattedMessage } from 'react-intl';
 import { compose } from 'redux';
 import { toast } from 'react-toastify';
