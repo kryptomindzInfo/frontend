@@ -53,7 +53,8 @@ var options = {
   Third: true,
 };
 const token = localStorage.getItem('bankLogged');
-
+const mobile = localStorage.getItem("bankPhone");
+console.log(localStorage);
 export default class BankUser extends Component {
   constructor() {
     super();
@@ -61,6 +62,7 @@ export default class BankUser extends Component {
       name: '',
       address1: '',
       state: '',
+      otpMobile: mobile,
       zip: '',
       username: '',
       password: '',
@@ -169,18 +171,8 @@ export default class BankUser extends Component {
     });
   };
 
-  addBankUser = event => {
+  verifyOTP = event => {
     event.preventDefault();
-    if (this.state.logo == null || this.state.logo == '') {
-      this.setState(
-        {
-          notification: 'You need to upload a profile photo',
-        },
-        () => {
-          this.error();
-        },
-      );
-    } else {
       this.setState({
         addUserLoading: true,
       });
@@ -229,7 +221,7 @@ export default class BankUser extends Component {
           });
           this.error();
         });
-    }
+    
   };
 
   editUser = event => {
@@ -256,6 +248,31 @@ export default class BankUser extends Component {
       );
     }
   };
+
+  addUser = event => {
+    event.preventDefault();
+    if (this.state.logo == null || this.state.logo == '') {
+      this.setState(
+        {
+          notification: 'You need to upload a profile photo',
+        },
+        () => {
+          this.error();
+        },
+      );
+    } else {
+      this.setState(
+        {
+          showOtp: true,
+          otpOpt: 'editUser',
+          otpTxt: 'Your OTP to add Bank User is ',
+        },
+        () => {
+          this.generateOTP();
+        },
+      );
+    }
+  };
   startTimer = () => {
     var dis = this;
     var timer = setInterval(function() {
@@ -273,10 +290,11 @@ export default class BankUser extends Component {
     this.setState({ resend: false, timer: 30 });
 
     axios
-      .post(`${API_URL}/generateBankOTP`, {
+      .post(`${API_URL}/sendOTP`, {
         email: this.state.otpEmail,
         mobile: this.state.otpMobile,
         page: this.state.otpOpt,
+        type: 'bank',
         txt: this.state.otpTxt,
         token,
       })
@@ -553,36 +571,42 @@ export default class BankUser extends Component {
         {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)} accentedH1>
             {this.state.showOtp ? (
-              <div>
-                <h1>
-                  <FormattedMessage {...messages.verify} />
-                </h1>
-                <form action="" method="post" onSubmit={this.verifyOTP}>
-                  <FormGroup>
-                    <label>
-                      <FormattedMessage {...messages.otp} />*
-                    </label>
-                    <TextInput
-                      type="text"
-                      name="otp"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.otp}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  <Button filledBtn marginTop="50px">
-                    <span>
-                      <FormattedMessage {...messages.verify} />
-                    </span>
-                  </Button>
-                </form>
+             <div>
+              <h1 ><FormattedMessage {...messages.verify} /></h1>
+            <form action="" method="post" onSubmit={this.verifyOTP} >
+              <FormGroup>
+                <label><FormattedMessage {...messages.otp} />*</label>
+                <TextInput
+                  type="text"
+                  name="otp"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.otp}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              {
+                this.state.addBranchLoading ?
+                <Button filledBtn marginTop="50px" disabled>
+                <Loader />
+              </Button>
+                :
+                <Button filledBtn marginTop="50px">
+                <span><FormattedMessage {...messages.verify} /></span>
+              </Button>
+              }
+
+
+              <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
+
+
+              </form>
               </div>
             ) : (
               <div>
                 <h1>Create Bank User</h1>
-                <form action="" method="post" onSubmit={this.addBankUser}>
+                <form action="" method="post" onSubmit={this.addUser}>
                   <FormGroup>
                     <label>
                       <FormattedMessage {...messages.popup1} />*

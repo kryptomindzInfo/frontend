@@ -146,6 +146,7 @@ body{
     top: 10px;
   }
   .resend{
+    margin-top:15px;
     .timer{
       color: #f5a623;
     }

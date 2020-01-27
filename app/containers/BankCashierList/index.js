@@ -121,7 +121,28 @@ export default class BankCashierList extends Component {
     });
   };
 
-  addBranch = event => {
+addBranch = event => {
+    event.preventDefault();
+    
+      this.setState(
+        {
+          otpOpt: 'addBank',
+        },
+        () => {
+          this.setState(
+            {
+              showOtp: true,
+            },
+            () => {
+              this.generateOTP();
+            },
+          );
+        },
+      );
+
+  };
+
+  verifyOTP = event => {
     event.preventDefault();
 
     this.setState({
@@ -174,6 +195,23 @@ export default class BankCashierList extends Component {
       );
     
   };
+
+    addCashier = event => {
+    event.preventDefault();
+
+      this.setState(
+        {
+          showOtp: true,
+          otpOpt: 'addCashier',
+          otpTxt: 'Your OTP to add Cashier is '
+        },
+        () => {
+          this.generateOTP();
+        },
+      );
+    
+  };
+
   startTimer = () => {
     var dis = this;
     var timer = setInterval(function() {
@@ -595,7 +633,7 @@ export default class BankCashierList extends Component {
                 />
               </FormGroup>
               {
-                this.state.verifyOTPLoading ?
+                this.state.addBranchLoading ?
                 <Button filledBtn marginTop="50px" disabled>
                 <Loader />
               </Button>
@@ -614,7 +652,7 @@ export default class BankCashierList extends Component {
               :
               <div>
             <h1>Create Cashier</h1>
-            <form action="" method="post" onSubmit={this.addBranch}>
+            <form action="" method="post" onSubmit={this.addCashier}>
               <FormGroup>
                 <label>Cashier Name*</label>
                 <TextInput

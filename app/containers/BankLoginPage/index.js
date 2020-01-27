@@ -85,6 +85,7 @@ export default class BankLoginPage extends Component {
             localStorage.setItem('bankContract', res.data.contract);
             localStorage.setItem('bankLogo', res.data.logo);
             localStorage.setItem('bankId', res.data.id);
+            localStorage.setItem('bankPhone', res.data.mobile);
             console.log(localStorage.getItem('bankLogged'));
             if (!res.data.initial_setup) {
               window.location.href ='/bank/setup';
