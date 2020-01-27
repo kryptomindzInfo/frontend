@@ -4,7 +4,7 @@ const Row = styled.div`
    box-sizing:border-box;
   margin-top: ${props => props.marginTop ? '24px' : '0' };
   flex-direction: row;
-  align-items: center;
+  align-items: ${props => props.vAlign ? props.vAlign : 'center' };
   justify-content: center;
 `;
 export default Row;

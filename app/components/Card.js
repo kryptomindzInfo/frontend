@@ -23,27 +23,19 @@ const Card = styled.div`
     border: ${props => (props.blueHover ? '1px solid #4da1ff' : '')};
   }
   .infoLeft {
-    .font-size: 20px;
+    font-size: 20px;
     font-weight: bold;
     color: #4a4a4a;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
   }
   .infoRight {
-    .font-size: 20px;
+    font-size: 20px;
     font-weight: bold;
     color: #000000;
     text-align: right;
     margin-bottom: 30px;
     color: green;
   }
-  .infoRightClaimMoneyPopup {
-    .font-size: 20px;
-    font-weight: bold;
-    color: #000000;
-    margin-bottom: 30px;
-    color: green;
-  }
-
 
 
   .profile {
@@ -209,6 +201,7 @@ const Card = styled.div`
  > button, .sendMoneyButton{
     padding: 6px;
     border-radius: 2px;
+    min-width: 0 !important;
     border: solid 1px ${props => props.theme.primary};
     color: ${props => props.theme.primary};
     font-size: 11px;

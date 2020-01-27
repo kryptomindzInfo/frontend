@@ -16,7 +16,7 @@ const PopupWrap = styled.div`
     form{
         display:block;
         width: 100%;
-        max-width: 445px;
+        max-width: ${props => props.bigBody ? '100%' : '445px' };
         margin 0 auto;
     }
 `;
@@ -24,8 +24,8 @@ const PopupWrap = styled.div`
 const PopupBody = styled.div`
   background: #fff;
   border-radius: 6px;
-  width: 35%;
-  max-width: 648px;
+  width: ${ props => props.bigBody ? '80%' : '35%' };
+  max-width: ${ props => props.bigBody ? 'none' : '648px' };
   padding: 20px;
   margin: 45px auto;
   position: relative;
@@ -43,7 +43,20 @@ const PopupBody = styled.div`
       background-color: #cc8819
     }
   }
-  
+  .popInfoLeft{
+    font-size: 12px;
+    font-weight: bold;
+    color: #4a4a4a;
+    margin-bottom: 10px;
+  }
+  .popInfoRight {
+    font-size: 12px;
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 10px;
+    color: green;
+  }
+
   h1 {
     text-align: center;
     font-size: 26px;
@@ -65,16 +78,22 @@ const PopupBody = styled.div`
 `;
 
 class Popup extends Component {
+  
   sendCloseSignal = event => {
     if (!document.getElementById('popupBody').contains(event.target)) {
       this.props.close();
     }
   };
-
+  componentDidMount() {
+  
+    console.log(this.props);
+  
+}
   render() {
     return (
-      <PopupWrap className="popupwrap" onClick={this.sendCloseSignal}>
-        <PopupBody id="popupBody">
+      
+      <PopupWrap className="popupwrap" onClick={this.sendCloseSignal} bigBody={this.props.bigBody}>
+        <PopupBody id="popupBody" bigBody={this.props.bigBody}>
           <i
             className="material-icons popClose"
             onClick={() => this.props.close()}

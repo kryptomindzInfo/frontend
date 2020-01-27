@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import CashierTransactionLimit from './CashierTransactionLimit';
 import CashierClosingBalance from './CashierClosingBalance';
 import CashierCashInHand from './CashierCashInHand';
+import PopupClaimMoney from 'components/PopupClaimMoney';
 import styled from 'styled-components';
 
 const Sidebar = styled.aside `

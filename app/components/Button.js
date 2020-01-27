@@ -21,6 +21,7 @@ display: ${props => props.flex ? 'flex' : 'block' };
 align-items: center;
 justify-content: center;
 margin-top: ${props => props.marginTop ? props.marginTop : '0' };
+margin-bottom: ${props => props.marginBottom ? props.marginBottom : '0' };
 position: ${props => props.bottomRight ? 'absolute' : 'relative' };
 bottom: ${props => props.bottomRight ? '2px;' : '0' };
 right: ${props => props.bottomRight ? '2px;' : '0' };
@@ -37,8 +38,6 @@ right: ${props => props.bottomRight ? '2px;' : '0' };
 }
 
 ${props => props.filledBtn && `:hover{background-color: #1c3302}`}
-
-
 
 `;
 

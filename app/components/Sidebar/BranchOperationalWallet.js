@@ -10,9 +10,9 @@ import TextArea from 'components/TextArea';
 import FormGroup from 'components/FormGroup';
 import Button from 'components/Button';
 import A from 'components/A';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import Container from 'react-bootstrap/Container';
+import Row from 'components/Row';
+import Col from 'components/Col';
+import Container from 'components/Container';
 import UploadArea from 'components/UploadArea';
 import PopupClaimMoney from 'components/PopupClaimMoney';
 import PopupSendMoney from 'components/PopupSendMoney';
@@ -28,7 +28,7 @@ import {
 } from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
-// import Container from 'react-bootstrap/Container';
+// import Container from 'components/Container';
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -102,7 +102,6 @@ class BranchOperationalWallet extends Component {
   };
   sendMoney = e => {
     e.preventDefault();
-
     axios
       .post(`${API_URL}/getWalletsOperational`, {
         bank_id: this.props.historyLink,

@@ -85,7 +85,6 @@ export default class CashierLogin extends Component {
           localStorage.setItem('cashierUserName', res.data.username);
           localStorage.setItem('userId', res.data.id);
           localStorage.setItem('cashierId', res.data.cashier_id);
-          
           localStorage.setItem('bankLogo', this.state.bank.logo);
           localStorage.setItem('cashierEmail', res.data.email);
           localStorage.setItem('cashierMobile', res.data.mobile);
@@ -148,7 +147,7 @@ export default class CashierLogin extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>E-WALLET | BRANCH | LOGIN</title>
+          <title>E-WALLET | CASHIER | LOGIN</title>
         </Helmet>
         <FrontLeftSection from="cashier" title={this.state.bank.name} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
         <FrontRightSection>
