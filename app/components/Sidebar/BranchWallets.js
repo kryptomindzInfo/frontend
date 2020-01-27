@@ -32,7 +32,7 @@ class BranchWallets extends Component {
         <div className="cardValue">
           {CURRENCY} 0
         </div>
-        <A href={'/operationalHistory/' + this.props.historyLink} float="right">
+        <A href={'/branch/'+this.props.bankName+'/operationalHistory/' } float="right">
           <span className="history">History</span>
         </A>
       </Card>
@@ -48,9 +48,9 @@ class BranchWallets extends Component {
         <div className="cardValue">
           {CURRENCY} 0
         </div>
-        <A href={'/operationalHistory/' + this.props.historyLink} float="right">
+        {/*<A href={'/operationalHistory/' + this.props.historyLink} float="right">
           <span className="history">History</span>
-        </A>
+        </A>*/}
       </Card>
       </Col>
       <Col>

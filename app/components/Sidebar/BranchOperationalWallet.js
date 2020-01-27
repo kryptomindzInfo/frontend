@@ -451,8 +451,8 @@ class BranchOperationalWallet extends Component {
         <Row>
           <Col>
             <Button
+            noMin
               className="sendMoneybutton"
-              onClick={this.showPopupSendMoney}
             >
               <i className="material-icons">send</i> {/* Send Money */}
               <FormattedMessage {...messages.sendmoney} />
@@ -460,8 +460,8 @@ class BranchOperationalWallet extends Component {
           </Col>
           <Col>
             <Button
+            noMin
               className="sendMoneybutton"
-              onClick={this.showClaimMoneyPopup}
             >
               <i className="material-icons">send</i> Claim Money
             </Button>

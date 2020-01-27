@@ -24,6 +24,7 @@ import ActionBar from 'components/ActionBar';
 import SidebarCashier from 'components/Sidebar/SidebarCashier';
 import Main from 'components/Main';
 import Table from 'components/Table';
+import Pagination from 'react-js-pagination';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
@@ -50,7 +51,18 @@ export default class CashierDashboard extends Component {
     this.state = {
       token,
       otpEmail: email,
-      otpMobile: mobile
+      otpMobile: mobile,
+      trans_type: '',
+      perPage: 5,
+      totalCount: 100,
+      allhistory: [],
+      activePage: 1,
+      active: 'Active',
+      trans_from: '',
+      trans_to: '',
+      transcount_from: '',
+      history: [],
+      filter: '',
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -72,8 +84,79 @@ export default class CashierDashboard extends Component {
     });
   };
 
-  componentDidMount() {
+   showHistory = () => {
+    this.setState({ history: [] }, () => {
+      var out = [];
+      var start = (this.state.activePage - 1) * this.state.perPage;
+      var end = this.state.perPage * this.state.activePage;
+      if (end > this.state.totalCount) {
+        end = this.state.totalCount;
+      }
+      for (var i = start; i < end; i++) {
+        out.push(this.state.allhistory[i]);
+      }
+      this.setState({ history: out });
+    });
+  };
 
+  getHistory = () => {
+    axios
+      .post(`${API_URL}/getHistory`, {
+        token: token,
+        where: { cashier_id : bid},
+        from: 'cashier',
+        page: this.state.activePage,
+        offset: this.state.perPage,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          // console.log(res.data);
+          this.setState(
+            {
+              loading: false,
+              allhistory: res.data.history,
+              totalCount: res.data.history.length,
+            },
+            () => {
+              this.showHistory();
+            },
+          );
+        }
+      })
+      .catch(err => {});
+  };
+
+  getHistoryTotal = () => {
+    axios
+      .post(`${API_URL}/getHistoryTotal`, {
+        token: token,
+        where: { cashier_id : bid},
+        from: 'cashier'
+      })
+      .then(res => {
+        if (res.status == 200) {
+          console.log(res.data);
+          this.setState({ loading: false, totalCount: res.data.total }, () => {
+            this.getHistory();
+          });
+        }
+      })
+      .catch(err => {});
+  };
+
+  filterData = e => {
+    this.setState({ filter: e });
+  };
+
+  handlePageChange = pageNumber => {
+    console.log(`active page is ${pageNumber}`);
+    this.setState({ activePage: pageNumber });
+    this.showHistory();
+  };
+
+
+  componentDidMount() {
+    this.getHistory();
   }
 
   render() {
@@ -87,6 +170,20 @@ export default class CashierDashboard extends Component {
       return null;
     }
     const dis = this;
+    var months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return (
 
       <Wrapper  from="branch">
@@ -164,7 +261,7 @@ export default class CashierDashboard extends Component {
                   <i className="material-icons">playlist_add_check</i>
                 </div>
                 <div className="cardHeaderRight">
-                  <h3>Recent Activities</h3>
+                  <h3>Recent Activity</h3>
                   <h5>E-wallet activity</h5>
                 </div>
               </div>
@@ -188,28 +285,50 @@ export default class CashierDashboard extends Component {
                 </div>
                 <Table marginTop="34px" smallTd>
                   <tbody>
-                    
-                            <tr>
+                     {this.state.history && this.state.history.length > 0
+                      ? this.state.history.map(function(b) {
+                        console.log(b);
+                          var isoformat = b.created_at;
+                          var readable = new Date(isoformat);
+                          var m = readable.getMonth(); // returns 6
+                          var d = readable.getDay(); // returns 15
+                          var y = readable.getFullYear();
+                          var h = readable.getHours();
+                          var mi = readable.getMinutes();
+                          var mlong = months[m];
+                          var fulldate =
+                            d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+
+                        
+                            <tr key={b._id}>
                               <td>
-                                <div className="labelGrey">Nov 15, 2019</div>
+                                <div className="labelGrey">{fulldate}</div>
                               </td>
                               <td>
                                 <div className="labelBlue">
-                                  Transfered to Sandeep
-                                </div>
+                                  {b.amount}
+                                </div>{' '}
                                 <div className="labelSmallGrey">Completed</div>
                               </td>
                               <td>
                                 <div className="labelGrey">
-                                {CURRENCY} 500
+                                 {b.transaction_code == 'DR' ? '-XOF' : 'XOF'}{b.amount}
                                 </div>
                               </td>
                             </tr>
                         
+                        })
+                      : null}
                   </tbody>
                 </Table>
-                <div className="clr mt20">
-                  <A float="right">View All</A>
+                <div>
+                  <Pagination
+                    activePage={this.state.activePage}
+                    itemsCountPerPage={this.state.perPage}
+                    totalItemsCount={this.state.totalCount}
+                    pageRangeDisplayed={5}
+                    onChange={this.handlePageChange}
+                  />
                 </div>
               </div>
             </Card>

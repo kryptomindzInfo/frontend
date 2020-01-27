@@ -699,7 +699,8 @@ export default class BranchInfo extends Component {
           <BranchSidebarTwo active="info" blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.props.match.params.bank}/>
           <Main>
 
-            <BranchWallets />
+            <BranchWallets   bankName={this.props.match.params.bank}
+          bankLogo={STATIC_URL + logo} />
 
           <Card bigPadding bordered>
 

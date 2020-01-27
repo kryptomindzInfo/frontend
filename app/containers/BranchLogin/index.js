@@ -88,8 +88,11 @@ export default class BranchLogin extends Component {
           localStorage.setItem('bankLogo', res.data.logo);
           localStorage.setItem('branchEmail', res.data.email);
           localStorage.setItem('branchMobile', res.data.mobile);
-
+          if(res.data.initial_setup){
             window.location.href = '/branch/'+this.props.match.params.bank+'/dashboard';
+          }else{
+            window.location.href = '/branch/'+this.props.match.params.bank+'/setup';
+          }
 
         } else {
           throw res.data.error;

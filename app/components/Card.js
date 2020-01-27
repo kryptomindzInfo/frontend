@@ -132,6 +132,7 @@ const Card = styled.div`
 }
 .miniTitle{
   color:#f5a623;
+  font-size: 16px;
 }
 > .cardHeader  > .cardHeaderLeft{
     float:left;

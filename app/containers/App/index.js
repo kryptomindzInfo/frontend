@@ -62,6 +62,7 @@ import BranchInfo from 'containers/BranchInfo';
 import BankCashierInfo from 'containers/BankCashierInfo';
 import BranchCashierList from 'containers/BranchCashierList';
 import BranchCashierInfo from 'containers/BranchCashierInfo';
+import BranchOperationalHistory from 'containers/BranchOperationalHistory';
 import CashierSendMoney from 'containers/CashierSendMoney';
 import CashierLogin from 'containers/CashierLogin';
 import CashierForgotPassword from 'containers/CashierForgotPassword';
@@ -188,6 +189,11 @@ export default function App(props) {
             exact
             path="/branch/:bank?/dashboard"
             component={BranchDashboard}
+          />
+          <BranchRoute
+            exact
+            path="/branch/:bank?/operationalHistory"
+            component={BranchOperationalHistory}
           />
           <BranchRoute
             exact

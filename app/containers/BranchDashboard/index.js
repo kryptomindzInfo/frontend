@@ -542,7 +542,7 @@ export default class BranchDashboard extends Component {
         </Helmet>
         <BranchHeader
           active="dashboard"
-          bankName={this.props.match.params.bank.toUpperCase()}
+          bankName={this.props.match.params.bank}
           bankLogo={STATIC_URL + logo}
         />
         <Container verticalMargin>
