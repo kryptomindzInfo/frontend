@@ -528,8 +528,7 @@ class CashierTransactionLimit extends Component {
             this.closePopupSendMoney();
           }
         } else {
-          const error = new Error(res.data.error);
-          throw error;
+          throw res.data.error;
         }
         this.setState({
           claimMoneyLoading: false,
@@ -565,8 +564,7 @@ class CashierTransactionLimit extends Component {
             // this.closePopupSendMoney();
           }
         } else {
-          const error = new Error(res.data.error);
-          throw error;
+          throw res.data.error;
         }
         this.setState({
           verifySendMoneyOTPLoading: false,
@@ -574,7 +572,7 @@ class CashierTransactionLimit extends Component {
       })
       .catch(err => {
         this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
+          notification: err.response ? err.response.data.error.toString() : err.toString(),
           verifySendMoneyOTPLoading: false,
         });
         this.error();
@@ -678,7 +676,7 @@ class CashierTransactionLimit extends Component {
                    onBlur={inputBlur}
                    value={this.state.otp}
                    onChange={this.handleInputChange}
-                   required="required"
+                   required={false}
                  />
                </FormGroup>
                {
@@ -708,7 +706,7 @@ class CashierTransactionLimit extends Component {
                    onBlur={inputBlur}
                    value={this.state.otp}
                    onChange={this.handleInputChange}
-                   required="required"
+                   required={false}
                  />
                </FormGroup>
                {
@@ -752,7 +750,7 @@ class CashierTransactionLimit extends Component {
                         onBlur={inputBlur}
                         value={this.state.transferCode}
                         onChange={this.handleInputChange}
-                        required="required"
+                        required={false}
                       />
                     </FormGroup>
                   </Col>
@@ -1096,7 +1094,7 @@ class CashierTransactionLimit extends Component {
                         onBlur={inputBlur}
                         value={this.state.transferCode}
                         onChange={this.handleInputChange}
-                        required="required"
+                        required={false}
                       />
                     </FormGroup>
                   </Col>
@@ -1152,7 +1150,7 @@ class CashierTransactionLimit extends Component {
                    onBlur={inputBlur}
                    value={this.state.otp}
                    onChange={this.handleInputChange}
-                   required="required"
+                   required={false}
                  />
                </FormGroup>
                {
@@ -1180,7 +1178,7 @@ class CashierTransactionLimit extends Component {
               <form
                 action=""
                 method="post"
-                onSubmit={this.sendMoney}
+                onSubmit={this.verifySendMoney}
               >
                 <Container>
                   <Row >
@@ -1206,7 +1204,7 @@ class CashierTransactionLimit extends Component {
                               placeholder="+000"
                               value={this.state.ccode}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1225,7 +1223,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.mobile}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1246,7 +1244,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.givenname}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1265,7 +1263,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.familyname}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1283,7 +1281,7 @@ class CashierTransactionLimit extends Component {
                           onBlur={inputBlur}
                           value={this.state.address1}
                           onChange={this.handleInputChange}
-                          required="required"
+                          required={false}
                         />
                       </FormGroup>
 
@@ -1301,7 +1299,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.state}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1318,7 +1316,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.zip}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1332,7 +1330,7 @@ class CashierTransactionLimit extends Component {
                                 value={this.state.country}
                                 onChange={this.countryChange}
                                 data-change = "ccode"
-                                required="required"
+                                required={false}
                              />
                           </FormGroup>
                         </Col>
@@ -1357,7 +1355,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.email}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1380,7 +1378,7 @@ class CashierTransactionLimit extends Component {
                           onBlur={inputBlur}
                           value={this.state.note}
                           onChange={this.handleInputChange}
-                          required="required"
+                          required={false}
                         />
                       </FormGroup>
                       <div
@@ -1401,7 +1399,7 @@ class CashierTransactionLimit extends Component {
                               value={this.state.senderIdentificationCountry}
                               onChange={this.countryChange}
                               data-change="ccc"
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1418,7 +1416,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.senderIdentificationType}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1437,7 +1435,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.senderIdentificationNumber}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1454,7 +1452,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.senderIdentificationValidTill}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1482,7 +1480,7 @@ class CashierTransactionLimit extends Component {
                               readOnly
                               value={this.state.receiverccode}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1501,7 +1499,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.receiverMobile}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1522,7 +1520,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.receiverGivenName}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1541,7 +1539,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.receiverFamilyName}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1555,7 +1553,7 @@ class CashierTransactionLimit extends Component {
                               value={this.state.receiverCountry}
                               onChange={this.countryChange}
                               data-change = "receiverccode"
-                              required="required"
+                              required={false}
                               />
                           </FormGroup>
                         </Col>
@@ -1580,7 +1578,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.receiverEmail}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1616,7 +1614,7 @@ class CashierTransactionLimit extends Component {
                               value={this.state.receiverIdentificationCountry}
                               onChange={this.countryChange}
                               data-change="ccc"
-                              required="required"
+                              required={false}
                             />
                              
                           </FormGroup>
@@ -1634,7 +1632,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.receiverIdentificationType}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1653,7 +1651,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.receiverIdentificationNumber}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1670,7 +1668,7 @@ class CashierTransactionLimit extends Component {
                               onBlur={inputBlur}
                               value={this.state.receiverIdentificationValidTill}
                               onChange={this.handleInputChange}
-                              required="required"
+                              required={false}
                             />
                           </FormGroup>
                         </Col>
@@ -1690,7 +1688,7 @@ class CashierTransactionLimit extends Component {
                           onBlur={inputBlur}
                           value={this.state.receiverIdentificationAmount}
                           onChange={this.amountChange}
-                          required="required"
+                          required={false}
                         />
                       </FormGroup>
                      
