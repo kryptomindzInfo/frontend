@@ -573,7 +573,7 @@ class CashierTransactionLimit extends Component {
               notification: 'Transaction Successfully Done',
             });
             this.success();
-            // this.closePopupSendMoney();
+            this.closePopupSendMoney();
           }
         } else {
           throw res.data.error;
