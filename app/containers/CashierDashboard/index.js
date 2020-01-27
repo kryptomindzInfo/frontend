@@ -68,7 +68,7 @@ export default class CashierDashboard extends Component {
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
 
-
+this.showHistory = this.showHistory.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -84,7 +84,8 @@ export default class CashierDashboard extends Component {
     });
   };
 
-   showHistory = () => {
+  showHistory = () => {
+    console.log(this.state.allhistory);
     this.setState({ history: [] }, () => {
       var out = [];
       var start = (this.state.activePage - 1) * this.state.perPage;
@@ -95,27 +96,36 @@ export default class CashierDashboard extends Component {
       for (var i = start; i < end; i++) {
         out.push(this.state.allhistory[i]);
       }
-      this.setState({ history: out });
+      console.log(out);
+      this.setState({ history: out }, ( ) => {
+        console.log(this.state.history);
+      });
     });
   };
 
   getHistory = () => {
     axios
-      .post(`${API_URL}/getHistory`, {
+      .post(`${API_URL}/getCashierHistory`, {
         token: token,
-        where: { cashier_id : bid},
+        where: { status: 1, cashier_id : bid},
         from: 'cashier',
         page: this.state.activePage,
         offset: this.state.perPage,
       })
       .then(res => {
         if (res.status == 200) {
-          // console.log(res.data);
+
+          var result = res.data.history1.concat(res.data.history2);
+          result.sort(function(a, b) {
+              return a.created_at - b.created_at // implicit conversion in number
+          });
+
           this.setState(
             {
+              result: result,
               loading: false,
-              allhistory: res.data.history,
-              totalCount: res.data.history.length,
+              allhistory: result,
+              totalCount: result.length,
             },
             () => {
               this.showHistory();
@@ -156,7 +166,20 @@ export default class CashierDashboard extends Component {
 
 
   componentDidMount() {
-    this.getHistory();
+    axios
+      .post(`${API_URL}/getBranchByName`, {
+        name: this.props.match.params.bank
+      })
+      .then(res => {
+        if (res.status == 200) {
+          console.log(res.data);
+          this.setState({ loading: false, branchDetails: res.data.banks}, () => {
+            this.getHistory();
+          });
+        }
+      })
+      .catch(err => {});
+    
   }
 
   render() {
@@ -283,9 +306,47 @@ export default class CashierDashboard extends Component {
                     Payment Received
                   </div>
                 </div>
-                <Table marginTop="34px" smallTd>
+                <Table marginTop="34px" marginBottom="34px" smallTd textAlign="left">
                   <tbody>
-                    
+                    {this.state.history && this.state.history.length > 0
+                      ? this.state.history.map(function(b) {
+                        
+                          var isoformat = b.created_at;
+                          var readable = new Date(isoformat);
+                          var m = readable.getMonth(); // returns 6
+                          var d = readable.getDay(); // returns 15
+                          var y = readable.getFullYear();
+                          var h = readable.getHours();
+                          var mi = readable.getMinutes();
+                          var mlong = months[m];
+                          var fulldate =
+                            d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+                          return  (dis.state.filter == 'CR' &&  b.sender_info) || (dis.state.filter == 'DR' &&  !b.sender_info)  ||
+                            dis.state.filter == ''  ?  (
+                            <tr key={b._id}>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div className="labelBlue">
+                                  {
+                                    b.sender_info ?
+                                    <span>Transfered to  escrow@{dis.state.branchDetails.name}</span>
+                                    :
+                                    <span>Claimed from {dis.state.branchDetails.bcode}_operational@{dis.state.branchDetails.name}</span>
+                                  }
+                                </div>
+                                <div className="labelSmallGrey">Completed</div>
+                              </td>
+                              <td>
+                                <div className="labelGrey">
+                                 {b.transaction_code == 'DR' ? '-XOF' : 'XOF'}{b.amount}
+                                </div>
+                              </td>
+                            </tr>
+                            ) : null;
+                        })
+                      : null}
                   </tbody>
                 </Table>
                 <div>

@@ -463,27 +463,27 @@ export default class BankInfo extends Component {
 
   getBanks = () => {
     axios
-      .post(`${API_URL}/getBank`, { token: token, bank_id: bid })
+      .post(`${API_URL}/getOne`, { token: token, type: 'bank', page: 'bank' })
       .then(res => {
         if (res.status == 200) {
           this.setState({
             loading: false,
-            banks: res.data.banks,
-            bcode: res.data.banks.bcode,
-            logo: res.data.banks.logo,
-            name: res.data.banks.name,
-            address1: res.data.banks.address1,
-            state: res.data.banks.state,
-            zip: res.data.banks.zip,
-            country: res.data.banks.country,
-            ccode: res.data.banks.ccode,
-            mobile: res.data.banks.mobile,
-            email: res.data.banks.email,
-            logo: res.data.banks.logo,
-            contract: res.data.banks.contract,
-            username: res.data.banks.contract,
-            bank_id: res.data.banks._id,
-            username: res.data.banks.username,
+            banks: res.data.row,
+            bcode: res.data.row.bcode,
+            logo: res.data.row.logo,
+            name: res.data.row.name,
+            address1: res.data.row.address1,
+            state: res.data.row.state,
+            zip: res.data.row.zip,
+            country: res.data.row.country,
+            ccode: res.data.row.ccode,
+            mobile: res.data.row.mobile,
+            email: res.data.row.email,
+            logo: res.data.row.logo,
+            contract: res.data.row.contract,
+            username: res.data.row.contract,
+            bank_id: res.data.row._id,
+            username: res.data.row.username,
           });
         }
       })
