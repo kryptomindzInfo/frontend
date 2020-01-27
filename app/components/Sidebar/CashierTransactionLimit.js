@@ -192,6 +192,7 @@ class CashierTransactionLimit extends Component {
       showVerifyClaimMoney: false,
       showVerifyClaimOTPMoney: false,
       showClaimMoneyDetails: false,
+      transferCode:'',
       givenname: '',
       familyname: '',
       note: '',
@@ -343,7 +344,7 @@ class CashierTransactionLimit extends Component {
                   let senderid = JSON.parse(o.sender_id);
                   let receiver = JSON.parse(o.receiver_info);
                   let receiverid = JSON.parse(o.receiver_id);
-                  o.created_at = new Date();
+                  
                   o.without_id = o.without_id == 1 ? true : false;
                   o.require_otp = o.require_otp == 1 ? true : false;
                   this.setState({
@@ -404,6 +405,12 @@ class CashierTransactionLimit extends Component {
   };
 
   sendMoney = event => {
+    if(this.state.receiverIdentificationAmount > this.state.balance){
+          this.setState({
+            notification: "Amount has to be lesser than transaction limit"
+          });
+          this.success();
+    }else{
     event.preventDefault();
       this.setState(
         {
@@ -417,6 +424,7 @@ class CashierTransactionLimit extends Component {
           this.generateOTP();
         },
       );
+    }
     
   };
 
@@ -451,6 +459,7 @@ class CashierTransactionLimit extends Component {
             if(this.state.requireOTP){
               this.setState({
                 showOTPClaimMoney: true,
+                otp: '',
                 notification: "OTP verified successfully"
               });
               this.success();
@@ -487,7 +496,10 @@ class CashierTransactionLimit extends Component {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            
+              this.setState({
+                notification: "OTP verified successfully"
+              });
+              this.success();
               this.startClaiming();
     
           }
@@ -495,9 +507,7 @@ class CashierTransactionLimit extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
-        this.setState({
-          claimMoneyLoading: false,
-        });
+       
       })
       .catch(err => {
         this.setState({
@@ -901,11 +911,11 @@ class CashierTransactionLimit extends Component {
                     </Row>
                     <Row>
                       <Col className="popInfoLeft">ID required</Col>
-                      <Col className="popInfoRight">{this.withoutID ? 'Yes' : 'No' }</Col>
+                      <Col className="popInfoRight">{this.state.withoutID ? 'No' : 'Yes' }</Col>
                     </Row>
                     <Row>
                       <Col className="popInfoLeft">OTP required</Col>
-                      <Col className="popInfoRight">{this.requireOTP ? 'Yes' : 'No' }</Col>
+                      <Col className="popInfoRight">{this.state.requireOTP ? 'Yes' : 'No' }</Col>
                     </Row>
                     
                   </Col>

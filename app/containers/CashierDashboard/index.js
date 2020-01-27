@@ -285,40 +285,7 @@ export default class CashierDashboard extends Component {
                 </div>
                 <Table marginTop="34px" smallTd>
                   <tbody>
-                     {this.state.history && this.state.history.length > 0
-                      ? this.state.history.map(function(b) {
-                        console.log(b);
-                          var isoformat = b.created_at;
-                          var readable = new Date(isoformat);
-                          var m = readable.getMonth(); // returns 6
-                          var d = readable.getDay(); // returns 15
-                          var y = readable.getFullYear();
-                          var h = readable.getHours();
-                          var mi = readable.getMinutes();
-                          var mlong = months[m];
-                          var fulldate =
-                            d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
-
-                        
-                            <tr key={b._id}>
-                              <td>
-                                <div className="labelGrey">{fulldate}</div>
-                              </td>
-                              <td>
-                                <div className="labelBlue">
-                                  {b.amount}
-                                </div>{' '}
-                                <div className="labelSmallGrey">Completed</div>
-                              </td>
-                              <td>
-                                <div className="labelGrey">
-                                 {b.transaction_code == 'DR' ? '-XOF' : 'XOF'}{b.amount}
-                                </div>
-                              </td>
-                            </tr>
-                        
-                        })
-                      : null}
+                    
                   </tbody>
                 </Table>
                 <div>

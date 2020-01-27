@@ -321,41 +321,7 @@ export default class BankPage extends Component {
       });
   };
 
-  generateOTP = () => {
-    this.setState({ resend: false, timer: 30 });
-    axios
-      .post(`${API_URL}/sendOTP`, {
-        email: this.state.otpEmail,
-        mobile: this.state.otpMobile,
-        page: this.state.otpOpt,
-        type: 'bank',
-        txt: this.state.otpTxt,
-        token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              otpId: res.data.id,
-              showEditOtp: true,
-              notification: 'OTP Sent',
-            });
-            this.startTimer();
-            this.success();
-          }
-        } else {
-          throw res.data.error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
-  };
+  
 
   editBank = event => {
     event.preventDefault();
