@@ -37,17 +37,17 @@ class CashierNav extends Component {
               <FormattedMessage {...messages.menu1} />
             </Link>
           </A>
-          <A href={"/cashier/"+bankName+"/merchants"}>
+          <A >
             <Link active={merchants}>
               <FormattedMessage {...messages.menu3} />
             </Link>
           </A>
-          <A href={"/cashier/"+bankName+"/users"}>
+          <A >
             <Link active={users}>
               <FormattedMessage {...messages.bmenu3} />
             </Link>
           </A>
-          <A href={"/cashier/"+bankName+"/reports"}>
+          <A >
             <Link active={reports}>
               <FormattedMessage {...messages.menu4} />
             </Link>

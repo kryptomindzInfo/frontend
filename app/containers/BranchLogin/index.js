@@ -142,9 +142,6 @@ export default class BranchLogin extends Component {
     if (loading) {
       return <Loader fullPage />;
     }
-    if (redirect) {
-      return <Redirect to="/dashboard" />;
-    }
     return (
       <Wrapper>
         <Helmet>

@@ -42,17 +42,17 @@ class BranchNav extends Component {
               Cashier
             </Link>
           </A>
-          <A href={"/branch/"+bankName+"/merchants"}>
+          <A >
             <Link active={merchants}>
               <FormattedMessage {...messages.menu3} />
             </Link>
           </A>
-          <A href={"/branch/"+bankName+"/users"}>
+          <A >
             <Link active={users}>
               <FormattedMessage {...messages.bmenu3} />
             </Link>
           </A>
-          <A href={"/branch/"+bankName+"/reports"}>
+          <A >
             <Link active={reports}>
               <FormattedMessage {...messages.menu4} />
             </Link>

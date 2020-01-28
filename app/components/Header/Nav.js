@@ -52,12 +52,12 @@ class Nav extends Component {
           <FormattedMessage {...messages.menu2} /> 
           </Link>         
           </A>
-          <A href="/merchants">
+          <A >
           <Link active={merchants}>
           <FormattedMessage {...messages.menu3} /> 
           </Link>
           </A>
-          <A href="/reports">
+          <A >
           <Link active={reports}>
           <FormattedMessage {...messages.menu4} /> 
           </Link>

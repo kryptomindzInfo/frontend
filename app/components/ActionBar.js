@@ -18,6 +18,9 @@ input.small{
     strong{
         color: ${props => props.theme.primary};
     }
+    strong.red{
+        color: ${props => props.theme.danger};   
+    }
 }
 .dateinput{
     border: 1px solid #e0e7ee;

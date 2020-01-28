@@ -15,8 +15,41 @@ import A from 'components/A';
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
 
+const token = localStorage.getItem('cashierLogged');
 class BranchWallets extends Component {
-
+   constructor() {
+    super();
+    this.state = {
+        balance: 0,
+        token
+    }
+    
+  }
+ componentDidMount() {
+    axios
+    .post(`${API_URL}/getCashierTransLimit`,  {token: token})
+    .then(res => {
+      if (res.status == 200) {
+        if (res.data.error) {
+          throw res.data.error;
+        } else {
+          console.log(res.data.row);
+          this.setState({
+            balance: Number(res.data.limit)
+          });
+        }
+      } else {
+        const error = new Error(res.data.error);
+        throw error;
+      }
+    })
+    .catch(err => {
+      this.setState({
+        notification: err.response ? err.response.data.error : err.toString()
+      });
+      this.error();
+    });
+  }
   render() {
 
     return (
@@ -30,7 +63,7 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} {this.props.limit}
+          {CURRENCY} {this.state.balance.toFixed(2)}
         </div>
    
       </Card>
@@ -61,9 +94,7 @@ class BranchWallets extends Component {
         <div className="cardValue">
           {CURRENCY} 0
         </div>
-        <A href={'/#/' + this.props.historyLink} float="right">
-          <span className="history">History</span>
-        </A>
+        
       </Card>
       </Col>
       <Col>
@@ -77,9 +108,7 @@ class BranchWallets extends Component {
         <div className="cardValue">
           {CURRENCY} 0
         </div>
-        <A href={'/#/' + this.props.historyLink} float="right">
-          <span className="history">History</span>
-        </A>
+       
       </Card>
       </Col>
 

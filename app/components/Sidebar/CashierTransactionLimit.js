@@ -128,10 +128,26 @@ class CashierTransactionLimit extends Component {
   };
 
   showPopupSendMoney = () => {
-    this.setState({ popupSendMoney: true });
+    if(this.state.balance > 0 ){
+      this.setState({ popupSendMoney: true });
+    }else{
+      this.setState({
+        notification: "You have already used your limit for today",
+      }, () => {
+      this.error();
+      });
+    }
   };
   showClaimMoneyPopup = () => {
+        if(this.state.balance > 0 ){
     this.setState({ popupClaimMoney: true });
+       }else{
+      this.setState({
+        notification: "You have already used your limit for today",
+      }, () => {
+      this.error();
+      });
+    }
   };
 
   toggleIdentificationBlock = () => {
@@ -593,7 +609,7 @@ class CashierTransactionLimit extends Component {
 
   componentDidMount() {
     axios
-    .post(`${API_URL}/getOne`, {page: 'cashier', type : 'cashier', token: token})
+    .post(`${API_URL}/getCashierTransLimit`,  {token: token})
     .then(res => {
       if (res.status == 200) {
         if (res.data.error) {
@@ -601,9 +617,8 @@ class CashierTransactionLimit extends Component {
         } else {
           console.log(res.data.row);
           this.setState({
-            balance: Number(res.data.row.max_trans_amt)
+            balance: Number(res.data.limit)
           });
-  
         }
       } else {
         const error = new Error(res.data.error);

@@ -27,7 +27,7 @@ const Link = styled.span`
     font-weight: normal;
     border-radius: 8px;
     border: solid 2px #ffffff;
-    padding: 9px 20px;
+    padding: 5px 20px;
 `;
 
 const token = localStorage.getItem('cashierLogged');
@@ -69,7 +69,7 @@ class CashierHeader extends Component {
             null
           }
 
-          <A href={"/branch/"+this.props.bankName+"/dashboard"} float="left">
+          <A href={"/cashier/"+this.props.bankName+"/dashboard"} float="left">
             <div className="bankLogo">
               <img src={this.props.bankLogo} />
             </div>

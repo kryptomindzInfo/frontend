@@ -107,21 +107,24 @@ this.showHistory = this.showHistory.bind(this);
     axios
       .post(`${API_URL}/getCashierHistory`, {
         token: token,
-        where: { status: 1, cashier_id : bid},
+        where: {cashier_id : bid},
         from: 'cashier',
         page: this.state.activePage,
         offset: this.state.perPage,
       })
       .then(res => {
         if (res.status == 200) {
-
+          var notification = {};
           var result = res.data.history1.concat(res.data.history2);
           result.sort(function(a, b) {
-              return a.created_at - b.created_at // implicit conversion in number
+              return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()// implicit conversion in number
           });
+          var l = result.length;
+
 
           this.setState(
             {
+              ticker: result[l-1],
               result: result,
               loading: false,
               allhistory: result,
@@ -136,22 +139,20 @@ this.showHistory = this.showHistory.bind(this);
       .catch(err => {});
   };
 
-  getHistoryTotal = () => {
-    axios
-      .post(`${API_URL}/getHistoryTotal`, {
-        token: token,
-        where: { cashier_id : bid},
-        from: 'cashier'
-      })
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res.data);
-          this.setState({ loading: false, totalCount: res.data.total }, () => {
-            this.getHistory();
-          });
-        }
-      })
-      .catch(err => {});
+  getStats = () => {
+    // axios
+    //   .post(`${API_URL}/getCashierDashStats`, {
+    //     token: token
+    //   })
+    //   .then(res => {
+    //     if (res.status == 200) {
+    //       console.log(res.data);
+    //       // this.setState({ loading: false, totalCount: res.data.total }, () => {
+    //       //   this.getHistory();
+    //       // });
+    //     }
+    //   })
+    //   .catch(err => {});
   };
 
   filterData = e => {
@@ -165,25 +166,55 @@ this.showHistory = this.showHistory.bind(this);
   };
 
 
-  componentDidMount() {
-    axios
+
+getBranchByName  = () => {
+  axios
       .post(`${API_URL}/getBranchByName`, {
         name: this.props.match.params.bank
       })
       .then(res => {
         if (res.status == 200) {
           console.log(res.data);
-          this.setState({ loading: false, branchDetails: res.data.banks}, () => {
+          this.setState({  branchDetails: res.data.banks}, () => {
+            this.getStats();
             this.getHistory();
           });
         }
       })
       .catch(err => {});
-    
+}
+
+formatDate = (d) => {
+  var months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+  ];
+  var isoformat = d;
+  var readable = new Date(isoformat);
+  var m = readable.getMonth(); // returns 6
+  var d = readable.getDay(); // returns 15
+  var y = readable.getFullYear();
+  var h = readable.getHours();
+  var mi = readable.getMinutes();
+  var mlong = months[m];
+  return d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+}
+
+  componentDidMount() {
+    this.getBranchByName();
   }
 
   render() {
-
 
     const { loading, redirect } = this.state;
     if (loading) {
@@ -275,7 +306,24 @@ this.showHistory = this.showHistory.bind(this);
               inputWidth="calc(100% - 241px)"
               className="clr"
             >
-              <p className="notification"><strong>Congrats</strong> You have received {CURRENCY} 200.00 from <strong>Test User</strong> on 27th December 2019</p>
+            {
+              this.state.ticker ?
+              <p className="notification">
+              {
+                dis.state.ticker.status == 1 ?
+                
+                  dis.state.ticker.trans_type == 'DR' ?
+                  <span><strong>Congrats</strong> You have sent {CURRENCY} {this.state.ticker.amount} to <strong>{this.state.ticker.receiver_info.name }</strong> on {this.formatDate(this.state.ticker.created_at)}</span>
+                  :
+                  <span><strong>Congrats</strong> You have received {CURRENCY} {this.state.ticker.amount} from <strong>{this.state.ticker.sender_name}</strong> on {this.formatDate(dis.state.ticker.created_at)}</span>
+                :
+                  <span><strong className="red">Oops!</strong> Your last transaction (<strong>{dis.state.ticker.master_code}</strong>) on {this.formatDate(dis.state.ticker.created_at)} was failed</span>
+                }
+              </p>
+              :
+              null
+            }
+              
             </ActionBar>
 
             <Card bigPadding>
@@ -310,7 +358,6 @@ this.showHistory = this.showHistory.bind(this);
                   <tbody>
                     {this.state.history && this.state.history.length > 0
                       ? this.state.history.map(function(b) {
-                        
                           var isoformat = b.created_at;
                           var readable = new Date(isoformat);
                           var m = readable.getMonth(); // returns 6
@@ -321,7 +368,7 @@ this.showHistory = this.showHistory.bind(this);
                           var mlong = months[m];
                           var fulldate =
                             d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
-                          return  (dis.state.filter == 'CR' &&  b.sender_info) || (dis.state.filter == 'DR' &&  !b.sender_info)  ||
+                          return  dis.state.filter ==  b.trans_type ||
                             dis.state.filter == ''  ?  (
                             <tr key={b._id}>
                               <td>

@@ -87,6 +87,7 @@ const appTheme = {
   // secondary: "#ff0000",
   secondary: '#6cac69',
   accent: '#f5a623',
+  danger: '#f52828',
   light: '#9ea0a5',
   greyLine: '#666565 ',
   vGradient: 'linear-gradient(to bottom, #6cac6a, #102910)',

@@ -27,7 +27,7 @@ const Link = styled.span`
     font-weight: normal;
     border-radius: 8px;
     border: solid 2px #ffffff;
-    padding: 9px 20px;
+    padding: 5px 20px;
 `;
 
 

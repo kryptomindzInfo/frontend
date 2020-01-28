@@ -50,17 +50,17 @@ class BankNav extends Component {
             </Link>
           </A>
           
-          <A href="/bank/merchants">
+          <A >
             <Link active={merchants}>
               <FormattedMessage {...messages.menu3} />
             </Link>
           </A>
-          <A href="/bank/user">
+          <A >
             <Link active={users}>
               <FormattedMessage {...messages.bmenu3} />
             </Link>
           </A>
-          <A href="/bank/reports">
+          <A >
             <Link active={reports}>
               <FormattedMessage {...messages.menu4} />
             </Link>
