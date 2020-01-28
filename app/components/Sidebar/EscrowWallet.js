@@ -1,11 +1,39 @@
 import React, { Component } from 'react';
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
+import axios from 'axios';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 import Card from 'components/Card';
-
+const token = localStorage.getItem("bankLogged");
+const bname = localStorage.getItem("bankName");
 class EscrowWallet extends Component {
+constructor() {
+    super();
+    this.state = {
+      balance: 0
+    };
+  }
+  componentDidMount() {
+
+    axios
+      .get(`${API_URL}/getBalance?wallet_id=escrow@${bname}&token=${token}&type=bank`)
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              balance: res.data.balance,
+            });
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
   render() {
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
@@ -15,7 +43,7 @@ class EscrowWallet extends Component {
         <h5>
           <FormattedMessage {...messages.available} />
         </h5>
-        <div className="cardValue">{CURRENCY} 0.0</div>
+        <div className="cardValue">{CURRENCY} {this.state.balance.toFixed(2)}</div>
         {/* {
               this.props.activateNeeded ?
               <button className="fullWidth">
