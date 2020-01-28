@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 import axios from 'axios';
 import { FormattedMessage } from 'react-intl';
+import A from 'components/A';
 import messages from './messages';
+
 
 import Card from 'components/Card';
 const token = localStorage.getItem("bankLogged");
@@ -50,6 +52,9 @@ constructor() {
             <FormattedMessage {...messages.activate} />
             </button>
               : */}
+                <A href={'/bank/escrowHistory'}>
+          <span className="history">History</span>
+        </A>
         <button className="sendMoneyButton">
           <i className="material-icons">send</i>{' '}
           <FormattedMessage {...messages.sendmoney} />

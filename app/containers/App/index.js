@@ -47,6 +47,7 @@ import OperationalHistory from 'containers/OperationalHistory/Loadable';
 import MasterHistory from 'containers/MasterHistory/Loadable';
 import InfraProfile from 'containers/InfraProfile/Loadable';
 import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
+import BankEscrowHistory from 'containers/BankEscrowHistory/Loadable';
 import BankBranchList from 'containers/BankBranchList/Loadable';
 import TermsConditions from 'components/TermsConditions';
 import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
@@ -175,6 +176,7 @@ export default function App(props) {
           <BankRoute exact path="/bank/create-fee" component={BankCreateFee} />
           <BankRoute exact path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
           <BankRoute exact path="/bank/operationalHistory" component={BankOperationalHistory} />
+          <BankRoute exact path="/bank/escrowHistory" component={BankEscrowHistory} />
           <BankRoute exact path="/bank/cashier/:branch?/:cashier?" component={BankCashierInfo} />
           <BankRoute exact path="/bank/edit-fee/:fee?" component={BankEditFee} />
 

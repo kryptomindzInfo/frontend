@@ -15,13 +15,12 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
-import BranchHeader from 'components/Header/BranchHeader';
-import BranchWallets from 'components/Sidebar/BranchWallets';
+import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
 import Logo from 'components/Header/Logo';
 import Nav from 'components/Header/Nav';
 import Loader from 'components/Loader';
-import SidebarBranch from 'components/Sidebar/SidebarBranch';
+import SidebarBank from 'components/Sidebar/SidebarBank';
 import Main from 'components/Main';
 import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
@@ -55,10 +54,9 @@ toast.configure({
   draggable: true,
 });
 
-const token = localStorage.getItem('branchLogged');
-const bid = localStorage.getItem('branchId');
-const logo = localStorage.getItem('bankLogo');
-export default class BranchOperationalHistory extends Component {
+const token = localStorage.getItem('bankLogged');
+
+export default class BankEscrowHistory extends Component {
   constructor() {
     super();
     this.state = {
@@ -372,9 +370,9 @@ export default class BranchOperationalHistory extends Component {
 
   getHistory = () => {
     axios
-      .post(`${API_URL}/getBranchHistory`, {
+      .post(`${API_URL}/getBankHistory`, {
         token: token,
-        from: 'operational',
+        from: 'escrow',
         page: this.state.activePage,
         offset: this.state.perPage,
       })
@@ -400,7 +398,7 @@ export default class BranchOperationalHistory extends Component {
     axios
       .post(`${API_URL}/getBankHistoryTotal`, {
         token: token,
-        from: 'operational',
+        from: 'Escrow',
       })
       .then(res => {
         if (res.status == 200) {
@@ -484,11 +482,11 @@ export default class BranchOperationalHistory extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>Create Fee | INFRA | E-WALLET</title>
+          <title>Escrow History | BANK | E-WALLET</title>
         </Helmet>
-        <BranchHeader page="branch" goto={"/branch/"+this.props.match.params.bank+"/dashboard"} bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
+        <BankHeader />
         <Container verticalMargin>
-          <SidebarBranch bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo}   />
+          <SidebarBank />
           <Main>
             {/* <ActionBar marginBottom="33px" inputWidth="calc(100% - 344px)" className="clr">
               <div className="iconedInput fl small">
@@ -519,7 +517,7 @@ export default class BranchOperationalHistory extends Component {
                   <i className="material-icons">playlist_add_check</i>
                 </div>
                 <div className="cardHeaderRight">
-                  <h3>Operational Wallet Transaction</h3>
+                  <h3>Escrow Wallet Transaction</h3>
                   <h5>E-wallet activity</h5>
                 </div>
               </div>
@@ -565,10 +563,10 @@ export default class BranchOperationalHistory extends Component {
                               <td>
                                 <div className="labelBlue">
                                   {b.Value.tx_data.tx_details}
-                                </div>{' '}
+                                </div>
                                 <div className="labelSmallGrey">Completed</div>
                               </td>
-                              <td className="right">
+                               <td className="right">
                                 <div className="labelGrey">
                                   {
                                     b.Value.tx_data.tx_type == 'DR'

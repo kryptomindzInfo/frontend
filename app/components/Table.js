@@ -17,7 +17,7 @@ margin-top: ${props => props.marginTop ? props.marginTop : '0' };
     font-size: 16px;
     font-weight: 300;
     color: #4a4a4a;
-    text-align: ${props => props.textAlign ? 'textAlign' : 'center' };
+    text-align: ${props => props.textAlign ? props.textAlign : 'center' };
     padding: ${props => props.smallTd ? '10px' : '14px 22px' };
     background-color: rgba(81, 111, 10, 0.01);
     position:relative;
@@ -26,6 +26,9 @@ margin-top: ${props => props.marginTop ? props.marginTop : '0' };
     }
     > a{
         font-size: 12px;
+    }
+    &.right{
+        text-align: right;
     }
     .labelGrey{
        
