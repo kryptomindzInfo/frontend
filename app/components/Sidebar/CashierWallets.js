@@ -25,8 +25,29 @@ class BranchWallets extends Component {
     }
     
   }
- componentDidMount() {
+  getStats = () => {
     axios
+      .post(`${API_URL}/getCashierDashStats`, {
+        token: token
+      })
+      .then(res => {
+        if (res.status == 200) {
+          let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
+          let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
+          this.setState({ 
+            loading: false, 
+            openingBalance: res.data.openingBalance, 
+            cashReceived: received, 
+            cashPaid: paid,
+            feeGenerated: res.data.feeGenerated  
+          });
+        }
+      })
+      .catch(err => {});
+  };
+
+  getTransLimit = () =>{
+   axios
     .post(`${API_URL}/getCashierTransLimit`,  {token: token})
     .then(res => {
       if (res.status == 200) {
@@ -49,13 +70,18 @@ class BranchWallets extends Component {
       });
       this.error();
     });
+  };
+
+ componentDidMount() {
+ this.getTransLimit();
+ this.getStats();
   }
   render() {
 
     return (
       <Row>
       <Col>
-      <Card marginBottom="54px" buttonMarginTop="32px"  bordered>
+      <Card marginBottom="54px" buttonMarginTop="32px"  bordered smallValue>
         <h4>
           Transaction Limit
         </h4>
@@ -70,7 +96,7 @@ class BranchWallets extends Component {
       </Col>
 
       <Col>
-      <Card marginBottom="54px" buttonMarginTop="32px"  bordered>
+      <Card marginBottom="54px" buttonMarginTop="32px"  bordered smallValue>
         <h4>
           Cash in Hand
         </h4>
@@ -78,13 +104,13 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} 0
+          {CURRENCY}  {this.state.cashReceived - this.state.cashPaid}
         </div>
    
       </Card>
       </Col>
       <Col>
-      <Card marginBottom="54px" buttonMarginTop="32px"  bordered>
+      <Card marginBottom="54px" buttonMarginTop="32px"  bordered smallValue>
         <h4>
           Money Paid Today
         </h4>
@@ -92,21 +118,21 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} 0
+          {CURRENCY} {this.state.cashPaid}
         </div>
         
       </Card>
       </Col>
       <Col>
-      <Card marginBottom="54px" buttonMarginTop="32px"  bordered>
+      <Card marginBottom="54px" buttonMarginTop="32px"  bordered smallValue>
         <h4>
-         Money Claimed Today
+         Money Recieved Today
         </h4>
         <h5>
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} 0
+          {CURRENCY}  {this.state.cashReceived}
         </div>
        
       </Card>

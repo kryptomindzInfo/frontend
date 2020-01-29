@@ -51,11 +51,29 @@ class CashierCashInHand extends Component {
     });
   };
 
-
+  getStats = () => {
+    axios
+      .post(`${API_URL}/getCashierDashStats`, {
+        token: token
+      })
+      .then(res => {
+        if (res.status == 200) {
+          let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
+          let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
+          this.setState({ 
+            loading: false, 
+            balance: received - paid
+          });
+        }
+      })
+      .catch(err => {});
+  };
   componentDidMount() {
     this.setState({
       bank: this.props.historyLink
     });
+
+    this.getStats();
 
   }
 

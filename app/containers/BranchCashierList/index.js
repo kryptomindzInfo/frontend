@@ -61,6 +61,7 @@ export default class BranchCashierList extends Component {
     this.state = {
       loading: true,
       otp: '',
+      total:0,
       popup: false,
       showOtp: false,
       assignPop:false,
@@ -90,6 +91,31 @@ export default class BranchCashierList extends Component {
     });
   };
 
+  handleAmountChange = event => {
+    const { value, name } = event.target;
+    this.setState({
+      [name]: value,
+    }, () => {
+      this.calculateTotal();
+    });
+  };
+
+  calculateTotal = () => {
+    var total = 0;
+    this.state.denom10 ? this.state.denom10 : 0
+
+    total += Number(this.state.denom10 ? this.state.denom10 : 0) * 10;
+    total += Number(this.state.denom20 ? this.state.denom20 : 0) * 20;
+    total += Number(this.state.denom50 ? this.state.denom50 : 0) * 50;
+    total += Number(this.state.denom100 ? this.state.denom100 : 0) * 100;
+    total += Number(this.state.denom1000 ? this.state.denom1000 : 0) * 1000;
+    total += Number(this.state.denom2000 ? this.state.denom2000 : 0) * 2000;
+
+    this.setState({
+      total: total
+    });
+  };
+
   selectInputChange = selectedOption => {
     this.setState({ bank_user_id: selectedOption });
   };
@@ -103,12 +129,16 @@ export default class BranchCashierList extends Component {
   showEditPopup = (v) => {
     this.setState({ editPopup: true, name: v.name, bcode: v.bcode, working_from: v.working_from, working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id, bank_user_id: v.bank_user_id});
   };
+   showOpeningPopup = (v) => {
+    this.setState({ openingPopup: true, cashier_id: v._id});
+  };
 
   closePopup = () => {
     this.setState({
       popup: false,
       editPopup: false,
       assignPop: false,
+      openingPopup: false,
       name: '',
       bcode: '',
       working_from: '',
@@ -120,7 +150,8 @@ export default class BranchCashierList extends Component {
       credit_limit: '',
       otp: '',
       showOtp: false,
-      showEditOtp: false
+      showEditOtp: false,
+      showOpeningOTP: false
     });
   };
 
@@ -142,7 +173,7 @@ export default class BranchCashierList extends Component {
     });
 
     axios
-      .put(`${API_URL  }/updateOne`, {page_id: this.state.cashier_id, updateData: {bank_user_id: this.state.bank_user_id}, page: 'cashier', type: 'branch', token: token})
+      .put(`${API_URL  }/updateCashier`, {page_id: this.state.cashier_id, updateData: {bank_user_id: this.state.bank_user_id}, page: 'cashier', type: 'branch', token: token})
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
@@ -223,6 +254,30 @@ export default class BranchCashierList extends Component {
       );
 
   };
+
+   addOpeningBalance = event => {
+    event.preventDefault();
+    if(this.state.total == '' || this.state.total == 0){
+      this.setState({
+          notification: "You need to enter atleast one denomination"
+        }, () => {
+          this.error();
+        });
+        
+    }else{
+      this.setState(
+        {
+          showOpeningOTP: true,
+          otpOpt: 'openingBalance',
+          otpTxt: 'Your OTP to add opening balance is '
+        },
+        () => {
+          this.generateOTP();
+
+        },
+      );
+}
+  };
   startTimer = () => {
     var dis = this;
     var timer = setInterval(function() {
@@ -255,7 +310,6 @@ export default class BranchCashierList extends Component {
           } else {
             this.setState({
               otpId: res.data.id,
-              showEditOtp: true,
               notification: 'OTP Sent',
             });
             this.startTimer();
@@ -286,6 +340,43 @@ export default class BranchCashierList extends Component {
           }else{
             this.setState({
               notification: "Cashier updated successfully!",
+            }, function(){
+              this.success();
+              this.closePopup();
+              this.getBranches();
+            });
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+        this.setState({
+          verifyEditOTPLoading: false
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          verifyEditOTPLoading:false
+        });
+        this.error();
+      });
+  };
+
+  verifyOpeningOTP = event => {
+    this.setState({
+      verifyEditOTPLoading: false
+    });
+    event.preventDefault();
+    axios
+      .post(`${API_URL  }/addOpeningBalance`, this.state)
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            this.setState({
+              notification: "Opening balance submitted successfully!",
             }, function(){
               this.success();
               this.closePopup();
@@ -450,7 +541,7 @@ export default class BranchCashierList extends Component {
 
   getUsers = () => {
     axios
-      .post(`${API_URL  }/getAll`, { page: 'bankuser', type: 'branch', token: token })
+      .post(`${API_URL  }/getAll`, { page: 'bankuser', type: 'branch', token: token, where: {} })
       .then(res => {
         if(res.status == 200){
 
@@ -564,6 +655,13 @@ export default class BranchCashierList extends Component {
                               <A href={"/branch/"+dis.props.match.params.bank+"/cashier/"+b._id}>Cashier Info</A>
                               <span onClick={() => dis.showEditPopup(b)}>Edit</span>
                               <span onClick={() => dis.showAssignPopup(b)}>Assign User</span>
+                              {
+                                b.opening_balance ? 
+                                null
+                                :
+                                <span onClick={() => dis.showOpeningPopup(b)}>Enter Opening Balance</span>
+                              }
+                              
                               {
                                 b.status == -1 ?
                                 <span onClick={() => dis.blockBranch(b._id, 1)}>Unblock</span>
@@ -968,6 +1066,181 @@ export default class BranchCashierList extends Component {
                       :
                       <Button filledBtn marginTop="50px">
                       <span>Update Cashier</span>
+                    </Button>
+                    }
+
+            </form>
+            </div>
+            }
+          </Popup>
+          : null }
+
+
+          { this.state.openingPopup ?
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+            {
+              this.state.showOpeningOTP ?
+              <div>
+              <h1 ><FormattedMessage {...messages.verify} /></h1>
+            <form action="" method="post" onSubmit={this.verifyOpeningOTP} >
+              <FormGroup>
+                <label><FormattedMessage {...messages.otp} />*</label>
+                <TextInput
+                  type="text"
+                  name="otp"
+                  onFocus={inputFocus}
+                  onBlur={inputBlur}
+                  value={this.state.otp}
+                  onChange={this.handleInputChange}
+                  required
+                />
+              </FormGroup>
+              {
+                this.verifyEditOTPLoading ?
+                <Button filledBtn marginTop="50px" disabled>
+                  <Loader />
+                </Button>
+                :
+                <Button filledBtn marginTop="50px">
+                  <span><FormattedMessage {...messages.verify} /></span>
+                </Button>
+              }
+
+              <p className="resend">
+                Wait for <span className="timer">{this.state.timer}</span>{' '}
+                to{' '}
+                {this.state.resend ? (
+                  <span className="go" onClick={this.generateOTP}>
+                    Resend
+                  </span>
+                ) : (
+                  <span>Resend</span>
+                )}
+              </p>
+              </form>
+              </div>
+              :
+              <div>
+            <h1 >Enter your opening balance</h1>
+            <form action="" method="post" onSubmit={this.addOpeningBalance}>
+              <FormGroup>
+              <Row>
+              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 10</strong></Col>
+              <Col cW="20%" textAlign="center">X</Col>
+              <Col cW="35%">
+              <TextInput
+                  marginTop
+                  type="text"
+                  name="denom10"
+                  autoFocus
+                  value={this.state.denom10}
+                  onChange={this.handleAmountChange}
+                />
+              </Col>
+              </Row>
+              </FormGroup>
+
+               <FormGroup>
+              <Row>
+              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 20</strong></Col>
+              <Col cW="20%" textAlign="center">X</Col>
+              <Col cW="35%">
+              <TextInput
+                  marginTop
+                  type="text"
+                  name="denom20"
+                  autoFocus
+                  value={this.state.denom20}
+                  onChange={this.handleAmountChange}
+                />
+              </Col>
+              </Row>
+              </FormGroup>
+
+                         <FormGroup>
+              <Row>
+              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 50</strong></Col>
+              <Col cW="20%" textAlign="center">X</Col>
+              <Col cW="35%">
+              <TextInput
+                  marginTop
+                  type="text"
+                  name="denom50"
+                  autoFocus
+                  value={this.state.denom50}
+                  onChange={this.handleAmountChange}
+                />
+              </Col>
+              </Row>
+              </FormGroup>
+
+                         <FormGroup>
+              <Row>
+              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 100</strong></Col>
+              <Col cW="20%" textAlign="center">X</Col>
+              <Col cW="35%">
+              <TextInput
+                  marginTop
+                  type="text"
+                  name="denom100"
+                  autoFocus
+                  value={this.state.denom100}
+                  onChange={this.handleAmountChange}
+                />
+              </Col>
+              </Row>
+              </FormGroup>
+
+                         <FormGroup>
+              <Row>
+              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 1000</strong></Col>
+              <Col cW="20%" textAlign="center">X</Col>
+              <Col cW="35%">
+              <TextInput
+                  marginTop
+                  type="text"
+                  name="denom1000"
+                  autoFocus
+                  value={this.state.denom1000}
+                  onChange={this.handleAmountChange}
+                />
+              </Col>
+              </Row>
+              </FormGroup>
+
+                         <FormGroup>
+              <Row>
+              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 2000</strong></Col>
+              <Col cW="20%" textAlign="center">X</Col>
+              <Col cW="35%">
+              <TextInput
+                  marginTop
+                  type="text"
+                  name="denom2000"
+                  autoFocus
+                  value={this.state.denom2000}
+                  onChange={this.handleAmountChange}
+                />
+              </Col>
+              </Row>
+              </FormGroup>
+
+              <Row>
+              <Col cW="15%" textAlign="right"><strong>TOTAL</strong></Col>
+              <Col cW="20%" textAlign="center">=</Col>
+              <Col cW="35%">
+              {this.state.total}
+              </Col>
+              </Row>
+               
+                    {
+                      this.state.editBranchLoading ?
+                      <Button filledBtn marginTop="50px" disabled>
+                        <Loader />
+                      </Button>
+                      :
+                      <Button filledBtn marginTop="50px">
+                      <span>Submit</span>
                     </Button>
                     }
 

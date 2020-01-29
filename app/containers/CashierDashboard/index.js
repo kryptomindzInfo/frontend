@@ -45,6 +45,15 @@ const logo = localStorage.getItem('bankLogo');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
 
+var start = new Date();
+start.setHours(0,0,0,0);
+start = start.toISOString();
+console.log(start);
+
+var end = new Date();
+end.setHours(23,59,59,999);
+end = end.toISOString();
+
 export default class CashierDashboard extends Component {
   constructor() {
     super();
@@ -53,6 +62,10 @@ export default class CashierDashboard extends Component {
       otpEmail: email,
       otpMobile: mobile,
       trans_type: '',
+      cashReceived: 0,
+      openingBalance: 0,
+      cashPaid: 0,
+      feeGenerated: 0,  
       perPage: 5,
       totalCount: 100,
       allhistory: [],
@@ -140,19 +153,26 @@ this.showHistory = this.showHistory.bind(this);
   };
 
   getStats = () => {
-    // axios
-    //   .post(`${API_URL}/getCashierDashStats`, {
-    //     token: token
-    //   })
-    //   .then(res => {
-    //     if (res.status == 200) {
-    //       console.log(res.data);
-    //       // this.setState({ loading: false, totalCount: res.data.total }, () => {
-    //       //   this.getHistory();
-    //       // });
-    //     }
-    //   })
-    //   .catch(err => {});
+    axios
+      .post(`${API_URL}/getCashierDashStats`, {
+        token: token,
+        start: start,
+        end: end
+      })
+      .then(res => {
+        if (res.status == 200) {
+          let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
+          let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
+          this.setState({ 
+            loading: false, 
+            openingBalance: res.data.openingBalance, 
+            cashReceived: received, 
+            cashPaid: paid,
+            feeGenerated: res.data.feeGenerated  
+          });
+        }
+      })
+      .catch(err => {});
   };
 
   filterData = e => {
@@ -255,41 +275,45 @@ formatDate = (d) => {
                 horizontalMargin="7px"
                 cardWidth="151px"
                 h4FontSize="16px"
+                smallValue
                 textAlign="center"
                 col
               >
                 <h4>
                 Opening Balance
                 </h4>
-                <div className="cardValue">0</div>
+                <div className="cardValue">{CURRENCY} {this.state.openingBalance.toFixed(2)}</div>
               </Card>
               <Card
                 horizontalMargin="7px"
                 cardWidth="151px"
                 h4FontSize="16px"
+                smallValue
                 textAlign="center"
                 col
               >
                 <h4>
                 Cash Received
                 </h4>
-                <div className="cardValue">0</div>
+                <div className="cardValue">{CURRENCY} {this.state.cashReceived.toFixed(2)}</div>
               </Card>
               <Card
                 horizontalMargin="7px"
                 cardWidth="151px"
                 h4FontSize="16px"
+                smallValue
                 textAlign="center"
                 col
               >
                 <h4>
                 Paid in Cash
                 </h4>
-                <div className="cardValue">0</div>
+                <div className="cardValue">{CURRENCY} {this.state.cashPaid.toFixed(2)}</div>
               </Card>
               <Card
                 horizontalMargin="7px"
                 cardWidth="151px"
+                smallValue
                 h4FontSize="16px"
                 textAlign="center"
                 col
@@ -297,7 +321,7 @@ formatDate = (d) => {
                 <h4>
                 Fee Generated
                 </h4>
-                <div className="cardValue">0</div>
+                <div className="cardValue">{CURRENCY} {this.state.feeGenerated.toFixed(2)}</div>
               </Card>
             </div>
             <ActionBar
@@ -312,8 +336,8 @@ formatDate = (d) => {
               {
                 dis.state.ticker.status == 1 ?
                 
-                  dis.state.ticker.trans_type == 'DR' ?
-                  <span><strong>Congrats</strong> You have sent {CURRENCY} {this.state.ticker.amount} to <strong>{this.state.ticker.receiver_info.name }</strong> on {this.formatDate(this.state.ticker.created_at)}</span>
+                  dis.state.ticker.trans_type == 'DR' ? 
+                  <span><strong>Congrats</strong> You have sent {CURRENCY} {this.state.ticker.amount} to <strong>{JSON.parse(this.state.ticker.receiver_info).givenname }</strong> on {this.formatDate(this.state.ticker.created_at)}</span>
                   :
                   <span><strong>Congrats</strong> You have received {CURRENCY} {this.state.ticker.amount} from <strong>{this.state.ticker.sender_name}</strong> on {this.formatDate(dis.state.ticker.created_at)}</span>
                 :
