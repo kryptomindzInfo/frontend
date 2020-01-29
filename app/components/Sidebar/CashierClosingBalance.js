@@ -160,6 +160,11 @@ addOpeningBalance = event => {
           this.setState({ 
             balance1: b1,
             balance2: b2,
+          }, () => {
+            var dis  = this;
+            setTimeout(function(){
+              dis.getStats();
+            }, 2700);
           });
         }
       })

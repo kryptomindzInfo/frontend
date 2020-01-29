@@ -63,6 +63,11 @@ class CashierCashInHand extends Component {
           this.setState({ 
             loading: false, 
             balance: received - paid
+          }, () => {
+            var dis  = this;
+            setTimeout(function(){
+              dis.getStats();
+            }, 2500);
           });
         }
       })

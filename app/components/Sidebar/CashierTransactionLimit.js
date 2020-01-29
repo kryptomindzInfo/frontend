@@ -554,6 +554,8 @@ class CashierTransactionLimit extends Component {
             });
             this.success();
             this.closePopupSendMoney();
+              
+      this.props.refresh();
           }
         } else {
           throw res.data.error;
@@ -590,6 +592,7 @@ class CashierTransactionLimit extends Component {
             });
             this.success();
             this.closePopupSendMoney();
+            this.props.refresh();
           }
         } else {
           throw res.data.error;
@@ -607,17 +610,21 @@ class CashierTransactionLimit extends Component {
       });
   };
 
-  componentDidMount() {
-    axios
+getTransLimit = () => {
+      axios
     .post(`${API_URL}/getCashierTransLimit`,  {token: token})
     .then(res => {
       if (res.status == 200) {
         if (res.data.error) {
           throw res.data.error;
         } else {
-          console.log(res.data.row);
           this.setState({
             balance: Number(res.data.limit)
+          }, () => {
+            var dis  = this;
+            setTimeout(function(){
+              dis.getTransLimit();
+            }, 3000);
           });
         }
       } else {
@@ -631,6 +638,10 @@ class CashierTransactionLimit extends Component {
       });
       this.error();
     });
+}
+
+  componentDidMount() {
+    this.getTransLimit()
   }
 
   render() {

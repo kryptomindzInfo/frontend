@@ -268,7 +268,7 @@ formatDate = (d) => {
         <CashierHeader active="dashboard" bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} from="cashier" />
         <Container verticalMargin>
 
-        <SidebarCashier />
+        <SidebarCashier refresh={this.getHistory.bind(this)}/>
           <Main>
             <div className="clr">
             <Card
@@ -407,7 +407,12 @@ formatDate = (d) => {
                                     <span>Claimed from {dis.state.branchDetails.bcode}_operational@{dis.state.branchDetails.name}</span>
                                   }
                                 </div>
-                                <div className="labelSmallGrey">Completed</div>
+                                <div className="labelSmallGrey">{
+                                  b.status == 1 ?
+                                  <span>Completed</span>
+                                  :
+                                  <span className="red">Failed</span>
+                                }</div>
                               </td>
                               <td>
                                 <div className="labelGrey">

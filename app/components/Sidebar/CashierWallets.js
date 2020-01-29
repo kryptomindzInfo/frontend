@@ -40,6 +40,11 @@ class BranchWallets extends Component {
             cashReceived: received, 
             cashPaid: paid,
             feeGenerated: res.data.feeGenerated  
+          }, () => {
+            var dis  = this;
+            setTimeout(function(){
+              dis.getStats();
+            }, 3000);
           });
         }
       })
@@ -57,6 +62,11 @@ class BranchWallets extends Component {
           console.log(res.data.row);
           this.setState({
             balance: Number(res.data.limit)
+          }, () => {
+            var dis  = this;
+            setTimeout(function(){
+              dis.getTransLimit();
+            }, 3000);
           });
         }
       } else {
