@@ -204,7 +204,7 @@ getBranchByName  = () => {
       .catch(err => {});
 }
 
-formatDate = (d) => {
+formatDate = (date) => {
   var months = [
       'Jan',
       'Feb',
@@ -219,10 +219,12 @@ formatDate = (d) => {
       'Nov',
       'Dec',
   ];
-  var isoformat = d;
+  var isoformat = date;
+  
   var readable = new Date(isoformat);
   var m = readable.getMonth(); // returns 6
-  var d = readable.getDay(); // returns 15
+  var d = readable.getDate(); // returns 15
+  console.log(d);
   var y = readable.getFullYear();
   var h = readable.getHours();
   var mi = readable.getMinutes();
@@ -337,9 +339,9 @@ formatDate = (d) => {
                 dis.state.ticker.status == 1 ?
                 
                   dis.state.ticker.trans_type == 'DR' ? 
-                  <span><strong>Congrats</strong> You have sent {CURRENCY} {this.state.ticker.amount} to <strong>{JSON.parse(this.state.ticker.receiver_info).givenname }</strong> on {this.formatDate(this.state.ticker.created_at)}</span>
+                  <span><strong>Congrats</strong> You have received {CURRENCY} {Number(this.state.ticker.amount)+Number(this.state.ticker.fee)} from <strong>{JSON.parse(this.state.ticker.receiver_info).givenname }</strong> on {this.formatDate(this.state.ticker.created_at)}</span>
                   :
-                  <span><strong>Congrats</strong> You have received {CURRENCY} {this.state.ticker.amount} from <strong>{this.state.ticker.sender_name}</strong> on {this.formatDate(dis.state.ticker.created_at)}</span>
+                  <span><strong>Congrats</strong> You have sent {CURRENCY} {this.state.ticker.amount} to <strong>{this.state.ticker.sender_name}</strong> on {this.formatDate(dis.state.ticker.created_at)}</span>
                 :
                   <span><strong className="red">Oops!</strong> Your last transaction (<strong>{dis.state.ticker.master_code}</strong>) on {this.formatDate(dis.state.ticker.created_at)} was failed</span>
                 }
@@ -382,16 +384,8 @@ formatDate = (d) => {
                   <tbody>
                     {this.state.history && this.state.history.length > 0
                       ? this.state.history.map(function(b) {
-                          var isoformat = b.created_at;
-                          var readable = new Date(isoformat);
-                          var m = readable.getMonth(); // returns 6
-                          var d = readable.getDay(); // returns 15
-                          var y = readable.getFullYear();
-                          var h = readable.getHours();
-                          var mi = readable.getMinutes();
-                          var mlong = months[m];
-                          var fulldate =
-                            d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+                       
+                          var fulldate = dis.formatDate(b.created_at);
                           return  dis.state.filter ==  b.trans_type ||
                             dis.state.filter == ''  ?  (
                             <tr key={b._id}>
