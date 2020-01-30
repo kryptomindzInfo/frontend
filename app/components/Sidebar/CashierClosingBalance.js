@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 import axios from 'axios';
+import Table from 'components/Table';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Row from 'components/Row';
@@ -33,6 +34,7 @@ class CashierClosingBalance extends Component {
     super();
        this.state = {
       loading: true,
+      lastdate: null,
       otp: '',
       balance1: 0,
       balance2: 0,
@@ -64,6 +66,32 @@ class CashierClosingBalance extends Component {
 
     showOpeningPopup = (v) => {
     this.setState({ openingPopup: true, cashier_id: v._id});
+  };
+   showHistoryPop = () => {
+    console.log("w")
+    this.setState({ historyPop: true, historyLoading:true});
+    this.getHistory();
+  };
+
+  getHistory = () => {
+     axios
+      .post(`${API_URL}/getAll`, {
+        token,
+        page: "cashierledger",
+        type: "cashier",
+        where: {trans_type: "CB"}
+      })
+      .then(res => {
+        if (res.status == 200) {
+          console.log(res.data);
+          this.setState({ 
+            history: res.data.rows
+          }, () => {
+            this.setState({historyLoading: false});
+          });
+        }
+      })
+      .catch(err => {});
   };
 
     handleAmountChange = event => {
@@ -97,6 +125,7 @@ class CashierClosingBalance extends Component {
       editPopup: false,
       assignPop: false,
       openingPopup: false,
+      historyPop:false,
       name: '',
       bcode: '',
       working_from: '',
@@ -148,6 +177,36 @@ addOpeningBalance = event => {
       }
     }, 1000);
   };
+  formatDate = (date) => {
+    if(date == null){
+      return null;
+    }
+  var months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+  ];
+  var isoformat = date;
+  
+  var readable = new Date(isoformat);
+  var m = readable.getMonth(); // returns 6
+  var d = readable.getDate(); // returns 15
+  var y = readable.getFullYear();
+  var h = readable.getHours();
+  var mi = readable.getMinutes();
+  var mlong = months[m];
+  return d + ' ' + mlong + ' ' + y ;
+}
+
   getStats = () => {
     axios
       .post(`${API_URL}/getClosingBalance`, {
@@ -157,14 +216,16 @@ addOpeningBalance = event => {
         if (res.status == 200) {
           let b1 = res.data.balance1 == null ? 0 : res.data.balance1;
           let b2 = res.data.balance2 == null ? 0 : res.data.balance2;
+          let dd = this.formatDate(res.data.lastdate);
           this.setState({ 
             balance1: b1,
             balance2: b2,
+            lastdate: dd,
           }, () => {
             var dis  = this;
             setTimeout(function(){
               dis.getStats();
-            }, 2700);
+            }, 3000);
           });
         }
       })
@@ -262,22 +323,23 @@ addOpeningBalance = event => {
         target.parentElement.querySelector('label').classList.remove('focused');
       }
     }
+    const dis = this;
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
         <h3>
           Closing Balance
-          <A className="absoluteMiddleRight">view</A>
+          <span className="anchor absoluteMiddleRight" onClick={this.showHistoryPop}>view</span>
         </h3>
         
     
         <Row>
         <Col><h5>
-          <FormattedMessage {...messages.available} />
+          {this.state.lastdate ? this.state.lastdate : <span>&nbsp;</span>}
         </h5><div className="cardValue">
           {CURRENCY} {this.state.balance1.toFixed(2)}
         </div></Col>
         <Col><h5>
-          <FormattedMessage {...messages.available} />
+          Discrepancy
         </h5><div className="cardValue">
           {CURRENCY} {this.state.balance2.toFixed(2)}
         </div></Col>
@@ -468,6 +530,43 @@ addOpeningBalance = event => {
             }
           </Popup>
           : null }
+
+          { this.state.historyPop ?
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+              <div>
+            <h1 >Closing Balance History</h1>
+            {
+              this.state.historyLoading ?
+              <Button filledBtn disabled><Loader /></Button>
+              :
+               <Table marginTop="34px" smallTd>
+                  <thead>
+              <tr><th>Amount</th><th>Added On</th></tr>
+              </thead>
+              <tbody>
+            {
+              this.state.history && this.state.history.length > 0
+                      ? 
+                      this.state.history.map(function(b) {
+                       
+                          var fulldate = dis.formatDate(b.created_at);
+                          return  <tr key={b._id}>
+                            <td>{b.amount.toFixed(2)}</td>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                            </tr>
+                        })
+                      : 
+                      null
+                    }
+           </tbody>
+                </Table>
+            }
+            </div>
+          </Popup>
+          : null 
+        }
       </Card>
     );
   }

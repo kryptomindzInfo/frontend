@@ -66,7 +66,7 @@ export default class CashierDashboard extends Component {
       openingBalance: 0,
       cashPaid: 0,
       feeGenerated: 0,  
-      perPage: 5,
+      perPage: 20,
       totalCount: 100,
       allhistory: [],
       activePage: 1,

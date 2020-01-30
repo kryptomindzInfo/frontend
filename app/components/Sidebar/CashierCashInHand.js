@@ -67,7 +67,7 @@ class CashierCashInHand extends Component {
             var dis  = this;
             setTimeout(function(){
               dis.getStats();
-            }, 2500);
+            }, 3000);
           });
         }
       })

@@ -183,6 +183,16 @@ body{
     font-size: 24px;
     padding: 6px;
   }
+  .anchor{
+    display: inline-block;
+    cursor: pointer;
+    float: none;
+    -webkit-text-decoration: none;
+    text-decoration: none;
+    color: #417505;
+    font-weight: bold;
+    font-size: 14px;
+  }
 `;
 
 export default GlobalStyle;

@@ -75,10 +75,7 @@ class BranchWallets extends Component {
       }
     })
     .catch(err => {
-      this.setState({
-        notification: err.response ? err.response.data.error : err.toString()
-      });
-      this.error();
+      console.log(err);
     });
   };
 
