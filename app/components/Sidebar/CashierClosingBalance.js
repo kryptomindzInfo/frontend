@@ -551,7 +551,7 @@ addOpeningBalance = event => {
                        
                           var fulldate = dis.formatDate(b.created_at);
                           return  <tr key={b._id}>
-                            <td>{b.amount.toFixed(2)}</td>
+                            <td>{CURRENCY} {b.amount.toFixed(2)}</td>
                               <td>
                                 <div className="labelGrey">{fulldate}</div>
                               </td>

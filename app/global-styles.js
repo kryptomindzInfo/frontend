@@ -193,6 +193,9 @@ body{
     font-weight: bold;
     font-size: 14px;
   }
+  .red{
+    color: ${props => props.theme.danger};
+  }
 `;
 
 export default GlobalStyle;
