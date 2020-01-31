@@ -575,7 +575,6 @@ addBranch = event => {
                     <tr>
                     <th>Cashier Name</th>
                     <th>Cash in Hand</th>
-                    <th>Wallet Balance ({CURRENCY})</th>
                     <th>Transaction limit ({CURRENCY})</th>
                     <th>Transaction Count</th>
                     </tr>
@@ -585,7 +584,7 @@ addBranch = event => {
                       this.state.branches && this.state.branches.length > 0
                         ? this.state.branches.map(function(b) {
 
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td className="tac">{b.credit_limit}</td>
+                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td>
 
                           <td className="tac bold green" >
                             0
