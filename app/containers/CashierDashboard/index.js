@@ -106,7 +106,7 @@ this.showHistory = this.showHistory.bind(this);
   };
   showHistoryPop = (v) => {
    console.log(v);
-   this.setState({ historyPop: true, historyLoading:true});
+   this.setState({ historyPop: true, historyLoading:true, popmaster: v.master_code});
    this.getTransHistory(v.master_code);
   };
 
