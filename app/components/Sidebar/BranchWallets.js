@@ -16,42 +16,7 @@ import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
 
 class BranchWallets extends Component {
-  constructor() {
-    super();
-    this.state = {
-        balance: 0,
-        token
-    }
-    
-  }
-  getStats = () => {
-    axios
-      .post(`${API_URL}/getCashierDashStats`, {
-        token: token
-      })
-      .then(res => {
-        if (res.status == 200) {
-          let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
-          let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
-          this.setState({ 
-            loading: false, 
-            openingBalance: res.data.openingBalance, 
-            cashReceived: received, 
-            cashPaid: paid,
-            feeGenerated: res.data.feeGenerated  
-          }, () => {
-            var dis  = this;
-            setTimeout(function(){
-              dis.getStats();
-            }, 3000);
-          });
-        }
-      })
-      .catch(err => {});
-  };
-  componentDidMount() {
- this.getStats();
-  }
+
   render() {
 
     return (
