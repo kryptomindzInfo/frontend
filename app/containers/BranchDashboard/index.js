@@ -35,6 +35,7 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import Popup from 'components/Popup';
 import SelectInput from 'components/SelectInput';
+import Pagination from 'react-js-pagination';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
@@ -53,6 +54,8 @@ const bid = localStorage.getItem('branchId');
 const logo = localStorage.getItem('bankLogo');
 const email = localStorage.getItem('branchEmail');
 const mobile = localStorage.getItem('branchMobile');
+const name = localStorage.getItem('branchName');
+
 export default class BranchDashboard extends Component {
   constructor() {
     super();
@@ -60,6 +63,19 @@ export default class BranchDashboard extends Component {
       token,
       otpEmail: email,
       otpMobile: mobile,
+      cashReceived: 0,
+      cashPaid: 0,
+      totalCashier:0,
+      perPage: 20,
+      totalCount: 100,
+      allhistory: [],
+      activePage: 1,
+      active: 'Active',
+      trans_from: '',
+      trans_to: '',
+      transcount_from: '',
+      history: [],
+      filter: '',
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -67,6 +83,8 @@ export default class BranchDashboard extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
+
+this.showHistory = this.showHistory.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -81,7 +99,10 @@ export default class BranchDashboard extends Component {
       [name]: value,
     });
   };
-
+  showHistoryPop = (v) => {
+   this.setState({ historyPop: true, historyLoading:true});
+   this.getTransHistory(v.master_code);
+  };
   showPopup = () => {
     this.setState({ popup: true });
   };
@@ -103,6 +124,7 @@ export default class BranchDashboard extends Component {
     this.setState({
       popup: false,
       editPopup: false,
+      historyPop: false,
       name: '',
       address1: '',
       state: '',
@@ -489,7 +511,90 @@ export default class BranchDashboard extends Component {
         this.error();
       });
   }
+getTransHistory =(master_code) =>{
+    axios
+      .post(`${API_URL}/getTransHistory`, {
+        token: token,
+        master_code: master_code
+      })
+      .then(res => {
+        if (res.status == 200) {
+          // var result = res.data.history1.concat(res.data.history2);
+          // result.sort(function(a, b) {
+          //     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()// implicit conversion in number
+          // });
+          // var l = result.length;
 
+          this.setState(
+            {
+              popresult: res.data.result,
+              historyLoading: false,
+              popmaster: master_code
+            }
+          );
+        }
+      })
+      .catch(err => {});
+  };
+  showHistory = () => {
+    this.setState({ history: [] }, () => {
+      var out = [];
+      var start = (this.state.activePage - 1) * this.state.perPage;
+      var end = this.state.perPage * this.state.activePage;
+      if (end > this.state.totalCount) {
+        end = this.state.totalCount;
+      }
+      for (var i = start; i < end; i++) {
+        out.push(this.state.allhistory[i]);
+      }
+      this.setState({ history: out }, ( ) => {
+        let dis = this;
+        setTimeout(function(){
+          dis.getHistory();
+        }, 5000);
+      });
+    });
+  };
+
+  getHistory = () => {
+    axios
+      .post(`${API_URL}/getBranchTransHistory`, {
+        token: token,
+        where: {branch_id : bid},
+        from: 'branch',
+        page: this.state.activePage,
+        offset: this.state.perPage,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          var notification = {};
+          var result = res.data.history1.concat(res.data.history2);
+          result.sort(function(a, b) {
+              return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()// implicit conversion in number
+          });
+          var l = result.length;
+
+
+          this.setState(
+            {
+              ticker: result[l-1],
+              result: result,
+              loading: false,
+              allhistory: result,
+              totalCount: result.length,
+            },
+            () => {
+              this.showHistory();
+            },
+          );
+        }
+      })
+      .catch(err => {});
+  };
+
+    filterData = e => {
+    this.setState({ filter: e });
+  };
   getBanks = () => {};
 
   getBranches = () => {
@@ -507,9 +612,71 @@ export default class BranchDashboard extends Component {
       })
       .catch(err => {});
   };
+  getStats = () => {
+    axios
+      .post(`${API_URL}/getBranchDashStats`, {
+        token: token
+      })
+      .then(res => {
+        if (res.status == 200) {
+          let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
+          let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
+          let total = res.data.totalCashier == null ? 0 : res.data.totalCashier;
+          this.setState({
+            loading: false,
+            totalCashier: total,
+            cashReceived: received,
+            cashPaid: paid
+          });
+        }
+      })
+      .catch(err => {});
+  };
+  getBranchByName  = () => {
+  axios
+      .post(`${API_URL}/getBranchByName`, {
+        name: name
+      })
+      .then(res => {
+        if (res.status == 200) {
+          this.setState({  branchDetails: res.data.banks}, () => {
+            this.getStats();
+            this.getHistory();
+          });
+        }
+      })
+      .catch(err => {});
+};
+formatDate = (date) => {
+  var months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+  ];
+  var isoformat = date;
+
+  var readable = new Date(isoformat);
+  var m = readable.getMonth(); // returns 6
+  var d = readable.getDate(); // returns 15
+  var y = readable.getFullYear();
+  var h = readable.getHours();
+  var mi = readable.getMinutes();
+  var mlong = months[m];
+  return d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+}
 
   componentDidMount() {
     this.getBranches();
+    this.getBranchByName();
   }
 
   render() {
@@ -550,110 +717,113 @@ export default class BranchDashboard extends Component {
           <Main>
             <Row>
               <Col>
-                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
+                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
                   <h4>Cash Received</h4>
 
-                  <div className="cardValue">{CURRENCY} 0</div>
+                  <div className="cardValue">{CURRENCY} {this.state.cashReceived.toFixed(2)}</div>
                 </Card>
               </Col>
               <Col>
-                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
+                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
                   <h4>Paid in Cash</h4>
 
-                  <div className="cardValue">{CURRENCY} 0</div>
+                  <div className="cardValue">{CURRENCY} {this.state.cashPaid.toFixed(2)}</div>
                 </Card>
               </Col>
               <Col>
-                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
+                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
                   <h4>Total Merchant</h4>
 
                   <div className="cardValue">0</div>
                 </Card>
               </Col>
               <Col>
-                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
+                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
                   <h4>Total Cashier</h4>
 
-                  <div className="cardValue">0</div>
+                  <div className="cardValue">{this.state.totalCashier}</div>
                 </Card>
               </Col>
             </Row>
             <Card bigPadding>
               <div className="cardHeader">
                 <div className="cardHeaderLeft">
-                  <i className="material-icons">supervised_user_circle</i>
+                  <i className="material-icons">playlist_add_check</i>
                 </div>
                 <div className="cardHeaderRight">
-                  <h3>Cashiers</h3>
-                  <h5>E-Wallet Activity</h5>
+                  <h3>Recent Activity</h3>
+                  <h5>E-wallet activity</h5>
                 </div>
-                <Button className="addBankButton" float="right">
-                  Today
-                </Button>
               </div>
               <div className="cardBody">
-                <Table marginTop="34px" smallTd>
-                  <thead>
-                    <tr>
-                      <th>Cashier</th>
-                      <th>No. of Transactions</th>
-                      <th>Total Amount of Transactions</th>
-                      <th>Cash in Hand</th>
-                    </tr>
-                  </thead>
+                <div className="clr">
+                  <div className="menuTabs" onClick={() => this.filterData('')}>
+                    All
+                  </div>
+                  <div
+                    className="menuTabs"
+                    onClick={() => this.filterData('DR')}
+                  >
+                    Payment Sent
+                  </div>
+                  <div
+                    className="menuTabs"
+                    onClick={() => this.filterData('CR')}
+                  >
+                    Payment Received
+                  </div>
+                </div>
+                <Table marginTop="34px" marginBottom="34px" smallTd textAlign="left">
                   <tbody>
-                    {this.state.branches && this.state.branches.length > 0
-                      ? this.state.branches.map(function(b) {
-                          return (
+                    {this.state.history && this.state.history.length > 0
+                      ? this.state.history.map(function(b) {
+                        // var sinfo = b.trans_type == "CR" ? b.sender_info ? null;
+                        // var rinfo = b.trans_type == "CR" ? b.receiver_info ? null;
+                        var sinfo = {};
+                        var rinfo = {};
+                          var fulldate = dis.formatDate(b.created_at);
+                          return  dis.state.filter ==  b.trans_type ||
+                            dis.state.filter == ''  ?  (
                             <tr key={b._id}>
-                              <td>{b.name}</td>
-                              <td className="tac">0</td>
-                              <td className="tac">0</td>
-
-                              <td className="tac bold">
-                                0
-                                <span className="absoluteMiddleRight primary popMenuTrigger">
-                                  <i className="material-icons ">more_vert</i>
-                                  <div className="popMenu">
-                                    <A
-                                      href={
-                                        '/branch/' +
-                                        dis.props.match.params.bank +
-                                        '/cashier/' +
-                                        b._id
-                                      }
-                                    >
-                                      Cashier Info
-                                    </A>
-                                    <span onClick={() => dis.showEditPopup(b)}>
-                                      Edit
-                                    </span>
-                                    {b.status == -1 ? (
-                                      <span
-                                        onClick={() =>
-                                          dis.blockBranch(b._id, 1)
-                                        }
-                                      >
-                                        Unblock
-                                      </span>
-                                    ) : (
-                                      <span
-                                        onClick={() =>
-                                          dis.blockBranch(b._id, -1)
-                                        }
-                                      >
-                                        Block
-                                      </span>
-                                    )}
-                                  </div>
-                                </span>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div className="labelBlue" onClick={() => dis.showHistoryPop(b)}>
+                                  {
+                                    b.sender_info ?
+                                    <span>Cash sent from {JSON.parse(b.sender_info).givenname+" "+JSON.parse(b.sender_info).familyname} to {JSON.parse(b.receiver_info).givenname+" "+JSON.parse(b.receiver_info).familyname}</span>
+                                    :
+                                    <span>Cash claimed from {b.sender_name} to {b.receiver_name}</span>
+                                  }
+                                </div>
+                                <div className="labelSmallGrey">{
+                                  b.status == 1 ?
+                                  <span>Completed</span>
+                                  :
+                                  <span className="red">Failed</span>
+                                }</div>
+                              </td>
+                              <td>
+                                <div className="labelGrey">
+                                 {b.transaction_code == 'DR' ? '-XOF' : 'XOF'}{b.amount}
+                                </div>
                               </td>
                             </tr>
-                          );
+                            ) : null;
                         })
                       : null}
                   </tbody>
                 </Table>
+                <div>
+                  <Pagination
+                    activePage={this.state.activePage}
+                    itemsCountPerPage={this.state.perPage}
+                    totalItemsCount={this.state.totalCount}
+                    pageRangeDisplayed={5}
+                    onChange={this.handlePageChange}
+                  />
+                </div>
               </div>
             </Card>
           </Main>
@@ -1296,6 +1466,58 @@ export default class BranchDashboard extends Component {
             )}
           </Popup>
         ) : null}
+
+         { this.state.historyPop ?
+        <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
+            <div>
+          <h1 >Transaction Details ({this.state.popmaster})</h1>
+          {
+            this.state.historyLoading ?
+            <Button filledBtn disabled><Loader /></Button>
+            :
+            <Table marginTop="34px" smallTd textAlign="left">
+                  <tbody>
+                    {this.state.popresult && this.state.popresult.length > 0
+                      ? this.state.popresult.map(function(b) {
+                          var isoformat = new Date(b.tx_data.tx_timestamp.seconds*1000).toISOString();
+                          var fulldate = dis.formatDate(isoformat);
+
+                          return dis.state.filter == b.tx_data.tx_type ||
+                            dis.state.filter == '' ? (
+                            <tr key={b.tx_data.tx_id}>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div className="labelBlue">
+                                  {b.tx_data.tx_details}
+                                </div>{' '}
+                                <div className="labelSmallGrey">Completed</div>
+                              </td>
+                              <td className="right">
+                                <div className="labelGrey">
+                                  {
+                                    b.tx_data.tx_type == 'DR'
+                                    ?
+                                    <span>{CURRENCY} -{b.amount}</span>
+                                    :
+                                    <span>{CURRENCY} {b.amount}</span>
+                                  }
+                                  
+                                </div>
+                              </td>
+                              <td>{b.tx_data.child_id}</td>
+                            </tr>
+                          ) : null;
+                        })
+                      : null}
+                  </tbody>
+                </Table>
+          }
+          </div>
+        </Popup>
+        : null
+      }
       </Wrapper>
     );
   }

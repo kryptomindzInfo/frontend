@@ -44,7 +44,7 @@ h2{
     border: 2px solid #fff;
     float:left;
     color: #fff;
-    padding: 8px;
+    padding: 5px;
     border-radius:8px;
     font-size: 18px;
 }

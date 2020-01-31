@@ -484,8 +484,7 @@ export default class BankCreateFee extends Component {
                         >
                           <option value="">Transaction Type*</option>
                           <option>Wallet to Wallet</option>
-                          <option>Sending Non Wallet to Non Wallet</option>
-                          <option>Receiving Non Wallet from Non Wallet</option>
+                          <option>Non Wallet to Non Wallet</option>
                           <option>Non Wallet to Wallet</option>
                           <option>Wallet to Non Wallet</option>
                           <option>Wallet to merchant</option>

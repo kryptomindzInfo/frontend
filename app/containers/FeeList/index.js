@@ -442,10 +442,25 @@ export default class FeeList extends Component {
                   {
                       this.state.rules && this.state.rules.length > 0 
                         ? this.state.rules.map(function(b) {
-                          var r = JSON.parse(b.ranges);
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.trans_type}</td>
-                          {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
-                          <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
+                          var r1 = JSON.parse(b.editedRanges);
+                          var r = r1.ranges;
+                          return <tr key={b._id} >
+                          <td>
+                              {
+                                b.edit_status == 0 ? 
+                                <span>{r1.name}</span>
+                                :
+                                <span>{b.name}</span>
+                              }
+                              </td>
+                              <td className="tac">
+                              {
+                                b.edit_status == 0 ? 
+                                <span>{r1.trans_type}</span>
+                                :
+                                <span>{b.trans_type}</span>
+                              }
+                              </td>
                           <td>
                             {
                             r.map(function(v, i){

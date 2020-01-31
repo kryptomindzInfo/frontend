@@ -107,29 +107,28 @@ this.showHistory = this.showHistory.bind(this);
   showHistoryPop = (v) => {
    console.log(v);
    this.setState({ historyPop: true, historyLoading:true});
-   this.getTransHistory(v.transaction_code);
+   this.getTransHistory(v.master_code);
   };
 
-  getTransHistory =(transaction_code) =>{
+  getTransHistory =(master_code) =>{
     axios
       .post(`${API_URL}/getTransHistory`, {
         token: token,
-        transCode: transaction_code
+        master_code: master_code
       })
       .then(res => {
         if (res.status == 200) {
-          var notification = {};
-          var result = res.data.history1.concat(res.data.history2);
-          result.sort(function(a, b) {
-              return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()// implicit conversion in number
-          });
-          var l = result.length;
+          // var result = res.data.history1.concat(res.data.history2);
+          // result.sort(function(a, b) {
+          //     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()// implicit conversion in number
+          // });
+          // var l = result.length;
 
           this.setState(
             {
-              popresult: result,
+              popresult: res.data.result,
               historyLoading: false,
-              popmaster: res.data.master_code
+              popmaster: master_code
             }
           );
         }
@@ -170,7 +169,7 @@ this.showHistory = this.showHistory.bind(this);
           var notification = {};
           var result = res.data.history1.concat(res.data.history2);
           result.sort(function(a, b) {
-              return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()// implicit conversion in number
+              return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()// implicit conversion in number
           });
           var l = result.length;
 
@@ -241,7 +240,7 @@ getBranchByName  = () => {
         }
       })
       .catch(err => {});
-}
+};
 
 formatDate = (date) => {
   var months = [
@@ -481,50 +480,44 @@ formatDate = (date) => {
             this.state.historyLoading ?
             <Button filledBtn disabled><Loader /></Button>
             :
-            <Table marginTop="34px" marginBottom="34px" smallTd textAlign="left">
-              <tbody>
-            {this.state.popresult && this.state.popresult.length > 0
-              ? this.state.popresult.map(function(b) {
+            <Table marginTop="34px" smallTd textAlign="left">
+                  <tbody>
+                    {this.state.popresult && this.state.popresult.length > 0
+                      ? this.state.popresult.map(function(b) {
+                          var isoformat = new Date(b.tx_data.tx_timestamp.seconds*1000).toISOString();
+                          var fulldate = dis.formatDate(isoformat);
 
-                // var sinfo = b.trans_type == "CR" ? b.sender_info ? null;
-                // var rinfo = b.trans_type == "CR" ? b.receiver_info ? null;
-                  var fulldate = dis.formatDate(b.created_at);
-                  return <tr key={b._id}>
-                      <td>
-                        <div className="labelGrey">{fulldate}</div>
-                      </td>
-                      <td>
-                        <div className="labelBlue" onClick={() => dis.showHistoryPop(b)}>
-                          {
-                            b.trans_type == "DR" ?
-                            <span>Cash sent from {JSON.parse(b.sender_info).givenname+" "+JSON.parse(b.sender_info).familyname} to {JSON.parse(b.receiver_info).givenname+" "+JSON.parse(b.receiver_info).familyname}</span>
-                            :
-                            <span>Cash claimed from {b.sender_name} to {b.receiver_name}</span>
-                          }
-                        </div>
-                        <div className="labelSmallGrey">{
-                          b.status == 1 ?
-                          <span>Completed</span>
-                          :
-                          <span className="red">Failed</span>
-                        }</div>
-                      </td>
-                      <td>
-                        <div className="labelGrey">
-                         {b.transaction_code == 'DR' ? '-XOF' : 'XOF'}{b.amount}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="labelGrey">
-                         {b.child_code}
-                        </div>
-                      </td>
-                    </tr>
-
-                })
-              : null}
-         </tbody>
-              </Table>
+                          return dis.state.filter == b.tx_data.tx_type ||
+                            dis.state.filter == '' ? (
+                            <tr key={b.tx_data.tx_id}>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div className="labelBlue">
+                                  {b.tx_data.tx_details}
+                                </div>{' '}
+                                <div className="labelSmallGrey">Completed</div>
+                              </td>
+                              <td className="right">
+                                <div className="labelGrey">
+                                  {
+                                    b.tx_data.tx_type == 'DR'
+                                    ?
+                                    <span>{CURRENCY} -{b.amount}</span>
+                                    :
+                                    <span>{CURRENCY} {b.amount}</span>
+                                  }
+                                  
+                                </div>
+                              </td>
+                              <td>{b.tx_data.child_id}</td>
+                            </tr>
+                          ) : null;
+                        })
+                      : null}
+                  </tbody>
+                </Table>
           }
           </div>
         </Popup>

@@ -186,7 +186,6 @@ body{
   .anchor{
     display: inline-block;
     cursor: pointer;
-    float: none;
     -webkit-text-decoration: none;
     text-decoration: none;
     color: #417505;
