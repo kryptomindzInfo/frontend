@@ -354,8 +354,7 @@ class CashierTransactionLimit extends Component {
             .then(res => {
               if (res.status == 200) {
                 if (res.data.error) {
-                  const error = new Error(res.data.error);
-                  throw error;
+                  throw res.data.error;
                 } else {
                   let o = res.data.row;
                   let sender = JSON.parse(o.sender_info);
@@ -402,15 +401,14 @@ class CashierTransactionLimit extends Component {
                   });
                 }
               }else{
-                const error = new Error(res.data.error);
-                throw error;
+                const error = res.data.error;
               }
               this.setState({
                 getClaimMoneyLoading: false
               });
             }) .catch(err => {
               this.setState({
-                notification: err.response ? err.response.data.error : err.toString(),
+                notification: err.response ? err.response.data.error.toString() : err.toString(),
                 verifySendMoneyOTPLoading: false,
               });
               this.error();
@@ -566,10 +564,12 @@ class CashierTransactionLimit extends Component {
       })
       .catch(err => {
         this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
+          notification: err.response ? err.response.data.error.toString() : err.toString(),
           claimMoneyLoading: false,
+        }, () => {
+          this.error();
         });
-        this.error();
+        
       });
   }
 
@@ -605,8 +605,10 @@ class CashierTransactionLimit extends Component {
         this.setState({
           notification: err.response ? err.response.data.error.toString() : err.toString(),
           verifySendMoneyOTPLoading: false,
+        }, () => {
+          this.error();
         });
-        this.error();
+        
       });
   };
 
