@@ -150,7 +150,7 @@ this.showHistory = this.showHistory.bind(this);
         let dis = this;
         setTimeout(function(){
           dis.getHistory();
-        }, 5000);
+        }, 3000);
       });
     });
   };
@@ -170,14 +170,17 @@ this.showHistory = this.showHistory.bind(this);
           var result = res.data.history1.concat(res.data.history2);
           result.sort(function(a, b) {
               return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()// implicit conversion in number
+          }, () => {
+
           });
           var l = result.length;
+          console.log(result.length);
+          console.log(result[l-1]);
 
 
           this.setState(
             {
-              ticker: result[l-1],
-              result: result,
+              ticker: result[0],
               loading: false,
               allhistory: result,
               totalCount: result.length,
@@ -208,6 +211,11 @@ this.showHistory = this.showHistory.bind(this);
             cashReceived: received,
             cashPaid: paid,
             feeGenerated: res.data.feeGenerated
+          }, () => {
+            var dis  = this;
+            setTimeout(function(){
+              dis.getStats();
+            }, 3000);
           });
         }
       })
