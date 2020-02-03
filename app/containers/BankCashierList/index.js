@@ -489,9 +489,9 @@ addBranch = event => {
     });
   };
 
-  getBranches = (branch_id) => {
+  getBranches = () => {
     axios
-      .post(`${API_URL  }/getAll`, { page: 'cashier', type: 'bank', token: token, where: {branch_id: branch_id}})
+      .post(`${API_URL  }/getAll`, { page: 'cashier', type: 'bank', token: token, where: {branch_id: this.props.match.params.branch}})
       .then(res => {
         if(res.status == 200){
           console.log(res.data);
@@ -507,7 +507,7 @@ addBranch = event => {
   componentDidMount() {
     this.setState({ branch_id: this.props.match.params.branch },() =>{
       this.getBanks();
-      this.getBranches(this.props.match.params.branch);
+      this.getBranches();
     })
    
      
