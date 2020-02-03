@@ -487,14 +487,11 @@ class CashierTransactionLimit extends Component {
           const error = new Error(res.data.error);
           throw error;
         }
-        this.setState({
-          claimMoneyLoading: false,
-        });
+
       })
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
-          claimMoneyLoading: false,
         });
         this.error();
       });
@@ -528,7 +525,6 @@ class CashierTransactionLimit extends Component {
       .catch(err => {
         this.setState({
           notification: err.response ? err.response.data.error : err.toString(),
-          claimMoneyLoading: false,
         });
         this.error();
       });

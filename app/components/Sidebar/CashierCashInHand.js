@@ -60,9 +60,10 @@ class CashierCashInHand extends Component {
         if (res.status == 200) {
           let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
+          let ob = res.data.openingBalance == null ? 0 : res.data.openingBalance;
           this.setState({ 
             loading: false, 
-            balance: received - paid
+            balance: ob + (received - paid)
           }, () => {
             var dis  = this;
             setTimeout(function(){

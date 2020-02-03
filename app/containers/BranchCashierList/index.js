@@ -555,7 +555,7 @@ export default class BranchCashierList extends Component {
 
   getBranches = () => {
     axios
-      .post(`${API_URL  }/getAll`, { page: 'cashier', type: 'branch', token: token })
+      .post(`${API_URL  }/getAll`, { page: 'cashier', type: 'branch', token: token, where: {branch_id: bid} })
       .then(res => {
         if(res.status == 200){
           console.log(res.data);
@@ -645,10 +645,10 @@ export default class BranchCashierList extends Component {
                       this.state.branches && this.state.branches.length > 0
                         ? this.state.branches.map(function(b) {
 
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td>
+                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{CURRENCY} {(b.opening_balance+(b.cash_received-b.cash_paid)).toFixed(2)}</td><td className="tac">{CURRENCY} {(Number(b.max_trans_amt)-(b.cash_paid+b.cash_received)).toFixed(2)}</td>
 
                           <td className="tac bold green" >
-                            0
+                            {b.total_trans}
                             <span className="absoluteMiddleRight primary popMenuTrigger">
                             <i className="material-icons ">more_vert</i>
                             <div className="popMenu">

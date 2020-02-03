@@ -80,8 +80,9 @@ class BranchWallets extends Component {
   };
 
  componentDidMount() {
- this.getTransLimit();
- this.getStats();
+ // this.getTransLimit();
+ // this.getStats();
+ console.log(this.props);
   }
   render() {
 
@@ -96,7 +97,7 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} {this.state.balance}
+          {CURRENCY} {this.props.limit.toFixed(2)}
         </div>
    
       </Card>
@@ -111,7 +112,7 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY}  {this.state.cashReceived - this.state.cashPaid}
+          {CURRENCY}  {this.props.inHand.toFixed(2)}
         </div>
    
       </Card>
@@ -125,7 +126,7 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} {this.state.cashPaid}
+          {CURRENCY} {this.props.paid.toFixed(2)}
         </div>
         
       </Card>
@@ -139,7 +140,7 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY}  {this.state.cashReceived}
+          {CURRENCY}  {this.props.received.toFixed(2)}
         </div>
        
       </Card>

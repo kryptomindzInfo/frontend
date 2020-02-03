@@ -205,6 +205,7 @@ this.showHistory = this.showHistory.bind(this);
         if (res.status == 200) {
           let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
+          // let ob = res.data.openingBalance == null ? 0 : res.data.openingBalance;
           this.setState({
             loading: false,
             openingBalance: res.data.openingBalance,

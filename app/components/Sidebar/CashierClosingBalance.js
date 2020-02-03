@@ -346,19 +346,12 @@ addOpeningBalance = event => {
           {CURRENCY} {this.state.balance2.toFixed(2)}
         </div></Col>
         </Row>
-        {
-          this.state.balance1 > 0 ?
-        <button className="sendMoneyButton" disabled>
-          <i className="material-icons">send</i>
-          Enter closing balance
-        </button>
         
-        :
         <button className="sendMoneyButton" onClick={this.showOpeningPopup}>
           <i className="material-icons">send</i>
           Enter closing balance
         </button>
-      }
+      
         { this.state.openingPopup ?
           <Popup close={this.closePopup.bind(this)} accentedH1>
             {
