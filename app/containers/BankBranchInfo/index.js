@@ -64,7 +64,7 @@ padding: 15px;
 
 const token = localStorage.getItem('bankLogged');
 const bid = localStorage.getItem('bankId');
-
+const bname = localStorage.getItem('bankName');
 export default class BankBranchInfo extends Component {
   constructor() {
     super();
@@ -83,6 +83,7 @@ export default class BankBranchInfo extends Component {
       ccode: '',
       mobile: '',
       email: '',
+      bname: bname,
       logo: null,
       contract: null,
       loading: true,
@@ -126,7 +127,19 @@ export default class BankBranchInfo extends Component {
       [name]: value,
     });
   };
+  getBanks = () => {
+    axios
+    .post(`${API_URL  }/getOne`, { page: 'branch', type: 'bank', token: token, page_id : this.state.branch_id})
+    .then(res => {
+      if(res.status == 200){
+        console.log(res.data);
+        this.setState({ otpEmail: res.data.row.email, otpMobile: res.data.row.mobile, bankName: res.data.row.name, dbcode: res.data.row.bcode });
+      }
+    })
+    .catch(err => {
 
+    });
+  };
 
   editBank = event => {
 
@@ -652,6 +665,7 @@ export default class BankBranchInfo extends Component {
     this.setState({ bank: this.state.bank_id });
     this.setState({ branch_id: this.props.match.params.branch }, () => {
       if (token !== undefined && token !== null) {
+        this.getBanks();
         this.getBranches();
 
       } else {
@@ -697,7 +711,7 @@ export default class BankBranchInfo extends Component {
           <BankSidebarThree active="info" branchId={this.props.match.params.branch}  blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.state.name}/>
           <Main>
 
-            <BranchWallets />
+            <BranchWallets branchId={this.props.match.params.branch} bCode={this.state.dbcode} bankName={this.state.bname} />
 
           <Card bigPadding bordered>
 

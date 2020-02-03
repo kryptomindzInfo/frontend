@@ -52,16 +52,19 @@ toast.configure({
 
 const token = localStorage.getItem('bankLogged');
 const bid = localStorage.getItem('bankId');
+const bname = localStorage.getItem('bankName');
 export default class BankCashierList extends Component {
   constructor() {
     super();
     this.state = {
       token,
+      bname: bname,
       loading: true,
       otp: '',
       popup: false,
       showOtp: false,
-      
+      working_from: "00:00",
+      working_to: "00:00",
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -478,7 +481,7 @@ addBranch = event => {
     .then(res => {
       if(res.status == 200){
         console.log(res.data);
-        this.setState({ otpEmail: res.data.row.email, otpMobile: res.data.row.mobile, bankName: res.data.row.name });
+        this.setState({ otpEmail: res.data.row.email, otpMobile: res.data.row.mobile, bankName: res.data.row.name, dbcode: res.data.row.bcode });
       }
     })
     .catch(err => {
@@ -486,9 +489,9 @@ addBranch = event => {
     });
   };
 
-  getBranches = () => {
+  getBranches = (branch_id) => {
     axios
-      .post(`${API_URL  }/getAll`, { page: 'cashier', type: 'bank', token: token})
+      .post(`${API_URL  }/getAll`, { page: 'cashier', type: 'bank', token: token, where: {branch_id: branch_id}})
       .then(res => {
         if(res.status == 200){
           console.log(res.data);
@@ -502,10 +505,9 @@ addBranch = event => {
 
 
   componentDidMount() {
-    console.log(this.props.match.params.branch);
     this.setState({ branch_id: this.props.match.params.branch },() =>{
       this.getBanks();
-      this.getBranches();
+      this.getBranches(this.props.match.params.branch);
     })
    
      
@@ -545,7 +547,7 @@ addBranch = event => {
         <Container verticalMargin>
         <BankSidebarThree active="cashier" branchId={this.props.match.params.branch} bankName={this.state.name}/>
           <Main>
-          <BranchWallets />
+          <BranchWallets branchId={this.props.match.params.branch} bCode={this.state.dbcode} bankName={this.state.bname} />
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
@@ -679,15 +681,17 @@ addBranch = event => {
               <label>Working Hours</label>
               <Row>
               
-                <Col  cW="30%" mR="2%">
+                <Col  cW="49%" mR="2%">
 
                 <FormGroup>
                 <label>From*</label>
                   <TextInput
-                    type="text"
+                    type="time"
                     name="working_from"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
+                     min="00:00" max="23:00"
+                     autoFocus
                     value={this.state.working_from}
                     onChange={this.handleInputChange}
                     required
@@ -695,12 +699,13 @@ addBranch = event => {
                   </FormGroup>
 
                 </Col>
-                <Col cW="68%">
+                <Col cW="49%">
                 <FormGroup>
                   <label>To*</label>
                   <TextInput
-                    type="text"
-                    title="10 Digit numeric value"
+                    type="time"
+                    autoFocus
+                     min="00:00" max="23:00"
                     name="working_to"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
@@ -847,13 +852,14 @@ addBranch = event => {
               <label>Working Hours</label>
               <Row>
               
-                <Col  cW="30%" mR="2%">
+                <Col  cW="49%" mR="2%">
 
                 <FormGroup>
                 <label>From*</label>
                   <TextInput
-                    type="text"
+                     type="time"
                     autoFocus
+                     min="00:00" max="23:00"
                     name="working_from"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
@@ -864,13 +870,13 @@ addBranch = event => {
                   </FormGroup>
 
                 </Col>
-                <Col cW="68%">
+                <Col cW="49%">
                 <FormGroup>
                   <label>To*</label>
                   <TextInput
-                    type="text"
+                     type="time"
                     autoFocus
-                    title="10 Digit numeric value"
+                     min="00:00" max="23:00"
                     name="working_to"
                     onFocus={inputFocus}
                     onBlur={inputBlur}

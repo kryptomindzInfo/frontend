@@ -28,6 +28,7 @@ toast.configure({
 const token = localStorage.getItem('cashierLogged');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
+const cid = localStorage.getItem('cashierId');
 
 class CashierClosingBalance extends Component {
   constructor() {
@@ -39,6 +40,7 @@ class CashierClosingBalance extends Component {
       balance1: 0,
       balance2: 0,
       total:0,
+      cid: cid,
       popup: false,
       showOtp: false,
       assignPop:false,
@@ -79,7 +81,7 @@ class CashierClosingBalance extends Component {
         token,
         page: "cashierledger",
         type: "cashier",
-        where: {trans_type: "CB"}
+        where: {trans_type: "CB", cashier_id: this.state.cid }
       })
       .then(res => {
         if (res.status == 200) {

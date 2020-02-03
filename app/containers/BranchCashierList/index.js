@@ -656,7 +656,7 @@ export default class BranchCashierList extends Component {
                               <span onClick={() => dis.showEditPopup(b)}>Edit</span>
                               <span onClick={() => dis.showAssignPopup(b)}>Assign User</span>
                               {
-                                b.opening_balance ? 
+                                b.opening_balance > 0 ? 
                                 null
                                 :
                                 <span onClick={() => dis.showOpeningPopup(b)}>Enter Opening Balance</span>

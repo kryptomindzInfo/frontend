@@ -538,7 +538,6 @@ export default class BankBranchList extends Component {
                     <tr>
                     <th>Branch Name</th>
                     <th>Total Cashier</th>
-                    <th>Wallet Balance ({CURRENCY})</th>
                     <th>Credit limit ({CURRENCY})</th>
                     <th className="tal">No. of Transaction
                       <Row className="small">
@@ -556,7 +555,7 @@ export default class BankBranchList extends Component {
                       this.state.branches && this.state.branches.length > 0
                         ? this.state.branches.map(function(b) {
 
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td><td className="tac">{b.credit_limit}</td>
+                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{b.total_cashiers}</td><td className="tac">{b.credit_limit}</td>
 
                           <td className="tac bold" >
                             <Row className="green">

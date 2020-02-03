@@ -16,6 +16,83 @@ import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
 
 class BranchWallets extends Component {
+  constructor() {
+    super();
+        this.state = {
+        balance: 0,
+        withoutID: false,
+        requireOTP: false,
+        livefee : 0,
+        showSendMoneyOTP: false
+    }
+
+  }
+
+getBalance = () => {
+  // console.log(this.props.match.params.branch);
+  //   axios
+  //   .post(`${API_URL  }/getOne`, { page: 'branch', type: 'bank', token: token, page_id : this.props.match.params.branch})
+  //   .then(res => {
+  //     if(res.status == 200){
+  //       console.log(res.data);
+        
+  //     }
+  //   })
+  //   .catch(err => {
+
+  //   });
+console.log(this.props);
+      axios
+      .get(
+        `${API_URL}/getWalletBalance?wallet_id=${this.props.bCode}_operational@${this.props.bankName}`,
+      )
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              balance: res.data.balance,
+            }, () => {
+              var dis =this;
+              setTimeout(function(){
+                dis.getBalance();
+              }, 3000);
+            });
+
+          }
+        }
+      })
+      .catch(err => {});
+    // axios
+    //   .get(
+    //     `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${
+    //       this.state.token
+    //     }&type=branch&page=operational`,
+    //   )
+    //   .then(res => {
+    //     if (res.status == 200) {
+    //       if (res.data.error) {
+    //         throw res.data.error;
+    //       } else {
+    //         this.setState({
+    //           balance: res.data.balance,
+    //         }, () => {
+    //           var dis =this;
+    //           setTimeout(function(){
+    //             dis.getBalance();
+    //           }, 3000);
+    //         });
+
+    //       }
+    //     }
+    //   })
+    //   .catch(err => {});
+  };
+
+  componentDidMount() {
+        this.getBalance();
+  };
 
   render() {
 
@@ -30,11 +107,17 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} 0
+          {CURRENCY} {this.state.balance.toFixed(2)}
         </div>
-        <A href={'/branch/'+this.props.bankName+'/operationalHistory/' } float="right">
+        {
+          this.props.historyLink ?
+          <A href={this.props.historyLink} float="right">
           <span className="history">History</span>
         </A>
+          :
+          null
+        }
+        
       </Card>
       </Col>
       <Col>
@@ -73,9 +156,7 @@ class BranchWallets extends Component {
         </div></Col>
         </Row>
 
-        <A href={'/operationalHistory/' + this.props.historyLink} float="right">
-          &nbsp;
-        </A>
+        <A href={'/operationalHistory/' + this.props.historyLink} float="right">&nbsp;</A>
       </Card>
       </Col>
       </Row>

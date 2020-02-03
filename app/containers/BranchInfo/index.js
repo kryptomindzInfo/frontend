@@ -564,7 +564,7 @@ export default class BranchInfo extends Component {
       .post(`${API_URL  }/getBranchInfo`, { token:token})
       .then(res => {
         if(res.status == 200){
-          this.setState({ loading: false, bankUsers: res.data.bankUsers, banks: res.data.branches, name: res.data.branches.name, bcode: res.data.branches.bcode, credit_limit: res.data.branches.credit_limit, username: res.data.branches.username, address1: res.data.branches.address1, state: res.data.branches.state, zip: res.data.branches.zip, country: res.data.branches.country, ccode: res.data.branches.ccode, mobile: res.data.branches.mobile, email: res.data.branches.email, branch_id: res.data.branches._id, status: res.data.branches.status});
+          this.setState({ loading: false, bankUsers: res.data.bankUsers, banks: res.data.branches, name: res.data.branches.name, bcode: res.data.branches.bcode, credit_limit: res.data.branches.credit_limit, username: res.data.branches.username, address1: res.data.branches.address1, state: res.data.branches.state, zip: res.data.branches.zip, country: res.data.branches.country, ccode: res.data.branches.ccode, mobile: res.data.branches.mobile, email: res.data.branches.email, branch_id: res.data.branches._id, status: res.data.branches.status, dbcode: res.data.branches.bcode});
         }
       })
       .catch(err => {
@@ -699,8 +699,7 @@ export default class BranchInfo extends Component {
           <BranchSidebarTwo active="info" blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.props.match.params.bank}/>
           <Main>
 
-            <BranchWallets   bankName={this.props.match.params.bank}
-          bankLogo={STATIC_URL + logo} />
+            <BranchWallets branchId={this.state.bank} bCode={this.state.dbcode} bankName={this.props.match.params.bank} />
 
           <Card bigPadding bordered>
 
