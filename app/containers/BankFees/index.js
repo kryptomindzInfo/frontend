@@ -114,8 +114,8 @@ export default class BankFees extends Component {
     });
   };
 
-  goBankEdit = (b) => {
-    this.props.history.push('/bank/edit-fee/'+b);
+  goBankEdit = (b, i) => {
+    this.props.history.push('/bank/edit-fee/'+b+ "/" + i);
   };
 
   showMiniPopUp = (b, r) => {
@@ -524,7 +524,7 @@ export default class BankFees extends Component {
                   </thead>
                   <tbody>
                     {this.state.rules && this.state.rules.length > 0
-                      ? this.state.rules.map(function(b) {
+                      ? this.state.rules.map((b, i) => {
                           var r1 = JSON.parse(b.editedRanges);
                           var r = r1.ranges;
                           return (
@@ -547,7 +547,7 @@ export default class BankFees extends Component {
                               </td>
                              
                               <td>
-                                {r.map(function(v) {
+                                {r.map((v) => {
                                   return (
                                     <div>
                                       Count:{' '}
@@ -573,7 +573,8 @@ export default class BankFees extends Component {
                                   </span>
                                 ) : b.edit_status != 0 ? (
                                   b.edit_status == 1 ? (
-                                    <a className="text-light">approved</a>
+                                    // <a className="text-light">approved</a>
+                                    <button onClick={() => dis.goBankEdit(this.state.bankRules[i]._id, b._id)}>edit</button>
                                   ) : (
                                     <a className="text-accent">declined</a>
                                   )
@@ -642,7 +643,7 @@ export default class BankFees extends Component {
                     </thead>
                     <tbody>
                       {this.state.bankRules && this.state.bankRules.length > 0
-                        ? this.state.bankRules.map(function(b) {
+                        ? this.state.bankRules.map((b, i) => {
                             var r = JSON.parse(b.editedRanges);
                             
                             return (
@@ -653,7 +654,7 @@ export default class BankFees extends Component {
                                 {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
                           <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
                                 <td>
-                                  {r.map(function(v) {
+                                  {r.map((v)  => {
                                     return (
                                       <div>
                                         Count:{' '}
@@ -677,7 +678,7 @@ export default class BankFees extends Component {
                               b.status == 0 ?
                               <span className="material-icons">block</span>
                               :
-                              <span onClick={ () => dis.goBankEdit(b._id)} className="pointer">Edit</span>
+                              <span onClick={ () => dis.goBankEdit(b._id, this.state.rules[i]._id)} className="pointer">Edit</span>
                             }
                             
                             </td>

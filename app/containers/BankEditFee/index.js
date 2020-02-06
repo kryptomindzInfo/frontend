@@ -451,6 +451,17 @@ export default class BankEditFee extends Component {
       });
   };
 
+  getRrFees = () => {
+    axios.post(`${API_URL  }/getRule`, {token, rule_id: this.state.rrId }).then(res => {
+      if(res.status == 200) {
+        console.log(res.data);
+      }
+
+    }).catch(err => {
+
+    })
+  }
+
   getFees = () => {
     axios
       .post(`${API_URL  }/getOne`, { token:token, page_id: this.state.rule_id, type: 'bank', page: 'bankfee' })
@@ -458,7 +469,7 @@ export default class BankEditFee extends Component {
         if(res.status == 200){
           var temp = JSON.parse(res.data.row.ranges);
           this.setState({ loading:false, name: res.data.row.name, trans_type: res.data.row.trans_type, active: res.data.row.active, ranges: temp, trans_from: res.data.row.trans_from, trans_to: res.data.row.trans_to}, ()=>{
-            
+            this.getRrFees();
           });
         }
       })
@@ -470,7 +481,7 @@ export default class BankEditFee extends Component {
   
 
   componentDidMount() {
-    this.setState({ rule_id: this.props.match.params.fee }, () => {
+    this.setState({ rule_id: this.props.match.params.fee, rrId: this.props.match.params.rrId }, () => {
       // this.getBanks();
      this.getFees();
     });

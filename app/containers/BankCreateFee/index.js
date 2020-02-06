@@ -74,8 +74,20 @@ export default class BankCreateFee extends Component {
           trans_to: '',
           fixed_amount: '',
           percentage: '',
+
+          revenue_sharing_fixed_amount: '',
+          revenue_sharing_percentage: ''
         },
       ],
+
+      revenueSharingRule: [{
+        trans_from: '',
+        trans_to: '',
+        fixed_amount: '',
+        percentage: '',
+      }],
+
+
       trans_type: '',
       active: 'Active',
       trans_from: '',
@@ -133,6 +145,23 @@ export default class BankCreateFee extends Component {
     // });
   };
 
+  handleInputChange3 = event => {
+    // console.log(k);
+
+    const { value, name } = event.target;
+    var temp = this.state.revenueSharingRule;
+    var k = event.target.getAttribute('data-key');
+
+    temp[k][name] = value;
+    console.log(temp[k]);
+    this.setState({
+      revenueSharingRule: temp,
+    });
+
+    // this.setState({
+    //   [name]: value,
+    // });
+  };
   showPopup = () => {
     //this.setState({ popup: true });
     this.props.history.push('/BankCreateFee/' + this.props.match.params.bank);
@@ -208,6 +237,7 @@ export default class BankCreateFee extends Component {
       });
   };
 
+
   createRules = event => {
     event.preventDefault();
     // if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
@@ -249,8 +279,9 @@ export default class BankCreateFee extends Component {
                   this.success();
                   let ba = this.state.bank;
                   let history = this.props.history;
-                  setTimeout(function() {
-                    history.push('/bank/fees/');
+                  setTimeout(() =>  {
+                    // history.push('/bank/fees/');
+                    this.createRevenueRule();
                   }, 1000);
                 },
               );
@@ -275,6 +306,63 @@ export default class BankCreateFee extends Component {
     }
   };
 
+  createRevenueRule = () => {
+    this.setState({createRulesLoading: true})
+    let {
+      name,
+      trans_type,
+      active,
+      ranges,
+      bank_id,
+      token
+    } = this.state;
+
+    ranges = ranges.map(r => ({
+          trans_from: r.trans_from,
+          trans_to: r.trans_to,
+          fixed_amount: r.revenue_sharing_fixed_amount,
+          percentage: r.revenue_sharing_percentage,
+    }));
+
+    axios.post(`${API_URL}/createRules`, {name, trans_type, active, ranges, bank_id, token}).then(res => {
+      if (res.status == 200) {
+        if (res.data.error) {
+          throw res.data.error;
+        } else {
+          this.setState(
+            {
+              notification: 'Rule added',
+            },
+            () => {
+              this.success();
+              let ba = this.state.bank;
+              let history = this.props.history;
+              setTimeout(function() {
+                history.push('/bank/fees/');
+              }, 1000);
+            },
+          );
+        }
+      } else {
+        const error = new Error(res.data.error);
+        throw error;
+      }
+      this.setState({
+        createRulesLoading: false,
+      });
+    }).catch(err => {
+      this.setState({
+        notification: err.response
+          ? err.response.data.error
+          : err.toString(),
+        createRulesLoading: false,
+      });
+      this.error();
+    })
+  }
+
+
+
   removeFile = key => {
     this.setState({
       [key]: null,
@@ -283,6 +371,47 @@ export default class BankCreateFee extends Component {
 
   addRange = () => {
     var temp = this.state.ranges;
+    var l = temp.length;
+    var last = temp[l - 1].trans_to;
+
+    var { revenue_sharing_percentage, revenue_sharing_fixed_amount } = temp[ l - 1];
+   
+    if (last == '') {
+      this.setState(
+        {
+          notification: 'Fill previous range first',
+        },
+        () => {
+          this.error();
+        },
+      );
+    } else if (last <= temp[l - 1].trans_from) {
+      this.setState(
+        {
+          notification:
+            'To value has to be greater than From value in all ranges',
+        },
+        () => {
+          this.error();
+        },
+      );
+    } else {
+      last = Number(last) + 1;
+      temp.push({
+        trans_from: last,
+        trans_to: '',
+        fixed_amount: '',
+        percentage: '',
+        revenue_sharing_fixed_amount: "",
+        revenue_sharing_percentage: ""
+      });
+      this.setState({
+        ranges: temp,
+      });
+    }
+  };
+  addRange2 = () => {
+    var temp = this.state.revenueSharingRule;
     var l = temp.length;
     var last = temp[l - 1].trans_to;
     if (last == '') {
@@ -313,7 +442,7 @@ export default class BankCreateFee extends Component {
         percentage: '',
       });
       this.setState({
-        ranges: temp,
+        revenueSharingRule: temp,
       });
     }
   };
@@ -326,6 +455,30 @@ export default class BankCreateFee extends Component {
     temp.splice(k, 1);
     this.setState({
       ranges: temp,
+    });
+    // console.log(temp);
+    // var out = [];
+
+    // for(var i = 0; i < temp.length; i++){
+    //   if(i != k){
+    //     out.push(temp[i]);
+    //   }
+    //   if(i == (temp.length)-1){
+    //     dis.setState({
+    //       ranges : out
+    //     });
+    //   }
+    // }
+  };
+
+  removeRange2 = k => {
+    console.log(k);
+    // var dis = this;
+    var temp = this.state.revenueSharingRule;
+    // delete temp[k];
+    temp.splice(k, 1);
+    this.setState({
+      revenueSharingRule: temp,
     });
     // console.log(temp);
     // var out = [];
@@ -448,7 +601,7 @@ export default class BankCreateFee extends Component {
         <Container verticalMargin>
           <BankSidebarTwo active="fees" />
           <Main>
-            <Card bigPadding centerSmall>
+            <Card bigPadding >
               <div className="cardHeader">
                 <div className="cardHeaderLeft flex">
                   <A href="/bank/fees">
@@ -597,7 +750,7 @@ export default class BankCreateFee extends Component {
                             />
                           </FormGroup>
                         </Col>
-                        <Col cW="26%" mR="2%">
+                        <Col cW="30%" mR="2%">
                           <FormGroup>
                             <label>Fixed Amount*</label>
                             <TextInput
@@ -612,7 +765,7 @@ export default class BankCreateFee extends Component {
                             />
                           </FormGroup>
                         </Col>
-                        <Col cW="28%" mR="0">
+                        <Col cW="28%" mR="8%">
                           <FormGroup>
                             <label>Percentage*</label>
                             <TextInput
@@ -622,6 +775,37 @@ export default class BankCreateFee extends Component {
                               onFocus={inputFocus}
                               onBlur={inputBlur}
                               value={v.percentage}
+                              onChange={dis.handleInputChange2}
+                              data-key={i}
+                            />
+                          </FormGroup>
+                          
+                        </Col>
+                        <Col cW="45%" mR="2%">
+                        <FormGroup>
+                            <label>Revenue Fixed Amount*</label>
+                            <TextInput
+                              required
+                              type="text"
+                              name="revenue_sharing_fixed_amount"
+                              onFocus={inputFocus}
+                              onBlur={inputBlur}
+                              value={v.revenue_sharing_fixed_amount}
+                              onChange={dis.handleInputChange2}
+                              data-key={i}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col cW="23%" mR="2%">
+                        <FormGroup>
+                            <label>Revenue %*</label>
+                            <TextInput
+                              required
+                              type="text"
+                              name="revenue_sharing_percentage"
+                              onFocus={inputFocus}
+                              onBlur={inputBlur}
+                              value={v.revenue_sharing_percentage}
                               onChange={dis.handleInputChange2}
                               data-key={i}
                             />
@@ -647,6 +831,120 @@ export default class BankCreateFee extends Component {
                   >
                     <span>Add Another Range</span>
                   </Button>
+
+
+{/* 
+                  <div style={{padding: 12}} />
+                  <H4>Revenue sharing rules tracsaction count</H4>
+                  {this.state.revenueSharingRule.map(function(v, i) {
+                    return (
+                      <Row key={i}>
+                        <Col cW="20%" mR="2%">
+                          <FormGroup>
+                            <label>From*</label>
+                            {i > 0 ? (
+                              <TextInput
+                                type="number"
+                                min="0"
+                                name="trans_from"
+                                onFocus={inputFocus}
+                                onBlur={inputBlur}
+                                value={v.trans_from}
+                                onChange={dis.handleInputChange3}
+                                data-key={i}
+                                autoFocus
+                                readOnly
+                                required
+                              />
+                            ) : (
+                              <TextInput
+                                type="text"
+                                pattern="[0-9]{1,}"
+                                title="Greater than or equal to 0"
+                                name="trans_from"
+                                onFocus={inputFocus}
+                                onBlur={inputBlur}
+                                value={v.trans_from}
+                                onChange={dis.handleInputChange3}
+                                data-key={i}
+                                autoFocus
+                                required
+                              />
+                            )}
+                          </FormGroup>
+                        </Col>
+                        <Col cW="20%" mR="2%">
+                          <FormGroup>
+                            <label>To*</label>
+                            <TextInput
+                              type="text"
+                              pattern="[0-9]{1,}"
+                              title="Greater than or equal to 0"
+                              name="trans_to"
+                              onFocus={inputFocus}
+                              onBlur={inputBlur}
+                              value={v.trans_to}
+                              onChange={dis.handleInputChange3}
+                              data-key={i}
+                              required
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col cW="26%" mR="2%">
+                          <FormGroup>
+                            <label>Fixed Amount*</label>
+                            <TextInput
+                              type="text"
+                              name="fixed_amount"
+                              onFocus={inputFocus}
+                              required
+                              onBlur={inputBlur}
+                              value={v.fixed_amount}
+                              onChange={dis.handleInputChange3}
+                              data-key={i}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col cW="28%" mR="0">
+                          <FormGroup>
+                            <label>Percentage*</label>
+                            <TextInput
+                              required
+                              type="text"
+                              name="percentage"
+                              onFocus={inputFocus}
+                              onBlur={inputBlur}
+                              value={v.percentage}
+                              onChange={dis.handleInputChange3}
+                              data-key={i}
+                            />
+                          </FormGroup>
+                          {i > 0 ? (
+                            <span
+                              onClick={() => dis.removeRange2(i)}
+                              className="material-icons removeBtn pointer"
+                            >
+                              cancel
+                            </span>
+                          ) : null}
+                        </Col>
+                      </Row>
+                    );
+                  })}
+
+                  <Button
+                    type="button"
+                    accentedBtn
+                    marginTop="10px"
+                    onClick={this.addRange2}
+                  >
+                    <span>Add Another Revenue Range</span>
+                  </Button>
+ */}
+
+
+
+
                   {this.createRulesLoading ? (
                     <Button filledBtn marginTop="100px" disabled>
                       <Loader />

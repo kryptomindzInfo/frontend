@@ -32,6 +32,7 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
 import Loader from 'components/Loader';
+import MiniPopUp from 'components/MiniPopUp';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
@@ -325,6 +326,121 @@ export default class FeeList extends Component {
     }
   }
 
+  showMiniPopUp = (b, r) => {
+    this.setState({
+      popname: b.name,
+      poptype: b.trans_type,
+      sid: b._id,
+      popupMini: true,
+      html: r,
+    });
+    //this.props.history.push('/createfee/'+this.state.bank_id);
+  };
+  closeMiniPopUp = () => {
+    this.setState({
+      popupMini: false,
+    });
+  };
+
+
+
+
+
+  approve = event => {
+    this.setState({
+      approveLoading: true,
+    });
+    event.preventDefault();
+    axios
+      .post(`${API_URL}/approveFee`, {
+        id: this.state.sid,
+        token,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState(
+              {
+                notification: 'Approved',
+              },
+              () => {
+                this.success();
+                this.closeMiniPopUp();
+                this.getRules();
+              },
+            );
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+        this.setState({
+          approveLoading: false,
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          approveLoading: false,
+        });
+        this.error();
+      });
+  };
+
+  decline = event => {
+    this.setState({
+      declineLoading: true,
+    });
+    event.preventDefault();
+    axios
+      .post(`${API_URL}/declineFee`, {
+        id: this.state.sid,
+        token,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState(
+              {
+                notification: 'Declined',
+              },
+              () => {
+                this.success();
+                this.closeMiniPopUp();
+                this.getRules();
+              },
+            );
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+        this.setState({
+          declineLoading: false,
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          declineLoading: false,
+        });
+        this.error();
+      });
+  };
+
+
+
+
+
+
+
+
+
+
   render() {
     
     function inputFocus(e) {
@@ -441,7 +557,7 @@ export default class FeeList extends Component {
                   <tbody>
                   {
                       this.state.rules && this.state.rules.length > 0 
-                        ? this.state.rules.map(function(b) {
+                        ? this.state.rules.map((b) => {
                           var r1 = JSON.parse(b.editedRanges);
                           var r = r1.ranges;
                           return <tr key={b._id} >
@@ -463,12 +579,12 @@ export default class FeeList extends Component {
                               </td>
                           <td>
                             {
-                            r.map(function(v, i){
+                            r.map((v, i) => {
                             return <div key={i}>Count: <span className="green">{v.trans_from} -  {v.trans_to}</span>, Fixed: <span className="green">{CURRENCY+" "+v.fixed_amount}</span>, Percentage: <span className="green">{v.percentage}</span></div>
                             })
                             }
                           </td>
-                          <td className="tac bold">
+                          {/* <td className="tac bold">
                             {
                               b.status == 0 ?
                               <span className="material-icons">block</span>
@@ -476,7 +592,27 @@ export default class FeeList extends Component {
                               <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
                             }
                             
-                            </td></tr>
+                            </td> */}
+
+                            <td className="tac bold">
+                              {
+                                b.status == 0 ?
+                                <Button
+                                    onClick={() => this.showMiniPopUp(b, r)}
+                                    className="addBankButton"
+                                  >
+                                    <span>Approve</span>
+                                  </Button>
+                                :
+                                <span>approved </span>
+                                // <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
+                              }
+                            
+                            </td>
+                            
+                            
+                            
+                            </tr>
                         })
                         :
                         null
@@ -487,6 +623,121 @@ export default class FeeList extends Component {
             </Card>
           </Main>
         </Container>
+
+        {this.state.popupMini ? (
+          <MiniPopUp close={this.closeMiniPopUp.bind(this)}>
+            {this.state.showOtp ? (
+              <div>
+                <h1>
+                  <FormattedMessage {...messages.verify} />
+                </h1>
+                <form>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.otp} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <Button filledBtn marginTop="50px">
+                    <span>
+                      <FormattedMessage {...messages.verify} />
+                    </span>
+                  </Button>
+                </form>
+              </div>
+            ) : (
+              <div>
+                <form>
+                  <p>
+                    <span id="popname">{this.state.popname}</span>
+                  </p>
+                  <p>
+                    {' '}
+                    Sending from <span id="poptype">{this.state.poptype}</span>
+                  </p>
+                  {this.state.html.map(function(v) {
+                    return (
+                      <div>
+                        Count:{' '}
+                        <span className="green">
+                          {v.trans_from} - {v.trans_to}
+                        </span>
+                        , Fixed:{' '}
+                        <span className="green">
+                          {CURRENCY + ' ' + v.fixed_amount}
+                        </span>
+                        , Percentage:{' '}
+                        <span className="green">{v.percentage}</span>
+                      </div>
+                    );
+                  })}
+                  
+                  <Row>
+                    <Col>
+                      <FormGroup>
+                        {this.state.declineLoading ? (
+                          <Button
+                            filledBtn
+                            marginTop="50px"
+                            accentedBtn
+                            onClick={this.decline}
+                            disabled
+                            type="button"
+                          >
+                            <Loader />
+                          </Button>
+                        ) : (
+                          <Button
+                            filledBtn
+                            marginTop="50px"
+                            accentedBtn
+                            onClick={this.decline}
+                            type="button"
+                          >
+                            <span>Decline</span>
+                          </Button>
+                        )}
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        {this.state.approveLoading ? (
+                          <Button
+                            filledBtn
+                            marginTop="50px"
+                            onClick={this.approve}
+                            disabled
+                            type="button"
+                          >
+                            <Loader />
+                          </Button>
+                        ) : (
+                          <Button
+                            filledBtn
+                            marginTop="50px"
+                            onClick={this.approve}
+                            type="button"
+                          >
+                            <span>Approve</span>
+                          </Button>
+                        )}
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </form>
+              </div>
+            )}
+          </MiniPopUp>
+        ) : null} 
+
         { this.state.popup ? 
           <Popup close={this.closePopup.bind(this)}>
             {
@@ -692,6 +943,7 @@ export default class FeeList extends Component {
             }
           </Popup>
           : null }
+
       </Wrapper>
     );
   }

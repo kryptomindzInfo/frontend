@@ -178,7 +178,7 @@ export default function App(props) {
           <BankRoute exact path="/bank/operationalHistory" component={BankOperationalHistory} />
           <BankRoute exact path="/bank/escrowHistory" component={BankEscrowHistory} />
           <BankRoute exact path="/bank/cashier/:branch?/:cashier?" component={BankCashierInfo} />
-          <BankRoute exact path="/bank/edit-fee/:fee?" component={BankEditFee} />
+          <BankRoute exact path="/bank/edit-fee/:fee/:rrId?" component={BankEditFee} />
 
           <Route exact path="/branch/:bank?" component={BranchLogin} />
           <Route
