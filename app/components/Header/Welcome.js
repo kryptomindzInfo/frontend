@@ -76,12 +76,12 @@ class Welcome extends Component {
       (tempDate.getMonth() + 1) +
       '-' +
       tempDate.getDate() +
-      ' ' +
-      tempDate.getHours() +
-      ':' +
-      tempDate.getMinutes() +
-      ':' +
-      tempDate.getSeconds();
+      ' ' 
+      // tempDate.getHours() +
+      // ':' +
+      // tempDate.getMinutes() +
+      // ':' +
+      // tempDate.getSeconds();
     const currDate = '' + date;
 
     const bankName = this.props.bankName;
@@ -89,7 +89,7 @@ class Welcome extends Component {
       <>
 
         <WelcomeWrap className="clr">
-        <span>{currDate}</span>
+        <span style={{paddingRight: '7px'}}>{currDate}</span>
 
           <div className="dropdown fl">
             <Icon className="material-icons fl">settings</Icon>

@@ -51,8 +51,8 @@ class CashierClosingBalance extends Component {
       token,
       otpEmail: email,
       otpMobile: mobile,
-      denomination: [50],
-      denominationValue: [],
+      denomination: [],
+      // denominationValue: [],
       currency: 'XOF',
     };
     this.success = this.success.bind(this);
@@ -113,35 +113,35 @@ class CashierClosingBalance extends Component {
         [name]: value,
       },
       () => {
-        this.calculateTotal();
+        // this.calculateTotal();
       },
     );
   };
 
-  calculateTotal = () => {
-    var total = 0;
-    this.state.denom10 ? this.state.denom10 : 0;
+  // calculateTotal = () => {
+  //   var total = 0;
+  //   this.state.denom10 ? this.state.denom10 : 0;
 
-    total += Number(this.state.denom10 ? this.state.denom10 : 0) * 10;
-    total += Number(this.state.denom20 ? this.state.denom20 : 0) * 20;
-    total += Number(this.state.denom50 ? this.state.denom50 : 0) * 50;
-    total += Number(this.state.denom100 ? this.state.denom100 : 0) * 100;
-    total += Number(this.state.denom1000 ? this.state.denom1000 : 0) * 1000;
-    total += Number(this.state.denom2000 ? this.state.denom2000 : 0) * 2000;
+  //   total += Number(this.state.denom10 ? this.state.denom10 : 0) * 10;
+  //   total += Number(this.state.denom20 ? this.state.denom20 : 0) * 20;
+  //   total += Number(this.state.denom50 ? this.state.denom50 : 0) * 50;
+  //   total += Number(this.state.denom100 ? this.state.denom100 : 0) * 100;
+  //   total += Number(this.state.denom1000 ? this.state.denom1000 : 0) * 1000;
+  //   total += Number(this.state.denom2000 ? this.state.denom2000 : 0) * 2000;
 
-    console.log(this.state.denomination);
-    console.log(this.state.denominationValue);
-    this.state.denomination.map(
-      (element, index) =>
-        (total +=
-          Number(element ? element : 0) *
-          Number(this.state.denominationValue[index])),
-    );
+  //   console.log(this.state.denomination);
+  //   console.log(this.state.denominationValue);
+  //   this.state.denomination.map(
+  //     (element, index) =>
+  //       (total +=
+  //         Number(element ? element : 0) *
+  //         Number(this.state.denominationValue[index])),
+  //   );
 
-    this.setState({
-      total: total,
-    });
-  };
+  //   this.setState({
+  //     total: total,
+  //   });
+  // };
 
   closePopup = () => {
     this.setState({
@@ -348,7 +348,7 @@ class CashierClosingBalance extends Component {
         if (d.data.length != 0) {
           this.setState(prevState => ({
             ...prevState,
-            denomination: d.data[0].denomination.map(d => ({ val: d, num: 0 })),
+            denomination: d.data[0].denomination.map(d => ({ val: d, num: '' })),
             currency: d.data[0].value,
           }));
         }

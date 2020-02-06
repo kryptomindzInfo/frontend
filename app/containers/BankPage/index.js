@@ -321,8 +321,6 @@ export default class BankPage extends Component {
       });
   };
 
-  
-
   editBank = event => {
     event.preventDefault();
     if (this.state.logo == null || this.state.logo == '') {
@@ -636,6 +634,10 @@ export default class BankPage extends Component {
                   <thead>
                     <tr>
                       <th>
+                        {/* <FormattedMessage {...messages.th0} /> */}
+                        <span>Bank Logo</span>
+                      </th>
+                      <th>
                         <FormattedMessage {...messages.th1} />
                       </th>
                       <th>
@@ -655,8 +657,12 @@ export default class BankPage extends Component {
                   <tbody>
                     {this.state.banks && this.state.banks.length > 0
                       ? this.state.banks.map(function(b) {
+                          console.log(b);
+
                           return (
                             <tr key={b._id}>
+                              <td><img style={{height: '22%'}} src={`${STATIC_URL}/${b.logo}`} /></td>
+                              {/* <td><img src={b.logo} /></td> */}
                               <td>{b.name}</td>
                               <td className="tac">0</td>
                               <td className="tac">0</td>

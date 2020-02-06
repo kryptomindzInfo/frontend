@@ -131,7 +131,7 @@ class InfraCurrency extends Component {
     super();
     this.state = {
       addDenominationPopup: false,
-      denomination: [0],
+      denomination: [],
       infraID: '',
       bank: '',
       name: '',
@@ -461,7 +461,7 @@ class InfraCurrency extends Component {
                     onClick={() => {
                       this.setState(prevState => ({
                         ...prevState,
-                        denomination: [...prevState.denomination, 0],
+                        denomination: [...prevState.denomination, ' '],
                       }));
                     }}
                   >
