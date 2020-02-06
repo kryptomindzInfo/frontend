@@ -50,7 +50,6 @@ class Welcome extends Component {
     //this.props.history.push('/bank');
   };
 
-
   logoutCashier = () => {
     localStorage.removeItem('cashierLogged');
     history.push('/cashier/' + this.props.bankName);
@@ -64,54 +63,90 @@ class Welcome extends Component {
       name = localStorage.getItem('bankName');
     } else if (this.props.from == 'branch') {
       name = localStorage.getItem('branchName');
-    }else if (this.props.from == 'cashier') {
+    } else if (this.props.from == 'cashier') {
       name = localStorage.getItem('cashierName');
     } else {
       isAdmin = localStorage.getItem('isAdmin');
       name = localStorage.getItem('name');
     }
+    var tempDate = new Date();
+    var date =
+      tempDate.getFullYear() +
+      '-' +
+      (tempDate.getMonth() + 1) +
+      '-' +
+      tempDate.getDate() +
+      ' ' +
+      tempDate.getHours() +
+      ':' +
+      tempDate.getMinutes() +
+      ':' +
+      tempDate.getSeconds();
+    const currDate = '' + date;
 
     const bankName = this.props.bankName;
     return (
-      <WelcomeWrap className="clr">
-        <div className="dropdown fl">
-          <Icon className="material-icons fl">settings</Icon>
-          <Name>
-            <FormattedMessage {...messages.welcome} /> {name}
-          </Name>
-          {this.props.infraNav ? (
-            <SubNav className="infraSubNav">
-              {/* { isAdmin ?  */}
-              <A href="/profile">Profile</A>
-              {/* //  : null } */}
-              <span onClick={this.logoutInfra}>Logout</span>
-            </SubNav>
-          ) : this.props.from == 'branch' ? (
-            <SubNav className="infraSubNav">
-              {/* { isAdmin ?  */}
-              <A href={'/branch/' + bankName + '/info'}>Profile</A>
-              {/* //  : null } */}
-              <span onClick={this.logoutBranch}>Logout</span>
-            </SubNav>
-          ) :
-            this.props.from == 'cashier' ?
-            <SubNav className="infraSubNav">
-              {/* { isAdmin ?  */}
-              <A href={'/cashier/' + bankName + '/info'}>Profile</A>
-              {/* //  : null } */}
-              <span onClick={this.logoutCashier}>Logout</span>
-            </SubNav>
-            :
-          (
+      <>
 
-            <SubNav className="bankSubNav">
-              <A href="/bank/info">Settings</A>
-              <span onClick={this.logoutBank}>Logout</span>
-            </SubNav>
-          )}
-        </div>
-        <LanguageSwitch />
-      </WelcomeWrap>
+        <WelcomeWrap className="clr">
+        <span>{currDate}</span>
+
+          <div className="dropdown fl">
+            <Icon className="material-icons fl">settings</Icon>
+            {/* <Name>
+            <FormattedMessage {...messages.welcome} /> {name}
+          </Name> */}
+            {this.props.infraNav ? (
+              <>
+                <Name>
+                  <span>INFRA:</span> {name}
+                </Name>
+                <SubNav className="infraSubNav">
+                  {/* { isAdmin ?  */}
+                  <A href="/profile">Settings</A>
+                  {/* //  : null } */}
+                  <span onClick={this.logoutInfra}>Logout</span>
+                </SubNav>
+              </>
+            ) : this.props.from == 'branch' ? (
+              <>
+                <Name>
+                  <span>BRANCH:</span> {name}
+                </Name>
+                <SubNav className="infraSubNav">
+                  {/* { isAdmin ?  */}
+                  <A href={'/branch/' + bankName + '/info'}>Settings</A>
+                  {/* //  : null } */}
+                  <span onClick={this.logoutBranch}>Logout</span>
+                </SubNav>
+              </>
+            ) : this.props.from == 'cashier' ? (
+              <>
+                <Name>
+                  <span>CASHIER:</span> {name}
+                </Name>
+                <SubNav className="infraSubNav">
+                  {/* { isAdmin ?  */}
+                  <A href={'/cashier/' + bankName + '/info'}>Profile</A>
+                  {/* //  : null } */}
+                  <span onClick={this.logoutCashier}>Logout</span>
+                </SubNav>
+              </>
+            ) : (
+              <>
+                <Name>
+                  <span>BANK:</span> {name}
+                </Name>
+                <SubNav className="bankSubNav">
+                  <A href="/bank/info">Settings</A>
+                  <span onClick={this.logoutBank}>Logout</span>
+                </SubNav>
+              </>
+            )}
+          </div>
+          <LanguageSwitch />
+        </WelcomeWrap>
+      </>
     );
   }
 }
