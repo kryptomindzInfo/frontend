@@ -33,6 +33,7 @@ import Col from 'components/Col';
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
+import SidebarThree from '../../components/Sidebar/SidebarThree';
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -50,6 +51,7 @@ export default class InfraProfile extends Component {
   constructor() {
     super();
     this.state = {
+      infraID: '',
       bank: '',
       name: '',
       username: '',
@@ -412,22 +414,35 @@ export default class InfraProfile extends Component {
         </Helmet>
         <Header active="" />
         <Container verticalMargin>
+          <SidebarThree infraID={this.state.infraID} active="profile" />
+
           {/* <SidebarTwo bankId={this.state.bank}/> */}
-          <Main fullWidth>
+          <Main big>
             {this.state.permissions == 'all' ||
             this.state.permissions.create_fee ? (
-              <ActionBar
-                marginBottom="33px"
-                inputWidth="calc(100% - 241px)"
-                className="clr"
-              >
-                <Button className="addBankButton" flex onClick={this.showPopup}>
-                  <span>Edit</span>
-                </Button>
-              </ActionBar>
+              <>
+                <ActionBar
+                  marginBottom="33px"
+                  inputWidth="calc(100% - 241px)"
+                  className="clr"
+                  style={{ marginTop: '3%' }}
+                >
+                  <Button
+                    className="addBankButton"
+                    flex
+                    onClick={this.showPopup}
+                  >
+                    <span>Edit</span>
+                  </Button>
+                </ActionBar>
+              </>
             ) : null}
 
-            <Card bigPadding bordered>
+            <Card
+              // style={{ width: '65%', textAlign: 'right' }}
+              bigPadding
+              bordered
+            >
               <div className="cardBody">
                 <Row>
                   <Col className="infoLeft">Name</Col>
