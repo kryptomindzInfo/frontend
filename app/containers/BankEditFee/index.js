@@ -60,11 +60,13 @@ toast.configure({
 const token = localStorage.getItem('bankLogged');
 const rid = localStorage.getItem('feeid');
 
+const bid = localStorage.getItem('bankId');
+
 export default class BankEditFee extends Component {
   constructor() {
     super();
     this.state = {
-      bank_id: '',
+      bank_id: bid,
       logo: null,
       rule_id : rid,
       contract: null,
@@ -300,6 +302,79 @@ export default class BankEditFee extends Component {
     }
   };
 
+
+
+  editRrRules = () => {
+    // event.preventDefault();
+    // if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
+    //   this.setState({
+    //     notification: 'Fill either fixed amount or percentage'
+    //   }, () => {
+    //     this.error();
+    // });
+    // }else{
+      this.setState({
+        editRulesLoading: true
+      });
+
+
+
+      let {name, trans_type, active, ranges, bank_id, token, rrId:rule_id} = this.state;
+
+
+    ranges = ranges.map(r => ({
+          trans_from: r.trans_from,
+          trans_to: r.trans_to,
+          fixed_amount: r.revenue_sharing_fixed_amount,
+          percentage: r.revenue_sharing_percentage,
+    }));
+
+
+    axios
+      .post(`${API_URL  }/editRule`, {
+        name,
+        trans_type, active, ranges, bank_id, token, rule_id
+      })
+      .then(res => {
+        if(res.status == 200){
+          if(res.data.error){
+            throw res.data.error;
+          }else{
+            //console.log(res.data);
+            this.setState({
+              notification: 'Rule updated'
+            }, () => {
+              this.success();
+              let ba = this.state.bank;
+              let history = this.props.history;
+              setTimeout(function(){
+                history.push('/bank/fees/');
+              }, 1000);
+          });
+          }
+        }else{
+          const error = new Error(res.data.error);
+          throw error;
+        }
+        this.setState({
+          editRulesLoading: false
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: (err.response) ? err.response.data.error : err.toString(),
+          editRulesLoading: false
+        });
+        this.error();
+      });
+    //}
+  };
+
+
+
+
+
+
   editRules = event => {
     event.preventDefault();
     
@@ -320,8 +395,9 @@ export default class BankEditFee extends Component {
               this.success();
               let ba = this.state.bank;
               let history = this.props.history;
-              setTimeout(function(){
-                history.push('/bank/fees/');
+              setTimeout(() => {
+                // history.push('/bank/fees/');
+                this.editRrRules()
               }, 1000);
           });
           }
@@ -455,6 +531,15 @@ export default class BankEditFee extends Component {
     axios.post(`${API_URL  }/getRule`, {token, rule_id: this.state.rrId }).then(res => {
       if(res.status == 200) {
         console.log(res.data);
+        let {ranges} = state;
+        ranges = ranges.map(r => ({
+          ...r, 
+          revenue_sharing_fixed_amount: r.fixed_amount,
+          revenue_sharing_percentage: r.percentage
+        }))
+
+        this.setState({ranges});
+
       }
 
     }).catch(err => {
@@ -525,7 +610,7 @@ export default class BankEditFee extends Component {
         <Container verticalMargin>
           <BankSidebarTwo active="fees" />
           <Main>
-            <Card bigPadding centerSmall>
+            <Card bigPadding >
               <div className="cardHeader" >
                 <div className="cardHeaderLeft flex">
                   <A  href={"/bank/fees/"}>
@@ -700,7 +785,7 @@ Edit Revenue sharing Rule</h3>
                     />
                     </FormGroup>
                     </Col>
-                    <Col cW="28%" mR="0">
+                    <Col cW="28%" mR="8%">
                     <FormGroup>
                     <label>Percentage*</label>
                     <TextInput
@@ -716,14 +801,48 @@ Edit Revenue sharing Rule</h3>
                       
                     />
                     </FormGroup>
-                    {
-                      i > 0 ?
-                      <span onClick={() => dis.removeRange(i)} className="material-icons removeBtn pointer">cancel</span>
-                      :
-                      null
-                    }
+                    
                     
                     </Col>
+
+                    <Col cW="45%" mR="2%">
+                        <FormGroup>
+                            <label>Revenue Fixed Amount*</label>
+                            <TextInput
+                              required
+                              type="text"
+                              name="revenue_sharing_fixed_amount"
+                              onFocus={inputFocus}
+                              onBlur={inputBlur}
+                              value={v.revenue_sharing_fixed_amount}
+                              onChange={dis.handleInputChange2}
+                              data-key={i}
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col cW="23%" mR="2%">
+                        <FormGroup>
+                            <label>Revenue %*</label>
+                            <TextInput
+                              required
+                              type="text"
+                              name="revenue_sharing_percentage"
+                              onFocus={inputFocus}
+                              onBlur={inputBlur}
+                              value={v.revenue_sharing_percentage}
+                              onChange={dis.handleInputChange2}
+                              data-key={i}
+                            />
+                          </FormGroup>
+                          {i > 0 ? (
+                            <span
+                              onClick={() => dis.removeRange(i)}
+                              className="material-icons removeBtn pointer"
+                            >
+                              cancel
+                            </span>
+                          ) : null}
+                        </Col>
                   </Row>
                   })
                 }

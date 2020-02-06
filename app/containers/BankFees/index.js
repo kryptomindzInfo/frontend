@@ -571,21 +571,37 @@ export default class BankFees extends Component {
                                   <span className="absoluteMiddleRight primary popMenuTrigger">
                                     <i className="material-icons ">block</i>
                                   </span>
-                                ) : b.edit_status != 0 ? (
-                                  b.edit_status == 1 ? (
-                                    // <a className="text-light">approved</a>
-                                    <button onClick={() => dis.goBankEdit(this.state.bankRules[i]._id, b._id)}>edit</button>
-                                  ) : (
-                                    <a className="text-accent">declined</a>
-                                  )
-                                ) : (
-                                  <Button
-                                    onClick={() => dis.showMiniPopUp(b, r)}
-                                    className="addBankButton"
-                                  >
-                                    <span>Approve</span>
-                                  </Button>
-                                )}
+                                ) : 
+
+                                
+                                
+                                <Button className="addBankButton" onClick={() => dis.goBankEdit(this.state.bankRules[i]._id, b._id)}>
+                                  {b.edit_status == 0 ? "Pending" : (b.edit_status == 2 ? "Declined" :  "Approved")}
+                                </Button>
+                                
+                                
+                                
+                                // b.edit_status != 0 ? (
+                                //   b.edit_status == 1 ? (
+                                //     // <a className="text-light">approved</a>
+                                //     <button onClick={() => dis.goBankEdit(this.state.bankRules[i]._id, b._id)}>edit</button>
+                                //   ) : (
+                                //     <a className="text-accent">declined</a>
+                                //   )
+                                // ) : (
+                                //   <Button
+                                //     onClick={() => dis.showMiniPopUp(b, r)}
+                                //     className="addBankButton"
+                                //   >
+                                //     <span>Approvec</span>
+                                //   </Button>
+                                //   // <span>Peding approval</span>
+                                // )
+                                
+                                
+                                
+                                
+                                }
                               </td>
                             </tr>
                           );
@@ -678,7 +694,7 @@ export default class BankFees extends Component {
                               b.status == 0 ?
                               <span className="material-icons">block</span>
                               :
-                              <span onClick={ () => dis.goBankEdit(b._id, this.state.rules[i]._id)} className="pointer">Edit</span>
+                              <Button className="addBankButton" onClick={ () => dis.goBankEdit(b._id, this.state.rules[i]._id)} className="pointer">Edit</Button>
                             }
                             
                             </td>

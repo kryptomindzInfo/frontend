@@ -596,7 +596,7 @@ export default class FeeList extends Component {
 
                             <td className="tac bold">
                               {
-                                b.status == 0 ?
+                                b.status == 0 || b.edit_status == 0?
                                 <Button
                                     onClick={() => this.showMiniPopUp(b, r)}
                                     className="addBankButton"
@@ -604,7 +604,7 @@ export default class FeeList extends Component {
                                     <span>Approve</span>
                                   </Button>
                                 :
-                                <span>approved </span>
+                                b.status == 2 || b.edit_status == 2? <span>Declined</span>:<span>Approved</span>
                                 // <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
                               }
                             
