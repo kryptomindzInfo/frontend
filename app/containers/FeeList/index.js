@@ -47,7 +47,7 @@ toast.configure({
 });
 
 const token = localStorage.getItem('logged');
-var isAdmin = localStorage.getItem("isAdmin");
+var isAdmin = localStorage.getItem('isAdmin');
 
 export default class FeeList extends Component {
   constructor() {
@@ -73,8 +73,8 @@ export default class FeeList extends Component {
       banks: [],
       rules: [],
       otp: '',
-      permissions : {},
-      showOtp: false
+      permissions: {},
+      showOtp: false,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -99,13 +99,13 @@ export default class FeeList extends Component {
 
   showPopup = () => {
     //this.setState({ popup: true });
-    this.props.history.push('/createfee/'+this.props.match.params.bank);
+    this.props.history.push('/createfee/' + this.props.match.params.bank);
   };
 
   goEdit = (a, b) => {
     //this.setState({ popup: true });
-    localStorage.setItem("feeid", b);
-    this.props.history.push('/editfee/'+a);
+    localStorage.setItem('feeid', b);
+    this.props.history.push('/editfee/' + a);
   };
 
   closePopup = () => {
@@ -122,7 +122,7 @@ export default class FeeList extends Component {
       logo: null,
       contract: null,
       otp: '',
-      showOtp: false
+      showOtp: false,
     });
   };
 
@@ -131,8 +131,8 @@ export default class FeeList extends Component {
     // axios.post(API_URL+'/logout', {token: token})
     // .then(res => {
     //    if(res.status == 200){
-    localStorage.removeItem("logged");
-    localStorage.removeItem("name");
+    localStorage.removeItem('logged');
+    localStorage.removeItem('name');
     this.setState({ redirect: true });
     //     }else{
     //       const error = new Error(res.data.error);
@@ -148,31 +148,31 @@ export default class FeeList extends Component {
   addBank = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/generateOTP`, {
+      .post(`${API_URL}/generateOTP`, {
         name: this.state.name,
         mobile: this.state.mobile,
         page: 'addBank',
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
               showOtp: true,
-              notification: 'OTP Sent'
+              notification: 'OTP Sent',
             });
             this.success();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
@@ -181,7 +181,7 @@ export default class FeeList extends Component {
   verifyOTP = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/addBank`, {
+      .post(`${API_URL}/addBank`, {
         name: this.state.name,
         address1: this.state.address1,
         state: this.state.state,
@@ -196,30 +196,29 @@ export default class FeeList extends Component {
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              notification: "Bank added successfully!",
+              notification: 'Bank added successfully!',
             });
             this.success();
             this.closePopup();
             this.getBanks();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
   };
-
 
   removeFile = key => {
     this.setState({
@@ -234,7 +233,7 @@ export default class FeeList extends Component {
 
   onChange(e) {
     if (e.target.files && e.target.files[0] != null) {
-      this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
+      this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
     }
   }
 
@@ -244,28 +243,28 @@ export default class FeeList extends Component {
     formData.append('file', file);
     const config = {
       headers: {
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     };
 
     axios
-      .post(`${API_URL  }/fileUpload?token=${  token}`, formData, config)
+      .post(`${API_URL}/fileUpload?token=${token}`, formData, config)
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              [key] : res.data.name
+              [key]: res.data.name,
             });
           }
-        }else{
+        } else {
           throw res.data.error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
@@ -273,51 +272,50 @@ export default class FeeList extends Component {
 
   getBanks = () => {
     axios
-      .post(`${API_URL  }/getBank`, { token:token, bank_id: this.props.match.params.bank })
+      .post(`${API_URL}/getBank`, {
+        token: token,
+        bank_id: this.props.match.params.bank,
+      })
       .then(res => {
-        if(res.status == 200){
+        if (res.status == 200) {
           console.log(res.data);
           this.setState({ banks: res.data.banks, logo: res.data.banks.logo });
         }
       })
-      .catch(err => {
-        
-      });
+      .catch(err => {});
   };
 
   getRules = () => {
     axios
-      .post(`${API_URL  }/getRules`, { token:token, bank_id: this.props.match.params.bank })
+      .post(`${API_URL}/getRules`, {
+        token: token,
+        bank_id: this.props.match.params.bank,
+      })
       .then(res => {
-        if(res.status == 200){
-          
+        if (res.status == 200) {
           this.setState({ loading: false, rules: res.data.rules });
         }
       })
-      .catch(err => {
-        
-      });
+      .catch(err => {});
   };
-  
 
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      if(isAdmin == "true"){
-        this.setState({ permissions: "all" });
-      }else{
+      if (isAdmin == 'true') {
+        this.setState({ permissions: 'all' });
+      } else {
         axios
-        .post(`${API_URL  }/getPermission`, { token })
-        .then(res => {          if(res.status == 200){
-            this.setState({ permissions: res.data.permissions }, () => {
-              
-            });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+          .post(`${API_URL}/getPermission`, { token })
+          .then(res => {
+            if (res.status == 200) {
+              this.setState({ permissions: res.data.permissions }, () => {});
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
       this.getBanks();
       this.getRules();
     } else {
@@ -341,10 +339,6 @@ export default class FeeList extends Component {
       popupMini: false,
     });
   };
-
-
-
-
 
   approve = event => {
     this.setState({
@@ -432,20 +426,10 @@ export default class FeeList extends Component {
       });
   };
 
-
-
-
-
-
-
-
-
-
   render() {
-    
     function inputFocus(e) {
       const { target } = e;
-      target.parentElement.querySelector("label").classList.add("focused");
+      target.parentElement.querySelector('label').classList.add('focused');
     }
 
     function inputBlur(e) {
@@ -460,7 +444,7 @@ export default class FeeList extends Component {
       return <Loader fullPage />;
     }
     if (redirect) {
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
     const ep = this;
     return (
@@ -470,23 +454,20 @@ export default class FeeList extends Component {
           <title>Banks | INFRA | E-WALLET</title>
         </Helmet>
         <TopBar>
-        <Welcome infraNav/>
+          <Welcome infraNav />
           <Container>
             <A href="/dashboard" float="left">
-            <div  className="headerNavDash">
-              Main Dashboard
-            </div>
+              <div className="headerNavDash">Main Dashboard</div>
             </A>
-      {/*   <div className="bankLogo">
+            {/*   <div className="bankLogo">
             <img src={STATIC_URL+this.state.logo}/>
               </div>
 
     <h2>{this.state.banks.name}</h2> */}
-            
           </Container>
         </TopBar>
         <Container verticalMargin>
-      <div
+          <div
             className="bankLogo"
             style={{
               display: 'flex',
@@ -514,28 +495,33 @@ export default class FeeList extends Component {
               <h2>{this.state.banks && this.state.banks.name}</h2>
             </div>
           </div>
-      
-      
-      
-          <SidebarTwo bankId={this.state.bank} active="fees"/>
+
+          <SidebarTwo bankId={this.state.bank} active="fees" />
           <Main big>
-            <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
+            <ActionBar
+              marginBottom="33px"
+              inputWidth="calc(100% - 241px)"
+              className="clr"
+            >
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
                 <input type="text" placeholder="Search Revenue Sharing Rule" />
               </div>
-              {
-                (this.state.permissions == "all" || this.state.permissions.create_fee) ?
-              <Button className="addBankButton" flex onClick={this.showPopup}>
-                <i className="material-icons">add</i>
-                <span>Create Rules</span>
-              </Button>
-              :
-              null
-  }
+              {this.state.permissions == 'all' ||
+              this.state.permissions.create_fee ? (
+                <Button
+                  style={{ display: 'none' }}
+                  className="addBankButton"
+                  flex
+                  onClick={this.showPopup}
+                >
+                  <i className="material-icons">add</i>
+                  <span>Create Rules</span>
+                </Button>
+              ) : null}
             </ActionBar>
             <Card bigPadding>
-              <div className="cardHeader" >
+              <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>
                 </div>
@@ -548,43 +534,54 @@ export default class FeeList extends Component {
                 <Table marginTop="34px" smallTd>
                   <thead>
                     <tr>
-                     <th>Name</th>
-                     <th>Transaction Type</th>
-                     <th>Ranges</th>
-                     <th></th>
-                      </tr>
+                      <th>Name</th>
+                      <th>Transaction Type</th>
+                      <th>Ranges</th>
+                      <th />
+                    </tr>
                   </thead>
                   <tbody>
-                  {
-                      this.state.rules && this.state.rules.length > 0 
-                        ? this.state.rules.map((b) => {
+                    {this.state.rules && this.state.rules.length > 0
+                      ? this.state.rules.map(b => {
                           var r1 = JSON.parse(b.editedRanges);
                           var r = r1.ranges;
-                          return <tr key={b._id} >
-                          <td>
-                              {
-                                b.edit_status == 0 ? 
-                                <span>{r1.name}</span>
-                                :
-                                <span>{b.name}</span>
-                              }
+                          return (
+                            <tr key={b._id}>
+                              <td>
+                                {b.edit_status == 0 ? (
+                                  <span>{r1.name}</span>
+                                ) : (
+                                  <span>{b.name}</span>
+                                )}
                               </td>
                               <td className="tac">
-                              {
-                                b.edit_status == 0 ? 
-                                <span>{r1.trans_type}</span>
-                                :
-                                <span>{b.trans_type}</span>
-                              }
+                                {b.edit_status == 0 ? (
+                                  <span>{r1.trans_type}</span>
+                                ) : (
+                                  <span>{b.trans_type}</span>
+                                )}
                               </td>
-                          <td>
-                            {
-                            r.map((v, i) => {
-                            return <div key={i}>Count: <span className="green">{v.trans_from} -  {v.trans_to}</span>, Fixed: <span className="green">{CURRENCY+" "+v.fixed_amount}</span>, Percentage: <span className="green">{v.percentage}</span></div>
-                            })
-                            }
-                          </td>
-                          {/* <td className="tac bold">
+                              <td>
+                                {r.map((v, i) => {
+                                  return (
+                                    <div key={i}>
+                                      Count:{' '}
+                                      <span className="green">
+                                        {v.trans_from} - {v.trans_to}
+                                      </span>
+                                      , Fixed:{' '}
+                                      <span className="green">
+                                        {CURRENCY + ' ' + v.fixed_amount}
+                                      </span>
+                                      , Percentage:{' '}
+                                      <span className="green">
+                                        {v.percentage}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </td>
+                              {/* <td className="tac bold">
                             {
                               b.status == 0 ?
                               <span className="material-icons">block</span>
@@ -594,29 +591,26 @@ export default class FeeList extends Component {
                             
                             </td> */}
 
-                            <td className="tac bold">
-                              {
-                                b.status == 0 || b.edit_status == 0?
-                                <Button
+                              <td className="tac bold">
+                                {b.status == 0 || b.edit_status == 0 ? (
+                                  <Button
                                     onClick={() => this.showMiniPopUp(b, r)}
                                     className="addBankButton"
                                   >
                                     <span>Approve</span>
                                   </Button>
-                                :
-                                b.status == 2 || b.edit_status == 2? <span>Declined</span>:<span>Approved</span>
+                                ) : b.status == 2 || b.edit_status == 2 ? (
+                                  <span>Declined</span>
+                                ) : (
+                                  <span>Approved</span>
+                                )
                                 // <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
-                              }
-                            
-                            </td>
-                            
-                            
-                            
+                                }
+                              </td>
                             </tr>
+                          );
                         })
-                        :
-                        null
-                    }
+                      : null}
                   </tbody>
                 </Table>
               </div>
@@ -679,7 +673,7 @@ export default class FeeList extends Component {
                       </div>
                     );
                   })}
-                  
+
                   <Row>
                     <Col>
                       <FormGroup>
@@ -736,214 +730,257 @@ export default class FeeList extends Component {
               </div>
             )}
           </MiniPopUp>
-        ) : null} 
+        ) : null}
 
-        { this.state.popup ? 
+        {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)}>
-            {
-              this.state.showOtp ?
+            {this.state.showOtp ? (
               <div>
-              <h1><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyOTP} >
-              <FormGroup>
-                <label><FormattedMessage {...messages.otp} />*</label>
-                <TextInput
-                  type="text"
-                  name="otp"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.otp}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.verify} /></span>
-              </Button>
-              </form>
+                <h1>
+                  <FormattedMessage {...messages.verify} />
+                </h1>
+                <form action="" method="post" onSubmit={this.verifyOTP}>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.otp} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <Button filledBtn marginTop="50px">
+                    <span>
+                      <FormattedMessage {...messages.verify} />
+                    </span>
+                  </Button>
+                </form>
               </div>
-              :
+            ) : (
               <div>
-            <h1><FormattedMessage {...messages.addbank} /></h1>
-            <form action="" method="post" onSubmit={this.addBank}>
-              <FormGroup>
-                <label><FormattedMessage {...messages.popup1} />*</label>
-                <TextInput
-                  type="text"
-                  name="name"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label><FormattedMessage {...messages.popup2} />*</label>
-                <TextInput
-                  type="text"
-                  name="address1"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.address1}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              
-                <Row>
-                  <Col>
+                <h1>
+                  <FormattedMessage {...messages.addbank} />
+                </h1>
+                <form action="" method="post" onSubmit={this.addBank}>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup3} />*</label>
-                  <TextInput
-                    type="text"
-                    name="state"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.state}
-                    onChange={this.handleInputChange}
-                    required
-                  />
+                    <label>
+                      <FormattedMessage {...messages.popup1} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="name"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.name}
+                      onChange={this.handleInputChange}
+                      required
+                    />
                   </FormGroup>
-                  </Col>
-                  <Col>
                   <FormGroup>
-                  <label><FormattedMessage {...messages.popup4} />*</label>
-                  <TextInput
-                    type="text"
-                    name="zip"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.zip}
-                    onChange={this.handleInputChange}
-                    required
-                  />
+                    <label>
+                      <FormattedMessage {...messages.popup2} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="address1"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.address1}
+                      onChange={this.handleInputChange}
+                      required
+                    />
                   </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup5} />*</label>
-                  <TextInput
-                    type="text"
-                    name="country"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.country}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup6} />*</label>
-                  <TextInput
-                    type="text"
-                    name="ccode"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.ccode}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>  
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} />*</label>
-                  <TextInput
-                    type="text"
-                    name="mobile"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.mobile}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup8} />*</label>
-                  <TextInput
-                    type="text"
-                    name="email"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.email}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>
-              
 
-              <FormGroup>
-                
-                  {/* <UploadedFile>
+                  <Row>
+                    <Col>
+                      <FormGroup>
+                        <label>
+                          <FormattedMessage {...messages.popup3} />*
+                        </label>
+                        <TextInput
+                          type="text"
+                          name="state"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.state}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <label>
+                          <FormattedMessage {...messages.popup4} />*
+                        </label>
+                        <TextInput
+                          type="text"
+                          name="zip"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.zip}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <FormGroup>
+                        <label>
+                          <FormattedMessage {...messages.popup5} />*
+                        </label>
+                        <TextInput
+                          type="text"
+                          name="country"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.country}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <label>
+                          <FormattedMessage {...messages.popup6} />*
+                        </label>
+                        <TextInput
+                          type="text"
+                          name="ccode"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.ccode}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      <FormGroup>
+                        <label>
+                          <FormattedMessage {...messages.popup7} />*
+                        </label>
+                        <TextInput
+                          type="text"
+                          name="mobile"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.mobile}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <label>
+                          <FormattedMessage {...messages.popup8} />*
+                        </label>
+                        <TextInput
+                          type="text"
+                          name="email"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.email}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+
+                  <FormGroup>
+                    {/* <UploadedFile>
                     
                       <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
                     </UploadedFile>
                   : */}
-                  <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
-                    { 
-                    this.state.logo ? 
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
-                    </a> 
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
-                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
-                    { 
-                    !this.state.logo ? 
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
-                    <label><FormattedMessage {...messages.popup9} /> *</label>
-                    </div>
-                  </UploadArea>
-                
-              </FormGroup>
+                    <UploadArea bgImg={STATIC_URL + this.state.logo}>
+                      {this.state.logo ? (
+                        <a
+                          className="uploadedImg"
+                          href={STATIC_URL + this.state.logo}
+                          target="_BLANK"
+                        />
+                      ) : (
+                        ' '
+                      )}
+                      <div
+                        className="uploadTrigger"
+                        onClick={() => this.triggerBrowse('logo')}
+                      >
+                        <input
+                          type="file"
+                          id="logo"
+                          onChange={this.onChange}
+                          data-key="logo"
+                        />
+                        {!this.state.logo ? (
+                          <i className="material-icons">cloud_upload</i>
+                        ) : (
+                          ' '
+                        )}
+                        <label>
+                          <FormattedMessage {...messages.popup9} /> *
+                        </label>
+                      </div>
+                    </UploadArea>
+                  </FormGroup>
 
-              <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
-                    { 
-                    this.state.contract ? 
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.contract } target="_BLANK">
-                    </a> 
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
-                    <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
-                    {
-                    !this.state.contract ? 
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
-                    
-                    <label><FormattedMessage {...messages.popup10} /> *</label>
-                    </div>
-                  </UploadArea>
-              </FormGroup>
+                  <FormGroup>
+                    <UploadArea bgImg={STATIC_URL + 'main/pdf-icon.png'}>
+                      {this.state.contract ? (
+                        <a
+                          className="uploadedImg"
+                          href={STATIC_URL + this.state.contract}
+                          target="_BLANK"
+                        />
+                      ) : (
+                        ' '
+                      )}
+                      <div
+                        className="uploadTrigger"
+                        onClick={() => this.triggerBrowse('contract')}
+                      >
+                        <input
+                          type="file"
+                          id="contract"
+                          onChange={this.onChange}
+                          data-key="contract"
+                        />
+                        {!this.state.contract ? (
+                          <i className="material-icons">cloud_upload</i>
+                        ) : (
+                          ' '
+                        )}
 
-              <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.addbank} /></span>
-              </Button>
-            </form>
-            </div>
-            }
+                        <label>
+                          <FormattedMessage {...messages.popup10} /> *
+                        </label>
+                      </div>
+                    </UploadArea>
+                  </FormGroup>
+
+                  <Button filledBtn marginTop="50px">
+                    <span>
+                      <FormattedMessage {...messages.addbank} />
+                    </span>
+                  </Button>
+                </form>
+              </div>
+            )}
           </Popup>
-          : null }
-
+        ) : null}
       </Wrapper>
     );
   }

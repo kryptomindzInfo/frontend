@@ -34,7 +34,6 @@ import Loader from 'components/Loader';
 import BankHeader from 'components/Header/BankHeader';
 import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 
-
 const H4 = styled.h4`
   > span {
     font-size: 13px;
@@ -53,7 +52,6 @@ toast.configure({
   pauseOnHover: true,
   draggable: true,
 });
-
 
 const token = localStorage.getItem('bankLogged');
 const bid = localStorage.getItem('bankId');
@@ -76,17 +74,18 @@ export default class BankCreateFee extends Component {
           percentage: '',
 
           revenue_sharing_fixed_amount: '',
-          revenue_sharing_percentage: ''
+          revenue_sharing_percentage: '',
         },
       ],
 
-      revenueSharingRule: [{
-        trans_from: '',
-        trans_to: '',
-        fixed_amount: '',
-        percentage: '',
-      }],
-
+      revenueSharingRule: [
+        {
+          trans_from: '',
+          trans_to: '',
+          fixed_amount: '',
+          percentage: '',
+        },
+      ],
 
       trans_type: '',
       active: 'Active',
@@ -237,7 +236,6 @@ export default class BankCreateFee extends Component {
       });
   };
 
-
   createRules = event => {
     event.preventDefault();
     // if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
@@ -279,7 +277,7 @@ export default class BankCreateFee extends Component {
                   this.success();
                   let ba = this.state.bank;
                   let history = this.props.history;
-                  setTimeout(() =>  {
+                  setTimeout(() => {
                     // history.push('/bank/fees/');
                     this.createRevenueRule();
                   }, 1000);
@@ -307,61 +305,60 @@ export default class BankCreateFee extends Component {
   };
 
   createRevenueRule = () => {
-    this.setState({createRulesLoading: true})
-    let {
-      name,
-      trans_type,
-      active,
-      ranges,
-      bank_id,
-      token
-    } = this.state;
+    this.setState({ createRulesLoading: true });
+    let { name, trans_type, active, ranges, bank_id, token } = this.state;
 
     ranges = ranges.map(r => ({
-          trans_from: r.trans_from,
-          trans_to: r.trans_to,
-          fixed_amount: r.revenue_sharing_fixed_amount,
-          percentage: r.revenue_sharing_percentage,
+      trans_from: r.trans_from,
+      trans_to: r.trans_to,
+      fixed_amount: r.revenue_sharing_fixed_amount,
+      percentage: r.revenue_sharing_percentage,
     }));
 
-    axios.post(`${API_URL}/createRules`, {name, trans_type, active, ranges, bank_id, token}).then(res => {
-      if (res.status == 200) {
-        if (res.data.error) {
-          throw res.data.error;
+    axios
+      .post(`${API_URL}/createRules`, {
+        name,
+        trans_type,
+        active,
+        ranges,
+        bank_id,
+        token,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState(
+              {
+                notification: 'Rule added',
+              },
+              () => {
+                this.success();
+                let ba = this.state.bank;
+                let history = this.props.history;
+                setTimeout(function() {
+                  history.push('/bank/fees/');
+                }, 1000);
+              },
+            );
+          }
         } else {
-          this.setState(
-            {
-              notification: 'Rule added',
-            },
-            () => {
-              this.success();
-              let ba = this.state.bank;
-              let history = this.props.history;
-              setTimeout(function() {
-                history.push('/bank/fees/');
-              }, 1000);
-            },
-          );
+          const error = new Error(res.data.error);
+          throw error;
         }
-      } else {
-        const error = new Error(res.data.error);
-        throw error;
-      }
-      this.setState({
-        createRulesLoading: false,
+        this.setState({
+          createRulesLoading: false,
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          createRulesLoading: false,
+        });
+        this.error();
       });
-    }).catch(err => {
-      this.setState({
-        notification: err.response
-          ? err.response.data.error
-          : err.toString(),
-        createRulesLoading: false,
-      });
-      this.error();
-    })
-  }
-
-
+  };
 
   removeFile = key => {
     this.setState({
@@ -374,8 +371,10 @@ export default class BankCreateFee extends Component {
     var l = temp.length;
     var last = temp[l - 1].trans_to;
 
-    var { revenue_sharing_percentage, revenue_sharing_fixed_amount } = temp[ l - 1];
-   
+    var { revenue_sharing_percentage, revenue_sharing_fixed_amount } = temp[
+      l - 1
+    ];
+
     if (last == '') {
       this.setState(
         {
@@ -402,8 +401,8 @@ export default class BankCreateFee extends Component {
         trans_to: '',
         fixed_amount: '',
         percentage: '',
-        revenue_sharing_fixed_amount: "",
-        revenue_sharing_percentage: ""
+        revenue_sharing_fixed_amount: '',
+        revenue_sharing_percentage: '',
       });
       this.setState({
         ranges: temp,
@@ -562,7 +561,7 @@ export default class BankCreateFee extends Component {
     this.setState({
       loading: false,
     });
-  };
+  }
 
   render() {
     function inputFocus(e) {
@@ -601,11 +600,11 @@ export default class BankCreateFee extends Component {
         <Container verticalMargin>
           <BankSidebarTwo active="fees" />
           <Main>
-            <Card bigPadding >
+            <Card bigPadding>
               <div className="cardHeader">
                 <div className="cardHeaderLeft flex">
                   <A href="/bank/fees">
-                    <i className="material-icons" >arrow_back</i>
+                    <i className="material-icons">arrow_back</i>
                   </A>
                   <h3>Create Fee Rules</h3>
                 </div>
@@ -667,30 +666,30 @@ export default class BankCreateFee extends Component {
                   <Row>
                     <Col>
                       <FormGroup>
-                      <TextInput
-                      type="text"
-                      name="trans_from"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.trans_from}
-                      onChange={this.handleInputChange}
-                      placeholder="From"
-                      required
-                    />
+                        <TextInput
+                          type="text"
+                          name="trans_from"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.trans_from}
+                          onChange={this.handleInputChange}
+                          placeholder="From"
+                          required
+                        />
                       </FormGroup>
                     </Col>
                     <Col>
                       <FormGroup>
-                      <TextInput
-                      type="text"
-                      name="trans_to"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.trans_to}
-                      onChange={this.handleInputChange}
-                      placeholder="To"
-                      required
-                    />
+                        <TextInput
+                          type="text"
+                          name="trans_to"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.trans_to}
+                          onChange={this.handleInputChange}
+                          placeholder="To"
+                          required
+                        />
                       </FormGroup>
                     </Col>
                   </Row>
@@ -779,10 +778,9 @@ export default class BankCreateFee extends Component {
                               data-key={i}
                             />
                           </FormGroup>
-                          
                         </Col>
                         <Col cW="45%" mR="2%">
-                        <FormGroup>
+                          <FormGroup>
                             <label>Revenue Fixed Amount*</label>
                             <TextInput
                               required
@@ -797,7 +795,7 @@ export default class BankCreateFee extends Component {
                           </FormGroup>
                         </Col>
                         <Col cW="23%" mR="2%">
-                        <FormGroup>
+                          <FormGroup>
                             <label>Revenue %*</label>
                             <TextInput
                               required
@@ -821,8 +819,7 @@ export default class BankCreateFee extends Component {
                         </Col>
                       </Row>
                     );
-                  })
-                  }
+                  })}
                   <Button
                     type="button"
                     accentedBtn
@@ -832,8 +829,7 @@ export default class BankCreateFee extends Component {
                     <span>Add Another Range</span>
                   </Button>
 
-
-{/* 
+                  {/* 
                   <div style={{padding: 12}} />
                   <H4>Revenue sharing rules tracsaction count</H4>
                   {this.state.revenueSharingRule.map(function(v, i) {
@@ -941,9 +937,6 @@ export default class BankCreateFee extends Component {
                     <span>Add Another Revenue Range</span>
                   </Button>
  */}
-
-
-
 
                   {this.createRulesLoading ? (
                     <Button filledBtn marginTop="100px" disabled>
