@@ -14,12 +14,15 @@ import Loader from 'components/Loader';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 
+// import withStyles from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core';
+
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
-import { TextField } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 
 toast.configure({
   position: 'bottom-right',
@@ -33,6 +36,12 @@ const token = localStorage.getItem('cashierLogged');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
 const cid = localStorage.getItem('cashierId');
+
+const styles = theme => ({
+  currencyElement: {
+    // color: 'red',
+  },
+});
 
 class CashierClosingBalance extends Component {
   constructor() {
@@ -348,7 +357,10 @@ class CashierClosingBalance extends Component {
         if (d.data.length != 0) {
           this.setState(prevState => ({
             ...prevState,
-            denomination: d.data[0].denomination.map(d => ({ val: d, num: '' })),
+            denomination: d.data[0].denomination.map(d => ({
+              val: d,
+              num: '',
+            })),
             currency: d.data[0].value,
           }));
         }
@@ -370,6 +382,7 @@ class CashierClosingBalance extends Component {
         target.parentElement.querySelector('label').classList.remove('focused');
       }
     }
+    const { classes } = this.props;
     const dis = this;
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
@@ -590,6 +603,7 @@ class CashierClosingBalance extends Component {
                         >
                           <Grid item xs={3}>
                             <Typography
+                              className={classes.currencyElement}
                               key={`text-field-${index}`}
                               style={{
                                 fontWeight: 600,
@@ -653,7 +667,14 @@ class CashierClosingBalance extends Component {
                     <Col cW="20%" textAlign="center">
                       =
                     </Col>
-                    <Col cW="35%">{this.state.denomination.reduce((a, c) =>  Number(c.num * c.val|| 0) + a, 0)}</Col>
+                    <Col cW="35%">
+                      {
+                        (this.state.total = this.state.denomination.reduce(
+                          (a, c) => Number(c.num * c.val || 0) + a,
+                          0,
+                        ))
+                      }
+                    </Col>
                   </Row>
 
                   {this.state.editBranchLoading ? (
@@ -714,4 +735,4 @@ class CashierClosingBalance extends Component {
   }
 }
 
-export default CashierClosingBalance;
+export default withStyles(styles)(CashierClosingBalance);

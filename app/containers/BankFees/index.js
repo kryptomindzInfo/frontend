@@ -9,6 +9,16 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
 
+import { Grid, Typography, TextField } from '@material-ui/core';
+
+import MaterialTable from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
+import MaterialButton from '@material-ui/core/Button';
+import classNames from 'classnames';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import Wrapper from 'components/Wrapper';
@@ -30,6 +40,7 @@ import FormGroup from 'components/FormGroup';
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
+import { withStyles } from '@material-ui/core';
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -60,7 +71,34 @@ const Tab2 = styled.div`
 const token = localStorage.getItem('bankLogged');
 const bid = localStorage.getItem('bankId');
 
-export default class BankFees extends Component {
+const styles = theme => ({
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+  },
+  dense: {
+    marginTop: 16,
+  },
+  table: {
+    minWidth: 700,
+  },
+  bankBranches: {
+    padding: '3%',
+    fontWeight: 600,
+  },
+});
+
+let id = 0;
+function createData(name, calories, fat, carbs, protein) {
+  id += 1;
+  return { id, name, calories, fat, carbs, protein };
+}
+const rows = [
+  createData('AA11', 'AXIS', 'Submit'),
+  createData('AA11', 'AXIS', 'Submit'),
+];
+
+export class BankFees extends Component {
   constructor() {
     super();
     this.state = {
@@ -92,6 +130,11 @@ export default class BankFees extends Component {
       otp: '',
       showOtp: false,
       isInfraFeeVisible: true,
+      revenueRuleDistributionPage: false,
+      percentage: '',
+      bankBranchesTable: true,
+      bankPartnersTable: false,
+      bankMerchantsTable: false,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -115,7 +158,7 @@ export default class BankFees extends Component {
   };
 
   goBankEdit = (b, i) => {
-    this.props.history.push('/bank/edit-fee/'+b+ "/" + i);
+    this.props.history.push('/bank/edit-fee/' + b + '/' + i);
   };
 
   showMiniPopUp = (b, r) => {
@@ -383,7 +426,11 @@ export default class BankFees extends Component {
 
   getBankRules = () => {
     axios
-      .post(`${API_URL}/getAll`, { type: 'bank', token:token, page: 'bankfee' })
+      .post(`${API_URL}/getAll`, {
+        type: 'bank',
+        token: token,
+        page: 'bankfee',
+      })
       .then(res => {
         if (res.status == 200) {
           console.log(res.data);
@@ -436,7 +483,28 @@ export default class BankFees extends Component {
     });
   };
 
+  showRevenueRuleDistributionPage = () => {
+    this.setState({ revenueRuleDistributionPage: 'true' });
+  };
+
+  showBankBranches = () => {
+    this.setState({
+      bankBranchesTable: true,
+      bankPartnersTable: false,
+      bankMerchantsTable: false,
+    });
+  };
+  showBankPartners = () => {
+    this.setState({
+      bankBranchesTable: false,
+      bankPartnersTable: true,
+      bankMerchantsTable: false,
+    });
+  };
+
   render() {
+    const { classes } = this.props;
+
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector('label').classList.add('focused');
@@ -472,7 +540,13 @@ export default class BankFees extends Component {
         <BankHeader />
         <Container verticalMargin>
           <BankSidebarTwo active="fees" />
-          <Main>
+          <Main
+            style={{
+              display: `${
+                this.state.revenueRuleDistributionPage ? 'none' : 'block'
+              }`,
+            }}
+          >
             <ActionBar
               marginBottom="33px"
               inputWidth="calc(100% - 241px)"
@@ -530,24 +604,22 @@ export default class BankFees extends Component {
                           return (
                             <tr key={b._id}>
                               <td>
-                              {
-                                b.edit_status == 0 ? 
-                                <span>{r1.name}</span>
-                                :
-                                <span>{b.name}</span>
-                              }
+                                {b.edit_status == 0 ? (
+                                  <span>{r1.name}</span>
+                                ) : (
+                                  <span>{b.name}</span>
+                                )}
                               </td>
                               <td className="tac">
-                              {
-                                b.edit_status == 0 ? 
-                                <span>{r1.trans_type}</span>
-                                :
-                                <span>{b.trans_type}</span>
-                              }
+                                {b.edit_status == 0 ? (
+                                  <span>{r1.trans_type}</span>
+                                ) : (
+                                  <span>{b.trans_type}</span>
+                                )}
                               </td>
-                             
+
                               <td>
-                                {r.map((v) => {
+                                {r.map(v => {
                                   return (
                                     <div>
                                       Count:{' '}
@@ -571,16 +643,24 @@ export default class BankFees extends Component {
                                   <span className="absoluteMiddleRight primary popMenuTrigger">
                                     <i className="material-icons ">block</i>
                                   </span>
-                                ) : 
+                                ) : (
+                                  <Button
+                                    className="addBankButton"
+                                    onClick={() =>
+                                      dis.goBankEdit(
+                                        this.state.bankRules[i]._id,
+                                        b._id,
+                                      )
+                                    }
+                                  >
+                                    {b.edit_status == 0
+                                      ? 'Pending'
+                                      : b.edit_status == 2
+                                      ? 'Declined'
+                                      : 'Approved'}
+                                  </Button>
+                                )
 
-                                
-                                
-                                <Button className="addBankButton" onClick={() => dis.goBankEdit(this.state.bankRules[i]._id, b._id)}>
-                                  {b.edit_status == 0 ? "Pending" : (b.edit_status == 2 ? "Declined" :  "Approved")}
-                                </Button>
-                                
-                                
-                                
                                 // b.edit_status != 0 ? (
                                 //   b.edit_status == 1 ? (
                                 //     // <a className="text-light">approved</a>
@@ -597,10 +677,6 @@ export default class BankFees extends Component {
                                 //   </Button>
                                 //   // <span>Peding approval</span>
                                 // )
-                                
-                                
-                                
-                                
                                 }
                               </td>
                             </tr>
@@ -627,14 +703,13 @@ export default class BankFees extends Component {
                 </div>
 
                 <A href="/bank/create-fee" float="right">
-                <Button className="addBankButton" flex onClick={this.try}>
-                  <i className="material-icons">add</i>
-                  <span>
-                    <span>Create Fee</span>
-                  </span>
-                </Button>
+                  <Button className="addBankButton" flex onClick={this.try}>
+                    <i className="material-icons">add</i>
+                    <span>
+                      <span>Create Fee</span>
+                    </span>
+                  </Button>
                 </A>
-
               </ActionBar>
               <Card bigPadding>
                 <div className="cardHeader">
@@ -654,23 +729,29 @@ export default class BankFees extends Component {
                         <th>Transaction Type</th>
                         <th>Transaction Range</th>
                         <th>Transaction Count</th>
-                        <th></th>
+                        <th />
+                        <th />
                       </tr>
                     </thead>
                     <tbody>
                       {this.state.bankRules && this.state.bankRules.length > 0
                         ? this.state.bankRules.map((b, i) => {
                             var r = JSON.parse(b.editedRanges);
-                            
+
                             return (
                               <tr key={b._id}>
                                 <td>{b.name}</td>
                                 <td className="tac">{b.trans_type}</td>
-                                <td className="tac">{CURRENCY} <span className='green'>{b.trans_from}</span> - {CURRENCY} <span className='green'>{b.trans_to}</span> </td>
+                                <td className="tac">
+                                  {CURRENCY}{' '}
+                                  <span className="green">{b.trans_from}</span>{' '}
+                                  - {CURRENCY}{' '}
+                                  <span className="green">{b.trans_to}</span>{' '}
+                                </td>
                                 {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
                           <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
                                 <td>
-                                  {r.map((v)  => {
+                                  {r.map(v => {
                                     return (
                                       <div>
                                         Count:{' '}
@@ -690,14 +771,34 @@ export default class BankFees extends Component {
                                   })}
                                 </td>
                                 <td className="tac bold">
-                            {
-                              b.status == 0 ?
-                              <span className="material-icons">block</span>
-                              :
-                              <Button className="addBankButton" onClick={ () => dis.goBankEdit(b._id, this.state.rules[i]._id)} className="pointer">Edit</Button>
-                            }
-                            
-                            </td>
+                                  {b.status == 0 ? (
+                                    <span className="material-icons">
+                                      block
+                                    </span>
+                                  ) : (
+                                    <Button
+                                      className="addBankButton"
+                                      onClick={() =>
+                                        dis.goBankEdit(
+                                          b._id,
+                                          this.state.rules[i]._id,
+                                        )
+                                      }
+                                      className="pointer"
+                                    >
+                                      Edit
+                                    </Button>
+                                  )}
+                                </td>
+                                <td>
+                                  <Button
+                                    onClick={
+                                      this.showRevenueRuleDistributionPage
+                                    }
+                                  >
+                                    Edit Revenue
+                                  </Button>
+                                </td>
                               </tr>
                             );
                           })
@@ -708,7 +809,240 @@ export default class BankFees extends Component {
               </Card>
             </div>
           </Main>
+          {this.state.revenueRuleDistributionPage ? (
+            // <div style={{ border: '1px solid grey' }}>
+            <Grid container style={{ width: '74%', border: '1px solid grey' }}>
+              <Grid
+                container
+                style={{ textAlign: 'center', background: '#f5a623' }}
+              >
+                <Typography
+                  variant="h4"
+                  style={{ margin: '1% 0 1% 22%', color: 'white' }}
+                >
+                  Revenue Rule Distribution (Fee Rule)
+                </Typography>
+              </Grid>
+              <Grid
+                style={{
+                  margin: '2%',
+                  border: '1px solid #d0d6d1',
+                  paddingTop: '3%',
+                }}
+                container
+              >
+                <Grid item md={12}>
+                  <Typography
+                    variant="subtitle1"
+                    style={{ paddingLeft: '3%', color: '#417505' }}
+                  >
+                    Revenue with Infra
+                  </Typography>
+                </Grid>
+
+                <Grid style={{ margin: '0 0 2% 2%' }} item md={3}>
+                  <TextField
+                    id="outlined-dense"
+                    label="Percentage"
+                    className={classNames(classes.textField, classes.dense)}
+                    margin="dense"
+                    variant="outlined"
+                    name="percentageRevenueRuleDistribution"
+                    value={this.state.percentageRevenueRuleDistribution}
+                  />
+                </Grid>
+                <Grid item md={1}>
+                  <Typography
+                    style={{ paddingTop: '40%', textAlign: 'center' }}
+                  >
+                    and
+                  </Typography>
+                </Grid>
+                <Grid item md={3}>
+                  <TextField
+                    id="outlined-dense"
+                    label="Fixed"
+                    className={classNames(classes.textField, classes.dense)}
+                    margin="dense"
+                    variant="outlined"
+                    name="fixedAmtRevenueRuleDistribution"
+                    value={this.state.fixedAmtRevenueRuleDistribution}
+                  />
+                </Grid>
+                <Grid item md={3}>
+                  <MaterialButton
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      height: '40%',
+                      marginTop: '23px',
+                      marginLeft: '13%',
+                    }}
+                    className={classes.button}
+                  >
+                    Send for Approval
+                  </MaterialButton>
+                </Grid>
+              </Grid>
+              <Grid
+                style={{
+                  margin: '2%',
+                  border: '1px solid #d0d6d1',
+                  paddingTop: '3%',
+                }}
+                container
+              >
+                <Grid item md={12}>
+                  <span
+                    className={`${
+                      this.state.bankBranchesTable ? 'ActiveTab' : 'InactiveTab'
+                    } `}
+                    // className={classes.bankBranches}
+                    onClick={this.showBankBranches}
+                  >
+                    Bank Branches
+                  </span>
+                  <span
+                    className={`${
+                      this.state.bankPartnersTable ? 'ActiveTab' : 'InactiveTab'
+                    } `}
+                    onClick={this.showBankPartners}
+                  >
+                    Bank Partner
+                  </span>
+                  <span
+                    className={`${
+                      this.state.bankMerchantsTable
+                        ? 'ActiveTab'
+                        : 'InactiveTab'
+                    } `}
+                    onClick={this.showBankMerchants}
+                  >
+                    Bank Merchants
+                  </span>
+                </Grid>
+                <MaterialTable
+                  style={{
+                    display: `${
+                      this.state.bankBranchesTable ? 'block' : 'none'
+                    }`,
+                  }}
+                  className={classes.table}
+                >
+                  <Grid
+                    style={{
+                      marginTop: '1%',
+                      border: '1px solid #d0d6d1',
+                      paddingTop: '3%',
+                    }}
+                    container
+                  >
+                    <Grid item md={10}>
+                      <Typography
+                        variant="subtitle1"
+                        style={{ paddingLeft: '3%', color: '#417505' }}
+                      >
+                        Standard Revenue Sharing with Branches
+                      </Typography>
+                    </Grid>
+
+                    <Grid style={{ margin: '0 0 2% 2%' }} item md={3}>
+                      <TextField
+                        id="outlined-dense"
+                        label="Claim Percentage"
+                        className={classNames(classes.textField, classes.dense)}
+                        margin="dense"
+                        variant="outlined"
+                        name="claimRevenueRuleDistribution"
+                        value={this.state.claimRevenueRuleDistribution}
+                      />
+                    </Grid>
+                    <Grid item md={1}>
+                      <Typography
+                        style={{ paddingTop: '40%', textAlign: 'center' }}
+                      >
+                        and
+                      </Typography>
+                    </Grid>
+                    <Grid item md={3}>
+                      <TextField
+                        id="outlined-dense"
+                        label="Send Percentage"
+                        className={classNames(classes.textField, classes.dense)}
+                        margin="dense"
+                        variant="outlined"
+                        name="sendRevenueRuleDistribution"
+                        value={this.state.sendRevenueRuleDistribution}
+                      />
+                    </Grid>
+                    <Grid item md={3}>
+                      <MaterialButton
+                        variant="contained"
+                        color="primary"
+                        style={{
+                          height: '40%',
+                          marginTop: '23px',
+                          marginLeft: '13%',
+                        }}
+                        className={classes.button}
+                      >
+                        Update
+                      </MaterialButton>
+                    </Grid>
+                  </Grid>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Branch ID</TableCell>
+                      <TableCell align="right">Branch Name</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map(row => (
+                      <TableRow key={row.id}>
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="right">{row.calories}</TableCell>
+                        <TableCell align="right">{row.fat}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </MaterialTable>
+                <MaterialTable
+                  style={{
+                    display: `${
+                      this.state.bankPartnersTable ? 'block' : 'none'
+                    }`,
+                  }}
+                  className={classes.table}
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>ID</TableCell>
+                      <TableCell align="right">Name</TableCell>
+                      <TableCell align="right"></TableCell>
+                     
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {rows.map(row => (
+                      <TableRow key={row.id}>
+                        <TableCell component="th" scope="row">
+                          {row.name}
+                        </TableCell>
+                        <TableCell align="right">{row.calories}</TableCell>
+                        <TableCell align="right">{row.fat}</TableCell>
+                        
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </MaterialTable>
+              </Grid>
+            </Grid>
+          ) : // </div>
+          null}
         </Container>
+
         {/* {this.state.popup ? (
          
           <div>
@@ -771,7 +1105,7 @@ export default class BankFees extends Component {
                       </div>
                     );
                   })}
-                  
+
                   <Row>
                     <Col>
                       <FormGroup>
@@ -824,8 +1158,10 @@ export default class BankFees extends Component {
               </div>
             )}
           </MiniPopUp>
-        ) : null} 
+        ) : null}
       </Wrapper>
     );
   }
 }
+
+export default withStyles(styles)(BankFees);

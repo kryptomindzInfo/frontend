@@ -21,6 +21,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 // Import root app
 import App from 'containers/App';
 
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#417505',
+    },
+  },
+});
+
 // Import Language Provider
 import LanguageProvider from 'containers/LanguageProvider';
 
@@ -43,11 +53,13 @@ const MOUNT_NODE = document.getElementById('app');
 const render = messages => {
   ReactDOM.render(
     <Provider store={store}>
-      <LanguageProvider messages={messages}>
-        <ConnectedRouter history={history}>
-          <App />
-        </ConnectedRouter>
-      </LanguageProvider>
+      <MuiThemeProvider theme={theme}>
+        <LanguageProvider messages={messages}>
+          <ConnectedRouter history={history}>
+            <App />
+          </ConnectedRouter>
+        </LanguageProvider>
+      </MuiThemeProvider>
     </Provider>,
     MOUNT_NODE,
   );
