@@ -396,8 +396,8 @@ export default class BankEditFee extends Component {
               let ba = this.state.bank;
               let history = this.props.history;
               setTimeout(() => {
-                // history.push('/bank/fees/');
-                this.editRrRules()
+                history.push('/bank/fees/');
+                // this.editRrRules()
               }, 1000);
           });
           }
@@ -554,7 +554,7 @@ export default class BankEditFee extends Component {
         if(res.status == 200){
           var temp = JSON.parse(res.data.row.ranges);
           this.setState({ loading:false, name: res.data.row.name, trans_type: res.data.row.trans_type, active: res.data.row.active, ranges: temp, trans_from: res.data.row.trans_from, trans_to: res.data.row.trans_to}, ()=>{
-            this.getRrFees();
+            // this.getRrFees();
           });
         }
       })
@@ -566,7 +566,7 @@ export default class BankEditFee extends Component {
   
 
   componentDidMount() {
-    this.setState({ rule_id: this.props.match.params.fee, rrId: this.props.match.params.rrId }, () => {
+    this.setState({ rule_id: this.props.match.params.fee }, () => {
       // this.getBanks();
      this.getFees();
     });
@@ -678,7 +678,7 @@ Edit Revenue sharing Rule</h3>
                   </FormGroup>
                   </Col>
                 </Row>
-                <H4>Transaction Range</H4>
+                {/* <H4>Transaction Range</H4>
                   <Row>
                     <Col>
                       <FormGroup>
@@ -708,7 +708,7 @@ Edit Revenue sharing Rule</h3>
                     />
                       </FormGroup>
                     </Col>
-                  </Row>
+                  </Row> */}
 
                 <H4>Transaction Count</H4>
                 {
@@ -802,10 +802,17 @@ Edit Revenue sharing Rule</h3>
                     />
                     </FormGroup>
                     
-                    
+                    {i > 0 ? (
+                            <span
+                              onClick={() => dis.removeRange(i)}
+                              className="material-icons removeBtn pointer"
+                            >
+                              cancel
+                            </span>
+                          ) : null}
                     </Col>
 
-                    <Col cW="45%" mR="2%">
+                    {/* <Col cW="45%" mR="2%">
                         <FormGroup>
                             <label>Revenue Fixed Amount*</label>
                             <TextInput
@@ -833,16 +840,9 @@ Edit Revenue sharing Rule</h3>
                               onChange={dis.handleInputChange2}
                               data-key={i}
                             />
-                          </FormGroup>
-                          {i > 0 ? (
-                            <span
-                              onClick={() => dis.removeRange(i)}
-                              className="material-icons removeBtn pointer"
-                            >
-                              cancel
-                            </span>
-                          ) : null}
-                        </Col>
+                          </FormGroup> */}
+                         
+                        {/* </Col> */}
                   </Row>
                   })
                 }

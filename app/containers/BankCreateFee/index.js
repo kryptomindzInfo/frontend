@@ -89,8 +89,8 @@ export default class BankCreateFee extends Component {
 
       trans_type: '',
       active: 'Active',
-      trans_from: '',
-      trans_to: '',
+      trans_from: 0,
+      trans_to: 100,
       transcount_from: '',
       transcount_to: '',
       fixed_amount: '',
@@ -278,8 +278,8 @@ export default class BankCreateFee extends Component {
                   let ba = this.state.bank;
                   let history = this.props.history;
                   setTimeout(() => {
-                    // history.push('/bank/fees/');
-                    this.createRevenueRule();
+                    history.push('/bank/fees/');
+                    // this.createRevenueRule();
                   }, 1000);
                 },
               );
@@ -662,7 +662,7 @@ export default class BankCreateFee extends Component {
                       </FormGroup>
                     </Col>
                   </Row>
-                  <H4>Transaction Range</H4>
+                  {/* <H4>Transaction Range</H4>
                   <Row>
                     <Col>
                       <FormGroup>
@@ -692,7 +692,7 @@ export default class BankCreateFee extends Component {
                         />
                       </FormGroup>
                     </Col>
-                  </Row>
+                  </Row> */}
 
                   <H4>Transaction Count</H4>
                   {this.state.ranges.map(function(v, i) {
@@ -778,8 +778,16 @@ export default class BankCreateFee extends Component {
                               data-key={i}
                             />
                           </FormGroup>
+                          {i > 0 ? (
+                            <span
+                              onClick={() => dis.removeRange(i)}
+                              className="material-icons removeBtn pointer"
+                            >
+                              cancel
+                            </span>
+                          ) : null}
                         </Col>
-                        <Col cW="45%" mR="2%">
+                        {/* <Col cW="45%" mR="2%">
                           <FormGroup>
                             <label>Revenue Fixed Amount*</label>
                             <TextInput
@@ -793,8 +801,8 @@ export default class BankCreateFee extends Component {
                               data-key={i}
                             />
                           </FormGroup>
-                        </Col>
-                        <Col cW="23%" mR="2%">
+                        </Col> */}
+                        {/* <Col cW="23%" mR="2%">
                           <FormGroup>
                             <label>Revenue %*</label>
                             <TextInput
@@ -807,16 +815,9 @@ export default class BankCreateFee extends Component {
                               onChange={dis.handleInputChange2}
                               data-key={i}
                             />
-                          </FormGroup>
-                          {i > 0 ? (
-                            <span
-                              onClick={() => dis.removeRange(i)}
-                              className="material-icons removeBtn pointer"
-                            >
-                              cancel
-                            </span>
-                          ) : null}
-                        </Col>
+                          </FormGroup> */}
+                          
+                        {/* </Col> */}
                       </Row>
                     );
                   })}

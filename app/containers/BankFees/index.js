@@ -38,6 +38,7 @@ import Col from 'components/Col';
 import FormGroup from 'components/FormGroup';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
+import RevenueRuleDistubutionPage from './RevenueRuleDistributionPage'; 
 
 import 'react-toastify/dist/ReactToastify.css';
 import { withStyles } from '@material-ui/core';
@@ -129,12 +130,16 @@ export class BankFees extends Component {
       rules: [],
       otp: '',
       showOtp: false,
-      isInfraFeeVisible: true,
+      isInfraFeeVisible: false,
       revenueRuleDistributionPage: false,
       percentage: '',
       bankBranchesTable: true,
       bankPartnersTable: false,
       bankMerchantsTable: false,
+
+      bankFeeDetails: "",
+      selectedBankFeeId: "",
+      revenueData: ""
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -157,8 +162,8 @@ export class BankFees extends Component {
     });
   };
 
-  goBankEdit = (b, i) => {
-    this.props.history.push('/bank/edit-fee/' + b + '/' + i);
+  goBankEdit = (b) => {
+    this.props.history.push('/bank/edit-fee/' + b);
   };
 
   showMiniPopUp = (b, r) => {
@@ -483,8 +488,27 @@ export class BankFees extends Component {
     });
   };
 
-  showRevenueRuleDistributionPage = () => {
-    this.setState({ revenueRuleDistributionPage: 'true' });
+  showRevenueRuleDistributionPage = (bankFee) => {
+    this.setState({ revenueRuleDistributionPage: 'true', selectedBankFeeId: bankFee._id, bankFeeDetails: bankFee });
+    // console.log(bankFeeId);
+
+    axios.get(`${API_URL}/getRevenueFeeFromBankFeeId/${bankFee._id}`).then(d => {
+      const {data} = d
+      console.log(data);
+      if(data.code == 1) {
+        this.setState({
+          revenueData: data
+        })
+      }else {
+        this.setState({
+          revenueData: ""
+        })
+      }
+
+    }).catch(err => {
+      console.log(err);
+    })
+
   };
 
   showBankBranches = () => {
@@ -553,14 +577,14 @@ export class BankFees extends Component {
               className="clr"
             >
               <div className="clr">
-                <div
+                {/* <div
                   className={`${
                     this.state.isInfraFeeVisible ? 'ActiveTab' : 'InactiveTab'
                   }`}
                   onClick={this.showInfraFeeView}
                 >
                   Bank and Infra
-                </div>
+                </div> */}
                 <div
                   className={`${
                     this.state.isInfraFeeVisible ? 'InactiveTab' : 'ActiveTab'
@@ -648,7 +672,7 @@ export class BankFees extends Component {
                                     className="addBankButton"
                                     onClick={() =>
                                       dis.goBankEdit(
-                                        this.state.bankRules[i]._id,
+                                        // this.state.bankRules[i]._id,
                                         b._id,
                                       )
                                     }
@@ -781,7 +805,7 @@ export class BankFees extends Component {
                                       onClick={() =>
                                         dis.goBankEdit(
                                           b._id,
-                                          this.state.rules[i]._id,
+                                          // this.state.rules[i]._id,
                                         )
                                       }
                                       className="pointer"
@@ -792,8 +816,8 @@ export class BankFees extends Component {
                                 </td>
                                 <td>
                                   <Button
-                                    onClick={
-                                      this.showRevenueRuleDistributionPage
+                                    onClick={() => 
+                                      this.showRevenueRuleDistributionPage(b)
                                     }
                                   >
                                     Edit Revenue
@@ -809,238 +833,34 @@ export class BankFees extends Component {
               </Card>
             </div>
           </Main>
+
+
+
+
+
+
+
+
+
+
           {this.state.revenueRuleDistributionPage ? (
             // <div style={{ border: '1px solid grey' }}>
-            <Grid container style={{ width: '74%', border: '1px solid grey' }}>
-              <Grid
-                container
-                style={{ textAlign: 'center', background: '#f5a623' }}
-              >
-                <Typography
-                  variant="h4"
-                  style={{ margin: '1% 0 1% 22%', color: 'white' }}
-                >
-                  Revenue Rule Distribution (Fee Rule)
-                </Typography>
-              </Grid>
-              <Grid
-                style={{
-                  margin: '2%',
-                  border: '1px solid #d0d6d1',
-                  paddingTop: '3%',
-                }}
-                container
-              >
-                <Grid item md={12}>
-                  <Typography
-                    variant="subtitle1"
-                    style={{ paddingLeft: '3%', color: '#417505' }}
-                  >
-                    Revenue with Infra
-                  </Typography>
-                </Grid>
+              <RevenueRuleDistubutionPage 
 
-                <Grid style={{ margin: '0 0 2% 2%' }} item md={3}>
-                  <TextField
-                    id="outlined-dense"
-                    label="Percentage"
-                    className={classNames(classes.textField, classes.dense)}
-                    margin="dense"
-                    variant="outlined"
-                    name="percentageRevenueRuleDistribution"
-                    value={this.state.percentageRevenueRuleDistribution}
-                  />
-                </Grid>
-                <Grid item md={1}>
-                  <Typography
-                    style={{ paddingTop: '40%', textAlign: 'center' }}
-                  >
-                    and
-                  </Typography>
-                </Grid>
-                <Grid item md={3}>
-                  <TextField
-                    id="outlined-dense"
-                    label="Fixed"
-                    className={classNames(classes.textField, classes.dense)}
-                    margin="dense"
-                    variant="outlined"
-                    name="fixedAmtRevenueRuleDistribution"
-                    value={this.state.fixedAmtRevenueRuleDistribution}
-                  />
-                </Grid>
-                <Grid item md={3}>
-                  <MaterialButton
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      height: '40%',
-                      marginTop: '23px',
-                      marginLeft: '13%',
-                    }}
-                    className={classes.button}
-                  >
-                    Send for Approval
-                  </MaterialButton>
-                </Grid>
-              </Grid>
-              <Grid
-                style={{
-                  margin: '2%',
-                  border: '1px solid #d0d6d1',
-                  paddingTop: '3%',
-                }}
-                container
-              >
-                <Grid item md={12}>
-                  <span
-                    className={`${
-                      this.state.bankBranchesTable ? 'ActiveTab' : 'InactiveTab'
-                    } `}
-                    // className={classes.bankBranches}
-                    onClick={this.showBankBranches}
-                  >
-                    Bank Branches
-                  </span>
-                  <span
-                    className={`${
-                      this.state.bankPartnersTable ? 'ActiveTab' : 'InactiveTab'
-                    } `}
-                    onClick={this.showBankPartners}
-                  >
-                    Bank Partner
-                  </span>
-                  <span
-                    className={`${
-                      this.state.bankMerchantsTable
-                        ? 'ActiveTab'
-                        : 'InactiveTab'
-                    } `}
-                    onClick={this.showBankMerchants}
-                  >
-                    Bank Merchants
-                  </span>
-                </Grid>
-                <MaterialTable
-                  style={{
-                    display: `${
-                      this.state.bankBranchesTable ? 'block' : 'none'
-                    }`,
-                  }}
-                  className={classes.table}
-                >
-                  <Grid
-                    style={{
-                      marginTop: '1%',
-                      border: '1px solid #d0d6d1',
-                      paddingTop: '3%',
-                    }}
-                    container
-                  >
-                    <Grid item md={10}>
-                      <Typography
-                        variant="subtitle1"
-                        style={{ paddingLeft: '3%', color: '#417505' }}
-                      >
-                        Standard Revenue Sharing with Branches
-                      </Typography>
-                    </Grid>
-
-                    <Grid style={{ margin: '0 0 2% 2%' }} item md={3}>
-                      <TextField
-                        id="outlined-dense"
-                        label="Claim Percentage"
-                        className={classNames(classes.textField, classes.dense)}
-                        margin="dense"
-                        variant="outlined"
-                        name="claimRevenueRuleDistribution"
-                        value={this.state.claimRevenueRuleDistribution}
-                      />
-                    </Grid>
-                    <Grid item md={1}>
-                      <Typography
-                        style={{ paddingTop: '40%', textAlign: 'center' }}
-                      >
-                        and
-                      </Typography>
-                    </Grid>
-                    <Grid item md={3}>
-                      <TextField
-                        id="outlined-dense"
-                        label="Send Percentage"
-                        className={classNames(classes.textField, classes.dense)}
-                        margin="dense"
-                        variant="outlined"
-                        name="sendRevenueRuleDistribution"
-                        value={this.state.sendRevenueRuleDistribution}
-                      />
-                    </Grid>
-                    <Grid item md={3}>
-                      <MaterialButton
-                        variant="contained"
-                        color="primary"
-                        style={{
-                          height: '40%',
-                          marginTop: '23px',
-                          marginLeft: '13%',
-                        }}
-                        className={classes.button}
-                      >
-                        Update
-                      </MaterialButton>
-                    </Grid>
-                  </Grid>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Branch ID</TableCell>
-                      <TableCell align="right">Branch Name</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map(row => (
-                      <TableRow key={row.id}>
-                        <TableCell component="th" scope="row">
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </MaterialTable>
-                <MaterialTable
-                  style={{
-                    display: `${
-                      this.state.bankPartnersTable ? 'block' : 'none'
-                    }`,
-                  }}
-                  className={classes.table}
-                >
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell align="right">Name</TableCell>
-                      <TableCell align="right"></TableCell>
-                     
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {rows.map(row => (
-                      <TableRow key={row.id}>
-                        <TableCell component="th" scope="row">
-                          {row.name}
-                        </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                        
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </MaterialTable>
-              </Grid>
-            </Grid>
-          ) : // </div>
+              close={() => this.setState({revenueRuleDistributionPage: false})} 
+              selectedBankFeeId={this.state.selectedBankFeeId}
+              revenueData={this.state.revenueData}
+              bankFeeDetails={this.state.bankFeeDetails}
+              
+              />
+         ) : 
           null}
+
+
+
+
+
+
         </Container>
 
         {/* {this.state.popup ? (
