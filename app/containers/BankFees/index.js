@@ -750,9 +750,9 @@ export class BankFees extends Component {
                     <thead>
                       <tr>
                         <th>Name</th>
-                        <th>Transaction Type</th>
+                        <th style={{width: "10rem"}}>Transaction Type</th>
+                        {/* <th>Transaction Range</th> */}
                         <th>Transaction Range</th>
-                        <th>Transaction Count</th>
                         <th />
                         <th />
                       </tr>
@@ -766,19 +766,19 @@ export class BankFees extends Component {
                               <tr key={b._id}>
                                 <td>{b.name}</td>
                                 <td className="tac">{b.trans_type}</td>
-                                <td className="tac">
+                                {/* <td className="tac">
                                   {CURRENCY}{' '}
                                   <span className="green">{b.trans_from}</span>{' '}
                                   - {CURRENCY}{' '}
                                   <span className="green">{b.trans_to}</span>{' '}
-                                </td>
+                                </td> */}
                                 {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
                           <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
                                 <td>
                                   {r.map(v => {
                                     return (
                                       <div>
-                                        Count:{' '}
+                                        Range:{' '}
                                         <span className="green">
                                           {v.trans_from} - {v.trans_to}
                                         </span>
@@ -820,7 +820,7 @@ export class BankFees extends Component {
                                       this.showRevenueRuleDistributionPage(b)
                                     }
                                   >
-                                    Edit Revenue
+                                    Set Revenue
                                   </Button>
                                 </td>
                               </tr>

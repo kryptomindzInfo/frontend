@@ -694,7 +694,7 @@ export default class BankCreateFee extends Component {
                     </Col>
                   </Row> */}
 
-                  <H4>Transaction Count</H4>
+                  <H4>Transaction Range</H4>
                   {this.state.ranges.map(function(v, i) {
                     return (
                       <Row key={i}>

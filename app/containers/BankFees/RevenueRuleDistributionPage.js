@@ -64,8 +64,8 @@ class RevenueRuleDistubutionPage extends React.Component {
     
     warn = () => toast.warn(this.state.notification);
     state = {
-        revenuePercentage: "",
-        revenueAmount : "",
+        revenuePercentage: 0,
+        revenueAmount : 0,
         
         name : "", trans_type: "", active : "", ranges : "", bank_id: "", token: "",
 
@@ -93,7 +93,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                 branchWithSpecificRevenue : this.state.branchWithSpecificRevenue
             }).then(d => {
                 this.setState({
-                    notification: 'Rules updated',
+                    notification: 'Revenue Rule Sent to Infra for Approval',
                     editRulesLoading: false
                   });
                   this.success();
@@ -161,13 +161,24 @@ class RevenueRuleDistubutionPage extends React.Component {
     }
 
     saveRevenue = () => {
-
+     
+    
+      if ((this.state.revenueAmount != "") || (this.state.revenuePercentage != "" ))
+      {
+      
+      console.log(this.props.revenueData);
         if(this.props.revenueData) {
             this.editRrRules(this.props.revenueData.fee._id);
         }else {
             this.createRevenueRule()
         }
+      }
+      else 
+      {
+        toast.error("Fields cannot be empty");
+        console.log("Empty revenue");
 
+      }
 
     }
 
@@ -318,9 +329,9 @@ class RevenueRuleDistubutionPage extends React.Component {
                 <Grid item>
                 <Typography
                   variant="h4"
-                  // style={{ margin: '1% 0 1% 22%', color: 'white' }}
+                   style={{ color: 'white' }}
                 >
-                  Revenue Rule Distribution (Fee Rule)
+                  { "Revenue Rule Distribution ( " +this.props.bankFeeDetails.name + " )"}
                 </Typography>
                 </Grid>
                 <Grid item>
@@ -351,6 +362,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                     className={classNames(classes.textField, classes.dense)}
                     margin="dense"
                     variant="outlined"
+                    required="true"
                     onChange={(e) => {
                         const val = e.target.value;
                         this.setState({
@@ -374,6 +386,8 @@ class RevenueRuleDistubutionPage extends React.Component {
                     className={classNames(classes.textField, classes.dense)}
                     margin="dense"
                     variant="outlined"
+                    required="true"
+                   
                     onChange={(e) => {
                         const val = e.target.value;
                         this.setState({
@@ -395,7 +409,10 @@ class RevenueRuleDistubutionPage extends React.Component {
                     onClick={this.saveRevenue}
                     className={classes.button}
                   >
-                    Send for Approval
+
+                    {
+                      
+                    this.props.revenueData ? this.props.revenueData.fee.status == 1 ? "Update" : "Pending" : "Send for Approval"}
                   </MaterialButton>
                 </Grid>
               </Grid>
