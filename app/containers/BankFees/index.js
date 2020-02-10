@@ -571,20 +571,20 @@ export class BankFees extends Component {
               }`,
             }}
           >
-            <ActionBar
+            {/* <ActionBar
               marginBottom="33px"
               inputWidth="calc(100% - 241px)"
               className="clr"
             >
               <div className="clr">
-                {/* <div
+                <div
                   className={`${
                     this.state.isInfraFeeVisible ? 'ActiveTab' : 'InactiveTab'
                   }`}
                   onClick={this.showInfraFeeView}
                 >
                   Bank and Infra
-                </div> */}
+                </div>
                 <div
                   className={`${
                     this.state.isInfraFeeVisible ? 'InactiveTab' : 'ActiveTab'
@@ -594,7 +594,7 @@ export class BankFees extends Component {
                   Bank and Users
                 </div>
               </div>
-            </ActionBar>
+            </ActionBar> */}
             <Card
               bigPadding
               style={{

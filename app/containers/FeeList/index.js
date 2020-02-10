@@ -565,11 +565,12 @@ export default class FeeList extends Component {
                                 {r.map((v, i) => {
                                   return (
                                     <div key={i}>
-                                      Count:{' '}
+                                      {/* Count:{' '}
                                       <span className="green">
                                         {v.trans_from} - {v.trans_to}
                                       </span>
-                                      , Fixed:{' '}
+                                      ,  */}
+                                      Fixed:{' '}
                                       <span className="green">
                                         {CURRENCY + ' ' + v.fixed_amount}
                                       </span>
