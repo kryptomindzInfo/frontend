@@ -30,6 +30,8 @@ import MiniPopUp from 'components/MiniPopUp';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import FormGroup from 'components/FormGroup';
+import Divider from '@material-ui/core/Divider';
+import AddBranchModal from './AddBranchDialog';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
@@ -64,6 +66,7 @@ class RevenueRuleDistubutionPage extends React.Component {
     
     warn = () => toast.warn(this.state.notification);
     state = {
+        open : false,
         revenuePercentage: 0,
         revenueAmount : 0,
         
@@ -75,8 +78,8 @@ class RevenueRuleDistubutionPage extends React.Component {
         },
 
         branchWithSpecificRevenue : [
-            {branchId : "branch 1", branchName: "Pranoy biswas", claim : 0, send : 0},
-            {branchId : "branch 1", branchName: "Pranoy biswas", claim : 0, send : 0}
+            // {branchId : "branch 1", branchName: "Pranoy biswas", claim : 0, send : 0},
+            // {branchId : "branch 1", branchName: "Pranoy biswas", claim : 0, send : 0}
         
         ],
         token : window.localStorage.getItem("bankLogged")
@@ -125,33 +128,50 @@ class RevenueRuleDistubutionPage extends React.Component {
         let percentage = "";
 
         if(revenueData) {
+
             const ranges = JSON.parse(revenueData.fee.ranges);
             console.log(ranges)
             fixed_amount = ranges[0].fixed_amount;
             percentage = ranges[0].percentage;
 
+
+            const {branchWithSpecificRevenue ,standardRevenueSharingRule} = revenueData.fee;
+
+            this.setState( prevState => ({ ...state , name, trans_type, active, bank_id,selectedBankFeeId,revenueAmount: fixed_amount,
+              standardRevenueSharingRule : standardRevenueSharingRule ?  standardRevenueSharingRule : prevState.standardRevenueSharingRule
+
+
+              , revenuePercentage: percentage,
+              
+              branchWithSpecificRevenue : branchWithSpecificRevenue ? branchWithSpecificRevenue : prevState.branchWithSpecificRevenue
+            
+            }));
+    
+        }else {
+
+          this.setState( { ...state , name, trans_type, active, bank_id,selectedBankFeeId,revenueAmount:fixed_amount , revenuePercentage: percentage });
+
+
         }
 
 
-
-      
-
+       
         
 
-        //find branches
-        axios.post(`${API_URL}/getBranches`, {token : this.state.token}).then(d => {
-            let branchWithSpecificRevenue = [];
-            const {branches} = d.data;
-            branchWithSpecificRevenue = branches.map(b => ({
-                branchId : b.bcode, branchName: b.name, claim : 0, send : 0
-            }))
-            this.setState( { ...state , name, trans_type, active, bank_id,selectedBankFeeId,revenueAmount : fixed_amount, revenuePercentage: percentage,branchWithSpecificRevenue });
+        // //find branches
+        // axios.post(`${API_URL}/getBranches`, {token : this.state.token}).then(d => {
+        //     let branchWithSpecificRevenue = [];
+        //     const {branches} = d.data;
+        //     branchWithSpecificRevenue = branches.map(b => ({
+        //         branchId : b.bcode, branchName: b.name, claim : 0, send : 0
+        //     }))
 
 
 
-        }).catch(err => {
-            console.log(err);
-        })
+
+        // }).catch(err => {
+        //     console.log(err);
+        // })
 
         
 
@@ -310,6 +330,25 @@ class RevenueRuleDistubutionPage extends React.Component {
         //}
       };
 
+
+
+      getBranchDetailsFromModal = (branchDetails) => {
+
+        console.log(branchDetails);
+        console.log(this.state.branchWithSpecificRevenue);
+        if(this.state.branchWithSpecificRevenue.map(d => d.branchId).includes(branchDetails[0].bcode)) return alert("Branch already saved")
+
+        this.setState(prevState => ({
+          ...prevState,
+          branchWithSpecificRevenue: [
+            ...prevState.branchWithSpecificRevenue, 
+            { branchId : branchDetails[0].bcode, branchName: branchDetails[0].name, claim : 0, send : 0 }
+          ]
+        }))
+
+        this.setState({open : false});
+
+      }
 
 
 
@@ -614,20 +653,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                 </Grid>
                                 <Grid item>
                                
-                                    <MaterialButton
-                                        variant="contained"
-                                        color="primary"
-                                        style={{
-                                        // height: '40%',
-                                        marginTop: '13px',
-                                        // marginLeft: '13%',
-                                        }}
-                                        className={classes.button}
-                                        onClick={this.saveRevenueSharingRules}
-                                        type="button"
-                                    >
-                                        Update
-                                    </MaterialButton>
+                                 
                                 
                                
                                 </Grid>
@@ -641,7 +667,9 @@ class RevenueRuleDistubutionPage extends React.Component {
                                     <Grid item>
                                     <Typography variant="body2">Branches with specific revenue sharing</Typography>
                                     </Grid>
-                                    <Grid item></Grid>
+                                    <Grid item>
+                                      <Button onClick={() => this.setState({open : true})}>Add branch</Button>
+                                    </Grid>
                                 </Grid>
 
                                     <Grid container spacing={4}  style={{paddingTop: 32}} alignItems="center">
@@ -680,7 +708,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                                 <Grid item xs={3}>
                                                     <TextField
                                                         type="number"
-                                                        label="claim%"
+                                                        label="send%"
                                                         className={classNames(classes.textField, classes.dense)}
                                                         margin="dense"
                                                         variant="outlined"
@@ -697,7 +725,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                                         value={d.send}
                                                     />
                                                 </Grid>
-                                                <Grid item xs={2} >
+                                                {/* <Grid item xs={2} >
                                                    <Button onClick={() => {
                                                     let {branchWithSpecificRevenue} = this.state;
                                                     branchWithSpecificRevenue[i].claim = 0;
@@ -705,11 +733,38 @@ class RevenueRuleDistubutionPage extends React.Component {
                                                     this.setState({branchWithSpecificRevenue})
 
                                                 }}> reset</Button>
+                                                </Grid> */}
+                                                <Grid item xs={2} >
+                                                   <Button onClick={() => {
+                                                    // let {branchWithSpecificRevenue} = this.state;
+                                                    this.setState(prevState => ({
+                                                      ...prevState,
+                                                      branchWithSpecificRevenue: prevState.branchWithSpecificRevenue.filter(b => b.branchId != d.branchId)
+                                                    }))
+
+                                                }}> delete</Button>
                                                 </Grid>
                                                 
                                             
                                             </>
                                         ))}
+                                        <Grid item xs={12}><Divider /></Grid>
+                                        <Grid item xs={12} style={{textAlign: 'right'}}>
+                                        <MaterialButton
+                                            variant="contained"
+                                            color="primary"
+                                            style={{
+                                            // height: '40%',
+                                            marginTop: '13px',
+                                            // marginLeft: '13%',
+                                            }}
+                                            className={classes.button}
+                                            onClick={this.saveRevenueSharingRules}
+                                            type="button"
+                                        >
+                                            Update
+                                        </MaterialButton>
+                                        </Grid>
                                     </Grid>
                                 
                             </Grid>
@@ -717,6 +772,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                     </Grid>
                 </Grid>
               </Grid>
+              <AddBranchModal open={this.state.open} bank_id={this.state.bank_id} handleClose={() => this.setState({open : false})} getBranchDetailsFromModal={this.getBranchDetailsFromModal}/>
             </Grid>
          
     }
