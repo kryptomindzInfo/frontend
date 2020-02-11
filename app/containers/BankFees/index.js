@@ -846,7 +846,7 @@ export class BankFees extends Component {
           {this.state.revenueRuleDistributionPage ? (
             // <div style={{ border: '1px solid grey' }}>
               <RevenueRuleDistubutionPage 
-
+              showRevenueRuleDistributionPage={this.showRevenueRuleDistributionPage}
               close={() => this.setState({revenueRuleDistributionPage: false})} 
               selectedBankFeeId={this.state.selectedBankFeeId}
               revenueData={this.state.revenueData}

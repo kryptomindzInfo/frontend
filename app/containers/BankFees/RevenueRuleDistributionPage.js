@@ -82,11 +82,24 @@ class RevenueRuleDistubutionPage extends React.Component {
             // {branchId : "branch 1", branchName: "Pranoy biswas", claim : 0, send : 0}
         
         ],
-        token : window.localStorage.getItem("bankLogged")
+        token : window.localStorage.getItem("bankLogged"),
+        bankBranchesTable: true
     }
 
 
     saveRevenueSharingRules = () => {
+
+
+      // if(this.state.branchWithSpecificRevenue.length == 0) {
+      //     this.setState({
+      //       notification: 'Please ',
+      //       editRulesLoading: false
+      //     });
+      //   return  this.error();
+      // }
+
+
+
         if(this.props.revenueData) {
             // this.editRxrRules(this.props.revenueData.fee._id);
 
@@ -96,7 +109,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                 branchWithSpecificRevenue : this.state.branchWithSpecificRevenue
             }).then(d => {
                 this.setState({
-                    notification: 'Revenue Rule Sent to Infra for Approval',
+                    notification: 'Rule updated successfully',
                     editRulesLoading: false
                   });
                   this.success();
@@ -205,6 +218,30 @@ class RevenueRuleDistubutionPage extends React.Component {
 
 
 
+    showRevenueRuleDistributionPage = () => {
+      // this.setState({ revenueRuleDistributionPage: 'true', selectedBankFeeId: bankFee._id, bankFeeDetails: bankFee });
+      // console.log(bankFeeId);
+  
+      axios.get(`${API_URL}/getRevenueFeeFromBankFeeId/${this.state.selectedBankFeeId}`).then(d => {
+        const {data} = d
+        console.log(data);
+        if(data.code == 1) {
+          this.setState({
+            revenueData: data
+          })
+        }else {
+          this.setState({
+            revenueData: ""
+          })
+        }
+  
+      }).catch(err => {
+        console.log(err);
+      })
+  
+    };
+  
+
 
 
     createRevenueRule = () => {
@@ -214,8 +251,8 @@ class RevenueRuleDistubutionPage extends React.Component {
         const ranges = [{
           trans_from: 0,
           trans_to: 0,
-          fixed_amount: revenuePercentage,
-          percentage: revenueAmount,
+          fixed_amount: revenueAmount,
+          percentage: revenuePercentage
         }];
     
         axios
@@ -241,8 +278,13 @@ class RevenueRuleDistubutionPage extends React.Component {
                     this.success();
                     let ba = this.state.bank;
                     let history = this.props.history;
-                    setTimeout(function() {
+                    setTimeout(() =>  {
                     //   history.push('/bank/fees/');
+
+                      //get revenue rule and put it into state
+                      console.log("kia")
+                      this.props.showRevenueRuleDistributionPage({_id: selectedBankFeeId})
+
                     }, 1000);
                   },
                 );
@@ -307,8 +349,9 @@ class RevenueRuleDistubutionPage extends React.Component {
                   this.success();
                   let ba = this.state.bank;
                   let history = this.props.history;
-                  setTimeout(function(){
+                  setTimeout(() => {
                     // history.push('/bank/fees/');
+                    this.props.showRevenueRuleDistributionPage({_id: selectedBankFeeId})
                   }, 1000);
               });
               }
@@ -462,6 +505,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                   paddingTop: '3%',
                 }}
                 container
+                spacing={16}
               >
                 <Grid item md={12}>
                   <span
@@ -495,7 +539,8 @@ class RevenueRuleDistubutionPage extends React.Component {
                 <MaterialTable
                   style={{
                     display: `${
-                      this.state.bankBranchesTable ? 'block' : 'none'
+                      // this.state.bankBranchesTable ? 'block' : 'none'
+                      'none'
                     }`,
                   }}
                   className={classes.table}
@@ -557,7 +602,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                         }}
                         className={classes.button}
                       >
-                        Update
+                        Updates
                       </MaterialButton>
                     </Grid>
                   </Grid>
@@ -613,9 +658,20 @@ class RevenueRuleDistubutionPage extends React.Component {
                 </MaterialTable>
 
                 <Grid container spacing={16}>
+                 
                     <Grid item xs={12}>
                         <div className={classes.border}>
                             <Grid container alignItems="center">
+
+                            <Grid item xs={12}>
+                              <Typography
+                                    variant="subtitle"
+                                    // style={{ paddingLeft: '3%', color: '#417505' }}
+                                  >
+                                    Standard Revenue Sharing with Branches
+                                  </Typography>
+                              </Grid>
+
                                 <Grid item>
                                 <TextField
                                     type="number"
@@ -660,12 +716,13 @@ class RevenueRuleDistubutionPage extends React.Component {
                             </Grid>
                         </div>
                     </Grid>
+                    
                     <Grid item xs={12}>
                     <div className={classes.border}>
                             <Grid container>
                                 <Grid item xs={12} container justify="space-between" alignItems="center">
                                     <Grid item>
-                                    <Typography variant="body2">Branches with specific revenue sharing</Typography>
+                                    <Typography variant="subtitle">Branches with specific revenue sharing</Typography>
                                     </Grid>
                                     <Grid item>
                                       <Button onClick={() => this.setState({open : true})}>Add branch</Button>
