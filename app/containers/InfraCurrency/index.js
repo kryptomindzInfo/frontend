@@ -54,6 +54,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import 'react-toastify/dist/ReactToastify.css';
 import SidebarThree from '../../components/Sidebar/SidebarThree';
 import Typography from '@material-ui/core/Typography';
+
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -291,6 +292,7 @@ class InfraCurrency extends Component {
     if (token !== undefined && token !== null) {
       if (isAdmin == 'true') {
         this.setState({ permissions: 'all' });
+
       } else {
         axios
           .post(`${API_URL}/getPermission`, { token })
@@ -338,18 +340,21 @@ class InfraCurrency extends Component {
   };
 
   saveCurrency = () => {
-    const { currency, denomination } = this.state;
+    const { currency, denomination, notification } = this.state;
     axios
       .post(`${API_URL}/save-currency`, { value: currency, denomination })
       .then(d => {
         console.log(d);
+        this.success();
       })
       .catch(err => {
         console.log(err);
       });
 
-      this.setState({ addDenominationPopup: false });
-
+    this.setState({
+      addDenominationPopup: false,
+      notification: 'Denomination Added',
+    });
   };
 
   render() {

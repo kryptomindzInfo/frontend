@@ -362,6 +362,7 @@ class CashierClosingBalance extends Component {
               num: '',
             })),
             currency: d.data[0].value,
+            // notification: 'denomination added'
           }));
         }
       })

@@ -727,7 +727,7 @@ export default class BankBranchInfo extends Component {
 
               <Row>
                 <Col className="infoLeft">
-                Bank Code
+                Branch Code
                 </Col>
                 <Col className="infoRight">
                 {this.state.bcode}
@@ -736,7 +736,7 @@ export default class BankBranchInfo extends Component {
 
               <Row>
                 <Col className="infoLeft">
-                Bank User ID
+                Branch User ID
                 </Col>
                 <Col className="infoRight">
                 {this.state.username}

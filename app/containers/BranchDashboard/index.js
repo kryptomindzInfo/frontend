@@ -65,7 +65,7 @@ export default class BranchDashboard extends Component {
       otpMobile: mobile,
       cashReceived: 0,
       cashPaid: 0,
-      totalCashier:0,
+      totalCashier: 0,
       perPage: 20,
       totalCount: 100,
       allhistory: [],
@@ -84,7 +84,7 @@ export default class BranchDashboard extends Component {
     this.onChange = this.onChange.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
 
-this.showHistory = this.showHistory.bind(this);
+    this.showHistory = this.showHistory.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -99,9 +99,13 @@ this.showHistory = this.showHistory.bind(this);
       [name]: value,
     });
   };
-  showHistoryPop = (v) => {
-   this.setState({ historyPop: true, historyLoading:true, popmaster: v.master_code});
-   this.getTransHistory(v.master_code);
+  showHistoryPop = v => {
+    this.setState({
+      historyPop: true,
+      historyLoading: true,
+      popmaster: v.master_code,
+    });
+    this.getTransHistory(v.master_code);
   };
   showPopup = () => {
     this.setState({ popup: true });
@@ -511,11 +515,11 @@ this.showHistory = this.showHistory.bind(this);
         this.error();
       });
   }
-getTransHistory =(master_code) =>{
+  getTransHistory = master_code => {
     axios
       .post(`${API_URL}/getTransHistory`, {
         token: token,
-        master_code: master_code
+        master_code: master_code,
       })
       .then(res => {
         if (res.status == 200) {
@@ -525,13 +529,11 @@ getTransHistory =(master_code) =>{
           // });
           // var l = result.length;
 
-          this.setState(
-            {
-              popresult: res.data.result,
-              historyLoading: false,
-              popmaster: master_code
-            }
-          );
+          this.setState({
+            popresult: res.data.result,
+            historyLoading: false,
+            popmaster: master_code,
+          });
         }
       })
       .catch(err => {});
@@ -547,9 +549,9 @@ getTransHistory =(master_code) =>{
       for (var i = start; i < end; i++) {
         out.push(this.state.allhistory[i]);
       }
-      this.setState({ history: out }, ( ) => {
+      this.setState({ history: out }, () => {
         let dis = this;
-        setTimeout(function(){
+        setTimeout(function() {
           dis.getHistory();
         }, 5000);
       });
@@ -560,7 +562,7 @@ getTransHistory =(master_code) =>{
     axios
       .post(`${API_URL}/getBranchTransHistory`, {
         token: token,
-        where: {branch_id : bid},
+        where: { branch_id: bid },
         from: 'branch',
         page: this.state.activePage,
         offset: this.state.perPage,
@@ -570,14 +572,16 @@ getTransHistory =(master_code) =>{
           var notification = {};
           var result = res.data.history1.concat(res.data.history2);
           result.sort(function(a, b) {
-              return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()// implicit conversion in number
+            return (
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+            ); // implicit conversion in number
           });
           var l = result.length;
 
-
           this.setState(
             {
-              ticker: result[l-1],
+              ticker: result[l - 1],
               result: result,
               loading: false,
               allhistory: result,
@@ -592,7 +596,7 @@ getTransHistory =(master_code) =>{
       .catch(err => {});
   };
 
-    filterData = e => {
+  filterData = e => {
     this.setState({ filter: e });
   };
   getBanks = () => {};
@@ -615,40 +619,41 @@ getTransHistory =(master_code) =>{
   getStats = () => {
     axios
       .post(`${API_URL}/getBranchDashStats`, {
-        token: token
+        token: token,
       })
       .then(res => {
         if (res.status == 200) {
-          let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
+          let received =
+            res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
           let total = res.data.totalCashier == null ? 0 : res.data.totalCashier;
           this.setState({
             loading: false,
             totalCashier: total,
             cashReceived: received,
-            cashPaid: paid
+            cashPaid: paid,
           });
         }
       })
       .catch(err => {});
   };
-  getBranchByName  = () => {
-  axios
+  getBranchByName = () => {
+    axios
       .post(`${API_URL}/getBranchByName`, {
-        name: name
+        name: name,
       })
       .then(res => {
         if (res.status == 200) {
-          this.setState({  branchDetails: res.data.banks}, () => {
+          this.setState({ branchDetails: res.data.banks }, () => {
             this.getStats();
             this.getHistory();
           });
         }
       })
       .catch(err => {});
-};
-formatDate = (date) => {
-  var months = [
+  };
+  formatDate = date => {
+    var months = [
       'Jan',
       'Feb',
       'Mar',
@@ -661,18 +666,18 @@ formatDate = (date) => {
       'Oct',
       'Nov',
       'Dec',
-  ];
-  var isoformat = date;
+    ];
+    var isoformat = date;
 
-  var readable = new Date(isoformat);
-  var m = readable.getMonth(); // returns 6
-  var d = readable.getDate(); // returns 15
-  var y = readable.getFullYear();
-  var h = readable.getHours();
-  var mi = readable.getMinutes();
-  var mlong = months[m];
-  return d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
-}
+    var readable = new Date(isoformat);
+    var m = readable.getMonth(); // returns 6
+    var d = readable.getDate(); // returns 15
+    var y = readable.getFullYear();
+    var h = readable.getHours();
+    var mi = readable.getMinutes();
+    var mlong = months[m];
+    return d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+  };
 
   componentDidMount() {
     this.getBranches();
@@ -713,32 +718,56 @@ formatDate = (date) => {
           bankLogo={STATIC_URL + logo}
         />
         <Container verticalMargin>
-          <SidebarBranch bankName={this.props.match.params.bank}/>
+          <SidebarBranch bankName={this.props.match.params.bank} />
           <Main>
             <Row>
               <Col>
-                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
+                <Card
+                  marginBottom="54px"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  smallValue
+                >
                   <h4>Cash Received</h4>
 
-                  <div className="cardValue">{CURRENCY} {this.state.cashReceived.toFixed(2)}</div>
+                  <div className="cardValue">
+                    {CURRENCY} {this.state.cashReceived.toFixed(2)}
+                  </div>
                 </Card>
               </Col>
               <Col>
-                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
+                <Card
+                  marginBottom="54px"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  smallValue
+                >
                   <h4>Paid in Cash</h4>
 
-                  <div className="cardValue">{CURRENCY} {this.state.cashPaid.toFixed(2)}</div>
+                  <div className="cardValue">
+                    {CURRENCY} {this.state.cashPaid.toFixed(2)}
+                  </div>
                 </Card>
               </Col>
               <Col>
-                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
+                <Card
+                  marginBottom="54px"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  smallValue
+                >
                   <h4>Total Merchant</h4>
 
                   <div className="cardValue">0</div>
                 </Card>
               </Col>
               <Col>
-                <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
+                <Card
+                  marginBottom="54px"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  smallValue
+                >
                   <h4>Total Cashier</h4>
 
                   <div className="cardValue">{this.state.totalCashier}</div>
@@ -773,44 +802,66 @@ formatDate = (date) => {
                     Payment Received
                   </div>
                 </div>
-                <Table marginTop="34px" marginBottom="34px" smallTd textAlign="left">
+                <Table
+                  marginTop="34px"
+                  marginBottom="34px"
+                  smallTd
+                  textAlign="left"
+                >
                   <tbody>
                     {this.state.history && this.state.history.length > 0
                       ? this.state.history.map(function(b) {
-                        // var sinfo = b.trans_type == "CR" ? b.sender_info ? null;
-                        // var rinfo = b.trans_type == "CR" ? b.receiver_info ? null;
-                        var sinfo = {};
-                        var rinfo = {};
+                          // var sinfo = b.trans_type == "CR" ? b.sender_info ? null;
+                          // var rinfo = b.trans_type == "CR" ? b.receiver_info ? null;
+                          var sinfo = {};
+                          var rinfo = {};
                           var fulldate = dis.formatDate(b.created_at);
-                          return  dis.state.filter ==  b.trans_type ||
-                            dis.state.filter == ''  ?  (
+                          return dis.state.filter == b.trans_type ||
+                            dis.state.filter == '' ? (
                             <tr key={b._id}>
                               <td>
                                 <div className="labelGrey">{fulldate}</div>
                               </td>
                               <td>
-                                <div className="labelBlue" onClick={() => dis.showHistoryPop(b)}>
-                                  {
-                                    b.sender_info ?
-                                    <span>Cash sent from {JSON.parse(b.sender_info).givenname+" "+JSON.parse(b.sender_info).familyname} to {JSON.parse(b.receiver_info).givenname+" "+JSON.parse(b.receiver_info).familyname}</span>
-                                    :
-                                    <span>Cash claimed from {b.sender_name} to {b.receiver_name}</span>
-                                  }
+                                <div
+                                  className="labelBlue"
+                                  onClick={() => dis.showHistoryPop(b)}
+                                >
+                                  {b.sender_info ? (
+                                    <span>
+                                      Cash sent from{' '}
+                                      {JSON.parse(b.sender_info).givenname +
+                                        ' ' +
+                                        JSON.parse(b.sender_info)
+                                          .familyname}{' '}
+                                      to{' '}
+                                      {JSON.parse(b.receiver_info).givenname +
+                                        ' ' +
+                                        JSON.parse(b.receiver_info).familyname}
+                                    </span>
+                                  ) : (
+                                    <span>
+                                      Cash claimed from {b.sender_name} to{' '}
+                                      {b.receiver_name}
+                                    </span>
+                                  )}
                                 </div>
-                                <div className="labelSmallGrey">{
-                                  b.status == 1 ?
-                                  <span>Completed</span>
-                                  :
-                                  <span className="red">Failed</span>
-                                }</div>
+                                <div className="labelSmallGrey">
+                                  {b.status == 1 ? (
+                                    <span>Completed</span>
+                                  ) : (
+                                    <span className="red">Failed</span>
+                                  )}
+                                </div>
                               </td>
                               <td>
                                 <div className="labelGrey">
-                                 {b.transaction_code == 'DR' ? '-XOF' : 'XOF'}{b.amount}
+                                  {b.transaction_code == 'DR' ? '-XOF' : 'XOF'}
+                                  {b.amount}
                                 </div>
                               </td>
                             </tr>
-                            ) : null;
+                          ) : null;
                         })
                       : null}
                   </tbody>
@@ -915,6 +966,7 @@ formatDate = (date) => {
                       required
                     />
                   </FormGroup>
+
                   <FormGroup>
                     <label>Credit Limit</label>
                     <TextInput
@@ -1467,19 +1519,22 @@ formatDate = (date) => {
           </Popup>
         ) : null}
 
-         { this.state.historyPop ?
-        <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
+        {this.state.historyPop ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
             <div>
-          <h1 >Transaction Details ({this.state.popmaster})</h1>
-          {
-            this.state.historyLoading ?
-            <Button filledBtn disabled><Loader /></Button>
-            :
-            <Table marginTop="34px" smallTd textAlign="left">
+              <h1>Transaction Details ({this.state.popmaster})</h1>
+              {this.state.historyLoading ? (
+                <Button filledBtn disabled>
+                  <Loader />
+                </Button>
+              ) : (
+                <Table marginTop="34px" smallTd textAlign="left">
                   <tbody>
                     {this.state.popresult && this.state.popresult.length > 0
                       ? this.state.popresult.map(function(b) {
-                          var isoformat = new Date(b.tx_data.tx_timestamp.seconds*1000).toISOString();
+                          var isoformat = new Date(
+                            b.tx_data.tx_timestamp.seconds * 1000,
+                          ).toISOString();
                           var fulldate = dis.formatDate(isoformat);
 
                           return dis.state.filter == b.tx_data.tx_type ||
@@ -1496,14 +1551,15 @@ formatDate = (date) => {
                               </td>
                               <td className="right">
                                 <div className="labelGrey">
-                                  {
-                                    b.tx_data.tx_type == 'DR'
-                                    ?
-                                    <span>{CURRENCY} -{b.amount}</span>
-                                    :
-                                    <span>{CURRENCY} {b.amount}</span>
-                                  }
-                                  
+                                  {b.tx_data.tx_type == 'DR' ? (
+                                    <span>
+                                      {CURRENCY} -{b.amount}
+                                    </span>
+                                  ) : (
+                                    <span>
+                                      {CURRENCY} {b.amount}
+                                    </span>
+                                  )}
                                 </div>
                               </td>
                               <td>{b.tx_data.child_id}</td>
@@ -1513,11 +1569,10 @@ formatDate = (date) => {
                       : null}
                   </tbody>
                 </Table>
-          }
-          </div>
-        </Popup>
-        : null
-      }
+              )}
+            </div>
+          </Popup>
+        ) : null}
       </Wrapper>
     );
   }

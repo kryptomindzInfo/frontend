@@ -195,6 +195,11 @@ export default function App(props) {
             path="/branch/:bank?/dashboard"
             component={BranchDashboard}
           />
+           {/* <BranchRoute
+            exact
+            path="/branch/operationalHistory"
+            component={BranchOperationalHistory}
+          /> */}
           <BranchRoute
             exact
             path="/branch/:bank?/operationalHistory"

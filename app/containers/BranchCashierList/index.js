@@ -9,7 +9,6 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
 
-
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
@@ -61,18 +60,17 @@ export default class BranchCashierList extends Component {
     this.state = {
       loading: true,
       otp: '',
-      total:0,
+      total: 0,
       popup: false,
       showOtp: false,
-      assignPop:false,
+      assignPop: false,
       token,
       otpEmail: email,
-      otpMobile: mobile
+      otpMobile: mobile,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
-
 
     this.onChange = this.onChange.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
@@ -93,16 +91,19 @@ export default class BranchCashierList extends Component {
 
   handleAmountChange = event => {
     const { value, name } = event.target;
-    this.setState({
-      [name]: value,
-    }, () => {
-      this.calculateTotal();
-    });
+    this.setState(
+      {
+        [name]: value,
+      },
+      () => {
+        this.calculateTotal();
+      },
+    );
   };
 
   calculateTotal = () => {
     var total = 0;
-    this.state.denom10 ? this.state.denom10 : 0
+    this.state.denom10 ? this.state.denom10 : 0;
 
     total += Number(this.state.denom10 ? this.state.denom10 : 0) * 10;
     total += Number(this.state.denom20 ? this.state.denom20 : 0) * 20;
@@ -112,7 +113,7 @@ export default class BranchCashierList extends Component {
     total += Number(this.state.denom2000 ? this.state.denom2000 : 0) * 2000;
 
     this.setState({
-      total: total
+      total: total,
     });
   };
 
@@ -123,14 +124,36 @@ export default class BranchCashierList extends Component {
   showPopup = () => {
     this.setState({ popup: true });
   };
-  showAssignPopup = (v) => {
-    this.setState({ assignPop: true, name: v.name, bcode: v.bcode, working_from: v.working_from, working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id, bank_user_id: v.bank_user_id});
+  showAssignPopup = v => {
+    this.setState({
+      assignPop: true,
+      name: v.name,
+      bcode: v.bcode,
+      working_from: v.working_from,
+      working_to: v.working_to,
+      per_trans_amt: v.per_trans_amt,
+      max_trans_amt: v.max_trans_amt,
+      max_trans_count: v.max_trans_count,
+      cashier_id: v._id,
+      bank_user_id: v.bank_user_id,
+    });
   };
-  showEditPopup = (v) => {
-    this.setState({ editPopup: true, name: v.name, bcode: v.bcode, working_from: v.working_from, working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id, bank_user_id: v.bank_user_id});
+  showEditPopup = v => {
+    this.setState({
+      editPopup: true,
+      name: v.name,
+      bcode: v.bcode,
+      working_from: v.working_from,
+      working_to: v.working_to,
+      per_trans_amt: v.per_trans_amt,
+      max_trans_amt: v.max_trans_amt,
+      max_trans_count: v.max_trans_count,
+      cashier_id: v._id,
+      bank_user_id: v.bank_user_id,
+    });
   };
-   showOpeningPopup = (v) => {
-    this.setState({ openingPopup: true, cashier_id: v._id});
+  showOpeningPopup = v => {
+    this.setState({ openingPopup: true, cashier_id: v._id });
   };
 
   closePopup = () => {
@@ -151,7 +174,7 @@ export default class BranchCashierList extends Component {
       otp: '',
       showOtp: false,
       showEditOtp: false,
-      showOpeningOTP: false
+      showOpeningOTP: false,
     });
   };
 
@@ -161,7 +184,7 @@ export default class BranchCashierList extends Component {
 
     this.setState({
       [name]: value,
-      ccode: title
+      ccode: title,
     });
   };
 
@@ -169,114 +192,118 @@ export default class BranchCashierList extends Component {
     event.preventDefault();
 
     this.setState({
-      assignLoading: true
+      assignLoading: true,
     });
 
     axios
-      .put(`${API_URL  }/updateCashier`, {page_id: this.state.cashier_id, updateData: {bank_user_id: this.state.bank_user_id}, page: 'cashier', type: 'branch', token: token})
+      .put(`${API_URL}/updateCashier`, {
+        page_id: this.state.cashier_id,
+        updateData: { bank_user_id: this.state.bank_user_id },
+        page: 'cashier',
+        type: 'branch',
+        token: token,
+      })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              notification: "User Assigned successfully!",
-              assignLoading: false
+              notification: 'User Assigned successfully!',
+              assignLoading: false,
             });
             this.success();
             this.closePopup();
             this.getBranches();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          assignLoading: false
+          notification: err.response ? err.response.data.error : err.toString(),
+          assignLoading: false,
         });
         this.error();
       });
-
   };
   addBranch = event => {
     event.preventDefault();
 
     this.setState({
-      addBranchLoading: true
+      addBranchLoading: true,
     });
 
     axios
-      .post(`${API_URL  }/addBranchCashier`, this.state)
+      .post(`${API_URL}/addBranchCashier`, this.state)
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              notification: "Cashier added successfully!",
+              notification: 'Cashier added successfully!',
             });
             this.success();
             this.closePopup();
             this.getBranches();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
         this.setState({
-          addBranchLoading: false
+          addBranchLoading: false,
         });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          addBranchLoading: false
+          notification: err.response ? err.response.data.error : err.toString(),
+          addBranchLoading: false,
         });
         this.error();
       });
-
   };
   editCashier = event => {
     event.preventDefault();
 
-      this.setState(
-        {
-          showEditOtp: true,
-          otpOpt: 'editCashier',
-          otpTxt: 'Your OTP to edit Cashier is '
-        },
-        () => {
-          this.generateOTP();
-        },
-      );
-
+    this.setState(
+      {
+        showEditOtp: true,
+        otpOpt: 'editCashier',
+        otpTxt: 'Your OTP to edit Cashier is ',
+      },
+      () => {
+        this.generateOTP();
+      },
+    );
   };
 
-   addOpeningBalance = event => {
+  addOpeningBalance = event => {
     event.preventDefault();
-    if(this.state.total == '' || this.state.total == 0){
-      this.setState({
-          notification: "You need to enter atleast one denomination"
-        }, () => {
+    if (this.state.total == '' || this.state.total == 0) {
+      this.setState(
+        {
+          notification: 'You need to enter atleast one denomination',
+        },
+        () => {
           this.error();
-        });
-        
-    }else{
+        },
+      );
+    } else {
       this.setState(
         {
           showOpeningOTP: true,
           otpOpt: 'openingBalance',
-          otpTxt: 'Your OTP to add opening balance is '
+          otpTxt: 'Your OTP to add opening balance is ',
         },
         () => {
           this.generateOTP();
-
         },
       );
-}
+    }
   };
   startTimer = () => {
     var dis = this;
@@ -328,36 +355,39 @@ export default class BranchCashierList extends Component {
   };
   verifyEditOTP = event => {
     this.setState({
-      verifyEditOTPLoading: false
+      verifyEditOTPLoading: false,
     });
     event.preventDefault();
     axios
-      .post(`${API_URL  }/editCashier`, this.state)
+      .post(`${API_URL}/editCashier`, this.state)
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
-            this.setState({
-              notification: "Cashier updated successfully!",
-            }, function(){
-              this.success();
-              this.closePopup();
-              this.getBranches();
-            });
+          } else {
+            this.setState(
+              {
+                notification: 'Cashier updated successfully!',
+              },
+              function() {
+                this.success();
+                this.closePopup();
+                this.getBranches();
+              },
+            );
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
         this.setState({
-          verifyEditOTPLoading: false
+          verifyEditOTPLoading: false,
         });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          verifyEditOTPLoading:false
+          notification: err.response ? err.response.data.error : err.toString(),
+          verifyEditOTPLoading: false,
         });
         this.error();
       });
@@ -365,128 +395,132 @@ export default class BranchCashierList extends Component {
 
   verifyOpeningOTP = event => {
     this.setState({
-      verifyEditOTPLoading: false
+      verifyEditOTPLoading: false,
     });
     event.preventDefault();
     axios
-      .post(`${API_URL  }/addOpeningBalance`, this.state)
+      .post(`${API_URL}/addOpeningBalance`, this.state)
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
-            this.setState({
-              notification: "Opening balance submitted successfully!",
-            }, function(){
-              this.success();
-              this.closePopup();
-              this.getBranches();
-            });
+          } else {
+            this.setState(
+              {
+                notification: 'Opening balance submitted successfully!',
+              },
+              function() {
+                this.success();
+                this.closePopup();
+                this.getBranches();
+              },
+            );
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
         this.setState({
-          verifyEditOTPLoading: false
+          verifyEditOTPLoading: false,
         });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          verifyEditOTPLoading:false
+          notification: err.response ? err.response.data.error : err.toString(),
+          verifyEditOTPLoading: false,
         });
         this.error();
       });
   };
 
-
   approve = event => {
     this.setState({
-      approveLoading: true
+      approveLoading: true,
     });
     event.preventDefault();
     axios
-      .post(`${API_URL  }/approveFee`, {
+      .post(`${API_URL}/approveFee`, {
         id: this.state.sid,
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
-            this.setState({
-              notification: 'Approved'
-            }, () => {
-              this.success();
-              this.closeMiniPopUp();
-              this.getBranches();
-            });
+          } else {
+            this.setState(
+              {
+                notification: 'Approved',
+              },
+              () => {
+                this.success();
+                this.closeMiniPopUp();
+                this.getBranches();
+              },
+            );
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
         this.setState({
-          approveLoading: false
+          approveLoading: false,
         });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          approveLoading: false
+          notification: err.response ? err.response.data.error : err.toString(),
+          approveLoading: false,
         });
         this.error();
-
       });
   };
 
   decline = event => {
     this.setState({
-      declineLoading: true
+      declineLoading: true,
     });
     event.preventDefault();
     axios
-      .post(`${API_URL  }/declineFee`, {
+      .post(`${API_URL}/declineFee`, {
         id: this.state.sid,
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
-            this.setState({
-              notification: 'Declined'
-            }, () => {
-              this.success();
-              this.closeMiniPopUp();
-              this.getBranches();
-            });
-
+          } else {
+            this.setState(
+              {
+                notification: 'Declined',
+              },
+              () => {
+                this.success();
+                this.closeMiniPopUp();
+                this.getBranches();
+              },
+            );
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
         this.setState({
-          declineLoading: false
+          declineLoading: false,
         });
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString(),
-          declineLoading: false
+          notification: err.response ? err.response.data.error : err.toString(),
+          declineLoading: false,
         });
         this.error();
       });
   };
 
-
   showWallet = event => {
     event.preventDefault();
-
   };
 
   removeFile = key => {
@@ -502,7 +536,7 @@ export default class BranchCashierList extends Component {
 
   onChange(e) {
     if (e.target.files && e.target.files[0] != null) {
-      this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
+      this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
     }
   }
 
@@ -512,28 +546,28 @@ export default class BranchCashierList extends Component {
     formData.append('file', file);
     const config = {
       headers: {
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     };
 
     axios
-      .post(`${API_URL  }/fileUpload?token=${  token}`, formData, config)
+      .post(`${API_URL}/fileUpload?token=${token}`, formData, config)
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              [key] : res.data.name
+              [key]: res.data.name,
             });
           }
-        }else{
+        } else {
           throw res.data.error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
@@ -541,43 +575,47 @@ export default class BranchCashierList extends Component {
 
   getUsers = () => {
     axios
-      .post(`${API_URL  }/getAll`, { page: 'bankuser', type: 'branch', token: token, where: {} })
+      .post(`${API_URL}/getAll`, {
+        page: 'bankuser',
+        type: 'branch',
+        token: token,
+        where: {},
+      })
       .then(res => {
-        if(res.status == 200){
-
+        if (res.status == 200) {
           this.setState({ loading: false, users: res.data.rows });
         }
       })
-      .catch(err => {
-
-      });
+      .catch(err => {});
   };
 
   getBranches = () => {
     axios
-      .post(`${API_URL  }/getAll`, { page: 'cashier', type: 'branch', token: token, where: {branch_id: bid} })
+      .post(`${API_URL}/getAll`, {
+        page: 'cashier',
+        type: 'branch',
+        token: token,
+        where: { branch_id: bid },
+      })
       .then(res => {
-        if(res.status == 200){
+        if (res.status == 200) {
           console.log(res.data);
           this.setState({ loading: false, branches: res.data.rows });
         }
       })
-      .catch(err => {
-
-      });
+      .catch(err => {});
   };
 
-
   componentDidMount() {
-      this.getBranches();
-      this.getUsers();
+    this.getBranches();
+    this.getUsers();
   }
 
   render() {
     console.log(this.props);
     function inputFocus(e) {
       const { target } = e;
-      target.parentElement.querySelector("label").classList.add("focused");
+      target.parentElement.querySelector('label').classList.add('focused');
     }
 
     function inputBlur(e) {
@@ -596,31 +634,36 @@ export default class BranchCashierList extends Component {
     }
     const dis = this;
     return (
-
-      <Wrapper  from="bank">
+      <Wrapper from="bank">
         <Helmet>
           <meta charSet="utf-8" />
           <title>Cashiers | BANK | E-WALLET</title>
         </Helmet>
-        <BranchHeader active="cashier" bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
+        <BranchHeader
+          active="cashier"
+          bankName={this.props.match.params.bank}
+          bankLogo={STATIC_URL + logo}
+        />
         <Container verticalMargin>
-          <SidebarBranch bankName={this.props.match.params.bank}/>
+          <SidebarBranch bankName={this.props.match.params.bank} />
           <Main>
-            <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
+            <ActionBar
+              marginBottom="33px"
+              inputWidth="calc(100% - 241px)"
+              className="clr"
+            >
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
                 <input type="text" placeholder="Search Branches" />
               </div>
 
-
-                {/*<Button className="addBankButton" flex onClick={this.showPopup}>
+              {/*<Button className="addBankButton" flex onClick={this.showPopup}>
                 <i className="material-icons">add</i>
                 <span>Create Cashier</span>
                 </Button>*/}
-
             </ActionBar>
             <Card bigPadding>
-              <div className="cardHeader" >
+              <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>
                 </div>
@@ -633,57 +676,100 @@ export default class BranchCashierList extends Component {
                 <Table marginTop="34px" smallTd>
                   <thead>
                     <tr>
-                    <th>Cashier Name</th>
-                    <th>Cash in Hand</th>
-                    
-                    <th>Transaction limit ({CURRENCY})</th>
-                    <th>Transaction Count</th>
+                      <th>Cashier Name</th>
+                      <th>Cash in Hand</th>
+                      <th>Transaction limit ({CURRENCY})</th>
+                      {/* <th>Assigned to</th> */}
+
+                      <th>Transaction Count</th>
                     </tr>
                   </thead>
                   <tbody>
-                  {
-                      this.state.branches && this.state.branches.length > 0
-                        ? this.state.branches.map(function(b) {
+                    {this.state.branches && this.state.branches.length > 0
+                      ? this.state.branches.map(function(b) {
+                          return (
+                            <tr key={b._id}>
+                              <td>{b.name}</td>
+                              <td className="tac">
+                                {CURRENCY}{' '}
+                                {(
+                                  b.opening_balance +
+                                  (b.cash_received - b.cash_paid)
+                                ).toFixed(2)}
+                              </td>
+                              <td className="tac">
+                                {CURRENCY}{' '}
+                                {(
+                                  Number(b.max_trans_amt) -
+                                  (b.cash_paid + b.cash_received)
+                                ).toFixed(2)}
+                              </td>
+                              {/* <td>
+                                    {users.name}
+                              </td> */}
+                              <td className="tac bold green">
+                                {b.total_trans}
+                                <span className="absoluteMiddleRight primary popMenuTrigger">
+                                  <i className="material-icons ">more_vert</i>
+                                  <div className="popMenu">
+                                    <A
+                                      href={
+                                        '/branch/' +
+                                        dis.props.match.params.bank +
+                                        '/cashier/' +
+                                        b._id
+                                      }
+                                    >
+                                      Cashier Info
+                                    </A>
+                                    <span onClick={() => dis.showEditPopup(b)}>
+                                      Edit
+                                    </span>
+                                    <span
+                                      onClick={() => dis.showAssignPopup(b)}
+                                    >
+                                      Assign User
+                                    </span>
+                                    {b.opening_balance > 0 ? null : (
+                                      <span
+                                        onClick={() => dis.showOpeningPopup(b)}
+                                      >
+                                        Enter Opening Balance
+                                      </span>
+                                    )}
 
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">{CURRENCY} {(b.opening_balance+(b.cash_received-b.cash_paid)).toFixed(2)}</td><td className="tac">{CURRENCY} {(Number(b.max_trans_amt)-(b.cash_paid+b.cash_received)).toFixed(2)}</td>
-
-                          <td className="tac bold green" >
-                            {b.total_trans}
-                            <span className="absoluteMiddleRight primary popMenuTrigger">
-                            <i className="material-icons ">more_vert</i>
-                            <div className="popMenu">
-                              <A href={"/branch/"+dis.props.match.params.bank+"/cashier/"+b._id}>Cashier Info</A>
-                              <span onClick={() => dis.showEditPopup(b)}>Edit</span>
-                              <span onClick={() => dis.showAssignPopup(b)}>Assign User</span>
-                              {
-                                b.opening_balance > 0 ? 
-                                null
-                                :
-                                <span onClick={() => dis.showOpeningPopup(b)}>Enter Opening Balance</span>
-                              }
-                              
-                              {
-                                b.status == -1 ?
-                                <span onClick={() => dis.blockBranch(b._id, 1)}>Unblock</span>
-                                :
-                                <span onClick={() => dis.blockBranch(b._id, -1)}>Block</span>
-                              }
-                            </div>
-                            </span>
-                          </td></tr>
+                                    {b.status == -1 ? (
+                                      <span
+                                        onClick={() =>
+                                          dis.blockBranch(b._id, 1)
+                                        }
+                                      >
+                                        Unblock
+                                      </span>
+                                    ) : (
+                                      <span
+                                        onClick={() =>
+                                          dis.blockBranch(b._id, -1)
+                                        }
+                                      >
+                                        Block
+                                      </span>
+                                    )}
+                                  </div>
+                                </span>
+                              </td>
+                            </tr>
+                          );
                         })
-                        :
-                        null
-                    }
+                      : null}
                   </tbody>
                 </Table>
               </div>
             </Card>
           </Main>
         </Container>
-        { this.state.assignPop ?
+        {this.state.assignPop ? (
           <Popup close={this.closePopup.bind(this)} accentedH1>
-
             <h1>Assign User</h1>
             <form action="" method="post" onSubmit={this.assignUser}>
               <FormGroup>
@@ -716,539 +802,560 @@ export default class BranchCashierList extends Component {
               </FormGroup>
               <FormGroup>
                 <label>Assign User*</label>
-              <SelectInput onFocus={inputFocus}
-              autoFocus
-              onChange={this.handleInputChange}
-              onBlur={inputBlur} value={this.state.bank_user_id} name="bank_user_id"
-              placeholder="Assign User*" required >
-                <option value="">Select User</option>
-              {
-                this.state.users.map(function(b) {
-                  return  <option value={b._id}>{b.name}</option>
-                })
-              }
-              </SelectInput>
-
+                <SelectInput
+                  onFocus={inputFocus}
+                  autoFocus
+                  onChange={this.handleInputChange}
+                  onBlur={inputBlur}
+                  value={this.state.bank_user_id}
+                  name="bank_user_id"
+                  placeholder="Assign User*"
+                  required
+                >
+                  <option value="">Select User</option>
+                  {this.state.users.map(function(b) {
+                    return <option value={b._id}>{b.name}</option>;
+                  })}
+                </SelectInput>
               </FormGroup>
 
-
-
-                {
-                  this.state.assignLoading ?
-                  <Button filledBtn marginTop="50px" disabled>
+              {this.state.assignLoading ? (
+                <Button filledBtn marginTop="50px" disabled>
                   <Loader />
-                  </Button>
-                  :
-                  <Button filledBtn marginTop="50px">
+                </Button>
+              ) : (
+                <Button filledBtn marginTop="50px">
                   <span>Assign User</span>
-                  </Button>
-                }
-
-
-            </form>
-
-          </Popup>
-          : null }
-        { this.state.popup ?
-          <Popup close={this.closePopup.bind(this)} accentedH1>
-            {
-              this.state.showOtp ?
-              <div>
-              <h1 ><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyOTP} >
-              <FormGroup>
-                <label><FormattedMessage {...messages.otp} />*</label>
-                <TextInput
-                  type="text"
-                  name="otp"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.otp}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              {
-                this.state.verifyOTPLoading ?
-                <Button filledBtn marginTop="50px" disabled>
-                <Loader />
-              </Button>
-                :
-                <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.verify} /></span>
-              </Button>
-              }
-
-
-              <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
-
-
-              </form>
-              </div>
-              :
-              <div>
-            <h1>Create Cashier</h1>
-            <form action="" method="post" onSubmit={this.addBranch}>
-              <FormGroup>
-                <label>Cashier Name*</label>
-                <TextInput
-                  type="text"
-                  name="name"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Cashier Code*</label>
-                <TextInput
-                  type="text"
-                  name="bcode"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.bcode}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <label>Working Hours</label>
-              <Row>
-
-                <Col  cW="30%" mR="2%">
-
-                <FormGroup>
-                <label>From*</label>
-                  <TextInput
-                    type="text"
-                    name="working_from"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.working_from}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-
-                </Col>
-                <Col cW="68%">
-                <FormGroup>
-                  <label>To*</label>
-                  <TextInput
-                    type="text"
-                    title="10 Digit numeric value"
-                    name="working_to"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.working_to}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-
-                </Col>
-                </Row>
-              <FormGroup>
-                <label>Maximum per transaction amount*</label>
-                <TextInput
-                  type="text"
-                  name="per_trans_amt"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.per_trans_amt}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Maximum daily transaction amount*</label>
-                <TextInput
-                  type="text"
-                  name="max_trans_amt"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.max_trans_amt}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Maximum daily transaction count*</label>
-                <TextInput
-                  type="text"
-                  name="max_trans_count"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.max_trans_count}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-
-
-
-                {
-                  this.state.addBranchLoading ?
-                  <Button filledBtn marginTop="50px" disabled>
-                  <Loader />
-                  </Button>
-                  :
-                  <Button filledBtn marginTop="50px">
-                  <span>Create Cashier</span>
-                  </Button>
-                }
-
-
-            </form>
-
-
-            </div>
-            }
-          </Popup>
-          : null }
-
-{ this.state.editPopup ?
-          <Popup close={this.closePopup.bind(this)} accentedH1>
-            {
-              this.state.showEditOtp ?
-              <div>
-              <h1 ><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyEditOTP} >
-              <FormGroup>
-                <label><FormattedMessage {...messages.otp} />*</label>
-                <TextInput
-                  type="text"
-                  name="otp"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.otp}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              {
-                this.verifyEditOTPLoading ?
-                <Button filledBtn marginTop="50px" disabled>
-                  <Loader />
                 </Button>
-                :
-                <Button filledBtn marginTop="50px">
-                  <span><FormattedMessage {...messages.verify} /></span>
-                </Button>
-              }
-
-              <p className="resend">
-                Wait for <span className="timer">{this.state.timer}</span>{' '}
-                to{' '}
-                {this.state.resend ? (
-                  <span className="go" onClick={this.generateOTP}>
-                    Resend
-                  </span>
-                ) : (
-                  <span>Resend</span>
-                )}
-              </p>
-              </form>
-              </div>
-              :
+              )}
+            </form>
+          </Popup>
+        ) : null}
+        {this.state.popup ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+            {this.state.showOtp ? (
               <div>
-            <h1 >Edit Cashier</h1>
-            <form action="" method="post" onSubmit={this.editCashier}>
-            <FormGroup>
-                <label>Cashier Name*</label>
-                <TextInput
-                  type="text"
-                  name="name"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  autoFocus
-                  value={this.state.name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Cashier Code*</label>
-                <TextInput
-                  type="text"
-                  autoFocus
-                  name="bcode"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.bcode}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <label>Working Hours</label>
-              <Row>
+                <h1>
+                  <FormattedMessage {...messages.verify} />
+                </h1>
+                <form action="" method="post" onSubmit={this.verifyOTP}>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.otp} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  {this.state.verifyOTPLoading ? (
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="50px">
+                      <span>
+                        <FormattedMessage {...messages.verify} />
+                      </span>
+                    </Button>
+                  )}
 
-                <Col  cW="30%" mR="2%">
-
-                <FormGroup>
-                <label>From*</label>
-                  <TextInput
-                    type="text"
-                    autoFocus
-                    name="working_from"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.working_from}
-                    onChange={this.handleInputChange}
-                    required
-                  />
+                  <p className="resend">
+                    Wait for <span className="timer">{this.state.timer}</span>{' '}
+                    to{' '}
+                    {this.state.resend ? (
+                      <span className="go" onClick={this.generateOTP}>
+                        Resend
+                      </span>
+                    ) : (
+                      <span>Resend</span>
+                    )}
+                  </p>
+                </form>
+              </div>
+            ) : (
+              <div>
+                <h1>Create Cashier</h1>
+                <form action="" method="post" onSubmit={this.addBranch}>
+                  <FormGroup>
+                    <label>Cashier Name*</label>
+                    <TextInput
+                      type="text"
+                      name="name"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.name}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Cashier Code*</label>
+                    <TextInput
+                      type="text"
+                      name="bcode"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.bcode}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <label>Working Hours</label>
+                  <Row>
+                    <Col cW="30%" mR="2%">
+                      <FormGroup>
+                        <label>From*</label>
+                        <TextInput
+                          type="text"
+                          name="working_from"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.working_from}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col cW="68%">
+                      <FormGroup>
+                        <label>To*</label>
+                        <TextInput
+                          type="text"
+                          title="10 Digit numeric value"
+                          name="working_to"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.working_to}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <FormGroup>
+                    <label>Maximum per transaction amount*</label>
+                    <TextInput
+                      type="text"
+                      name="per_trans_amt"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.per_trans_amt}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Maximum daily transaction amount*</label>
+                    <TextInput
+                      type="text"
+                      name="max_trans_amt"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.max_trans_amt}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Maximum daily transaction count*</label>
+                    <TextInput
+                      type="text"
+                      name="max_trans_count"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.max_trans_count}
+                      onChange={this.handleInputChange}
+                      required
+                    />
                   </FormGroup>
 
-                </Col>
-                <Col cW="68%">
-                <FormGroup>
-                  <label>To*</label>
-                  <TextInput
-                    type="text"
-                    autoFocus
-                    title="10 Digit numeric value"
-                    name="working_to"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.working_to}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
+                  {this.state.addBranchLoading ? (
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="50px">
+                      <span>Create Cashier</span>
+                    </Button>
+                  )}
+                </form>
+              </div>
+            )}
+          </Popup>
+        ) : null}
 
-                </Col>
-                </Row>
-              <FormGroup>
-                <label>Maximum per transaction amount*</label>
-                <TextInput
-                  type="text"
-                  name="per_trans_amt"
-                  autoFocus
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.per_trans_amt}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Maximum daily transaction amount*</label>
-                <TextInput
-                  type="text"
-                  name="max_trans_amt"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  autoFocus
-                  value={this.state.max_trans_amt}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label>Maximum daily transaction count*</label>
-                <TextInput
-                  type="text"
-                  name="max_trans_count"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.max_trans_count}
-                  autoFocus
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-                    {
-                      this.state.editBranchLoading ?
-                      <Button filledBtn marginTop="50px" disabled>
-                        <Loader />
-                      </Button>
-                      :
-                      <Button filledBtn marginTop="50px">
+        {this.state.editPopup ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+            {this.state.showEditOtp ? (
+              <div>
+                <h1>
+                  <FormattedMessage {...messages.verify} />
+                </h1>
+                <form action="" method="post" onSubmit={this.verifyEditOTP}>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.otp} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  {this.verifyEditOTPLoading ? (
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="50px">
+                      <span>
+                        <FormattedMessage {...messages.verify} />
+                      </span>
+                    </Button>
+                  )}
+
+                  <p className="resend">
+                    Wait for <span className="timer">{this.state.timer}</span>{' '}
+                    to{' '}
+                    {this.state.resend ? (
+                      <span className="go" onClick={this.generateOTP}>
+                        Resend
+                      </span>
+                    ) : (
+                      <span>Resend</span>
+                    )}
+                  </p>
+                </form>
+              </div>
+            ) : (
+              <div>
+                <h1>Edit Cashier</h1>
+                <form action="" method="post" onSubmit={this.editCashier}>
+                  <FormGroup>
+                    <label>Cashier Name*</label>
+                    <TextInput
+                      type="text"
+                      name="name"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      autoFocus
+                      value={this.state.name}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Cashier Code*</label>
+                    <TextInput
+                      type="text"
+                      autoFocus
+                      name="bcode"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.bcode}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <label>Working Hours</label>
+                  <Row>
+                    <Col cW="30%" mR="2%">
+                      <FormGroup>
+                        <label>From*</label>
+                        <TextInput
+                          type="text"
+                          autoFocus
+                          name="working_from"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.working_from}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col cW="68%">
+                      <FormGroup>
+                        <label>To*</label>
+                        <TextInput
+                          type="text"
+                          autoFocus
+                          title="10 Digit numeric value"
+                          name="working_to"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.working_to}
+                          onChange={this.handleInputChange}
+                          required
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <FormGroup>
+                    <label>Maximum per transaction amount*</label>
+                    <TextInput
+                      type="text"
+                      name="per_trans_amt"
+                      autoFocus
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.per_trans_amt}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Maximum daily transaction amount*</label>
+                    <TextInput
+                      type="text"
+                      name="max_trans_amt"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      autoFocus
+                      value={this.state.max_trans_amt}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Maximum daily transaction count*</label>
+                    <TextInput
+                      type="text"
+                      name="max_trans_count"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.max_trans_count}
+                      autoFocus
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  {this.state.editBranchLoading ? (
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="50px">
                       <span>Update Cashier</span>
                     </Button>
-                    }
-
-            </form>
-            </div>
-            }
-          </Popup>
-          : null }
-
-
-          { this.state.openingPopup ?
-          <Popup close={this.closePopup.bind(this)} accentedH1>
-            {
-              this.state.showOpeningOTP ?
-              <div>
-              <h1 ><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyOpeningOTP} >
-              <FormGroup>
-                <label><FormattedMessage {...messages.otp} />*</label>
-                <TextInput
-                  type="text"
-                  name="otp"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.otp}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              {
-                this.verifyEditOTPLoading ?
-                <Button filledBtn marginTop="50px" disabled>
-                  <Loader />
-                </Button>
-                :
-                <Button filledBtn marginTop="50px">
-                  <span><FormattedMessage {...messages.verify} /></span>
-                </Button>
-              }
-
-              <p className="resend">
-                Wait for <span className="timer">{this.state.timer}</span>{' '}
-                to{' '}
-                {this.state.resend ? (
-                  <span className="go" onClick={this.generateOTP}>
-                    Resend
-                  </span>
-                ) : (
-                  <span>Resend</span>
-                )}
-              </p>
-              </form>
+                  )}
+                </form>
               </div>
-              :
+            )}
+          </Popup>
+        ) : null}
+
+        {this.state.openingPopup ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+            {this.state.showOpeningOTP ? (
               <div>
-            <h1 >Enter your opening balance</h1>
-            <form action="" method="post" onSubmit={this.addOpeningBalance}>
-              <FormGroup>
-              <Row>
-              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 10</strong></Col>
-              <Col cW="20%" textAlign="center">X</Col>
-              <Col cW="35%">
-              <TextInput
-                  marginTop
-                  type="text"
-                  name="denom10"
-                  autoFocus
-                  value={this.state.denom10}
-                  onChange={this.handleAmountChange}
-                />
-              </Col>
-              </Row>
-              </FormGroup>
+                <h1>
+                  <FormattedMessage {...messages.verify} />
+                </h1>
+                <form action="" method="post" onSubmit={this.verifyOpeningOTP}>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.otp} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  {this.verifyEditOTPLoading ? (
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="50px">
+                      <span>
+                        <FormattedMessage {...messages.verify} />
+                      </span>
+                    </Button>
+                  )}
 
-               <FormGroup>
-              <Row>
-              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 20</strong></Col>
-              <Col cW="20%" textAlign="center">X</Col>
-              <Col cW="35%">
-              <TextInput
-                  marginTop
-                  type="text"
-                  name="denom20"
-                  autoFocus
-                  value={this.state.denom20}
-                  onChange={this.handleAmountChange}
-                />
-              </Col>
-              </Row>
-              </FormGroup>
+                  <p className="resend">
+                    Wait for <span className="timer">{this.state.timer}</span>{' '}
+                    to{' '}
+                    {this.state.resend ? (
+                      <span className="go" onClick={this.generateOTP}>
+                        Resend
+                      </span>
+                    ) : (
+                      <span>Resend</span>
+                    )}
+                  </p>
+                </form>
+              </div>
+            ) : (
+              <div>
+                <h1>Enter your opening balance</h1>
+                <form action="" method="post" onSubmit={this.addOpeningBalance}>
+                  <FormGroup>
+                    <Row>
+                      <Col cW="15%" textAlign="right">
+                        <strong>{CURRENCY} 10</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        X
+                      </Col>
+                      <Col cW="35%">
+                        <TextInput
+                          marginTop
+                          type="text"
+                          name="denom10"
+                          autoFocus
+                          value={this.state.denom10}
+                          onChange={this.handleAmountChange}
+                        />
+                      </Col>
+                    </Row>
+                  </FormGroup>
 
-                         <FormGroup>
-              <Row>
-              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 50</strong></Col>
-              <Col cW="20%" textAlign="center">X</Col>
-              <Col cW="35%">
-              <TextInput
-                  marginTop
-                  type="text"
-                  name="denom50"
-                  autoFocus
-                  value={this.state.denom50}
-                  onChange={this.handleAmountChange}
-                />
-              </Col>
-              </Row>
-              </FormGroup>
+                  <FormGroup>
+                    <Row>
+                      <Col cW="15%" textAlign="right">
+                        <strong>{CURRENCY} 20</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        X
+                      </Col>
+                      <Col cW="35%">
+                        <TextInput
+                          marginTop
+                          type="text"
+                          name="denom20"
+                          autoFocus
+                          value={this.state.denom20}
+                          onChange={this.handleAmountChange}
+                        />
+                      </Col>
+                    </Row>
+                  </FormGroup>
 
-                         <FormGroup>
-              <Row>
-              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 100</strong></Col>
-              <Col cW="20%" textAlign="center">X</Col>
-              <Col cW="35%">
-              <TextInput
-                  marginTop
-                  type="text"
-                  name="denom100"
-                  autoFocus
-                  value={this.state.denom100}
-                  onChange={this.handleAmountChange}
-                />
-              </Col>
-              </Row>
-              </FormGroup>
+                  <FormGroup>
+                    <Row>
+                      <Col cW="15%" textAlign="right">
+                        <strong>{CURRENCY} 50</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        X
+                      </Col>
+                      <Col cW="35%">
+                        <TextInput
+                          marginTop
+                          type="text"
+                          name="denom50"
+                          autoFocus
+                          value={this.state.denom50}
+                          onChange={this.handleAmountChange}
+                        />
+                      </Col>
+                    </Row>
+                  </FormGroup>
 
-                         <FormGroup>
-              <Row>
-              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 1000</strong></Col>
-              <Col cW="20%" textAlign="center">X</Col>
-              <Col cW="35%">
-              <TextInput
-                  marginTop
-                  type="text"
-                  name="denom1000"
-                  autoFocus
-                  value={this.state.denom1000}
-                  onChange={this.handleAmountChange}
-                />
-              </Col>
-              </Row>
-              </FormGroup>
+                  <FormGroup>
+                    <Row>
+                      <Col cW="15%" textAlign="right">
+                        <strong>{CURRENCY} 100</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        X
+                      </Col>
+                      <Col cW="35%">
+                        <TextInput
+                          marginTop
+                          type="text"
+                          name="denom100"
+                          autoFocus
+                          value={this.state.denom100}
+                          onChange={this.handleAmountChange}
+                        />
+                      </Col>
+                    </Row>
+                  </FormGroup>
 
-                         <FormGroup>
-              <Row>
-              <Col cW="15%" textAlign="right"><strong>{CURRENCY} 2000</strong></Col>
-              <Col cW="20%" textAlign="center">X</Col>
-              <Col cW="35%">
-              <TextInput
-                  marginTop
-                  type="text"
-                  name="denom2000"
-                  autoFocus
-                  value={this.state.denom2000}
-                  onChange={this.handleAmountChange}
-                />
-              </Col>
-              </Row>
-              </FormGroup>
+                  <FormGroup>
+                    <Row>
+                      <Col cW="15%" textAlign="right">
+                        <strong>{CURRENCY} 1000</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        X
+                      </Col>
+                      <Col cW="35%">
+                        <TextInput
+                          marginTop
+                          type="text"
+                          name="denom1000"
+                          autoFocus
+                          value={this.state.denom1000}
+                          onChange={this.handleAmountChange}
+                        />
+                      </Col>
+                    </Row>
+                  </FormGroup>
 
-              <Row>
-              <Col cW="15%" textAlign="right"><strong>TOTAL</strong></Col>
-              <Col cW="20%" textAlign="center">=</Col>
-              <Col cW="35%">
-              {this.state.total}
-              </Col>
-              </Row>
-               
-                    {
-                      this.state.editBranchLoading ?
-                      <Button filledBtn marginTop="50px" disabled>
-                        <Loader />
-                      </Button>
-                      :
-                      <Button filledBtn marginTop="50px">
+                  <FormGroup>
+                    <Row>
+                      <Col cW="15%" textAlign="right">
+                        <strong>{CURRENCY} 2000</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        X
+                      </Col>
+                      <Col cW="35%">
+                        <TextInput
+                          marginTop
+                          type="text"
+                          name="denom2000"
+                          autoFocus
+                          value={this.state.denom2000}
+                          onChange={this.handleAmountChange}
+                        />
+                      </Col>
+                    </Row>
+                  </FormGroup>
+
+                  <Row>
+                    <Col cW="15%" textAlign="right">
+                      <strong>TOTAL</strong>
+                    </Col>
+                    <Col cW="20%" textAlign="center">
+                      =
+                    </Col>
+                    <Col cW="35%">{this.state.total}</Col>
+                  </Row>
+
+                  {this.state.editBranchLoading ? (
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="50px">
                       <span>Submit</span>
                     </Button>
-                    }
-
-            </form>
-            </div>
-            }
+                  )}
+                </form>
+              </div>
+            )}
           </Popup>
-          : null }
+        ) : null}
       </Wrapper>
     );
   }
