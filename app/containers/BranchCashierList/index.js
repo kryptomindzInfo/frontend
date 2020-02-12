@@ -669,7 +669,7 @@ export default class BranchCashierList extends Component {
                 </div>
                 <div className="cardHeaderRight">
                   <h3>Cashier List</h3>
-                  <h5>List of your cahsier</h5>
+                  <h5>List of your cashier</h5>
                 </div>
               </div>
               <div className="cardBody">
@@ -679,14 +679,13 @@ export default class BranchCashierList extends Component {
                       <th>Cashier Name</th>
                       <th>Cash in Hand</th>
                       <th>Transaction limit ({CURRENCY})</th>
-                      {/* <th>Assigned to</th> */}
-
+                      <th>Assigned to</th>
                       <th>Transaction Count</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.branches && this.state.branches.length > 0
-                      ? this.state.branches.map(function(b) {
+                    {this.state.branches && this.state.branches.length > 0 && this.state.users
+                      ? this.state.branches.map(b => {
                           return (
                             <tr key={b._id}>
                               <td>{b.name}</td>
@@ -704,9 +703,15 @@ export default class BranchCashierList extends Component {
                                   (b.cash_paid + b.cash_received)
                                 ).toFixed(2)}
                               </td>
-                              {/* <td>
-                                    {users.name}
-                              </td> */}
+                              <td>
+                                {this.state.users.filter(
+                                  u => u._id == b.bank_user_id,
+                                )[0]
+                                  ? this.state.users.filter(
+                                      u => u._id == b.bank_user_id,
+                                    )[0].name
+                                  : ''}
+                              </td>
                               <td className="tac bold green">
                                 {b.total_trans}
                                 <span className="absoluteMiddleRight primary popMenuTrigger">

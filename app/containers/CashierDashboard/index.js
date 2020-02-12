@@ -223,7 +223,7 @@ export default class CashierDashboard extends Component {
               var dis = this;
               setTimeout(function() {
                 dis.getStats();
-              }, 3000);
+              }, 10000);
             },
           );
         }
