@@ -433,6 +433,39 @@ export default class BranchCashierList extends Component {
       });
   };
 
+  releaseCashier = (id) => {    
+    console.log(id);
+    axios
+      .put(`${API_URL}/updateOne`, {page:"cashier", token: token, type: "branch", page_id: id, updateData: {closing_time: null, closing_balance: 0} })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState(
+              {
+                notification: 'Cashier Access Re-opened!',
+              },
+              function() {
+                this.success();
+                this.getBranches();
+              },
+            );
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          verifyEditOTPLoading: false,
+        });
+        this.error();
+      });
+  };
+
   approve = event => {
     this.setState({
       approveLoading: true,
@@ -735,6 +768,14 @@ export default class BranchCashierList extends Component {
                                     >
                                       Assign User
                                     </span>
+                                     {b.closing_time != null  ? (
+                                      <span
+                                        onClick={() => dis.releaseCashier(b._id)}
+                                      >
+                                        Re-open Access
+                                      </span>
+                                    ) : null
+                                  }
                                     {b.opening_balance > 0 ? null : (
                                       <span
                                         onClick={() => dis.showOpeningPopup(b)}

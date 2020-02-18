@@ -53,10 +53,12 @@ class CashierClosingBalance extends Component {
       balance1: 0,
       balance2: 0,
       total: 0,
+      cashInHand: 0,
       cid: cid,
       popup: false,
       showOtp: false,
       assignPop: false,
+      agree: false,
       token,
       otpEmail: email,
       otpMobile: mobile,
@@ -81,12 +83,24 @@ class CashierClosingBalance extends Component {
       [name]: value,
     });
   };
+   handleCheckbox = event => {
+    const { value, name } = event.target;
+    console.log(value);
+    if(value == "true"){
+      var v = false;
+    }else{
+      var v = true;
+    }
+    this.setState({
+      [name]: v,
+    });
+  };
 
   showOpeningPopup = v => {
     this.setState({ openingPopup: true, cashier_id: v._id });
   };
   showHistoryPop = () => {
-    console.log('w');
+    
     this.setState({ historyPop: true, historyLoading: true });
     this.getHistory();
   };
@@ -101,7 +115,7 @@ class CashierClosingBalance extends Component {
       })
       .then(res => {
         if (res.status == 200) {
-          console.log(res.data);
+          
           this.setState(
             {
               history: res.data.rows,
@@ -177,7 +191,8 @@ class CashierClosingBalance extends Component {
 
   addOpeningBalance = event => {
     event.preventDefault();
-    if (this.state.total == '' || this.state.total == 0) {
+      if(this.state.agree){
+       if (this.state.total == '' || this.state.total == 0) {
       this.setState(
         {
           notification: 'You need to enter atleast one denomination',
@@ -198,6 +213,9 @@ class CashierClosingBalance extends Component {
         },
       );
     }
+  }else{
+    this.closePopup();
+  }
   };
   startTimer = () => {
     var dis = this;
@@ -250,9 +268,10 @@ class CashierClosingBalance extends Component {
         if (res.status == 200) {
           let b1 = res.data.balance1 == null ? 0 : res.data.balance1;
           let b2 = res.data.balance2 == null ? 0 : res.data.balance2;
-          let dd = this.formatDate(res.data.lastdate);
+          let dd = res.data.lastdate == null ?  null: this.formatDate(res.data.lastdate);
           this.setState(
             {
+              cashInHand: res.data.cashInHand,
               balance1: b1,
               balance2: b2,
               lastdate: dd,
@@ -306,10 +325,11 @@ class CashierClosingBalance extends Component {
   };
 
   verifyOpeningOTP = event => {
-    this.setState({
-      verifyEditOTPLoading: false,
-    });
     event.preventDefault();
+  
+    this.setState({
+      verifyEditOTPLoading: true,
+    });
     axios
       .post(`${API_URL}/addClosingBalance`, this.state)
       .then(res => {
@@ -343,6 +363,7 @@ class CashierClosingBalance extends Component {
         });
         this.error();
       });
+
   };
   componentDidMount() {
     this.setState({
@@ -353,7 +374,7 @@ class CashierClosingBalance extends Component {
     axios
       .get(`${API_URL}/get-currency`)
       .then(d => {
-        console.log(d);
+        
         if (d.data.length != 0) {
           this.setState(prevState => ({
             ...prevState,
@@ -413,11 +434,19 @@ class CashierClosingBalance extends Component {
             </div>
           </Col>
         </Row>
-
-        <button className="sendMoneyButton" onClick={this.showOpeningPopup}>
+        {
+          this.state.lastdate == null ?
+          <button className="sendMoneyButton" onClick={this.showOpeningPopup}>
           <i className="material-icons">send</i>
           Enter closing balance
         </button>
+        :
+        <button className="sendMoneyButton" disabled>
+          <i className="material-icons">send</i>
+          Enter closing balance
+        </button>  
+        }
+        
 
         {this.state.openingPopup ? (
           <Popup close={this.closePopup.bind(this)} accentedH1>
@@ -660,7 +689,7 @@ class CashierClosingBalance extends Component {
                       ))}
                     </Grid>
                   </FormGroup>
-
+                  <FormGroup>
                   <Row style={{ marginTop: '5%' }}>
                     <Col cW="15%" textAlign="right">
                       <strong>TOTAL</strong>
@@ -677,6 +706,55 @@ class CashierClosingBalance extends Component {
                       }
                     </Col>
                   </Row>
+                  <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+                    <Col cW="20%" textAlign="right">
+                      <strong>Cash in Hand</strong>
+                    </Col>
+                    <Col cW="20%" textAlign="center">
+                      =
+                    </Col>
+                    <Col cW="35%">
+                      {
+                        this.state.cashInHand
+                      }
+                    </Col>
+                  </Row>
+                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+                    <Col cW="20%" textAlign="right">
+                      <strong>Discrepancy</strong>
+                    </Col>
+                    <Col cW="20%" textAlign="center">
+                      =
+                    </Col>
+                    <Col cW="35%">
+                      {
+                        this.state.cashInHand-this.state.total
+                      }
+                    </Col>
+                  </Row>
+                  </FormGroup>
+                  <FormGroup>
+                  <TextInput
+                          marginTop
+                          type="text"
+                          name="note"
+                          autoFocus 
+                          placeholder="Note"
+                          value={this.state.note}
+                          onChange={this.handleInputChange}
+                        />
+                  </FormGroup>
+                  <div style={{
+                    marginTop: '20px',
+                    fontSize: '18px',
+                    textAlign: 'center'
+                    }}>
+                  <input type="checkbox" 
+                  name="agree"
+                  value={this.state.agree}
+                   checked={this.state.agree}
+                              onClick={this.handleCheckbox} /> Close accounts for the day?
+                  </div>
 
                   {this.state.editBranchLoading ? (
                     <Button filledBtn marginTop="50px" disabled>

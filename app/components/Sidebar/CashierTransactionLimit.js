@@ -37,6 +37,7 @@ class CashierTransactionLimit extends Component {
     super();
     this.state = {
         balance: 0,
+        closingTime: null,
         withoutID: false,
         requireOTP: false,
         token,
@@ -617,7 +618,8 @@ getTransLimit = () => {
           throw res.data.error;
         } else {
           this.setState({
-            balance: Number(res.data.limit)
+            balance: Number(res.data.limit),
+            closingTime: res.data.closingTime
           }, () => {
             var dis  = this;
             setTimeout(function(){
@@ -665,16 +667,32 @@ getTransLimit = () => {
     
         <Row>
           <Col>
+          {
+            this.state.closingTime == null ?
             <Button
               className="sendMoneybutton"
               noMin
               onClick={this.showPopupSendMoney}
+
             >
               <i className="material-icons">send</i> {/* Send Money */}
               <FormattedMessage {...messages.sendmoney} />
             </Button>
+            :
+            <Button
+              className="sendMoneybutton"
+              noMin
+              disabled
+            >
+              <i className="material-icons">send</i> {/* Send Money */}
+              <FormattedMessage {...messages.sendmoney} />
+            </Button>
+          }
+            
           </Col>
           <Col>
+          {
+            this.state.closingTime == null ?
             <Button
             noMin
               className="sendMoneybutton"
@@ -682,6 +700,15 @@ getTransLimit = () => {
             >
               <i className="material-icons">send</i> Claim Money
             </Button>
+            :
+            <Button
+            noMin
+              className="sendMoneybutton"
+              disabled
+            >
+              <i className="material-icons">send</i> Claim Money
+            </Button>
+          }
           </Col>
         </Row>
 

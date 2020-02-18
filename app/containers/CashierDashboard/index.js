@@ -25,7 +25,11 @@ import SidebarCashier from 'components/Sidebar/SidebarCashier';
 import Main from 'components/Main';
 import Table from 'components/Table';
 import Pagination from 'react-js-pagination';
+import TextInput from 'components/TextInput';
 import Popup from 'components/Popup';
+import Row from 'components/Row';
+import Col from 'components/Col';
+import FormGroup from 'components/FormGroup';
 import Button from 'components/Button';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
@@ -46,14 +50,12 @@ const logo = localStorage.getItem('bankLogo');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
 
-var start = new Date();
-start.setHours(0, 0, 0, 0);
-start = start.toISOString();
-console.log(start);
+var today =new Date(new Date().setDate(new Date().getDate()+1));
+today.setHours(0, 0, 0, 0);
+today = today.getTime();
+console.log(today);
 
-var end = new Date();
-end.setHours(23, 59, 59, 999);
-end = end.toISOString();
+
 
 export default class CashierDashboard extends Component {
   constructor() {
@@ -62,12 +64,16 @@ export default class CashierDashboard extends Component {
       token,
       otpEmail: email,
       otpMobile: mobile,
+      agree:false,
       historyPop: false,
+      tomorrow: false,
       trans_type: '',
       cashReceived: 0,
       openingBalance: 0,
+      closingBalance: 0,
       cashPaid: 0,
       feeGenerated: 0,
+      closingTime: null,
       perPage: 20,
       totalCount: 100,
       allhistory: [],
@@ -101,6 +107,8 @@ export default class CashierDashboard extends Component {
   closePopup = () => {
     this.setState({
       historyPop: false,
+      openCashierPopup: false,
+      showOpeningOTP: false,
     });
   };
   showHistoryPop = v => {
@@ -113,6 +121,133 @@ export default class CashierDashboard extends Component {
     this.getTransHistory(v.master_code);
   };
 
+  openCashier = e => {
+    this.setState({
+      openCashierPopup: true
+    });
+  };
+
+addOpeningBalance = event => {
+    event.preventDefault();
+      if(this.state.agree){
+
+      this.setState(
+        {
+          showOpeningOTP: true,
+          otpOpt: 'openingBalance',
+          otpTxt: 'Your OTP to open cashier balance is ',
+        },
+        () => {
+          this.generateOTP();
+        },
+      );
+  }else{
+        this.setState({
+          notification: 'You need to agree'
+        });
+        this.error();
+  }
+  };
+  startTimer = () => {
+    var dis = this;
+    var timer = setInterval(function() {
+      if (dis.state.timer <= 0) {
+        clearInterval(timer);
+        dis.setState({ resend: true });
+      } else {
+        var time = Number(dis.state.timer) - 1;
+        dis.setState({ timer: time });
+      }
+    }, 1000);
+  };
+generateOTP = () => {
+    this.setState({ resend: false, timer: 30 });
+
+    axios
+      .post(`${API_URL}/sendOTP`, {
+        email: this.state.otpEmail,
+        mobile: this.state.otpMobile,
+        page: this.state.otpOpt,
+        type: 'cashier',
+        txt: this.state.otpTxt,
+        token,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              otpId: res.data.id,
+              notification: 'OTP Sent',
+            });
+            this.startTimer();
+            this.success();
+          }
+        } else {
+          throw res.data.error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+        });
+        this.error();
+      });
+  };
+  verifyOpeningOTP = event => {
+    event.preventDefault();
+  
+    this.setState({
+      verifyEditOTPLoading: true,
+    });
+    axios
+      .post(`${API_URL}/openCashierBalance`, this.state)
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState(
+              {
+                notification: 'Cashier opened successfully!',
+              },
+              function() {
+                this.success();
+                this.closePopup();
+                this.getStats();
+              },
+            );
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+        this.setState({
+          verifyEditOTPLoading: false,
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          verifyEditOTPLoading: false,
+        });
+        this.error();
+      });
+
+  };
+
+   handleCheckbox = event => {
+    const { value, name } = event.target;
+    if(value == "true"){
+      var v = false;
+    }else{
+      var v = true;
+    }
+    this.setState({
+      [name]: v,
+    });
+  };
   getTransHistory = master_code => {
     axios
       .post(`${API_URL}/getTransHistory`, {
@@ -201,20 +336,36 @@ export default class CashierDashboard extends Component {
   getStats = () => {
     axios
       .post(`${API_URL}/getCashierDashStats`, {
-        token: token,
-        start: start,
-        end: end,
+        token: token
       })
       .then(res => {
         if (res.status == 200) {
-          let received =
-            res.data.cashReceived == null ? 0 : res.data.cashReceived;
+          console.log(res.data);
+          let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
-          // let ob = res.data.openingBalance == null ? 0 : res.data.openingBalance;
+          var closingTime = res.data.closingTime;
+          
+          if(closingTime != undefined && closingTime != null){
+            
+             closingTime  = new Date(closingTime);
+                          closingTime.setHours(0, 0, 0, 0);
+              closingTime = closingTime.getTime();
+              console.log(closingTime);
+              console.log(today);
+              if(closingTime < today){
+                closingTime = true;
+              }else{
+                closingTime = false;
+              }
+          }
+          console.log(closingTime);
           this.setState(
             {
+              tomorrow: closingTime,
+              closingTime:  res.data.closingTime,
               loading: false,
               openingBalance: res.data.openingBalance,
+              closingBalance: res.data.closingBalance,
               cashReceived: received,
               cashPaid: paid,
               feeGenerated: res.data.feeGenerated,
@@ -289,6 +440,18 @@ export default class CashierDashboard extends Component {
   }
 
   render() {
+        function inputFocus(e) {
+      const { target } = e;
+      target.parentElement.querySelector('label').classList.add('focused');
+    }
+
+    function inputBlur(e) {
+      const { target } = e;
+      if (target.value == '') {
+        target.parentElement.querySelector('label').classList.remove('focused');
+      }
+    }
+    
     const { loading, redirect } = this.state;
     if (loading) {
       return <Loader fullPage />;
@@ -337,7 +500,11 @@ export default class CashierDashboard extends Component {
               >
                 <h4>Opening Balance</h4>
                 <div className="cardValue">
-                  {CURRENCY} {this.state.openingBalance.toFixed(2)}
+                {
+                  this.state.tomorrow ? 
+                  <Button onClick={this.openCashier}>Open Cashier</Button>
+                  : <span> {CURRENCY} {this.state.openingBalance.toFixed(2)}</span>
+                }
                 </div>
               </Card>
               <Card
@@ -580,6 +747,104 @@ export default class CashierDashboard extends Component {
                 </Table>
               )}
             </div>
+          </Popup>
+        ) : null}
+
+         {this.state.openCashierPopup ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1>
+            {this.state.showOpeningOTP ? (
+              <div>
+                <h1>Verify OTP</h1>
+                <form action="" method="post" onSubmit={this.verifyOpeningOTP}>
+                  <FormGroup>
+                    <label>OTP*</label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  {this.verifyEditOTPLoading ? (
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="50px">
+                      <span>Verify</span>
+                    </Button>
+                  )}
+
+                  <p className="resend">
+                    Wait for <span className="timer">{this.state.timer}</span>{' '}
+                    to{' '}
+                    {this.state.resend ? (
+                      <span className="go" onClick={this.generateOTP}>
+                        Resend
+                      </span>
+                    ) : (
+                      <span>Resend</span>
+                    )}
+                  </p>
+                </form>
+              </div>
+            ) : (
+              <div>
+                <h1>Open Cashier</h1>
+                <form action="" method="post" onSubmit={this.addOpeningBalance}>
+                 
+                  <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+                    <Col cW="20%" textAlign="right">
+                      <strong>Cash in Hand</strong>
+                    </Col>
+                    <Col cW="20%" textAlign="center">
+                      =
+                    </Col>
+                    <Col cW="35%">
+                      {
+                        this.state.openingBalance+this.state.cashReceived-this.state.cashPaid
+                      }
+                    </Col>
+                  </Row>
+                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+                    <Col cW="20%" textAlign="right">
+                      <strong>Discrepancy</strong>
+                    </Col>
+                    <Col cW="20%" textAlign="center">
+                      =
+                    </Col>
+                    <Col cW="35%">
+                      {
+                        (this.state.openingBalance+this.state.cashReceived-this.state.cashPaid) - this.state.closingBalance
+                      }
+                    </Col>
+                  </Row>
+                 
+                  
+                  <div style={{
+                    marginTop: '20px',
+                    fontSize: '18px',
+                    textAlign: 'center'
+                    }}>
+                  <input type="checkbox" 
+                  name="agree"
+                  value={this.state.agree}
+                   checked={this.state.agree}
+                   required
+                              onClick={this.handleCheckbox} /> Agree to the opening balance?
+                  </div>
+
+           
+                    <Button filledBtn marginTop="50px">
+                      <span>Open</span>
+                    </Button>
+   
+                </form>
+              </div>
+            )}
           </Popup>
         ) : null}
       </Wrapper>
