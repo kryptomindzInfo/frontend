@@ -49,8 +49,9 @@ const bid = localStorage.getItem('cashierId');
 const logo = localStorage.getItem('bankLogo');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
-
-var today =new Date(new Date().setDate(new Date().getDate()+1));
+//enable the following line and disable the next line to test for tomorrow
+//var today =new Date(new Date().setDate(new Date().getDate()+1));
+var today =new Date();
 today.setHours(0, 0, 0, 0);
 today = today.getTime();
 console.log(today);
@@ -346,7 +347,6 @@ generateOTP = () => {
           var closingTime = res.data.closingTime;
           
           if(closingTime != undefined && closingTime != null){
-            
              closingTime  = new Date(closingTime);
                           closingTime.setHours(0, 0, 0, 0);
               closingTime = closingTime.getTime();
@@ -357,6 +357,8 @@ generateOTP = () => {
               }else{
                 closingTime = false;
               }
+          }else if(!res.data.transactionStarted){
+            closingTime = true;
           }
           console.log(closingTime);
           this.setState(
@@ -379,7 +381,12 @@ generateOTP = () => {
           );
         }
       })
-      .catch(err => {});
+      .catch(err => {
+        var dis = this;
+              setTimeout(function() {
+                dis.getStats();
+              }, 10000);
+      });
   };
 
   filterData = e => {
@@ -487,7 +494,7 @@ generateOTP = () => {
           from="cashier"
         />
         <Container verticalMargin>
-          <SidebarCashier refresh={this.getHistory.bind(this)} />
+          <SidebarCashier refresh={this.getHistory.bind(this)} branchName={this.props.match.params.bank} />
           <Main>
             <div className="clr">
               <Card
@@ -818,7 +825,7 @@ generateOTP = () => {
                     </Col>
                     <Col cW="35%">
                       {
-                        (this.state.openingBalance+this.state.cashReceived-this.state.cashPaid) - this.state.closingBalance
+                        this.state.closingBalance - (this.state.openingBalance+this.state.cashReceived-this.state.cashPaid)
                       }
                     </Col>
                   </Row>

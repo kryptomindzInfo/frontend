@@ -13,6 +13,7 @@ import A from 'components/A';
 import Loader from 'components/Loader';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
+import history from 'utils/history';
 
 // import withStyles from '@material-ui/core/styles'
 import { withStyles } from '@material-ui/core';
@@ -104,6 +105,8 @@ class CashierClosingBalance extends Component {
     this.setState({ historyPop: true, historyLoading: true });
     this.getHistory();
   };
+
+
 
   getHistory = () => {
     axios
@@ -275,6 +278,7 @@ class CashierClosingBalance extends Component {
               balance1: b1,
               balance2: b2,
               lastdate: dd,
+              transactionStarted: res.data.transactionStarted
             },
             () => {
               var dis = this;
@@ -285,7 +289,12 @@ class CashierClosingBalance extends Component {
           );
         }
       })
-      .catch(err => {});
+      .catch(err => {
+        var dis = this;
+              setTimeout(function() {
+                dis.getStats();
+              }, 3000);
+      });
   };
 
   generateOTP = () => {
@@ -339,12 +348,17 @@ class CashierClosingBalance extends Component {
           } else {
             this.setState(
               {
-                notification: 'Closing balance submitted successfully!',
+                notification: 'Closing balance submitted successfully, you will be logged out!',
               },
               function() {
                 this.success();
                 this.closePopup();
                 this.getStats();
+                var dis = this;
+                setTimeout(function(){
+                  localStorage.removeItem('cashierLogged');
+                  history.push('/cashier/' + dis.props.branchName);
+                }, 3000);
               },
             );
           }
@@ -366,6 +380,7 @@ class CashierClosingBalance extends Component {
 
   };
   componentDidMount() {
+
     this.setState({
       bank: this.props.historyLink,
     });
@@ -435,7 +450,7 @@ class CashierClosingBalance extends Component {
           </Col>
         </Row>
         {
-          this.state.lastdate == null ?
+          this.state.transactionStarted && this.state.lastdate == null ?
           <button className="sendMoneyButton" onClick={this.showOpeningPopup}>
           <i className="material-icons">send</i>
           Enter closing balance
@@ -728,7 +743,7 @@ class CashierClosingBalance extends Component {
                     </Col>
                     <Col cW="35%">
                       {
-                        this.state.cashInHand-this.state.total
+                        this.state.total - this.state.cashInHand
                       }
                     </Col>
                   </Row>
