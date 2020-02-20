@@ -616,7 +616,7 @@ export default class BankCashierInfo extends Component {
           <BankSidebarCashier active="info" blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.state.name}/>
           <Main>
 
-            <CashierWallets limit={this.state.transaction_limit} />
+            <CashierWallets limit={Number(this.state.banks.max_trans_amt) - (Number(this.state.banks.cash_received) + Number(this.state.banks.cash_paid))} inHand={this.state.banks.opening_balance + (this.state.banks.cash_received - this.state.banks.cash_paid)} paid={this.state.banks.cash_paid} received={this.state.banks.cash_received} />
 
             <Card bigPadding bordered>
 

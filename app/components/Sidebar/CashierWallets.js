@@ -85,7 +85,11 @@ class BranchWallets extends Component {
  console.log(this.props);
   }
   render() {
-
+    
+    const limit = Number(this.props.limit);
+    const inHand = Number(this.props.inHand);
+    const received = Number(this.props.received);
+    const paid = Number(this.props.paid);
     return (
       <Row>
       <Col>
@@ -97,7 +101,7 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} {this.props.limit.toFixed(2)}
+          {CURRENCY} {limit.toFixed(2)}
         </div>
    
       </Card>
@@ -112,7 +116,7 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY}  {this.props.inHand.toFixed(2)}
+          {CURRENCY}  {inHand.toFixed(2)}
         </div>
    
       </Card>
@@ -126,7 +130,7 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} {this.props.paid.toFixed(2)}
+          {CURRENCY} {paid.toFixed(2)}
         </div>
         
       </Card>
@@ -140,7 +144,7 @@ class BranchWallets extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY}  {this.props.received.toFixed(2)}
+          {CURRENCY}  {received.toFixed(2)}
         </div>
        
       </Card>
