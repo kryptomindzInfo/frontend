@@ -4,9 +4,20 @@ import { FormattedMessage } from 'react-intl';
 import messages from './messages';
 import axios from 'axios';
 import Card from 'components/Card';
+import Popup from 'components/Popup';
+import TextInput from 'components/TextInput';
+import Label from 'components/Label';
+import FormGroup from 'components/FormGroup';
+import Button from 'components/Button';
+import CountrySelectBox from 'components/Form/CountrySelectBox';
 import Row from 'components/Row';
 import Col from 'components/Col';
-
+import Container from 'components/Container';
+import UploadArea from 'components/UploadArea';
+import Loader from 'components/Loader';
+import A from 'components/A'; 
+import SelectInput from 'components/SelectInput';
+import Table from 'components/Table';
 
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
@@ -20,12 +31,17 @@ toast.configure({
   draggable: true,
 });
 const token = localStorage.getItem('cashierLogged');
+const cid = localStorage.getItem('cashierId');
+const email = localStorage.getItem('cashierEmail');
+const mobile = localStorage.getItem('cashierMobile');
+const cashierName = localStorage.getItem('cashierName');
 
 class CashierCashInHand extends Component {
   constructor() {
     super();
     this.state = {
         balance: 0,
+        incoming: []
     }
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -47,8 +63,238 @@ class CashierCashInHand extends Component {
 
   closePopup = () => {
     this.setState({
-      popup: false,
+      popupSendMoney: false,
+      showSendMoneyOTP: false,
+      amount : '',
+      cashier_id: '',
+      otp:'',
+      popresult: [],
+      historyPop:false,
+      incomingPop: false
     });
+  };
+
+    showPopupSendMoney = () => {
+    if(this.state.balance > 0 ){
+      this.setState({ popupSendMoney: true });
+    }else{
+      this.setState({
+        notification: "You have no cash in hand to transfer",
+      }, () => {
+      this.error();
+      });
+    }
+  };
+
+  startTimer = () => {
+    var dis = this;
+    var timer = setInterval(function() {
+      if (dis.state.timer <= 0) {
+        clearInterval(timer);
+        dis.setState({ resend: true });
+      } else {
+        var time = Number(dis.state.timer) - 1;
+        dis.setState({ timer: time });
+      }
+    }, 1000);
+  };
+
+  generateOTP = () => {
+    this.setState({ resend: false, timer: 30 });
+    axios
+      .post(`${API_URL}/sendOTP`, {
+        email: this.state.otpEmail,
+        mobile: this.state.otpMobile,
+        page: this.state.otpOpt,
+        type: 'cashier',
+        txt: this.state.otpTxt,
+        token,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              otpId: res.data.id,
+              showEditOtp: true,
+              notification: 'OTP Sent',
+            });
+            this.startTimer();
+            this.success();
+          }
+        } else {
+          throw res.data.error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+        });
+        this.error();
+      });
+  };
+
+sendMoney = event => {
+    if(this.state.amount > this.state.balance){
+          this.setState({
+            notification: "Amount has to be lesser  than or equal to cash in hand"
+          });
+          this.success();
+    }else{
+    event.preventDefault();
+      this.setState(
+        {
+          showSendMoneyOTP: true,
+          otp:'',
+          otpOpt: 'cashierTransferMoney',
+          otpEmail: email,
+          otpMobile: mobile,
+          otpTxt: 'Your OTP to add transfer money is '
+        },
+        () => {
+          this.generateOTP();
+        },
+      );
+    }
+    
+  };
+
+  verifySendMoney = event => {
+
+    event.preventDefault();
+    let receiver = this.state.receiver_id.split(":");
+    this.setState({
+      verifySendMoneyOTPLoading: true,
+    });
+    axios
+      .post(`${API_URL}/cashierTransferMoney`, {
+        otpId: this.state.otpId,
+        otp: this.state.otp,
+        token,
+        amount: this.state.amount,
+        sender_id: cid,
+        sender_name: cashierName,
+        receiver_id: receiver[0],
+        receiver_name: receiver[1]
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            console.log(res.data.status);
+            this.setState({
+              notification: 'Transaction Successfully Done',
+            });
+            this.success();
+            this.closePopup();
+            this.props.refresh();
+          }
+        } else {
+          throw res.data.error;
+        }
+        this.setState({
+          verifySendMoneyOTPLoading: false,
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error.toString() : err.toString(),
+          verifySendMoneyOTPLoading: false,
+        }, () => {
+          this.error();
+        });
+        
+      });
+  };
+
+  accept =(i)=> {
+    axios
+      .post(`${API_URL}/cashierAcceptIncoming`, {
+        token,
+        item: i
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            
+            this.setState({
+              notification: 'Transfer Accepted Successfully',
+            });
+            this.success();
+            this.getIncoming();
+          }
+        } else {
+          throw res.data.error;
+        }
+       
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error.toString() : err.toString()
+        }, () => {
+          this.error();
+        });
+        
+      });
+  };
+formatDate = date => {
+    var months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    var isoformat = date;
+
+    var readable = new Date(isoformat);
+    var m = readable.getMonth(); // returns 6
+    var d = readable.getDate(); // returns 15
+    var y = readable.getFullYear();
+    var h = readable.getHours();
+    var mi = readable.getMinutes();
+    var mlong = months[m];
+    return d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+  };
+  showHistory = () => {
+    this.setState({
+      historyPop: true,
+      historyLoading: true
+    });
+    this.getTransHistory();
+  };
+
+   showIncoming = () => {
+    this.setState({
+      incomingPop: true
+    });
+  };
+
+   getTransHistory = () => {
+    axios
+      .post(`${API_URL}/getCashierTransfers`, {
+        token: token
+      })
+      .then(res => {
+        if (res.status == 200) {
+          this.setState({
+            popresult: res.data.history,
+            historyLoading: false
+          });
+        }
+      })
+      .catch(err => {});
   };
 
   getStats = () => {
@@ -63,12 +309,14 @@ class CashierCashInHand extends Component {
           let ob = res.data.openingBalance == null ? 0 : res.data.openingBalance;
           this.setState({ 
             loading: false, 
-            balance: ob + (received - paid)
+            branch_id: res.data.branchId,
+            balance: res.data.cashInHand
           }, () => {
             var dis  = this;
             setTimeout(function(){
               dis.getStats();
             }, 3000);
+
           });
         }
       })
@@ -79,11 +327,62 @@ class CashierCashInHand extends Component {
             }, 3000);
       });
   };
+
+  getIncoming = () => {
+    axios
+      .post(`${API_URL}/getCashierIncomingTransfer`, {
+        token: token
+      })
+      .then(res => {
+        if (res.status == 200) {
+          this.setState({ 
+            incoming: res.data.result
+          }, () => {
+            
+            var dis  = this;
+            setTimeout(function(){
+              dis.getIncoming();
+            }, 3000);
+          });
+        }
+      })
+      .catch(err => {
+        var dis  = this;
+            setTimeout(function(){
+              dis.getIncoming();
+            }, 3000);
+      });
+  };
+
+  getCashiers = () => {
+    axios
+      .post(`${API_URL}/getAll`, {
+        token: token,
+        page: "cashier",
+        type: "cashier",
+        where: {
+          branch_id: this.state.branch_id,
+          _id: {$ne: cid}
+        }
+      })
+      .then(res => {
+        if (res.status == 200) {
+          this.setState({ 
+            cashiers: res.data.rows
+          });
+        }
+      })
+      .catch(err => {
+
+      });
+  };
   componentDidMount() {
     this.setState({
       bank: this.props.historyLink
     });
 
+            this.getCashiers();
+            this.getIncoming();
     this.getStats();
 
   }
@@ -100,10 +399,23 @@ class CashierCashInHand extends Component {
         target.parentElement.querySelector('label').classList.remove('focused');
       }
     }
+    var dis = this;
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
         <h3>
           Cash in Hand
+          <span style={{float:"right", position:"relative", color: "#555", cursor:"pointer" }} onClick={this.showIncoming}>
+          <span style={{
+                position: "absolute",
+    top: "-5px",
+    fontSize: "12px",
+    color: "#ff1818",
+    fontWeight: "bold",
+    right: "0",
+  }}>{this.state.incoming.length}</span>
+          <i class="material-icons">notifications</i>
+
+          </span>
         </h3>
         <h5>
           <FormattedMessage {...messages.available} />
@@ -111,7 +423,221 @@ class CashierCashInHand extends Component {
         <div className="cardValue">
           {CURRENCY} {this.state.balance.toFixed(2)}
         </div>
-    
+        <Button
+              className="sendMoneybutton"
+              noMin
+              onClick={this.showPopupSendMoney}
+
+            >
+              <i className="material-icons">send</i> Transfer
+            </Button>
+              
+            <span
+                        className="anchor history"
+                       onClick={this.showHistory} 
+                      >
+                        History
+                      </span>
+             { this.state.popupSendMoney ? (
+
+          <Popup
+            
+            close={this.closePopup.bind(this)}
+            accentedH1
+          >
+            { this.state.showSendMoneyOTP ?
+               <div>
+               <h1 >Verify OTP</h1>
+             <form action="" method="post" onSubmit={this.verifySendMoney} >
+               <p>&nbsp;</p>
+               <FormGroup>
+                 <label>OTP*</label>
+                 <TextInput
+                   type="text"
+                   name="otp"
+                   onFocus={inputFocus}
+                   onBlur={inputBlur}
+                   value={this.state.otp}
+                   onChange={this.handleInputChange}
+                   required
+                 />
+               </FormGroup>
+               {
+                 this.state.verifySendMoneyOTPLoading ?
+                 <Button filledBtn marginTop="50px" marginBottom="50px" disabled>
+                 <Loader />
+               </Button>
+                 :
+                 <Button filledBtn marginTop="50px" marginBottom="50px">
+                 <span>Verify</span>
+               </Button>
+               }
+ 
+ 
+               <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
+ 
+ 
+               </form>
+               </div>
+               :
+            <div>
+              <h1>
+                Transfer Money
+              </h1>
+              <form
+                action=""
+                method="post"
+                onSubmit={this.sendMoney}
+              >
+               <FormGroup>
+                      <SelectInput
+                              type="text"
+                              name="receiver_id"
+                              value={this.state.receiver_id}
+                              onChange={this.handleInputChange}
+                              required
+                            >
+                              <option value="">
+                                Select Cashier
+                              </option>
+                              {
+                                this.state.cashiers && this.state.cashiers.length > 0 ?
+                                  this.state.cashiers.map(function(v){
+                                    return <option value={v._id+":"+v.name} >{v.name}</option>
+                                  })
+                                :
+                                null
+                              }
+                      </SelectInput>
+               </FormGroup>
+                <FormGroup>
+                 <label>Amount*</label>
+                 <TextInput
+                   type="number"
+                   name="amount"
+                   min="1"
+                   onFocus={inputFocus}
+                   onBlur={inputBlur}
+                   value={this.state.amount}
+                   onChange={this.handleInputChange}
+                   required
+                 />
+               </FormGroup>
+                      <Button filledBtn marginTop="20px">
+                        <span>
+                          Proceed
+                        </span>
+                      </Button>
+                      
+                    
+              </form>
+            </div>
+          }
+          </Popup>
+        ) : null}
+
+        {this.state.historyPop ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
+            <div>
+              <h1>Transfer History</h1>
+              {this.state.historyLoading ? (
+                <Button filledBtn disabled>
+                  <Loader />
+                </Button>
+              ) : (
+                <Table marginTop="34px" smallTd textAlign="center">
+                <thead>
+                <tr><th>Date & Time</th> <th>Details</th><th>Status</th></tr>
+                </thead>
+
+                  <tbody>
+                    {this.state.popresult && this.state.popresult.length > 0
+                      ? this.state.popresult.map(function(b) {
+                          var isoformat = b.created_at;
+                          var fulldate = dis.formatDate(isoformat);
+
+                          return  <tr key={b._id}>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div className="labelBlue">
+                                  {
+                                    b.sender_id == cid ? 
+                                    <span>Transfered {CURRENCY} {b.amount} to {b.receiver_name}</span>
+                                    :
+                                    <span>Received {CURRENCY} {b.amount} from {b.sender_name}</span>
+                                  }  </div></td>
+                              <td className="right">
+                                <div className="labelGrey">
+                                  {b.status == 0 ? (
+                                    <span>
+                                      Pending
+                                    </span>
+                                  ) : (
+                                    <span>
+                                      Completed
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          
+                        })
+                      : null}
+                  </tbody>
+                </Table>
+              )}
+            </div>
+          </Popup>
+        ) : null}
+
+          {this.state.incomingPop ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
+            <div>
+              <h1>Incoming Transfers</h1>
+             
+                <Table marginTop="34px" smallTd textAlign="center">
+                <thead>
+                <tr><th>Date & Time</th> <th>Details</th><th></th></tr>
+                </thead>
+
+                  <tbody>
+                    {this.state.incoming && this.state.incoming.length > 0
+                      ? this.state.incoming.map(function(b) {
+                          var isoformat = b.created_at;
+                          var fulldate = dis.formatDate(isoformat);
+
+                          return  <tr key={b._id}>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div className="labelBlue">
+                                  {
+                                    <span>Recived {CURRENCY} {b.amount} from {b.sender_name}</span>
+                                  }  </div></td>
+                              <td className="right">
+                                <div className="labelGrey">
+                                  {b.status == 0 ? (
+                                    <Button onClick={() => dis.accept(b)}>Accept</Button>
+                                  ) : (
+                                    <span>
+                                      Completed
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          
+                        })
+                      : null}
+                  </tbody>
+                </Table>
+       
+            </div>
+          </Popup>
+        ) : null}
       </Card>
     );
   }

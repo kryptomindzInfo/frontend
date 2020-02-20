@@ -776,13 +776,13 @@ export default class BranchCashierList extends Component {
                                       </span>
                                     ) : null
                                   }
-                                    {b.opening_balance > 0 ? null : (
+                                    {/*b.opening_balance > 0 ? null : (
                                       <span
                                         onClick={() => dis.showOpeningPopup(b)}
                                       >
                                         Enter Opening Balance
                                       </span>
-                                    )}
+                                    )*/}
 
                                     {b.status == -1 ? (
                                       <span

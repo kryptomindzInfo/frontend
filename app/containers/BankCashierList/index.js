@@ -101,8 +101,8 @@ export default class BankCashierList extends Component {
       editPopup: false,
       name: '',
       bcode: '',
-      working_from: '',
-      working_to: '',
+      working_from: '00:00',
+      working_to: '00:00',
       per_trans_amt: '',
       max_trans_amt: '',
       max_trans_count: '',
@@ -149,10 +149,10 @@ addBranch = event => {
     event.preventDefault();
 
     this.setState({
-      addBranchLoading: true
-    });
-
-    axios
+      addBranchLoading: true,
+      cashier_length: (this.state.cashiers) ? this.state.cashiers.length : 0
+    }, () => {
+      axios
       .post(`${API_URL  }/addCashier`, this.state)
       .then(res => {
         if(res.status == 200){
@@ -164,7 +164,7 @@ addBranch = event => {
             });
             this.success();
             this.closePopup();
-            this.getBranches();
+            this.getCashiers();
           }
         }else{
           const error = new Error(res.data.error);
@@ -182,6 +182,9 @@ addBranch = event => {
         this.error();
       });
 
+    });
+
+    
   };
   editCashier = event => {
     event.preventDefault();
@@ -281,7 +284,7 @@ addBranch = event => {
             }, function(){
               this.success();
               this.closePopup();
-              this.getBranches();
+              this.getCashiers();
             });
           }
         }else{
@@ -321,7 +324,7 @@ addBranch = event => {
             notification: 'Cashier ' + n
           });
           this.success();
-          this.getBranches();
+          this.getCashiers();
         }
       }else{
         const error = new Error(res.data.error);
@@ -357,7 +360,7 @@ addBranch = event => {
             }, () => {
               this.success();
               this.closeMiniPopUp();
-              this.getBranches();
+              this.getCashiers();
             });
           }
         }else{
@@ -398,7 +401,7 @@ addBranch = event => {
             }, () => {
               this.success();
               this.closeMiniPopUp();
-              this.getBranches();
+              this.getCashiers();
             });
 
           }
@@ -489,13 +492,13 @@ addBranch = event => {
     });
   };
 
-  getBranches = () => {
+  getCashiers = () => {
     axios
       .post(`${API_URL  }/getAll`, { page: 'cashier', type: 'bank', token: token, where: {branch_id: this.props.match.params.branch}})
       .then(res => {
         if(res.status == 200){
           console.log(res.data);
-          this.setState({ loading: false, branches: res.data.rows });
+          this.setState({ loading: false, cashiers: res.data.rows });
         }
       })
       .catch(err => {
@@ -507,7 +510,7 @@ addBranch = event => {
   componentDidMount() {
     this.setState({ branch_id: this.props.match.params.branch },() =>{
       this.getBanks();
-      this.getBranches();
+      this.getCashiers();
     })
    
      
@@ -551,7 +554,7 @@ addBranch = event => {
             <ActionBar marginBottom="33px" inputWidth="calc(100% - 241px)" className="clr">
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
-                <input type="text" placeholder="Search Branches" />
+                <input type="text" placeholder="Search Cashiers" />
               </div>
 
 
@@ -583,13 +586,13 @@ addBranch = event => {
                   </thead>
                   <tbody>
                   {
-                      this.state.branches && this.state.branches.length > 0
-                        ? this.state.branches.map(function(b) {
+                      this.state.cashiers && this.state.cashiers.length > 0
+                        ? this.state.cashiers.map(function(b) {
 
-                          return <tr key={b._id} ><td>{b.name}</td><td className="tac">0</td><td className="tac">0</td>
+                          return <tr key={b._id} ><td>{b.central ? <span style={{color:"red"}}>*</span> : null}{b.name}</td><td className="tac">{b.cash_in_hand}</td><td className="tac">{b.max_trans_amt}</td>
 
                           <td className="tac bold green" >
-                            0
+                            {b.total_trans}
                             <span className="absoluteMiddleRight primary popMenuTrigger">
                             <i className="material-icons ">more_vert</i>
                             <div className="popMenu">
@@ -753,6 +756,12 @@ addBranch = event => {
                   required
                 />
               </FormGroup>
+              {
+                !this.state.cashiers ||this.state.cashiers.length <= 0 ?
+                <p className="note"><span style={{ color: "red"}}>*</span> This cashier will be the central cashier</p>
+                :
+                null
+              }
               
 
 
@@ -926,7 +935,9 @@ addBranch = event => {
                   onChange={this.handleInputChange}
                   required
                 />
+
               </FormGroup>
+
                     {
                       this.state.editBranchLoading ?
                       <Button filledBtn marginTop="50px" disabled>

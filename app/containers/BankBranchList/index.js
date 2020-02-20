@@ -201,6 +201,7 @@ export default class BankBranchList extends Component {
         bcode: this.state.bcode,
         username: this.state.username,
         credit_limit: this.state.credit_limit,
+        cash_in_hand: this.state.cash_in_hand,
         address1: this.state.address1,
         state: this.state.state,
         zip: this.state.zip,
@@ -554,6 +555,7 @@ export default class BankBranchList extends Component {
                       <th>Branch Name</th>
                       <th>Total Cashier</th>
                       <th>Credit limit ({CURRENCY})</th>
+                      <th>Cash in Hand ({CURRENCY})</th>
                       <th className="tal">
                         No. of Transaction
                         <Row className="small">
@@ -573,6 +575,7 @@ export default class BankBranchList extends Component {
                               <td>{b.name}</td>
                               <td className="tac">{b.total_cashiers}</td>
                               <td className="tac">{b.credit_limit}</td>
+                              <td className="tac">{b.cash_in_hand}</td>
 
                               <td className="tac bold">
                                 <Row className="green">
@@ -714,8 +717,8 @@ export default class BankBranchList extends Component {
                           // type="text"
                           // name="ccode"
                           readOnly
-                          label="XOF"
-                          placeholder="XOF"
+                          label={CURRENCY}
+                          placeholder={CURRENCY}
                           // value={this.state.ccode}
                           // onChange={this.handleInputChange}
                         />
@@ -730,6 +733,35 @@ export default class BankBranchList extends Component {
                           onFocus={inputFocus}
                           onBlur={inputBlur}
                           value={this.state.credit_limit}
+                          onChange={this.handleInputChange}
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+
+                   <Row>
+                    <Col cW="20%" mR="2%">
+                      <FormGroup>
+                        <TextInput
+                          // type="text"
+                          // name="ccode"
+                          readOnly
+                          label={CURRENCY}
+                          placeholder={CURRENCY}
+                          // value={this.state.ccode}
+                          // onChange={this.handleInputChange}
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col cW="78%">
+                      <FormGroup>
+                        <label>Cash in Hand</label>
+                        <TextInput
+                          type="text"
+                          name="cash_in_hand"
+                          onFocus={inputFocus}
+                          onBlur={inputBlur}
+                          value={this.state.cash_in_hand}
                           onChange={this.handleInputChange}
                         />
                       </FormGroup>
