@@ -436,7 +436,7 @@ export default class BranchCashierList extends Component {
   releaseCashier = (id) => {    
     console.log(id);
     axios
-      .put(`${API_URL}/updateOne`, {page:"cashier", token: token, type: "branch", page_id: id, updateData: {closing_time: null, closing_balance: 0} })
+      .put(`${API_URL}/updateOne`, {page:"cashier", token: token, type: "branch", page_id: id, updateData: {closing_time: null} })
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {
