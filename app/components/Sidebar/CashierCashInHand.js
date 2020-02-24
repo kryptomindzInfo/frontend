@@ -307,7 +307,12 @@ formatDate = date => {
           let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
           let ob = res.data.openingBalance == null ? 0 : res.data.openingBalance;
+              let dd = res.data.lastdate == null ?  null: this.formatDate(res.data.lastdate);
+
           this.setState({ 
+           
+              lastdate: dd,
+              transactionStarted: res.data.transactionStarted,
             loading: false, 
             branch_id: res.data.branchId,
             balance: res.data.cashInHand
@@ -404,7 +409,9 @@ formatDate = date => {
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
         <h3>
           Cash in Hand
-          <span style={{float:"right", position:"relative", color: "#555", cursor:"pointer" }} onClick={this.showIncoming}>
+          {
+             this.state.transactionStarted && this.state.lastdate == null ?
+            <span style={{float:"right", position:"relative", color: "#555", cursor:"pointer" }} onClick={this.showIncoming}>
           <span style={{
                 position: "absolute",
     top: "-5px",
@@ -416,6 +423,21 @@ formatDate = date => {
           <i class="material-icons">notifications</i>
 
           </span>
+            :
+            <span style={{float:"right", position:"relative", color: "#555", cursor:"pointer" }} disabled>
+          <span style={{
+                position: "absolute",
+    top: "-5px",
+    fontSize: "12px",
+    color: "#ff1818",
+    fontWeight: "bold",
+    right: "0",
+  }}>{this.state.incoming.length}</span>
+          <i class="material-icons">notifications</i>
+
+          </span>
+          }
+          
         </h3>
         <h5>
           <FormattedMessage {...messages.available} />
@@ -423,6 +445,8 @@ formatDate = date => {
         <div className="cardValue">
           {CURRENCY} {this.state.balance.toFixed(2)}
         </div>
+        {
+          this.state.transactionStarted && this.state.lastdate == null ?
         <Button
               className="sendMoneybutton"
               noMin
@@ -431,6 +455,16 @@ formatDate = date => {
             >
               <i className="material-icons">send</i> Transfer
             </Button>
+           :
+           <Button
+           disabled
+              className="sendMoneybutton"
+              noMin
+
+            >
+              <i className="material-icons">send</i> Transfer
+            </Button>
+          }
               
             <span
                         className="anchor history"

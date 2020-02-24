@@ -233,9 +233,6 @@ class CashierClosingBalance extends Component {
     }, 1000);
   };
   formatDate = date => {
-    if (date == null) {
-      return null;
-    }
     var months = [
       'Jan',
       'Feb',
@@ -259,7 +256,7 @@ class CashierClosingBalance extends Component {
     var h = readable.getHours();
     var mi = readable.getMinutes();
     var mlong = months[m];
-    return d + ' ' + mlong + ' ' + y;
+    return d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
   };
 
   getStats = () => {
@@ -787,7 +784,7 @@ class CashierClosingBalance extends Component {
         ) : null}
 
         {this.state.historyPop ? (
-          <Popup close={this.closePopup.bind(this)} accentedH1>
+          <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
             <div>
               <h1>Closing Balance History</h1>
               {this.state.historyLoading ? (
@@ -800,11 +797,14 @@ class CashierClosingBalance extends Component {
                     <tr>
                       <th>Amount</th>
                       <th>Added On</th>
+                       <th>Denomination</th>
+                       <th>Note</th>
                     </tr>
                   </thead>
                   <tbody>
                     {this.state.history && this.state.history.length > 0
                       ? this.state.history.map(function(b) {
+                        var td = JSON.parse(b.transaction_details);
                           var fulldate = dis.formatDate(b.created_at);
                           return (
                             <tr key={b._id}>
@@ -814,6 +814,10 @@ class CashierClosingBalance extends Component {
                               <td>
                                 <div className="labelGrey">{fulldate}</div>
                               </td>
+                              <td>{ td.denomination ? td.denomination.map(function(v){
+                                return( v.num != '' ? <div>{v.val} : {v.num}</div> : null)
+                              }) : null}</td>
+                               <td>{td.note}</td>
                             </tr>
                           );
                         })
