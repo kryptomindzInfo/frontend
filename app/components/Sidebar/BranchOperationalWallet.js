@@ -1401,7 +1401,7 @@ class BranchOperationalWallet extends Component {
                           <Col>
                             <FormGroup>
                               <label>
-                                Authorised Email*
+                                Authorised Email
                                 {/* <FormattedMessage {...messages.popup8} />* */}
                               </label>
                               <TextInput
@@ -1624,7 +1624,7 @@ class BranchOperationalWallet extends Component {
                           <Col>
                             <FormGroup>
                               <label>
-                                Authorised Email*
+                                Authorised Email
                                 {/* <FormattedMessage {...messages.popup8} />* */}
                               </label>
                               <TextInput

@@ -84,12 +84,12 @@ class CashierClosingBalance extends Component {
       [name]: value,
     });
   };
-   handleCheckbox = event => {
+  handleCheckbox = event => {
     const { value, name } = event.target;
     console.log(value);
-    if(value == "true"){
+    if (value == 'true') {
       var v = false;
-    }else{
+    } else {
       var v = true;
     }
     this.setState({
@@ -101,12 +101,9 @@ class CashierClosingBalance extends Component {
     this.setState({ openingPopup: true, cashier_id: v._id });
   };
   showHistoryPop = () => {
-    
     this.setState({ historyPop: true, historyLoading: true });
     this.getHistory();
   };
-
-
 
   getHistory = () => {
     axios
@@ -118,7 +115,6 @@ class CashierClosingBalance extends Component {
       })
       .then(res => {
         if (res.status == 200) {
-          
           this.setState(
             {
               history: res.data.rows,
@@ -194,31 +190,31 @@ class CashierClosingBalance extends Component {
 
   addOpeningBalance = event => {
     event.preventDefault();
-      if(this.state.agree){
-       if (this.state.total == '' || this.state.total == 0) {
-      this.setState(
-        {
-          notification: 'You need to enter atleast one denomination',
-        },
-        () => {
-          this.error();
-        },
-      );
+    if (this.state.agree) {
+      if (this.state.total == '' || this.state.total == 0) {
+        this.setState(
+          {
+            notification: 'You need to enter atleast one denomination',
+          },
+          () => {
+            this.error();
+          },
+        );
+      } else {
+        this.setState(
+          {
+            showOpeningOTP: true,
+            otpOpt: 'closingBalance',
+            otpTxt: 'Your OTP to add closing balance is ',
+          },
+          () => {
+            this.generateOTP();
+          },
+        );
+      }
     } else {
-      this.setState(
-        {
-          showOpeningOTP: true,
-          otpOpt: 'closingBalance',
-          otpTxt: 'Your OTP to add closing balance is ',
-        },
-        () => {
-          this.generateOTP();
-        },
-      );
+      this.closePopup();
     }
-  }else{
-    this.closePopup();
-  }
   };
   startTimer = () => {
     var dis = this;
@@ -271,14 +267,17 @@ class CashierClosingBalance extends Component {
         if (res.status == 200) {
           let b1 = res.data.balance1 == null ? 0 : res.data.balance1;
           let b2 = res.data.balance2 == null ? 0 : res.data.balance2;
-          let dd = res.data.lastdate == null ?  null: this.formatDate(res.data.lastdate);
+          let dd =
+            res.data.lastdate == null
+              ? null
+              : this.formatDate(res.data.lastdate);
           this.setState(
             {
               cashInHand: res.data.cashInHand,
               balance1: b1,
               balance2: b2,
               lastdate: dd,
-              transactionStarted: res.data.transactionStarted
+              transactionStarted: res.data.transactionStarted,
             },
             () => {
               var dis = this;
@@ -291,9 +290,9 @@ class CashierClosingBalance extends Component {
       })
       .catch(err => {
         var dis = this;
-              setTimeout(function() {
-                dis.getStats();
-              }, 3000);
+        setTimeout(function() {
+          dis.getStats();
+        }, 3000);
       });
   };
 
@@ -335,7 +334,7 @@ class CashierClosingBalance extends Component {
 
   verifyOpeningOTP = event => {
     event.preventDefault();
-  
+
     this.setState({
       verifyEditOTPLoading: true,
     });
@@ -348,14 +347,15 @@ class CashierClosingBalance extends Component {
           } else {
             this.setState(
               {
-                notification: 'Closing balance submitted successfully, you will be logged out!',
+                notification:
+                  'Closing balance submitted successfully, you will be logged out!',
               },
               function() {
                 this.success();
                 this.closePopup();
                 this.getStats();
                 var dis = this;
-                setTimeout(function(){
+                setTimeout(function() {
                   localStorage.removeItem('cashierLogged');
                   history.push('/cashier/' + dis.props.branchName);
                 }, 3000);
@@ -377,10 +377,8 @@ class CashierClosingBalance extends Component {
         });
         this.error();
       });
-
   };
   componentDidMount() {
-
     this.setState({
       bank: this.props.historyLink,
     });
@@ -389,7 +387,6 @@ class CashierClosingBalance extends Component {
     axios
       .get(`${API_URL}/get-currency`)
       .then(d => {
-        
         if (d.data.length != 0) {
           this.setState(prevState => ({
             ...prevState,
@@ -429,7 +426,7 @@ class CashierClosingBalance extends Component {
             className="anchor absoluteMiddleRight"
             onClick={this.showHistoryPop}
           >
-            view
+            History
           </span>
         </h3>
 
@@ -449,19 +446,17 @@ class CashierClosingBalance extends Component {
             </div>
           </Col>
         </Row>
-        {
-          this.state.transactionStarted && this.state.lastdate == null ?
+        {this.state.transactionStarted && this.state.lastdate == null ? (
           <button className="sendMoneyButton" onClick={this.showOpeningPopup}>
-          <i className="material-icons">send</i>
-          Enter closing balance
-        </button>
-        :
-        <button className="sendMoneyButton" disabled>
-          <i className="material-icons">send</i>
-          Enter closing balance
-        </button>  
-        }
-        
+            <i className="material-icons">send</i>
+            Close my day
+          </button>
+        ) : (
+          <button className="sendMoneyButton" disabled>
+            <i className="material-icons">send</i>
+            Close my day
+          </button>
+        )}
 
         {this.state.openingPopup ? (
           <Popup close={this.closePopup.bind(this)} accentedH1>
@@ -506,7 +501,7 @@ class CashierClosingBalance extends Component {
               </div>
             ) : (
               <div>
-                <h1>Enter your closing balance</h1>
+                <h1>Enter real closing Bills & Coins count</h1>
                 <form action="" method="post" onSubmit={this.addOpeningBalance}>
                   {/* <FormGroup>
                     <Row>
@@ -705,70 +700,69 @@ class CashierClosingBalance extends Component {
                     </Grid>
                   </FormGroup>
                   <FormGroup>
-                  <Row style={{ marginTop: '5%' }}>
-                    <Col cW="15%" textAlign="right">
-                      <strong>TOTAL</strong>
-                    </Col>
-                    <Col cW="20%" textAlign="center">
-                      =
-                    </Col>
-                    <Col cW="35%">
-                      {
-                        (this.state.total = this.state.denomination.reduce(
-                          (a, c) => Number(c.num * c.val || 0) + a,
-                          0,
-                        ))
-                      }
-                    </Col>
-                  </Row>
-                  <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
-                    <Col cW="20%" textAlign="right">
-                      <strong>Cash in Hand</strong>
-                    </Col>
-                    <Col cW="20%" textAlign="center">
-                      =
-                    </Col>
-                    <Col cW="35%">
-                      {
-                        this.state.cashInHand
-                      }
-                    </Col>
-                  </Row>
+                    <Row style={{ marginTop: '5%' }}>
+                      <Col cW="15%" textAlign="right">
+                        <strong>TOTAL</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        =
+                      </Col>
+                      <Col cW="35%">
+                        {
+                          (this.state.total = this.state.denomination.reduce(
+                            (a, c) => Number(c.num * c.val || 0) + a,
+                            0,
+                          ))
+                        }
+                      </Col>
+                    </Row>
                     <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
-                    <Col cW="20%" textAlign="right">
-                      <strong>Discrepancy</strong>
-                    </Col>
-                    <Col cW="20%" textAlign="center">
-                      =
-                    </Col>
-                    <Col cW="35%">
-                      {
-                        this.state.total - this.state.cashInHand
-                      }
-                    </Col>
-                  </Row>
+                      <Col cW="20%" textAlign="right">
+                        <strong>Cash in Hand</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        =
+                      </Col>
+                      <Col cW="35%">{this.state.cashInHand}</Col>
+                    </Row>
+                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+                      <Col cW="20%" textAlign="right">
+                        <strong>Discrepancy</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        =
+                      </Col>
+                      <Col cW="35%">
+                        {this.state.total - this.state.cashInHand}
+                      </Col>
+                    </Row>
                   </FormGroup>
                   <FormGroup>
-                  <TextInput
-                          marginTop
-                          type="text"
-                          name="note"
-                          autoFocus 
-                          placeholder="Note"
-                          value={this.state.note}
-                          onChange={this.handleInputChange}
-                        />
+                    <TextInput
+                      marginTop
+                      type="text"
+                      name="note"
+                      autoFocus
+                      placeholder="Remarks"
+                      value={this.state.note}
+                      onChange={this.handleInputChange}
+                    />
                   </FormGroup>
-                  <div style={{
-                    marginTop: '20px',
-                    fontSize: '18px',
-                    textAlign: 'center'
-                    }}>
-                  <input type="checkbox" 
-                  name="agree"
-                  value={this.state.agree}
-                   checked={this.state.agree}
-                              onClick={this.handleCheckbox} /> Close accounts for the day?
+                  <div
+                    style={{
+                      marginTop: '20px',
+                      fontSize: '18px',
+                      textAlign: 'center',
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      name="agree"
+                      value={this.state.agree}
+                      checked={this.state.agree}
+                      onClick={this.handleCheckbox}
+                    />{' '}
+                    Close accounts for the day?
                   </div>
 
                   {this.state.editBranchLoading ? (
