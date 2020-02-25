@@ -824,9 +824,7 @@ generateOTP = () => {
                       
                     </Col>
                     <Col cW="35%">
-//                       {
-//                         this.state.closingBalance - (this.state.openingBalance+this.state.cashReceived-this.state.cashPaid)
-//                       }
+
                     </Col>
                   </Row>
                  
