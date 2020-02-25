@@ -498,7 +498,7 @@ class CashierClosingBalance extends Component {
               </div>
             ) : (
               <div>
-                <h1>Enter real closing Bills & Coins count</h1>
+                <h1>Enter Real Closing Bills & Coins count</h1>
                 <form action="" method="post" onSubmit={this.addOpeningBalance}>
                   {/* <FormGroup>
                     <Row>
