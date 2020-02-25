@@ -815,7 +815,7 @@ generateOTP = () => {
                         this.state.openingBalance+this.state.cashReceived-this.state.cashPaid
                       }
                     </Col>
-//                   </Row>
+                  </Row>
 //                     <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
 //                     <Col cW="20%" textAlign="right">
 //                       <strong>Discrepancy</strong>
