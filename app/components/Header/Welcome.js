@@ -71,12 +71,11 @@ class Welcome extends Component {
     }
     var tempDate = new Date();
     var date =
-      tempDate.getFullYear() +
-      '-' +
-      (tempDate.getMonth() + 1) +
-      '-' +
-      tempDate.getDate() +
-      ' ' 
+    tempDate.getDate() +
+    '-' +
+    (tempDate.getMonth() + 1) +
+    '-' +
+    tempDate.getFullYear() + ' '
       // tempDate.getHours() +
       // ':' +
       // tempDate.getMinutes() +

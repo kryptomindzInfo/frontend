@@ -480,6 +480,15 @@ generateOTP = () => {
       'Nov',
       'Dec',
     ];
+
+    var tempDate = new Date();
+    var date =
+      tempDate.getDate() +
+      '-' +
+      (tempDate.getMonth() + 1) +
+      '-' +
+      tempDate.getFullYear()
+    const currDate = '' + date;
     return (
       <Wrapper from="branch">
         <Helmet>
@@ -496,6 +505,25 @@ generateOTP = () => {
           <SidebarCashier refresh={this.getHistory.bind(this)} branchName={this.props.match.params.bank} />
           <Main>
             <div className="clr">
+              
+            <Card
+                horizontalMargin="7px"
+                cardWidth="151px"
+                h4FontSize="16px"
+                smallValue
+                textAlign="center"
+                height="5.5rem"
+                col
+              >
+                <div className="cardValue">
+                {
+                  this.state.tomorrow ?  
+                  <Button onClick={this.openCashier}>Open Cashier</Button>
+                  : <Button disabled> Counter is Opened</Button> 
+                }
+                </div>
+              </Card>
+              
               <Card
                 horizontalMargin="7px"
                 cardWidth="151px"
@@ -802,12 +830,31 @@ generateOTP = () => {
                 <h1>Open Cashier</h1>
                 <form action="" method="post" onSubmit={this.addOpeningBalance}>
                  
+
+                <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+                    
+                    <Col cW="20%" textAlign="right">
+                      <strong>Opening for the day</strong>
+                    </Col>
+                    <Col cW="20%" textAlign="center">
+                      :
+                    </Col>
+                    <Col cW="35%">
+                    {
+                      currDate
+                    }
+                        {/* {Date.now().toISOString()} */}
+                      
+                    </Col>
+                  </Row>
+
                   <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+
                     <Col cW="20%" textAlign="right">
                       <strong>Cash in Hand</strong>
                     </Col>
                     <Col cW="20%" textAlign="center">
-                      =
+                      :
                     </Col>
                     <Col cW="35%">
                       {
@@ -823,7 +870,7 @@ generateOTP = () => {
                       
                     </Col>
                     <Col cW="35%">
-
+                      
                     </Col>
                   </Row>
                  
@@ -838,7 +885,7 @@ generateOTP = () => {
                   value={this.state.agree}
                    checked={this.state.agree}
                    required
-                              onClick={this.handleCheckbox} /> Agree to the opening balance?
+                              onClick={this.handleCheckbox} />  Agree to the opening balance?
                   </div>
 
            
