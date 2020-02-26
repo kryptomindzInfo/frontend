@@ -38,7 +38,7 @@ import Col from 'components/Col';
 import FormGroup from 'components/FormGroup';
 
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
-import RevenueRuleDistubutionPage from './RevenueRuleDistributionPage'; 
+import RevenueRuleDistubutionPage from './RevenueRuleDistributionPage';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { withStyles } from '@material-ui/core';
@@ -137,9 +137,9 @@ export class BankFees extends Component {
       bankPartnersTable: false,
       bankMerchantsTable: false,
 
-      bankFeeDetails: "",
-      selectedBankFeeId: "",
-      revenueData: ""
+      bankFeeDetails: '',
+      selectedBankFeeId: '',
+      revenueData: '',
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -162,7 +162,7 @@ export class BankFees extends Component {
     });
   };
 
-  goBankEdit = (b) => {
+  goBankEdit = b => {
     this.props.history.push('/bank/edit-fee/' + b);
   };
 
@@ -488,27 +488,32 @@ export class BankFees extends Component {
     });
   };
 
-  showRevenueRuleDistributionPage = (bankFee) => {
-    this.setState({ revenueRuleDistributionPage: 'true', selectedBankFeeId: bankFee._id, bankFeeDetails: bankFee });
+  showRevenueRuleDistributionPage = bankFee => {
+    this.setState({
+      revenueRuleDistributionPage: 'true',
+      selectedBankFeeId: bankFee._id,
+      bankFeeDetails: bankFee,
+    });
     // console.log(bankFeeId);
 
-    axios.get(`${API_URL}/getRevenueFeeFromBankFeeId/${bankFee._id}`).then(d => {
-      const {data} = d
-      console.log(data);
-      if(data.code == 1) {
-        this.setState({
-          revenueData: data
-        })
-      }else {
-        this.setState({
-          revenueData: ""
-        })
-      }
-
-    }).catch(err => {
-      console.log(err);
-    })
-
+    axios
+      .get(`${API_URL}/getRevenueFeeFromBankFeeId/${bankFee._id}`)
+      .then(d => {
+        const { data } = d;
+        console.log(data);
+        if (data.code == 1) {
+          this.setState({
+            revenueData: data,
+          });
+        } else {
+          this.setState({
+            revenueData: '',
+          });
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   showBankBranches = () => {
@@ -750,7 +755,7 @@ export class BankFees extends Component {
                     <thead>
                       <tr>
                         <th>Name</th>
-                        <th style={{width: "10rem"}}>Transaction Type</th>
+                        <th style={{ width: '10rem' }}>Transaction Type</th>
                         {/* <th>Transaction Range</th> */}
                         <th>Transaction Range</th>
                         <th />
@@ -816,11 +821,11 @@ export class BankFees extends Component {
                                 </td>
                                 <td>
                                   <Button
-                                    onClick={() => 
+                                    onClick={() =>
                                       this.showRevenueRuleDistributionPage(b)
                                     }
                                   >
-                                    Set Revenue
+                                    Revenue Sharing Rule
                                   </Button>
                                 </td>
                               </tr>
@@ -834,33 +839,20 @@ export class BankFees extends Component {
             </div>
           </Main>
 
-
-
-
-
-
-
-
-
-
           {this.state.revenueRuleDistributionPage ? (
             // <div style={{ border: '1px solid grey' }}>
-              <RevenueRuleDistubutionPage 
-              showRevenueRuleDistributionPage={this.showRevenueRuleDistributionPage}
-              close={() => this.setState({revenueRuleDistributionPage: false})} 
+            <RevenueRuleDistubutionPage
+              showRevenueRuleDistributionPage={
+                this.showRevenueRuleDistributionPage
+              }
+              close={() =>
+                this.setState({ revenueRuleDistributionPage: false })
+              }
               selectedBankFeeId={this.state.selectedBankFeeId}
               revenueData={this.state.revenueData}
               bankFeeDetails={this.state.bankFeeDetails}
-              
-              />
-         ) : 
-          null}
-
-
-
-
-
-
+            />
+          ) : null}
         </Container>
 
         {/* {this.state.popup ? (

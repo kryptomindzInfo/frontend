@@ -817,15 +817,13 @@ generateOTP = () => {
                   </Row>
                     <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
                     <Col cW="20%" textAlign="right">
-                      <strong>Discrepancy</strong>
+                      <strong></strong>
                     </Col>
                     <Col cW="20%" textAlign="center">
-                      =
+                      
                     </Col>
                     <Col cW="35%">
-                      {
-                        this.state.closingBalance - (this.state.openingBalance+this.state.cashReceived-this.state.cashPaid)
-                      }
+
                     </Col>
                   </Row>
                  
