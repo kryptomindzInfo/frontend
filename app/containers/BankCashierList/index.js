@@ -92,7 +92,7 @@ export default class BankCashierList extends Component {
     this.setState({ popup: true });
   };
   showEditPopup = (v) => {
-    this.setState({ editPopup: true, name: v.name, bcode: v.bcode, working_from: v.working_from, working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id});
+    this.setState({ editPopup: true, name: v.name, bcode: v.bcode, eworking_from: v.working_from == 0? this.state.working_from : v.working_from, eworking_to: v.working_to == 0 ? this.state.working_to: v.working_to, per_trans_amt: v.per_trans_amt, max_trans_amt: v.max_trans_amt, max_trans_count: v.max_trans_count, cashier_id: v._id});
   };
 
   closePopup = () => {
@@ -273,7 +273,17 @@ addBranch = event => {
     });
     event.preventDefault();
     axios
-      .post(`${API_URL  }/editCashier`, this.state)
+      .post(`${API_URL  }/editCashier`, {
+        cashier_id: this.state.cashier_id,
+    name: this.state.name,
+    bcode:this.state.bcode,
+    working_from: this.state.eworking_from,
+    working_to: this.state.eworking_to,
+    per_trans_amt: this.state.per_trans_amt,
+    max_trans_amt: this.state.max_trans_amt,
+    max_trans_count: this.state.max_trans_count,
+    token
+      })
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
@@ -480,11 +490,12 @@ addBranch = event => {
 
   getBanks = () => {
     axios
-    .post(`${API_URL  }/getOne`, { page: 'branch', type: 'bank', token: token, page_id : this.state.branch_id})
+    .post(`${API_URL  }/getOne`, { page: 'branch', type: 'bank', token: token, page_id : this.props.match.params.branch})
     .then(res => {
       if(res.status == 200){
         console.log(res.data);
-        this.setState({ otpEmail: res.data.row.email, otpMobile: res.data.row.mobile, bankName: res.data.row.name, dbcode: res.data.row.bcode });
+        this.setState({ otpEmail: res.data.row.email, otpMobile: res.data.row.mobile, bankName: res.data.row.name, dbcode: res.data.row.bcode, working_from: res.data.row.working_from  == 0 ? '00:00' : res.data.row.working_from, working_to: res.data.row.working_to  == 0 ? '00:00' : res.data.row.working_to  });
+        this.getCashiers();
       }
     })
     .catch(err => {
@@ -510,7 +521,7 @@ addBranch = event => {
   componentDidMount() {
     this.setState({ branch_id: this.props.match.params.branch },() =>{
       this.getBanks();
-      this.getCashiers();
+      // this.getCashiers();
     })
    
      
@@ -869,10 +880,10 @@ addBranch = event => {
                      type="time"
                     autoFocus
                      min="00:00" max="23:00"
-                    name="working_from"
+                    name="eworking_from"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
-                    value={this.state.working_from}
+                    value={this.state.eworking_from}
                     onChange={this.handleInputChange}
                     required
                   />
@@ -886,10 +897,10 @@ addBranch = event => {
                      type="time"
                     autoFocus
                      min="00:00" max="23:00"
-                    name="working_to"
+                    name="eworking_to"
                     onFocus={inputFocus}
                     onBlur={inputBlur}
-                    value={this.state.working_to}
+                    value={this.state.eworking_to}
                     onChange={this.handleInputChange}
                     required
                   />

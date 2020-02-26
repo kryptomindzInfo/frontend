@@ -620,7 +620,8 @@ getTransLimit = () => {
           this.setState({
             balance: Number(res.data.limit),
             closingTime: res.data.closingTime,
-            transactionStarted: res.data.transactionStarted
+            transactionStarted: res.data.transactionStarted,
+            isClosed: res.data.isClosed
           }, () => {
             var dis  = this;
             setTimeout(function(){
@@ -672,7 +673,7 @@ getTransLimit = () => {
         <Row>
           <Col>
           {
-            this.state.transactionStarted && this.state.closingTime == null ?
+            this.state.transactionStarted && !this.state.isClosed ?
             <Button
               className="sendMoneybutton"
               noMin
@@ -696,7 +697,7 @@ getTransLimit = () => {
           </Col>
           <Col>
           {
-             this.state.transactionStarted && this.state.closingTime == null ?
+             this.state.transactionStarted && !this.state.isClosed ?
             <Button
             noMin
               className="sendMoneybutton"

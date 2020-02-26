@@ -350,9 +350,7 @@ generateOTP = () => {
              closingTime  = new Date(closingTime);
                           closingTime.setHours(0, 0, 0, 0);
               closingTime = closingTime.getTime();
-              console.log(closingTime);
-              console.log(today);
-              if(closingTime < today){
+              if(res.data.isClosed && closingTime < today ){
                 closingTime = true;
               }else{
                 closingTime = false;
@@ -371,6 +369,7 @@ generateOTP = () => {
               cashReceived: received,
               cashPaid: paid,
               feeGenerated: res.data.feeGenerated,
+              isClosed: res.data.isClosed
             },
             () => {
               var dis = this;

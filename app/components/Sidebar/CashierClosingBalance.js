@@ -275,7 +275,8 @@ class CashierClosingBalance extends Component {
               balance1: b1,
               balance2: b2,
               lastdate: dd,
-              transactionStarted: res.data.transactionStarted
+              transactionStarted: res.data.transactionStarted,
+              isClosed: res.data.isClosed
             },
             () => {
               var dis = this;
@@ -345,17 +346,17 @@ class CashierClosingBalance extends Component {
           } else {
             this.setState(
               {
-                notification: 'Closing balance submitted successfully, you will be logged out!',
+                notification: 'Closing balance submitted successfully!',
               },
               function() {
                 this.success();
                 this.closePopup();
                 this.getStats();
                 var dis = this;
-                setTimeout(function(){
-                  localStorage.removeItem('cashierLogged');
-                  history.push('/cashier/' + dis.props.branchName);
-                }, 3000);
+                // setTimeout(function(){
+                //   localStorage.removeItem('cashierLogged');
+                //   history.push('/cashier/' + dis.props.branchName);
+                // }, 3000);
               },
             );
           }
@@ -447,7 +448,7 @@ class CashierClosingBalance extends Component {
           </Col>
         </Row>
         {
-          this.state.transactionStarted && this.state.lastdate == null ?
+          this.state.transactionStarted && !this.state.isClosed?
           <button className="sendMoneyButton" onClick={this.showOpeningPopup}>
           <i className="material-icons">send</i>
           Enter closing balance

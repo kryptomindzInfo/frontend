@@ -436,7 +436,7 @@ export default class BranchCashierList extends Component {
   releaseCashier = (id) => {    
     console.log(id);
     axios
-      .put(`${API_URL}/updateOne`, {page:"cashier", token: token, type: "branch", page_id: id, updateData: {closing_time: null} })
+      .put(`${API_URL}/updateOne`, {page:"cashier", token: token, type: "branch", page_id: id, updateData: {is_closed: false} })
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {
@@ -768,7 +768,7 @@ export default class BranchCashierList extends Component {
                                     >
                                       Assign User
                                     </span>
-                                     {b.closing_time != null  ? (
+                                     {b.is_closed  ? (
                                       <span
                                         onClick={() => dis.releaseCashier(b._id)}
                                       >

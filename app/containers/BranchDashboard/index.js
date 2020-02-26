@@ -66,6 +66,7 @@ export default class BranchDashboard extends Component {
       cashReceived: 0,
       cashPaid: 0,
       totalCashier: 0,
+      cashInHand: 0,
       perPage: 20,
       totalCount: 100,
       allhistory: [],
@@ -632,6 +633,7 @@ export default class BranchDashboard extends Component {
             totalCashier: total,
             cashReceived: received,
             cashPaid: paid,
+            cashInHand: res.data.cashInHand
           });
         }
       })
@@ -756,9 +758,9 @@ export default class BranchDashboard extends Component {
                   bigPadding
                   smallValue
                 >
-                  <h4>Total Merchant</h4>
+                  <h4>Cash in Hand</h4>
 
-                  <div className="cardValue">0</div>
+                  <div className="cardValue">{CURRENCY} {this.state.cashInHand.toFixed(2)}</div>
                 </Card>
               </Col>
               <Col>

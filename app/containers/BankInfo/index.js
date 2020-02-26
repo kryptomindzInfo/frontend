@@ -210,6 +210,7 @@ export default class BankInfo extends Component {
       popup: false,
       showEditOtp: false,
       showOtp: false,
+      otp: ''
     });
   };
 
@@ -470,6 +471,8 @@ export default class BankInfo extends Component {
             loading: false,
             banks: res.data.row,
             bcode: res.data.row.bcode,
+            working_from: res.data.row.working_from  == 0? '00:00' : res.data.row.working_from ,
+            working_to: res.data.row.working_to  == 0? '00:00' : res.data.row.working_to ,
             logo: res.data.row.logo,
             name: res.data.row.name,
             address1: res.data.row.address1,
@@ -521,6 +524,8 @@ export default class BankInfo extends Component {
         country: this.state.country,
         ccode: this.state.ccode,
         bcode: this.state.bcode,
+        working_from: this.state.working_from,
+        working_to: this.state.working_to,
         email: this.state.email,
         mobile: this.state.mobile,
         logo: this.state.logo,
@@ -654,6 +659,17 @@ export default class BankInfo extends Component {
                 <Row>
                   <Col className="infoLeft">Phone Number</Col>
                   <Col className="infoRight">{this.state.banks.mobile}</Col>
+                </Row>
+
+                <h3>Working Hours</h3>
+                <Row>
+                  <Col className="infoLeft">From</Col>
+                  <Col className="infoRight">{this.state.working_from}</Col>
+                </Row>
+                <Row>
+                
+                  <Col className="infoLeft">To</Col>
+                  <Col className="infoRight">{this.state.working_to}</Col>
                 </Row>
               </div>
             </Card>
@@ -1067,7 +1083,44 @@ export default class BankInfo extends Component {
                       </FormGroup>
                     </Col>
                   </Row>
+                  <label>Working Hours</label>
+                  <Row>
+                    <Col  cW="49%" mR="2%">
 
+                <FormGroup>
+                <label>From*</label>
+                  <TextInput
+                    type="time"
+                    name="working_from"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                     min="00:00" max="23:00"
+                     autoFocus
+                    value={this.state.working_from}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+
+                </Col>
+                <Col cW="49%">
+                <FormGroup>
+                  <label>To*</label>
+                  <TextInput
+                    type="time"
+                    autoFocus
+                     min="00:00" max="23:00"
+                    name="working_to"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.working_to}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+
+                </Col>
+                  </Row>
                   <FormGroup>
                     {/* <UploadedFile>
 

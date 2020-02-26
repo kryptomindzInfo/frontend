@@ -113,6 +113,8 @@ export default class BankBranchList extends Component {
       name: v.name,
       bcode: v.bcode,
       credit_limit: v.credit_limit,
+      eworking_from: v.working_from == 0? this.state.working_from : v.working_from,
+      eworking_to: v.working_to == 0? this.state.working_to : v.working_to,
       username: v.username,
       address1: v.address1,
       state: v.state,
@@ -209,6 +211,8 @@ export default class BankBranchList extends Component {
         ccode: this.state.ccode,
         email: this.state.email,
         mobile: this.state.mobile,
+        working_from: this.state.working_from,
+        working_to: this.state.working_to,
         token,
       })
       .then(res => {
@@ -258,6 +262,8 @@ export default class BankBranchList extends Component {
         email: this.state.email,
         mobile: this.state.mobile,
         branch_id: this.state.branch_id,
+        working_from: this.state.eworking_from,
+        working_to: this.state.eworking_to,
         token,
       })
       .then(res => {
@@ -468,8 +474,22 @@ export default class BankBranchList extends Component {
 
   getBanks = () => {};
 
+  getBank = () => {
+       axios
+      .post(`${API_URL}/getOne`, { token, page: 'bank', type: 'bank', page_id: bid })
+      .then(res => {
+        if (res.status == 200) {
+          console.log(res.data);
+          this.setState({ loading: false, working_from: res.data.row.working_from  == 0 ? '00:00' : res.data.row.working_from, working_to: res.data.row.working_to  == 0 ? '00:00' : res.data.row.working_to  });
+          this.getBranches();
+        }
+      })
+      .catch(err => {});
+
+  };
+
   getBranches = () => {
-    axios
+        axios
       .post(`${API_URL}/getBranches`, { token })
       .then(res => {
         if (res.status == 200) {
@@ -478,13 +498,13 @@ export default class BankBranchList extends Component {
         }
       })
       .catch(err => {});
-  };
+  }
 
   componentDidMount() {
     // this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
-      this.getBanks();
-      this.getBranches();
+      this.getBank();
+      //this.getBranches();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -1098,6 +1118,45 @@ export default class BankBranchList extends Component {
                     </Col>
                   </Row>
 
+                   <label>Working Hours</label>
+                  <Row>
+                    <Col  cW="49%" mR="2%">
+
+                <FormGroup>
+                <label>From*</label>
+                  <TextInput
+                    type="time"
+                    name="working_from"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                     min="00:00" max="23:00"
+                     autoFocus
+                    value={this.state.working_from}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+
+                </Col>
+                <Col cW="49%">
+                <FormGroup>
+                  <label>To*</label>
+                  <TextInput
+                    type="time"
+                    autoFocus
+                     min="00:00" max="23:00"
+                    name="working_to"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.working_to}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+
+                </Col>
+                  </Row>
+
                   {this.state.addBranchLoading ? (
                     <Button filledBtn marginTop="10px" disabled>
                       <Loader />
@@ -1507,6 +1566,45 @@ export default class BankBranchList extends Component {
                       </FormGroup>
                     </Col>
                   </Row>
+                  <label>Working Hours</label>
+                  <Row>
+                    <Col  cW="49%" mR="2%">
+
+                <FormGroup>
+                <label>From*</label>
+                  <TextInput
+                    type="time"
+                    name="eworking_from"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                     min="00:00" max="23:00"
+                     autoFocus
+                    value={this.state.eworking_from}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+
+                </Col>
+                <Col cW="49%">
+                <FormGroup>
+                  <label>To*</label>
+                  <TextInput
+                    type="time"
+                    autoFocus
+                     min="00:00" max="23:00"
+                    name="eworking_to"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.eworking_to}
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  </FormGroup>
+
+                </Col>
+                  </Row>
+
                   {this.state.editBranchLoading ? (
                     <Button filledBtn marginTop="10px" disabled>
                       <Loader />
