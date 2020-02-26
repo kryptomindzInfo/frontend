@@ -711,9 +711,11 @@ export default class BranchCashierList extends Component {
                     <tr>
                       <th>Cashier Name</th>
                       <th>Cash in Hand</th>
-                      <th>Transaction limit ({CURRENCY})</th>
+                      {/* <th>Transaction limit ({CURRENCY})</th> */}
                       <th>Assigned to</th>
+                      <th>Status</th>
                       <th>Transaction Count</th>
+                      
                     </tr>
                   </thead>
                   <tbody>
@@ -729,13 +731,13 @@ export default class BranchCashierList extends Component {
                                   (b.cash_received - b.cash_paid)
                                 ).toFixed(2)}
                               </td>
-                              <td className="tac">
+                              {/* <td className="tac">
                                 {CURRENCY}{' '}
                                 {(
                                   Number(b.max_trans_amt) -
                                   (b.cash_paid + b.cash_received)
                                 ).toFixed(2)}
-                              </td>
+                              </td> */}
                               <td>
                                 {this.state.users.filter(
                                   u => u._id == b.bank_user_id,
@@ -744,6 +746,11 @@ export default class BranchCashierList extends Component {
                                       u => u._id == b.bank_user_id,
                                     )[0].name
                                   : ''}
+                              </td>
+                              <td style = {{color: b.is_closed ? 'red' : 'green' }}>
+                                   {b.is_closed  ? 
+                                      "Closed"
+                                   : "Opened" }
                               </td>
                               <td className="tac bold green">
                                 {b.total_trans}
@@ -804,6 +811,7 @@ export default class BranchCashierList extends Component {
                                   </div>
                                 </span>
                               </td>
+                              
                             </tr>
                           );
                         })

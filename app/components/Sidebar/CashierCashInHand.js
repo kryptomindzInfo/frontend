@@ -706,7 +706,7 @@ formatDate = date => {
                </div>
                :
             <div>
-              <h1>Transfer History</h1>
+              <h1>Cashier to Cashier Transfer History</h1>
               {this.state.historyLoading ? (
                 <Button filledBtn disabled>
                   <Loader />

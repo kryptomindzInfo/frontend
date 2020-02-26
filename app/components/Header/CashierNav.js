@@ -37,7 +37,7 @@ class CashierNav extends Component {
               <FormattedMessage {...messages.menu1} />
             </Link>
           </A>
-          <A >
+          {/* <A >
             <Link active={merchants}>
               <FormattedMessage {...messages.menu3} />
             </Link>
@@ -46,7 +46,7 @@ class CashierNav extends Component {
             <Link active={users}>
               <FormattedMessage {...messages.bmenu3} />
             </Link>
-          </A>
+          </A> */}
           <A >
             <Link active={reports}>
               <FormattedMessage {...messages.menu4} />

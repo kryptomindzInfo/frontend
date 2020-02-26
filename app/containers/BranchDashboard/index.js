@@ -723,7 +723,7 @@ export default class BranchDashboard extends Component {
           <SidebarBranch bankName={this.props.match.params.bank} />
           <Main>
             <Row>
-              <Col>
+              {/* <Col>
                 <Card
                   marginBottom="54px"
                   buttonMarginTop="32px"
@@ -750,7 +750,8 @@ export default class BranchDashboard extends Component {
                     {CURRENCY} {this.state.cashPaid.toFixed(2)}
                   </div>
                 </Card>
-              </Col>
+              </Col> */}
+              
               <Col>
                 <Card
                   marginBottom="54px"
@@ -775,6 +776,8 @@ export default class BranchDashboard extends Component {
                   <div className="cardValue">{this.state.totalCashier}</div>
                 </Card>
               </Col>
+              <Col></Col>
+              <Col></Col>
             </Row>
             <Card bigPadding>
               <div className="cardHeader">

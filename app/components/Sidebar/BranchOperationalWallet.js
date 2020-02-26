@@ -677,23 +677,23 @@ class BranchOperationalWallet extends Component {
 
         <Row>
           <Col>
-            <Button
+            {/* <Button
               noMin
               onClick={this.showPopupSendMoney}
               className="sendMoneybutton"
             >
-              <i className="material-icons">send</i> {/* Send Money */}
+              <i className="material-icons">send</i> 
               <FormattedMessage {...messages.sendmoney} />
-            </Button>
+            </Button> */}
           </Col>
           <Col>
-            <Button
+            {/* <Button
               noMin
               onClick={this.showClaimMoneyPopup}
               className="sendMoneybutton"
             >
               <i className="material-icons">send</i> Claim Money
-            </Button>
+            </Button> */}
           </Col>
         </Row>
         {this.state.popupClaimMoney ? (
