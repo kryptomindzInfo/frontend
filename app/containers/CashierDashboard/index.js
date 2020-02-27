@@ -535,9 +535,7 @@ generateOTP = () => {
                 <h4>Opening Balance</h4>
                 <div className="cardValue">
                 {
-                  this.state.tomorrow ? 
-                  <Button onClick={this.openCashier}>Open Cashier</Button>
-                  : <span> {CURRENCY} {this.state.openingBalance.toFixed(2)}</span>
+                   <span> {CURRENCY} {this.state.openingBalance.toFixed(2)}</span>
                 }
                 </div>
               </Card>
