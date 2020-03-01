@@ -15,7 +15,7 @@ import Col from 'components/Col';
 import Container from 'components/Container';
 import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
-import A from 'components/A'; 
+import A from 'components/A';
 import SelectInput from 'components/SelectInput';
 import Table from 'components/Table';
 
@@ -40,8 +40,8 @@ class CashierCashInHand extends Component {
   constructor() {
     super();
     this.state = {
-        balance: 0,
-        incoming: []
+      balance: 0,
+      incoming: []
     }
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -67,49 +67,49 @@ class CashierCashInHand extends Component {
       showSendMoneyOTP: false,
       showAcceptOtp: false,
       showCancelOtp: false,
-      amount : '',
+      amount: '',
       cashier_id: '',
-      otp:'',
+      otp: '',
       popresult: [],
-      historyPop:false,
+      historyPop: false,
       incomingPop: false
     });
   };
 
-    showPopupSendMoney = () => {
-    if(this.state.balance > 0 ){
+  showPopupSendMoney = () => {
+    if (this.state.balance > 0) {
       this.setState({ popupSendMoney: true });
-    }else{
+    } else {
       this.setState({
         notification: "You have no cash in hand to transfer",
       }, () => {
-      this.error();
+        this.error();
       });
     }
   };
 
   cancelTransfer = (i) => {
-      event.preventDefault();
-      this.setState(
-        {
-          cancelId: i._id,
-          showCancelOtp: true,
-          otp:'',
-          otpOpt: 'cashierCancelTransfer',
-          otpEmail: email,
-          otpMobile: mobile,
-          otpTxt: 'Your OTP to add cancel the transfer '
-        },
-        () => {
-          this.generateOTP();
-        },
-      );
+    event.preventDefault();
+    this.setState(
+      {
+        cancelId: i._id,
+        showCancelOtp: true,
+        otp: '',
+        otpOpt: 'cashierCancelTransfer',
+        otpEmail: email,
+        otpMobile: mobile,
+        otpTxt: 'Your OTP to add cancel the transfer '
+      },
+      () => {
+        this.generateOTP();
+      },
+    );
   };
 
- verifyCancel = event => {
+  verifyCancel = event => {
 
     event.preventDefault();
-    
+
     this.setState({
       verifySendMoneyOTPLoading: true,
     });
@@ -147,14 +147,14 @@ class CashierCashInHand extends Component {
         }, () => {
           this.error();
         });
-        
+
       });
   };
 
   verifyAccept = event => {
 
     event.preventDefault();
-    
+
     this.setState({
       verifySendMoneyOTPLoading: true,
     });
@@ -192,13 +192,13 @@ class CashierCashInHand extends Component {
         }, () => {
           this.error();
         });
-        
+
       });
   };
 
   startTimer = () => {
     var dis = this;
-    var timer = setInterval(function() {
+    var timer = setInterval(function () {
       if (dis.state.timer <= 0) {
         clearInterval(timer);
         dis.setState({ resend: true });
@@ -245,18 +245,18 @@ class CashierCashInHand extends Component {
       });
   };
 
-sendMoney = event => {
-    if(this.state.amount > this.state.balance){
-          this.setState({
-            notification: "Amount has to be lesser  than or equal to cash in hand"
-          });
-          this.success();
-    }else{
-    event.preventDefault();
+  sendMoney = event => {
+    if (this.state.amount > this.state.balance) {
+      this.setState({
+        notification: "Amount has to be lesser  than or equal to cash in hand"
+      });
+      this.success();
+    } else {
+      event.preventDefault();
       this.setState(
         {
           showSendMoneyOTP: true,
-          otp:'',
+          otp: '',
           otpOpt: 'cashierTransferMoney',
           otpEmail: email,
           otpMobile: mobile,
@@ -267,7 +267,7 @@ sendMoney = event => {
         },
       );
     }
-    
+
   };
 
   verifySendMoney = event => {
@@ -315,29 +315,29 @@ sendMoney = event => {
         }, () => {
           this.error();
         });
-        
+
       });
   };
 
   accept = (i) => {
-      event.preventDefault();
-      this.setState(
-        {
-          acceptId: i,
-          showAcceptOtp: true,
-          otp:'',
-          otpOpt: 'cashierAcceptTransfer',
-          otpEmail: email,
-          otpMobile: mobile,
-          otpTxt: 'Your OTP to accept the transfer '
-        },
-        () => {
-          this.generateOTP();
-        },
-      );
+    event.preventDefault();
+    this.setState(
+      {
+        acceptId: i,
+        showAcceptOtp: true,
+        otp: '',
+        otpOpt: 'cashierAcceptTransfer',
+        otpEmail: email,
+        otpMobile: mobile,
+        otpTxt: 'Your OTP to accept the transfer '
+      },
+      () => {
+        this.generateOTP();
+      },
+    );
   };
- 
-formatDate = date => {
+
+  formatDate = date => {
     var months = [
       'Jan',
       'Feb',
@@ -371,13 +371,13 @@ formatDate = date => {
     this.getTransHistory();
   };
 
-   showIncoming = () => {
+  showIncoming = () => {
     this.setState({
       incomingPop: true
     });
   };
 
-   getTransHistory = () => {
+  getTransHistory = () => {
     axios
       .post(`${API_URL}/getCashierTransfers`, {
         token: token
@@ -390,7 +390,7 @@ formatDate = date => {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getStats = () => {
@@ -403,19 +403,19 @@ formatDate = date => {
           let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
           let ob = res.data.openingBalance == null ? 0 : res.data.openingBalance;
-              let dd = res.data.lastdate == null ?  null: this.formatDate(res.data.lastdate);
+          let dd = res.data.lastdate == null ? null : this.formatDate(res.data.lastdate);
 
-          this.setState({ 
-           
-              lastdate: dd,
-              transactionStarted: res.data.transactionStarted,
-            loading: false, 
+          this.setState({
+
+            lastdate: dd,
+            transactionStarted: res.data.transactionStarted,
+            loading: false,
             branch_id: res.data.branchId,
             balance: res.data.cashInHand,
             isClosed: res.data.isClosed
           }, () => {
-            var dis  = this;
-            setTimeout(function(){
+            var dis = this;
+            setTimeout(function () {
               dis.getStats();
             }, 3000);
 
@@ -423,10 +423,10 @@ formatDate = date => {
         }
       })
       .catch(err => {
-        var dis  = this;
-            setTimeout(function(){
-              dis.getStats();
-            }, 3000);
+        var dis = this;
+        setTimeout(function () {
+          dis.getStats();
+        }, 3000);
       });
   };
 
@@ -437,22 +437,22 @@ formatDate = date => {
       })
       .then(res => {
         if (res.status == 200) {
-          this.setState({ 
+          this.setState({
             incoming: res.data.result
           }, () => {
-            
-            var dis  = this;
-            setTimeout(function(){
+
+            var dis = this;
+            setTimeout(function () {
               dis.getIncoming();
             }, 3000);
           });
         }
       })
       .catch(err => {
-        var dis  = this;
-            setTimeout(function(){
-              dis.getIncoming();
-            }, 3000);
+        var dis = this;
+        setTimeout(function () {
+          dis.getIncoming();
+        }, 3000);
       });
   };
 
@@ -464,13 +464,13 @@ formatDate = date => {
         type: "cashier",
         where: {
           branch_id: this.state.branch_id,
-          _id: {$ne: cid},
+          _id: { $ne: cid },
           is_closed: false
         }
       })
       .then(res => {
         if (res.status == 200) {
-          this.setState({ 
+          this.setState({
             cashiers: res.data.rows
           });
         }
@@ -484,8 +484,8 @@ formatDate = date => {
       bank: this.props.historyLink
     });
 
-            this.getCashiers();
-            this.getIncoming();
+    this.getCashiers();
+    this.getIncoming();
     this.getStats();
 
   }
@@ -508,34 +508,36 @@ formatDate = date => {
         <h3>
           Cash in Hand
           {
-             this.state.transactionStarted && !this.state.isClosed?
-            <span style={{float:"right", position:"relative", color: "#555", cursor:"pointer" }} onClick={this.showIncoming}>
-          <span style={{
-                position: "absolute",
-    top: "-5px",
-    fontSize: "12px",
-    color: "#ff1818",
-    fontWeight: "bold",
-    right: "0",
-  }}>{this.state.incoming.length}</span>
-          <i class="material-icons">notifications</i>
+            this.state.transactionStarted && !this.state.isClosed ?
+              <span style={{ float: "right", position: "relative", color: "#555", cursor: "pointer", top: '100px', right: '141px', fontSize: '16px' }} onClick={this.showIncoming}>
+                <span style={{
+                  position: "absolute",
+                  top: "0px",
+                  fontSize: "16px",
+                  color: "#ff1818",
+                  fontWeight: "bold",
+                  right: "-20px",
+                }}>{this.state.incoming.length}</span>
+                <span>Pending</span>
+                {/* <i class="material-icons">notifications</i> */}
 
-          </span>
-            :
-            <span style={{float:"right", position:"relative", color: "#555", cursor:"pointer" }} disabled>
-          <span style={{
-                position: "absolute",
-    top: "-5px",
-    fontSize: "12px",
-    color: "#ff1818",
-    fontWeight: "bold",
-    right: "0",
-  }}>{this.state.incoming.length}</span>
-          <i class="material-icons">notifications</i>
+              </span>
+              :
+              <span style={{ float: "right", position: "relative", color: "#555", cursor: "pointer", top: '100px', right: '141px', fontSize: '16px' }} disabled>
+                <span style={{
+                  position: "absolute",
+                  top: "0px",
+                  fontSize: "16px",
+                  color: "#ff1818",
+                  fontWeight: "bold",
+                  right: "-20px",
+                }}>{this.state.incoming.length}</span>
+                <span>Pending</span>
+                {/* <i class="material-icons">notifications</i> */}
 
-          </span>
+              </span>
           }
-          
+
         </h3>
         <h5>
           <FormattedMessage {...messages.available} />
@@ -544,353 +546,354 @@ formatDate = date => {
           {CURRENCY} {this.state.balance.toFixed(2)}
         </div>
         {
-           this.state.transactionStarted && !this.state.isClosed?
-        <Button
+          this.state.transactionStarted && !this.state.isClosed ?
+            <Button
               className="sendMoneybutton"
               noMin
               onClick={this.showPopupSendMoney}
 
             >
-              <i className="material-icons">send</i> Transfer
+              <i className="material-icons">send</i> Cashier to Cashier Transfer
             </Button>
-           :
-           <Button
-           disabled
+            :
+            <Button
+              disabled
               className="sendMoneybutton"
               noMin
 
             >
-              <i className="material-icons">send</i> Transfer
+              <i className="material-icons">send</i> Cashier to Cashier Transfer
             </Button>
-          }
-              
-            <span
-                        className="anchor history"
-                       onClick={this.showHistory} 
-                      >
-                        History
+        }
+
+        <span
+          className="anchor history"
+          onClick={this.showHistory}
+          style= {{right: '30px', bottom: '60px'}}
+        >
+          History
                       </span>
-             { this.state.popupSendMoney ? (
+        {this.state.popupSendMoney ? (
 
           <Popup
-            
+
             close={this.closePopup.bind(this)}
             accentedH1
           >
-            { this.state.showSendMoneyOTP ?
-               <div>
-               <h1 >Verify OTP</h1>
-             <form action="" method="post" onSubmit={this.verifySendMoney} >
-               <p>&nbsp;</p>
-               <FormGroup>
-                 <label>OTP*</label>
-                 <TextInput
-                   type="text"
-                   name="otp"
-                   onFocus={inputFocus}
-                   onBlur={inputBlur}
-                   value={this.state.otp}
-                   onChange={this.handleInputChange}
-                   required
-                 />
-               </FormGroup>
-               {
-                 this.state.verifySendMoneyOTPLoading ?
-                 <Button filledBtn marginTop="50px" marginBottom="50px" disabled>
-                 <Loader />
-               </Button>
-                 :
-                 <Button filledBtn marginTop="50px" marginBottom="50px">
-                 <span>Verify</span>
-               </Button>
-               }
- 
- 
-               <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
- 
- 
-               </form>
-               </div>
-               :
-            <div>
-              <h1>
-                Transfer Money
-              </h1>
-              <form
-                action=""
-                method="post"
-                onSubmit={this.sendMoney}
-              >
-               <FormGroup>
-                      <SelectInput
-                              type="text"
-                              name="receiver_id"
-                              value={this.state.receiver_id}
-                              onChange={this.handleInputChange}
-                              required
-                            >
-                              <option value="">
-                                Select Cashier
-                              </option>
-                              {
-                                this.state.cashiers && this.state.cashiers.length > 0 ?
-                                  this.state.cashiers.map(function(v){
-                                    return <option value={v._id+":"+v.name} >{v.name}</option>
-                                  })
-                                :
-                                null
-                              }
-                      </SelectInput>
-               </FormGroup>
-                <FormGroup>
-                 <label>Amount*</label>
-                 <TextInput
-                   type="number"
-                   name="amount"
-                   min="1"
-                   onFocus={inputFocus}
-                   onBlur={inputBlur}
-                   value={this.state.amount}
-                   onChange={this.handleInputChange}
-                   required
-                 />
-               </FormGroup>
-                      <Button filledBtn marginTop="20px">
-                        <span>
-                          Proceed
-                        </span>
+            {this.state.showSendMoneyOTP ?
+              <div>
+                <h1 >Verify OTP</h1>
+                <form action="" method="post" onSubmit={this.verifySendMoney} >
+                  <p>&nbsp;</p>
+                  <FormGroup>
+                    <label>OTP*</label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  {
+                    this.state.verifySendMoneyOTPLoading ?
+                      <Button filledBtn marginTop="50px" marginBottom="50px" disabled>
+                        <Loader />
                       </Button>
-                      
-                    
-              </form>
-            </div>
-          }
+                      :
+                      <Button filledBtn marginTop="50px" marginBottom="50px">
+                        <span>Verify</span>
+                      </Button>
+                  }
+
+
+                  <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to {this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span>}</p>
+
+
+                </form>
+              </div>
+              :
+              <div>
+                <h1>
+                  Transfer Money
+              </h1>
+                <form
+                  action=""
+                  method="post"
+                  onSubmit={this.sendMoney}
+                >
+                  <FormGroup>
+                    <SelectInput
+                      type="text"
+                      name="receiver_id"
+                      value={this.state.receiver_id}
+                      onChange={this.handleInputChange}
+                      required
+                    >
+                      <option value="">
+                        Select Cashier
+                              </option>
+                      {
+                        this.state.cashiers && this.state.cashiers.length > 0 ?
+                          this.state.cashiers.map(function (v) {
+                            return <option value={v._id + ":" + v.name} >{v.name}</option>
+                          })
+                          :
+                          null
+                      }
+                    </SelectInput>
+                  </FormGroup>
+                  <FormGroup>
+                    <label>Amount*</label>
+                    <TextInput
+                      type="number"
+                      name="amount"
+                      min="1"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.amount}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <Button filledBtn marginTop="20px">
+                    <span>
+                      Proceed
+                        </span>
+                  </Button>
+
+
+                </form>
+              </div>
+            }
           </Popup>
         ) : null}
 
         {this.state.historyPop ? (
           <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
-           { this.state.showCancelOtp ?
-               <div>
-               <h1 >Verify OTP</h1>
-             <form action="" method="post" onSubmit={this.verifyCancel} >
-               <p>&nbsp;</p>
-               <FormGroup>
-                 <label>OTP*</label>
-                 <TextInput
-                   type="text"
-                   name="otp"
-                   onFocus={inputFocus}
-                   onBlur={inputBlur}
-                   value={this.state.otp}
-                   onChange={this.handleInputChange}
-                   required
-                 />
-               </FormGroup>
-               {
-                 this.state.verifySendMoneyOTPLoading ?
-                 <Button filledBtn marginTop="50px" marginBottom="50px" disabled>
-                 <Loader />
-               </Button>
-                 :
-                 <Button filledBtn marginTop="50px" marginBottom="50px">
-                 <span>Verify</span>
-               </Button>
-               }
- 
- 
-               <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
- 
- 
-               </form>
-               </div>
-               :
-            <div>
-              <h1>Cashier to Cashier Transfer History</h1>
-              {this.state.historyLoading ? (
-                <Button filledBtn disabled>
-                  <Loader />
-                </Button>
-              ) : (
-                <Table marginTop="34px" smallTd textAlign="center">
-                <thead>
-                <tr><th>Date & Time</th> <th>Details</th><th>Status</th></tr>
-                </thead>
+            {this.state.showCancelOtp ?
+              <div>
+                <h1 >Verify OTP</h1>
+                <form action="" method="post" onSubmit={this.verifyCancel} >
+                  <p>&nbsp;</p>
+                  <FormGroup>
+                    <label>OTP*</label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  {
+                    this.state.verifySendMoneyOTPLoading ?
+                      <Button filledBtn marginTop="50px" marginBottom="50px" disabled>
+                        <Loader />
+                      </Button>
+                      :
+                      <Button filledBtn marginTop="50px" marginBottom="50px">
+                        <span>Verify</span>
+                      </Button>
+                  }
 
-                  <tbody>
-                    {this.state.popresult && this.state.popresult.length > 0
-                      ? this.state.popresult.map(function(b) {
-                          var isoformat = b.created_at;
-                          var fulldate = dis.formatDate(isoformat);
 
-                          return  <tr key={b._id}>
+                  <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to {this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span>}</p>
+
+
+                </form>
+              </div>
+              :
+              <div>
+                <h1>Cashier to Cashier Transfer History</h1>
+                {this.state.historyLoading ? (
+                  <Button filledBtn disabled>
+                    <Loader />
+                  </Button>
+                ) : (
+                    <Table marginTop="34px" smallTd textAlign="center">
+                      <thead>
+                        <tr><th>Date & Time</th> <th>Details</th><th>Status</th></tr>
+                      </thead>
+
+                      <tbody>
+                        {this.state.popresult && this.state.popresult.length > 0
+                          ? this.state.popresult.map(function (b) {
+                            var isoformat = b.created_at;
+                            var fulldate = dis.formatDate(isoformat);
+
+                            return <tr key={b._id}>
                               <td>
                                 <div className="labelGrey">{fulldate}</div>
                               </td>
                               <td>
                                 <div className="labelBlue">
                                   {
-                                    b.sender_id == cid ? 
-                                    <span>Transfered {CURRENCY} {b.amount} to {b.receiver_name}</span>
-                                    :
-                                    <span>Received {CURRENCY} {b.amount} from {b.sender_name}</span>
+                                    b.sender_id == cid ?
+                                      <span>Transfered {CURRENCY} {b.amount} to {b.receiver_name}</span>
+                                      :
+                                      <span>Received {CURRENCY} {b.amount} from {b.sender_name}</span>
                                   }  </div></td>
                               <td className="right">
                                 <div className="labelGrey" >
                                   {b.status == 0 ? (
-                                    <Button onClick={() => dis.cancelTransfer(b)} style={{float: "right"}}>
+                                    <Button onClick={() => dis.cancelTransfer(b)} style={{ float: "right" }}>
                                       Cancel
                                     </Button>
                                   ) : (
-                                  b.status == -1 ?
-                                   <span>
-                                      Cancelled
+                                      b.status == -1 ?
+                                        <span>
+                                          Cancelled
                                     </span>
-                                  :
-                                    <span>
-                                      Completed
+                                        :
+                                        <span>
+                                          Completed
                                     </span>
-                                  )}
+                                    )}
                                 </div>
                               </td>
                             </tr>
-                          
-                        })
-                      : null}
-                  </tbody>
-                </Table>
-              )}
-            </div>
-          }
+
+                          })
+                          : null}
+                      </tbody>
+                    </Table>
+                  )}
+              </div>
+            }
           </Popup>
         ) : null}
 
-          {this.state.incomingPop ? (
+        {this.state.incomingPop ? (
           <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
-           { this.state.showCancelOtp ?
-               <div>
-               <h1 >Verify OTP</h1>
-             <form action="" method="post" onSubmit={this.verifyCancel} >
-               <p>&nbsp;</p>
-               <FormGroup>
-                 <label>OTP*</label>
-                 <TextInput
-                   type="text"
-                   name="otp"
-                   onFocus={inputFocus}
-                   onBlur={inputBlur}
-                   value={this.state.otp}
-                   onChange={this.handleInputChange}
-                   required
-                 />
-               </FormGroup>
-               {
-                 this.state.verifySendMoneyOTPLoading ?
-                 <Button filledBtn marginTop="50px" marginBottom="50px" disabled>
-                 <Loader />
-               </Button>
-                 :
-                 <Button filledBtn marginTop="50px" marginBottom="50px">
-                 <span>Verify</span>
-               </Button>
-               }
- 
- 
-               <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
- 
- 
-               </form>
-               </div>
-               :
-               this.state.showAcceptOtp ?
-               <div>
-               <h1 >Verify OTP</h1>
-             <form action="" method="post" onSubmit={this.verifyAccept} >
-               <p>&nbsp;</p>
-               <FormGroup>
-                 <label>OTP*</label>
-                 <TextInput
-                   type="text"
-                   name="otp"
-                   onFocus={inputFocus}
-                   onBlur={inputBlur}
-                   value={this.state.otp}
-                   onChange={this.handleInputChange}
-                   required
-                 />
-               </FormGroup>
-               {
-                 this.state.verifySendMoneyOTPLoading ?
-                 <Button filledBtn marginTop="50px" marginBottom="50px" disabled>
-                 <Loader />
-               </Button>
-                 :
-                 <Button filledBtn marginTop="50px" marginBottom="50px">
-                 <span>Verify</span>
-               </Button>
-               }
- 
- 
-               <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to { this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span> }</p>
- 
- 
-               </form>
-               </div>
-               :
-            <div>
-              <h1>Incoming Transfers</h1>
-             
-                <Table marginTop="34px" smallTd textAlign="center">
-                <thead>
-                <tr><th>Date & Time</th> <th>Details</th><th></th></tr>
-                </thead>
+            {this.state.showCancelOtp ?
+              <div>
+                <h1 >Verify OTP</h1>
+                <form action="" method="post" onSubmit={this.verifyCancel} >
+                  <p>&nbsp;</p>
+                  <FormGroup>
+                    <label>OTP*</label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  {
+                    this.state.verifySendMoneyOTPLoading ?
+                      <Button filledBtn marginTop="50px" marginBottom="50px" disabled>
+                        <Loader />
+                      </Button>
+                      :
+                      <Button filledBtn marginTop="50px" marginBottom="50px">
+                        <span>Verify</span>
+                      </Button>
+                  }
 
-                  <tbody>
-                    {this.state.incoming && this.state.incoming.length > 0
-                      ? this.state.incoming.map(function(b) {
+
+                  <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to {this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span>}</p>
+
+
+                </form>
+              </div>
+              :
+              this.state.showAcceptOtp ?
+                <div>
+                  <h1 >Verify OTP</h1>
+                  <form action="" method="post" onSubmit={this.verifyAccept} >
+                    <p>&nbsp;</p>
+                    <FormGroup>
+                      <label>OTP*</label>
+                      <TextInput
+                        type="text"
+                        name="otp"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.otp}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
+                    {
+                      this.state.verifySendMoneyOTPLoading ?
+                        <Button filledBtn marginTop="50px" marginBottom="50px" disabled>
+                          <Loader />
+                        </Button>
+                        :
+                        <Button filledBtn marginTop="50px" marginBottom="50px">
+                          <span>Verify</span>
+                        </Button>
+                    }
+
+
+                    <p className="resend">Wait for <span className="timer">{this.state.timer}</span> to {this.state.resend ? <span className="go" onClick={this.generateOTP}>Resend</span> : <span>Resend</span>}</p>
+
+
+                  </form>
+                </div>
+                :
+                <div>
+                  <h1>Incoming Transfers</h1>
+
+                  <Table marginTop="34px" smallTd textAlign="center">
+                    <thead>
+                      <tr><th>Date & Time</th> <th>Details</th><th></th></tr>
+                    </thead>
+
+                    <tbody>
+                      {this.state.incoming && this.state.incoming.length > 0
+                        ? this.state.incoming.map(function (b) {
                           var isoformat = b.created_at;
                           var fulldate = dis.formatDate(isoformat);
 
-                          return  <tr key={b._id}>
-                              <td>
-                                <div className="labelGrey">{fulldate}</div>
-                              </td>
-                              <td>
-                                <div className="labelBlue">
-                                  {
-                                    <span>Recived {CURRENCY} {b.amount} from {b.sender_name}</span>
-                                  }  </div></td>
-                              <td className="right">
-                                <div className="labelGrey">
-                                  {b.status == 0 ? (
-                                    <div>
+                          return <tr key={b._id}>
+                            <td>
+                              <div className="labelGrey">{fulldate}</div>
+                            </td>
+                            <td>
+                              <div className="labelBlue">
+                                {
+                                  <span>Recived {CURRENCY} {b.amount} from {b.sender_name}</span>
+                                }  </div></td>
+                            <td className="right">
+                              <div className="labelGrey">
+                                {b.status == 0 ? (
+                                  <div>
                                     <Row>
-                                    <Col>
-                                    <Button onClick={() => dis.accept(b)}>Accept</Button></Col><Col>
-                                    <Button onClick={() => dis.cancelTransfer(b)}>Cancel</Button></Col>
+                                      <Col>
+                                        <Button onClick={() => dis.accept(b)}>Accept</Button></Col><Col>
+                                        <Button onClick={() => dis.cancelTransfer(b)}>Cancel</Button></Col>
                                     </Row>
-                                    </div>
-                                  ) : (
-                                  b.status == -1 ?
-                                   <span>
-                                      Cancelled
+                                  </div>
+                                ) : (
+                                    b.status == -1 ?
+                                      <span>
+                                        Cancelled
                                     </span>
-                                  :
-                                    <span>
-                                      Completed
+                                      :
+                                      <span>
+                                        Completed
                                     </span>
                                   )}
-                                </div>
-                              </td>
-                            </tr>
-                          
+                              </div>
+                            </td>
+                          </tr>
+
                         })
-                      : null}
-                  </tbody>
-                </Table>
-       
-            </div>
-          }
+                        : null}
+                    </tbody>
+                  </Table>
+
+                </div>
+            }
           </Popup>
         ) : null}
       </Card>

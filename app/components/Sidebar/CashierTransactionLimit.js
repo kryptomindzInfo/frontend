@@ -689,7 +689,7 @@ class CashierTransactionLimit extends Component {
     }
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
-        <h3>Max. Amount per Transaction</h3>
+        <h3>Max. Daily Cash Out Amount</h3>
         <h5>
           <FormattedMessage {...messages.available} />
         </h5>
