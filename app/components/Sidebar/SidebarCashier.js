@@ -12,10 +12,19 @@ margin-right: ${props => props.marginRight ? '33px' : '0' };
 `;
 
 class SidebarCashier extends Component {
+
+ constructor() {
+    super();
+    this.child = React.createRef();
+  }
+
+  proceed = (items) =>{
+  	this.child.current.proceed(items);
+  };
   render() {
     return (
         <Sidebar marginRight>
-            <CashierTransactionLimit refresh={this.props.refresh.bind(this)} />
+            <CashierTransactionLimit refresh={this.props.refresh.bind(this)}  ref={this.child}/>
             <CashierCashInHand refresh={this.props.refresh.bind(this)}/>
             <CashierClosingBalance branchName={this.props.branchName}/>
         </Sidebar>

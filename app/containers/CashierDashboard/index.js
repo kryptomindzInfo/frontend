@@ -91,6 +91,7 @@ export default class CashierDashboard extends Component {
     this.warn = this.warn.bind(this);
 
     this.showHistory = this.showHistory.bind(this);
+    this.child = React.createRef();
   }
 
   success = () => toast.success(this.state.notification);
@@ -122,6 +123,13 @@ export default class CashierDashboard extends Component {
     this.getTransHistory(v.master_code);
   };
 
+    showPending = v => {
+    this.setState({
+      showPending: true
+    });
+    
+  };
+
   openCashier = e => {
     this.setState({
       openCashierPopup: true
@@ -149,6 +157,13 @@ addOpeningBalance = event => {
         this.error();
   }
   };
+
+    proceed = (items) => {
+
+this.child.current.proceed(items);
+  };
+
+
   startTimer = () => {
     var dis = this;
     var timer = setInterval(function() {
@@ -320,6 +335,7 @@ generateOTP = () => {
 
           this.setState(
             {
+              pending: res.data.history3,
               ticker: result[0],
               loading: false,
               allhistory: result,
@@ -389,7 +405,8 @@ generateOTP = () => {
   };
 
   filterData = e => {
-    this.setState({ filter: e });
+
+    this.setState({ showPending:false, filter: e });
   };
 
   handlePageChange = pageNumber => {
@@ -502,7 +519,7 @@ generateOTP = () => {
           from="cashier"
         />
         <Container verticalMargin>
-          <SidebarCashier refresh={this.getHistory.bind(this)} branchName={this.props.match.params.bank} />
+          <SidebarCashier refresh={this.getHistory.bind(this)} branchName={this.props.match.params.bank} ref={this.child} />
           <Main>
             <div className="clr">
               
@@ -649,15 +666,80 @@ generateOTP = () => {
                   >
                     Payment Received
                   </div>
+                  <div
+                    className="menuTabs"
+                    onClick={() => this.showPending()}
+                  >
+                    Payment Pending
+                  </div>
                 </div>
+
                 <Table
                   marginTop="34px"
                   marginBottom="34px"
                   smallTd
                   textAlign="left"
                 >
+                {
+                  this.state.showPending ?
+                 <tbody>
+                {
+                  
+                      this.state.pending && this.state.pending.length > 0
+                      ? this.state.pending.map(function(b) {
+
+                        var fulldate = dis.formatDate(b.created_at);
+                        return  <tr key={b._id}>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div
+                                  className="labelBlue"
+                                >
+                                  
+                                    <span>
+                                      Cash sent from{' '}
+                                      {b.sender_name}{' '}
+                                      to{' '}
+                                      {b.receiver_name}
+                                    </span>
+                                  
+                                </div>
+                                <div className="labelSmallGrey">
+                                  {b.status == 1 ? 
+                                    <div>
+                                    <span>Approved</span>
+                                    <br />
+                                    <Button style={{marginTop: '10px'}} onClick={() => dis.proceed(JSON.parse(b.transaction_details))}>Proceed</Button>
+                                    </div>
+                                  : 
+                                  b.status == 0 ? 
+                                    <span>Pending</span>
+                                  
+                                  :
+                                 
+                                    <span className="red">Rejected</span>
+                                  }
+                                </div>
+                              </td>
+                              <td>
+                                <div className="labelGrey">
+                                  {'XOF'}
+                                  {b.amount}
+                                </div>
+                              </td>
+                            </tr>
+                      })
+                      : null
+                    }
+                      </tbody>
+                      :
+
                   <tbody>
-                    {this.state.history && this.state.history.length > 0
+                    {
+                      
+                      this.state.history && this.state.history.length > 0
                       ? this.state.history.map(function(b) {
                           // var sinfo = b.trans_type == "CR" ? b.sender_info ? null;
                           // var rinfo = b.trans_type == "CR" ? b.receiver_info ? null;
@@ -716,10 +798,16 @@ generateOTP = () => {
                             </tr>
                           ) : null;
                         })
-                      : null}
+                      : null
+                    }
                   </tbody>
+                }
                 </Table>
                 <div>
+                {
+                  this.state.showPending ?
+                  null
+                  :
                   <Pagination
                     activePage={this.state.activePage}
                     itemsCountPerPage={this.state.perPage}
@@ -727,6 +815,7 @@ generateOTP = () => {
                     pageRangeDisplayed={5}
                     onChange={this.handlePageChange}
                   />
+                }
                 </div>
               </div>
             </Card>

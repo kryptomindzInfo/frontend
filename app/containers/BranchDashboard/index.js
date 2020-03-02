@@ -108,6 +108,16 @@ export default class BranchDashboard extends Component {
     });
     this.getTransHistory(v.master_code);
   };
+
+    showPending = v => {
+      console.log(v);
+    this.setState({
+      selectedCashier: v,
+      pendingPop: true,
+      historyLoading: true
+    });
+    this.getPendingHistory(v);
+  };
   showPopup = () => {
     this.setState({ popup: true });
   };
@@ -125,11 +135,30 @@ export default class BranchDashboard extends Component {
     });
   };
 
+  showPendingDetails = (id, items) => {
+
+    var dis = this;
+    for (var key in items) {
+    if (items.hasOwnProperty(key)) {
+        console.log(key + " -> " + items[key]);
+        this.setState({
+          [key] : items[key]
+        });
+
+    }
+}
+    this.setState({
+      selectedId: id,
+      popupClaimMoney: true
+    });
+  };
   closePopup = () => {
     this.setState({
       popup: false,
       editPopup: false,
       historyPop: false,
+      pendingPop: false,
+      popupClaimMoney: false,
       name: '',
       address1: '',
       state: '',
@@ -342,6 +371,87 @@ export default class BranchDashboard extends Component {
       });
   };
 
+
+  approveTransfer = event => {
+    this.setState({
+      claimMoneyLoading: false,
+    });
+    event.preventDefault();
+    axios
+      .post(`${API_URL}/updateCashierTransferStatus`, {token: this.state.token, cashier_id: this.state.selectedCashier,  transfer_id: this.state.selectedId, status: 1})
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState(
+              {
+                notification: 'Transfer updated successfully!',
+              },
+              function() {
+                this.success();
+              //  this.closePopup();
+                this.getCashiers();
+              },
+            );
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+        this.setState({
+          claimMoneyLoading: false,
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          claimMoneyLoading: false,
+        });
+        this.error();
+      });
+  };
+
+   rejectTransfer = event => {
+    this.setState({
+      claimMoneyLoading: false,
+    });
+    event.preventDefault();
+    axios
+      .post(`${API_URL}/updateCashierTransferStatus`, {token: this.state.token, cashier_id: this.state.selectedCashier, transfer_id: this.state.selectedId, status: -1})
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState(
+              {
+                notification: 'Transfer updated successfully!',
+              },
+              function() {
+                this.success();
+                this.closePopup();
+                this.getCashiers();
+              },
+            );
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+        this.setState({
+          claimMoneyLoading: false,
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          claimMoneyLoading: false,
+        });
+        this.error();
+      });
+  };
+
   blockBranch = (e, s) => {
     var dis = this;
     axios
@@ -539,6 +649,31 @@ export default class BranchDashboard extends Component {
       })
       .catch(err => {});
   };
+
+  getPendingHistory = id => {
+    axios
+      .post(`${API_URL}/getAll`, {
+        token: token,
+        type: 'branch',
+        page: 'cashierpending',
+        where: {cashier_id: id}
+      })
+      .then(res => {
+        if (res.status == 200) {
+          // var result = res.data.history1.concat(res.data.history2);
+          // result.sort(function(a, b) {
+          //     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()// implicit conversion in number
+          // });
+          // var l = result.length;
+
+          this.setState({
+            pending: res.data.rows,
+            historyLoading: false
+          });
+        }
+      })
+      .catch(err => {});
+  };
   showHistory = () => {
     this.setState({ history: [] }, () => {
       var out = [];
@@ -681,7 +816,44 @@ export default class BranchDashboard extends Component {
     return d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
   };
 
+
+  getCashiers = () => {
+    axios
+      .post(`${API_URL}/getAll`, {
+        page: 'cashier',
+        type: 'branch',
+        token: token,
+        where: { branch_id: bid },
+      })
+      .then(res => {
+        if (res.status == 200) {
+          console.log(res.data);
+          this.setState({ loading: false, cashiers: res.data.rows });
+        }
+      })
+      .catch(err => {});
+  };
+
+    getUsers = () => {
+    axios
+      .post(`${API_URL}/getAll`, {
+        page: 'bankuser',
+        type: 'branch',
+        token: token,
+        where: {},
+      })
+      .then(res => {
+        if (res.status == 200) {
+          this.setState({ loading: false, users: res.data.rows });
+        }
+      })
+      .catch(err => {});
+  };
+
   componentDidMount() {
+
+    this.getCashiers();
+    this.getUsers();
     this.getBranches();
     this.getBranchByName();
   }
@@ -790,96 +962,63 @@ export default class BranchDashboard extends Component {
                 </div>
               </div>
               <div className="cardBody">
-                <div className="clr">
-                  <div className="menuTabs" onClick={() => this.filterData('')}>
-                    All
-                  </div>
-                  <div
-                    className="menuTabs"
-                    onClick={() => this.filterData('DR')}
-                  >
-                    Payment Sent
-                  </div>
-                  <div
-                    className="menuTabs"
-                    onClick={() => this.filterData('CR')}
-                  >
-                    Payment Received
-                  </div>
-                </div>
-                <Table
-                  marginTop="34px"
-                  marginBottom="34px"
-                  smallTd
-                  textAlign="left"
-                >
+              <Table marginTop="34px" smallTd>
+                  <thead>
+                    <tr>
+                      <th>Cashier Name</th>
+                      <th>Cash in Hand</th>
+                      {/* <th>Transaction limit ({CURRENCY})</th> */}
+                      <th>Assigned to</th>
+                      <th>Status</th>
+                      <th>Pending Trans. Count</th>
+                      
+                    </tr>
+                  </thead>
                   <tbody>
-                    {this.state.history && this.state.history.length > 0
-                      ? this.state.history.map(function(b) {
-                          // var sinfo = b.trans_type == "CR" ? b.sender_info ? null;
-                          // var rinfo = b.trans_type == "CR" ? b.receiver_info ? null;
-                          var sinfo = {};
-                          var rinfo = {};
-                          var fulldate = dis.formatDate(b.created_at);
-                          return dis.state.filter == b.trans_type ||
-                            dis.state.filter == '' ? (
+                    {this.state.cashiers && this.state.cashiers.length > 0 && this.state.users
+                      ? this.state.cashiers.map(b => {
+                          return (
                             <tr key={b._id}>
-                              <td>
-                                <div className="labelGrey">{fulldate}</div>
+                              <td>{b.name}</td>
+                              <td className="tac">
+                                {CURRENCY}{' '}
+                                {(
+                                  b.opening_balance +
+                                  (b.cash_received - b.cash_paid)
+                                ).toFixed(2)}
                               </td>
+                              {/* <td className="tac">
+                                {CURRENCY}{' '}
+                                {(
+                                  Number(b.max_trans_amt) -
+                                  (b.cash_paid + b.cash_received)
+                                ).toFixed(2)}
+                              </td> */}
                               <td>
-                                <div
-                                  className="labelBlue"
-                                  onClick={() => dis.showHistoryPop(b)}
-                                >
-                                  {b.sender_info ? (
-                                    <span>
-                                      Cash sent from{' '}
-                                      {JSON.parse(b.sender_info).givenname +
-                                        ' ' +
-                                        JSON.parse(b.sender_info)
-                                          .familyname}{' '}
-                                      to{' '}
-                                      {JSON.parse(b.receiver_info).givenname +
-                                        ' ' +
-                                        JSON.parse(b.receiver_info).familyname}
-                                    </span>
-                                  ) : (
-                                    <span>
-                                      Cash claimed from {b.sender_name} to{' '}
-                                      {b.receiver_name}
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="labelSmallGrey">
-                                  {b.status == 1 ? (
-                                    <span>Completed</span>
-                                  ) : (
-                                    <span className="red">Failed</span>
-                                  )}
-                                </div>
+                                {this.state.users.filter(
+                                  u => u._id == b.bank_user_id,
+                                )[0]
+                                  ? this.state.users.filter(
+                                      u => u._id == b.bank_user_id,
+                                    )[0].name
+                                  : ''}
                               </td>
-                              <td>
-                                <div className="labelGrey">
-                                  {b.transaction_code == 'DR' ? '-XOF' : 'XOF'}
-                                  {b.amount}
-                                </div>
+                              <td style = {{color: b.is_closed ? 'red' : 'green' }}>
+                                   {b.is_closed  ? 
+                                      "Closed"
+                                   : "Opened" }
                               </td>
+                              <td className="tac bold green">
+                                <span onClick={() => this.showPending(b._id)}> {b.pending_trans}</span>
+                               
+                              </td>
+                              
                             </tr>
-                          ) : null;
+                          );
                         })
                       : null}
                   </tbody>
                 </Table>
-                <div>
-                  <Pagination
-                    activePage={this.state.activePage}
-                    itemsCountPerPage={this.state.perPage}
-                    totalItemsCount={this.state.totalCount}
-                    pageRangeDisplayed={5}
-                    onChange={this.handlePageChange}
-                  />
-                </div>
               </div>
             </Card>
           </Main>
@@ -1578,6 +1717,347 @@ export default class BranchDashboard extends Component {
             </div>
           </Popup>
         ) : null}
+
+        {this.state.pendingPop ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
+            <div>
+              <h1>Pending Transactions</h1>
+              {this.state.historyLoading ? (
+                <Button filledBtn disabled>
+                  <Loader />
+                </Button>
+              ) : (
+                <Table marginTop="34px" smallTd textAlign="left">
+                  <tbody>
+                {
+                  
+                      this.state.pending && this.state.pending.length > 0
+                      ? this.state.pending.map(function(b) {
+
+                        var fulldate = dis.formatDate(b.created_at);
+                        return  <tr key={b._id}>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div
+                                  className="labelBlue"
+                                >
+                                  
+                                    <span onClick={() => dis.showPendingDetails(b._id, JSON.parse(b.transaction_details))}>
+                                      Cash sent from{' '}
+                                      {b.sender_name}{' '}
+                                      to{' '}
+                                      {b.receiver_name}
+                                    </span>
+                                  
+                                </div>
+                                <div className="labelSmallGrey">
+                                  {b.status == 1 ? 
+                                    <span>Approved</span>
+                                  : 
+                                  b.status == 0 ? 
+                                    <span>Pending</span>
+                                  
+                                  :
+                                 
+                                    <span className="red">Rejected</span>
+                                  }
+                                </div>
+                              </td>
+                              <td>
+                                <div className="labelGrey">
+                                  {'XOF'}
+                                  {b.amount}
+                                </div>
+                              </td>
+                            </tr>
+                      })
+                      : null
+                    }
+                      </tbody>
+                </Table>
+              )}
+            </div>
+          </Popup>
+        ) : null}
+
+
+         {this.state.popupClaimMoney ? (
+          <Popup bigBody close={this.closePopup.bind(this)} accentedH1>
+        
+                <div>
+                  <h1>Transaction Details</h1>
+        
+                    <Container>
+                      <Row vAlign="flex-start">
+                        <Col sm="12" md="4">
+                          <div
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                              padding: '13px 0px',
+                              color: '#417505',
+                            }}
+                          >
+                            Sender's Info
+                          </div>
+                          <Row>
+                            <Col className="popInfoLeft">Mobile Number</Col>
+                            <Col className="popInfoRight">
+                              {this.state.mobile}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Given Name</Col>
+                            <Col className="popInfoRight">
+                              {this.state.givenname}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Family Name</Col>
+                            <Col className="popInfoRight">
+                              {this.state.familyname}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Address</Col>
+                            <Col className="popInfoRight">
+                              {this.state.address1}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">State</Col>
+                            <Col className="popInfoRight">
+                              {this.state.state}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Zip Code</Col>
+                            <Col className="popInfoRight">{this.state.zip}</Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Country</Col>
+                            <Col className="popInfoRight">
+                              {this.state.country}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Email ID</Col>
+                            <Col className="popInfoRight">
+                              {this.state.email}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Notes</Col>
+                            <Col className="popInfoRight">
+                              {this.state.note}
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col sm="12" md="4">
+                          <div
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                              padding: '13px 0px',
+                              color: '#417505',
+                            }}
+                          >
+                            Receiver's Info
+                          </div>
+                          <Row>
+                            <Col className="popInfoLeft">Mobile Number</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverMobile}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Given Name</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverGivenName}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Family Name</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverFamilyName}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Country</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverCountry}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Email ID</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverEmail}
+                            </Col>
+                          </Row>
+                          <Row /> <Row /> <Row />
+                        </Col>
+                        <Col sm="12" md="4">
+                          <div
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                              padding: '13px 0px',
+                              color: '#417505',
+                            }}
+                          >
+                            &nbsp;
+                          </div>
+                          <Row>
+                            <Col className="popInfoLeft">Amount</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverIdentificationAmount}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Date</Col>
+                            <Col className="popInfoRight">
+                              {this.state.dateClaimMoney}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Transaction ID</Col>
+                            <Col className="popInfoRight">
+                              {this.state.transferCode}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">ID required</Col>
+                            <Col className="popInfoRight">
+                              {this.state.withoutID ? 'No' : 'Yes'}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">OTP required</Col>
+                            <Col className="popInfoRight">
+                              {this.state.requireOTP ? 'Yes' : 'No'}
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                      <Row vAlign="flex-start">
+                        <Col>
+                          <div
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                              padding: '13px 0px',
+                            }}
+                          >
+                            Sender's Identification
+                          </div>
+                          <Row>
+                            <Col className="popInfoLeft">Country</Col>
+                            <Col className="popInfoRight">
+                              {this.state.senderIdentificationCountry}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Type</Col>
+                            <Col className="popInfoRight">
+                              {this.state.senderIdentificationType}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Number</Col>
+                            <Col className="popInfoRight">
+                              {this.state.senderIdentificationNumber}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Valid till</Col>
+                            <Col className="popInfoRight">
+                              {this.state.senderIdentificationValidTill}
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col>
+                          <div
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                              padding: '13px 0px',
+                            }}
+                          >
+                            Receiver's Identification
+                          </div>
+                          <Row>
+                            <Col className="popInfoLeft">Country</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverIdentificationCountry}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Type</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverIdentificationType}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Number</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverIdentificationNumber}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Valid till</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverIdentificationValidTill}
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col>
+         
+                       <Row>
+                       <Col cW="49%" mR="2%">
+                       {this.state.claimMoneyLoading ? (
+                            <Button filledBtn marginTop="20px" disabled>
+                              <Loader />
+                            </Button>
+                          ) : (
+                            <Button type="button" filledBtn marginTop="20px" onClick={this.approveTransfer}>
+                              <span>
+                                Approve
+                              </span>
+                            </Button>
+                          )}
+                       </Col>
+                       <Col cW="49%">
+                       {this.state.claimMoneyLoading ? (
+                            <Button filledBtn marginTop="20px" disabled  style={{backgroundColor: '#111111'}} >
+                              <Loader />
+                            </Button>
+                          ) : (
+                            <Button type="button" filledBtn marginTop="20px" style={{backgroundColor: '#111111'}} onClick={this.rejectTransfer}>
+                              <span>
+                                Reject
+                              </span>
+                            </Button>
+                          )}
+                       </Col>
+                       </Row>
+                          
+
+                          <br />
+                          {/* <p className="note">
+                      <span style={{ color: 'red' }}>* </span>
+                      Total fee $200 will be charged
+                    </p> */}
+                        </Col>
+                      </Row>
+                    </Container>
+        
+                </div>
+           
+          </Popup>
+        ) : null}
+
       </Wrapper>
     );
   }

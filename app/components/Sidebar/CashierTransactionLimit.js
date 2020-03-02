@@ -70,6 +70,35 @@ class CashierTransactionLimit extends Component {
     });
   };
 
+proceed = (items) => {
+console.log(items);
+
+    var dis = this;
+    for (var key in items) {
+    if (items.hasOwnProperty(key)) {
+        console.log(key + " -> " + items[key]);
+        this.setState({
+          [key] : items[key]
+        });
+
+    }
+}
+
+ this.setState(
+        {
+  popupSendMoney: true,
+          showSendMoneyOTP: true,
+          otpOpt: 'cashierSendMoney',
+          otpEmail: email,
+          otpMobile: mobile,
+          otpTxt: 'Your OTP to add send money is ',
+        },
+        () => {
+          this.generateOTP();
+        },
+      );
+};
+
   removeFile = key => {
     this.setState({
       [key]: null,
@@ -441,11 +470,44 @@ class CashierTransactionLimit extends Component {
 
    confirmPending = event => {
     event.preventDefault();
-     this.setState(
-        {
-          showConfirmPending: false,
+    this.setState({
+      verifySendMoneyOTPLoading: true,
+    });
+    axios
+      .post(`${API_URL}/cashierSendMoneyPending`, this.state)
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            console.log(res.data.status);
+            this.setState({
+              notification: 'Transaction Successfully Submitted for Aproval',
+            });
+            this.success();
+            this.closePopupSendMoney();
+            this.props.refresh();
+          }
+        } else {
+          throw res.data.error;
         }
-      );
+        this.setState({
+          verifySendMoneyOTPLoading: false,
+        });
+      })
+      .catch(err => {
+        this.setState(
+          {
+            notification: err.response
+              ? err.response.data.error.toString()
+              : err.toString(),
+            verifySendMoneyOTPLoading: false,
+          },
+          () => {
+            this.error();
+          },
+        );
+      });
   };
 
   sendMoney = event => {
@@ -1395,6 +1457,7 @@ class CashierTransactionLimit extends Component {
                                 pattern="[0-9]{10}"
                                 title="10 Digit numeric value"
                                 name="mobile"
+                                autoFocus
                                 onFocus={inputFocus}
                                 onBlur={inputBlur}
                                 value={this.state.mobile}
@@ -1416,6 +1479,7 @@ class CashierTransactionLimit extends Component {
                                 type="text"
                                 name="givenname"
                                 pattern=".{3,12}"
+                                autoFocus
                                 title="Minimum 3 characters"
                                 onFocus={inputFocus}
                                 onBlur={inputBlur}
@@ -1435,6 +1499,7 @@ class CashierTransactionLimit extends Component {
                               <TextInput
                                 type="text"
                                 name="familyname"
+                                autoFocus
                                 pattern=".{3,12}"
                                 title="Minimum 3 characters"
                                 onFocus={inputFocus}
@@ -1457,6 +1522,7 @@ class CashierTransactionLimit extends Component {
                             name="address1"
                             onFocus={inputFocus}
                             onBlur={inputBlur}
+                            autoFocus
                             value={this.state.address1}
                             onChange={this.handleInputChange}
                             required
@@ -1475,6 +1541,7 @@ class CashierTransactionLimit extends Component {
                                 name="state"
                                 onFocus={inputFocus}
                                 onBlur={inputBlur}
+                                autoFocus
                                 value={this.state.state}
                                 onChange={this.handleInputChange}
                                 required
@@ -1490,6 +1557,7 @@ class CashierTransactionLimit extends Component {
                               <TextInput
                                 type="text"
                                 name="zip"
+                                autoFocus
                                 onFocus={inputFocus}
                                 onBlur={inputBlur}
                                 value={this.state.zip}
@@ -1504,6 +1572,7 @@ class CashierTransactionLimit extends Component {
                             <FormGroup>
                               <CountrySelectBox
                                 type="text"
+                                autoFocus
                                 name="country"
                                 value={this.state.country}
                                 onChange={this.countryChange}
@@ -1522,6 +1591,7 @@ class CashierTransactionLimit extends Component {
                               <TextInput
                                 type="email"
                                 name="email"
+                                autoFocus
                                 pattern="(^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$)"
                                 onInput={e => e.target.setCustomValidity('')}
                                 onInvalid={e =>
@@ -1551,6 +1621,7 @@ class CashierTransactionLimit extends Component {
                             multiline={true}
                             numberOfLines={3}
                             type="text"
+                            autoFocus
                             name="note"
                             onFocus={inputFocus}
                             onBlur={inputBlur}
@@ -1573,6 +1644,7 @@ class CashierTransactionLimit extends Component {
                             <FormGroup>
                               <CountrySelectBox
                                 type="text"
+                                autoFocus
                                 name="senderIdentificationCountry"
                                 value={this.state.senderIdentificationCountry}
                                 onChange={this.countryChange}
@@ -1589,6 +1661,7 @@ class CashierTransactionLimit extends Component {
                               </label>
                               <TextInput
                                 type="text"
+                                autoFocus
                                 name="senderIdentificationType"
                                 onFocus={inputFocus}
                                 onBlur={inputBlur}
@@ -1607,6 +1680,7 @@ class CashierTransactionLimit extends Component {
                                 {/* <FormattedMessage {...messages.popup1} />* */}
                               </label>
                               <TextInput
+                              autoFocus
                                 type="text"
                                 name="senderIdentificationNumber"
                                 onFocus={inputFocus}
@@ -1626,6 +1700,7 @@ class CashierTransactionLimit extends Component {
                               <TextInput
                                 type="text"
                                 name="senderIdentificationValidTill"
+                                autoFocus
                                 onFocus={inputFocus}
                                 onBlur={inputBlur}
                                 value={this.state.senderIdentificationValidTill}
@@ -1654,6 +1729,7 @@ class CashierTransactionLimit extends Component {
                               <TextInput
                                 type="text"
                                 placeholder="+000"
+                                autoFocus
                                 name="receiverccode"
                                 readOnly
                                 value={this.state.receiverccode}
@@ -1672,6 +1748,7 @@ class CashierTransactionLimit extends Component {
                               <TextInput
                                 type="text"
                                 pattern="[0-9]{10}"
+                                autoFocus
                                 title="10 Digit numeric value"
                                 name="receiverMobile"
                                 onFocus={inputFocus}
@@ -1695,6 +1772,7 @@ class CashierTransactionLimit extends Component {
                                 type="text"
                                 name="receiverGivenName"
                                 pattern=".{3,12}"
+                                autoFocus
                                 title="Minimum 3 characters"
                                 onFocus={inputFocus}
                                 onBlur={inputBlur}
@@ -1715,6 +1793,7 @@ class CashierTransactionLimit extends Component {
                                 type="text"
                                 name="receiverFamilyName"
                                 pattern=".{3,12}"
+                                autoFocus
                                 title="Minimum 3 characters"
                                 onFocus={inputFocus}
                                 onBlur={inputBlur}
@@ -1731,6 +1810,7 @@ class CashierTransactionLimit extends Component {
                               <CountrySelectBox
                                 type="text"
                                 name="receiverCountry"
+                                autoFocus
                                 value={this.state.receiverCountry}
                                 onChange={this.countryChange}
                                 data-change="receiverccode"
@@ -1748,6 +1828,7 @@ class CashierTransactionLimit extends Component {
                               <TextInput
                                 type="email"
                                 name="receiverEmail"
+                                autoFocus
                                 pattern="(^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$)"
                                 onInput={e => e.target.setCustomValidity('')}
                                 onInvalid={e =>
@@ -1805,6 +1886,7 @@ class CashierTransactionLimit extends Component {
                                     value={
                                       this.state.receiverIdentificationCountry
                                     }
+                                    autoFocus
                                     onChange={this.countryChange}
                                     data-change="ccc"
                                     required
@@ -1819,6 +1901,7 @@ class CashierTransactionLimit extends Component {
                                   </label>
                                   <TextInput
                                     type="text"
+                                    autoFocus
                                     name="receiverIdentificationType"
                                     onFocus={inputFocus}
                                     onBlur={inputBlur}
@@ -1840,6 +1923,7 @@ class CashierTransactionLimit extends Component {
                                   </label>
                                   <TextInput
                                     type="text"
+                                    autoFocus
                                     name="receiverIdentificationNumber"
                                     onFocus={inputFocus}
                                     onBlur={inputBlur}
@@ -1859,6 +1943,7 @@ class CashierTransactionLimit extends Component {
                                   </label>
                                   <TextInput
                                     type="text"
+                                    autoFocus
                                     name="receiverIdentificationValidTill"
                                     onFocus={inputFocus}
                                     onBlur={inputBlur}
@@ -1883,6 +1968,7 @@ class CashierTransactionLimit extends Component {
                             // pattern="[0-9]"
                             name="receiverIdentificationAmount"
                             onFocus={inputFocus}
+                            autoFocus
                             onBlur={inputBlur}
                             value={this.state.receiverIdentificationAmount}
                             onChange={this.amountChange}
