@@ -213,6 +213,7 @@ class CashierTransactionLimit extends Component {
     this.setState({
       popupSendMoney: false,
       showSendMoneyOTP: false,
+      showConfirmPending:false,
       showClaimMoneyDetails: false,
       popupClaimMoney: false,
       showVerifyClaimMoney: false,
@@ -429,14 +430,38 @@ class CashierTransactionLimit extends Component {
       });
   };
 
+  cancelPending = event => {
+    event.preventDefault();
+     this.setState(
+        {
+          showConfirmPending: false,
+        }
+      );
+  };
+
+   confirmPending = event => {
+    event.preventDefault();
+     this.setState(
+        {
+          showConfirmPending: false,
+        }
+      );
+  };
+
   sendMoney = event => {
-    if (this.state.receiverIdentificationAmount > this.state.balance) {
-      this.setState({
-        notification: 'Amount has to be lesser than transaction limit',
-      });
-      this.success();
-    } else {
       event.preventDefault();
+    if (this.state.receiverIdentificationAmount > this.state.balance) {
+      // this.setState({
+      //   notification: 'Amount has to be lesser than transaction limit',
+      // });
+      // this.error();
+      this.setState(
+        {
+          showConfirmPending: true,
+        }
+      );
+
+    } else {
       this.setState(
         {
           showSendMoneyOTP: true,
@@ -1287,7 +1312,46 @@ class CashierTransactionLimit extends Component {
                   </p>
                 </form>
               </div>
-            ) : (
+            ) : 
+            
+              this.state.showConfirmPending ? (
+                <div>
+                <h1>Confirm </h1>
+               
+                  <p>&nbsp;</p>
+                  <FormGroup>
+                   <p style={{textAlign: 'center', fontSize: '20px'}}>You do not have transfer limit to execute this transaction. Do you want manager approval?</p>
+                  </FormGroup>
+                  <Row>
+                  <Col cW="49%" mR="2%">
+                  {this.state.verifySendMoneyOTPLoading ? (
+                    <Button
+                      filledBtn
+                      marginTop="50px"
+                      marginBottom="50px"
+                      disabled
+                    >
+                      <Loader />
+                    </Button>
+                  ) : (
+                    <Button filledBtn marginTop="50px" marginBottom="50px" onClick={this.confirmPending}>
+                      <span>Yes</span>
+                    </Button>
+                  )}
+                  </Col><Col cW="49%">
+                  <Button  style={{ backgroundColor: '#111111'}} filledBtn marginTop="50px" marginBottom="50px"  onClick={this.cancelPending}>
+                      <span>No</span>
+                    </Button>
+                  </Col>
+                  </Row>
+                  
+                  
+
+                 
+              </div>
+                )
+              :
+            (
               <div>
                 <h1>Send Money</h1>
                 <form action="" method="post" onSubmit={this.sendMoney}>

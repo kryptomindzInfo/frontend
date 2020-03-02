@@ -697,7 +697,12 @@ generateOTP = () => {
                                 <div className="labelSmallGrey">
                                   {b.status == 1 ? (
                                     <span>Completed</span>
-                                  ) : (
+                                  ) : 
+                                  b.status == 0 ? (
+                                    <span>Pending</span>
+                                  ) 
+                                  :
+                                  (
                                     <span className="red">Failed</span>
                                   )}
                                 </div>
