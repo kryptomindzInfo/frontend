@@ -966,7 +966,7 @@ export default class BranchDashboard extends Component {
                   <thead>
                     <tr>
                       <th>Cashier Name</th>
-                      <th>Cash in Hand</th>
+                      <th>Cash in Hand (XOF)</th>
                       {/* <th>Transaction limit ({CURRENCY})</th> */}
                       <th>Assigned to</th>
                       <th>Input amount</th>
@@ -984,7 +984,7 @@ export default class BranchDashboard extends Component {
                             <tr key={b._id}>
                               <td>{b.name}</td>
                               <td className="tac">
-                                {CURRENCY}{' '}
+                               
                                 {(
                                   b.opening_balance +
                                   (b.cash_received - b.cash_paid)
@@ -1018,8 +1018,8 @@ export default class BranchDashboard extends Component {
 
                               <td style = {{color: b.is_closed ? 'red' : 'green' }}>
                                    {b.is_closed  ? 
-                                      "Closed"
-                                   : "Opened" }
+                                      "Close"
+                                   : "Open" }
                               </td>
                               <td className="tac bold green">
                                 <span onClick={() => this.showPending(b._id)}> {b.pending_trans}</span>
