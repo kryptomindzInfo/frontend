@@ -89,9 +89,9 @@ class Welcome extends Component {
 
         <WelcomeWrap className="clr">
         <span style={{paddingRight: '7px'}}>{currDate}</span>
-
+        <Icon className="material-icons fl">notifications</Icon>
           <div className="dropdown fl">
-            <Icon className="material-icons fl">settings</Icon>
+           
             {/* <Name>
             <FormattedMessage {...messages.welcome} /> {name}
           </Name> */}

@@ -670,7 +670,7 @@ generateOTP = () => {
                     className="menuTabs"
                     onClick={() => this.showPending()}
                   >
-                    Payment Pending
+                    Transaction Pending
                   </div>
                 </div>
 

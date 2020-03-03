@@ -957,8 +957,8 @@ export default class BranchDashboard extends Component {
                   <i className="material-icons">playlist_add_check</i>
                 </div>
                 <div className="cardHeaderRight">
-                  <h3>Recent Activity</h3>
-                  <h5>E-wallet activity</h5>
+                  <h3>Cashier's Activity</h3>
+                  <h5>Daily activity</h5>
                 </div>
               </div>
               <div className="cardBody">
@@ -969,6 +969,9 @@ export default class BranchDashboard extends Component {
                       <th>Cash in Hand</th>
                       {/* <th>Transaction limit ({CURRENCY})</th> */}
                       <th>Assigned to</th>
+                      <th>Input amount</th>
+                      <th>Withdrawal</th>
+                      <th>Fee collected</th>
                       <th>Status</th>
                       <th>Pending Trans. Count</th>
                       
@@ -1003,6 +1006,16 @@ export default class BranchDashboard extends Component {
                                     )[0].name
                                   : ''}
                               </td>
+                              <td>
+                              {b.cash_received}
+                              </td>
+                              <td>
+                              {b.cash_paid}
+                              </td>
+                              <td>
+                              {b.fee_generated}
+                              </td>
+
                               <td style = {{color: b.is_closed ? 'red' : 'green' }}>
                                    {b.is_closed  ? 
                                       "Closed"
