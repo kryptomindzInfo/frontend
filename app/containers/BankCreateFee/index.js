@@ -90,7 +90,7 @@ export default class BankCreateFee extends Component {
       trans_type: '',
       active: 'Active',
       trans_from: 0,
-      trans_to: 100,
+      trans_to: 1000,
       transcount_from: '',
       transcount_to: '',
       fixed_amount: '',
