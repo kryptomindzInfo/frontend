@@ -1392,7 +1392,7 @@ console.log(items);
                
                   <p>&nbsp;</p>
                   <FormGroup>
-                   <p style={{textAlign: 'center', fontSize: '20px'}}>You do not have transfer limit to execute this transaction. Do you want manager approval?</p>
+                   <p style={{textAlign: 'center', fontSize: '20px'}}>You need Manager approval for execute this transaction. Do you want to send for approval ?</p>
                   </FormGroup>
                   <Row>
                   <Col cW="49%" mR="2%">
