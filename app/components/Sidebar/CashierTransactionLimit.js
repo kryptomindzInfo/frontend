@@ -46,6 +46,7 @@ class CashierTransactionLimit extends Component {
       withoutID: false,
       requireOTP: false,
       token,
+      proceed:false,
       livefee: 0,
       showSendMoneyOTP: false,
     };
@@ -86,16 +87,9 @@ console.log(items);
 
  this.setState(
         {
-  popupSendMoney: true,
-          showSendMoneyOTP: true,
-          otpOpt: 'cashierSendMoney',
-          otpEmail: email,
-          otpMobile: mobile,
-          otpTxt: 'Your OTP to add send money is ',
-        },
-        () => {
-          this.generateOTP();
-        },
+          proceed:true,
+          popupSendMoney: true
+        }
       );
 };
 
@@ -162,7 +156,7 @@ console.log(items);
 
   showPopupSendMoney = () => {
     if (this.state.balance > 0) {
-      this.setState({ popupSendMoney: true });
+      this.setState({ popupSendMoney: true, proceed: false });
     } else {
       this.setState(
         {
@@ -175,18 +169,18 @@ console.log(items);
     }
   };
   showClaimMoneyPopup = () => {
-    if (this.state.balance > 0) {
+    //if (this.state.cashInHand >= this.state.receiverIdentificationAmount) {
       this.setState({ popupClaimMoney: true });
-    } else {
-      this.setState(
-        {
-          notification: 'You have already used your limit for today',
-        },
-        () => {
-          this.error();
-        },
-      );
-    }
+    // } else {
+    //   this.setState(
+    //     {
+    //       notification: 'You do not have enough cash in hand to claim this amount',
+    //     },
+    //     () => {
+    //       this.error();
+    //     },
+    //   );
+    // }
   };
 
   toggleIdentificationBlock = () => {
@@ -240,6 +234,7 @@ console.log(items);
 
   closePopupSendMoney = () => {
     this.setState({
+      proceed:false,
       popupSendMoney: false,
       showSendMoneyOTP: false,
       showConfirmPending:false,
@@ -512,7 +507,7 @@ console.log(items);
 
   sendMoney = event => {
       event.preventDefault();
-    if (this.state.receiverIdentificationAmount > this.state.balance) {
+    if (!this.state.proceed && this.state.receiverIdentificationAmount > this.state.balance) {
       // this.setState({
       //   notification: 'Amount has to be lesser than transaction limit',
       // });
@@ -541,7 +536,8 @@ console.log(items);
 
   claimMoney = event => {
     event.preventDefault();
-    this.setState(
+     if (this.state.cashInHand >= this.state.receiverIdentificationAmount) {
+         this.setState(
       {
         showVerifyClaimMoney: true,
         otpOpt: 'cashierClaimMoney',
@@ -553,6 +549,17 @@ console.log(items);
         this.generateOTP();
       },
     );
+    } else {
+      this.setState(
+        {
+          notification: 'You do not have enough cash in hand to claim this amount',
+        },
+        () => {
+          this.error();
+        },
+      );
+    }
+ 
   };
 
   verifyClaimMoney = event => {
@@ -726,6 +733,7 @@ console.log(items);
               {
                 balance: Number(res.data.limit),
                 closingTime: res.data.closingTime,
+                cashInHand: res.data.cashInHand,
                 transactionStarted: res.data.transactionStarted,
               },
               () => {
@@ -1336,7 +1344,8 @@ console.log(items);
                   <p>&nbsp;</p>
                   <FormGroup>
                     <label>OTP*</label>
-                    <TextInput
+                    
+                      <TextInput
                       type="text"
                       name="otp"
                       onFocus={inputFocus}
@@ -1345,6 +1354,7 @@ console.log(items);
                       onChange={this.handleInputChange}
                       required
                     />
+                   
                   </FormGroup>
                   {this.state.verifySendMoneyOTPLoading ? (
                     <Button
@@ -1417,7 +1427,261 @@ console.log(items);
               <div>
                 <h1>Send Money</h1>
                 <form action="" method="post" onSubmit={this.sendMoney}>
-                  <Container>
+                {
+                  this.state.proceed ?
+                  <div>
+      
+                    <Container>
+                      <Row vAlign="flex-start">
+                        <Col sm="12" md="4">
+                          <div
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                              padding: '13px 0px',
+                              color: '#417505',
+                            }}
+                          >
+                            Sender's Info
+                          </div>
+                          <Row>
+                            <Col className="popInfoLeft">Mobile Number</Col>
+                            <Col className="popInfoRight">
+                              {this.state.mobile}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Given Name</Col>
+                            <Col className="popInfoRight">
+                              {this.state.givenname}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Family Name</Col>
+                            <Col className="popInfoRight">
+                              {this.state.familyname}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Address</Col>
+                            <Col className="popInfoRight">
+                              {this.state.address1}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">State</Col>
+                            <Col className="popInfoRight">
+                              {this.state.state}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Zip Code</Col>
+                            <Col className="popInfoRight">{this.state.zip}</Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Country</Col>
+                            <Col className="popInfoRight">
+                              {this.state.country}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Email ID</Col>
+                            <Col className="popInfoRight">
+                              {this.state.email}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Notes</Col>
+                            <Col className="popInfoRight">
+                              {this.state.note}
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col sm="12" md="4">
+                          <div
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                              padding: '13px 0px',
+                              color: '#417505',
+                            }}
+                          >
+                            Receiver's Info
+                          </div>
+                          <Row>
+                            <Col className="popInfoLeft">Mobile Number</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverMobile}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Given Name</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverGivenName}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Family Name</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverFamilyName}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Country</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverCountry}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Email ID</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverEmail}
+                            </Col>
+                          </Row>
+                          <Row /> <Row /> <Row />
+                        </Col>
+                        <Col sm="12" md="4">
+                          <div
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                              padding: '13px 0px',
+                              color: '#417505',
+                            }}
+                          >
+                            &nbsp;
+                          </div>
+                          <Row>
+                            <Col className="popInfoLeft">Amount</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverIdentificationAmount}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Date</Col>
+                            <Col className="popInfoRight">
+                              {this.state.dateClaimMoney}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Transaction ID</Col>
+                            <Col className="popInfoRight">
+                              {this.state.transferCode}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">ID required</Col>
+                            <Col className="popInfoRight">
+                              {this.state.withoutID ? 'No' : 'Yes'}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">OTP required</Col>
+                            <Col className="popInfoRight">
+                              {this.state.requireOTP ? 'Yes' : 'No'}
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                      <Row vAlign="flex-start">
+                        <Col>
+                          <div
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                              padding: '13px 0px',
+                            }}
+                          >
+                            Sender's Identification
+                          </div>
+                          <Row>
+                            <Col className="popInfoLeft">Country</Col>
+                            <Col className="popInfoRight">
+                              {this.state.senderIdentificationCountry}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Type</Col>
+                            <Col className="popInfoRight">
+                              {this.state.senderIdentificationType}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Number</Col>
+                            <Col className="popInfoRight">
+                              {this.state.senderIdentificationNumber}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Valid till</Col>
+                            <Col className="popInfoRight">
+                              {this.state.senderIdentificationValidTill}
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col>
+                          <div
+                            style={{
+                              fontSize: '24px',
+                              fontWeight: 'bold',
+                              padding: '13px 0px',
+                            }}
+                          >
+                            Receiver's Identification
+                          </div>
+                          <Row>
+                            <Col className="popInfoLeft">Country</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverIdentificationCountry}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Type</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverIdentificationType}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Number</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverIdentificationNumber}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Valid till</Col>
+                            <Col className="popInfoRight">
+                              {this.state.receiverIdentificationValidTill}
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col>
+                  
+                          
+                          {this.state.claimMoneyLoading ? (
+                            <Button filledBtn marginTop="20px" disabled>
+                              <Loader />
+                            </Button>
+                          ) : (
+                            <Button filledBtn marginTop="20px">
+                              <span>
+                                Proceed
+                                {/* <FormattedMessage {...messages.addbank} /> */}
+                              </span>
+                            </Button>
+                          )}
+
+                          <br />
+                          {/* <p className="note">
+                      <span style={{ color: 'red' }}>* </span>
+                      Total fee $200 will be charged
+                    </p> */}
+                        </Col>
+                      </Row>
+                    </Container>
+                    </div>
+                  :
+                  <div>
+                   <Container>
                     <Row>
                       <Col sm="12" md="5" cW="49%">
                         <div
@@ -1434,6 +1698,7 @@ console.log(items);
                         <Row>
                           <Col cW="20%" mR="2%">
                             <FormGroup>
+
                               <TextInput
                                 type="text"
                                 name="ccode"
@@ -1473,7 +1738,6 @@ console.log(items);
                               <label>
                                 Given Name
                                 <span style={{ color: 'red' }}>*</span>
-                                {/* <FormattedMessage {...messages.popup1} />* */}
                               </label>
                               <TextInput
                                 type="text"
@@ -1986,6 +2250,9 @@ console.log(items);
                       </Col>
                     </Row>
                   </Container>
+                  </div>
+                }
+                 
                 </form>
               </div>
             )}

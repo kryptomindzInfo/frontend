@@ -50,8 +50,8 @@ const logo = localStorage.getItem('bankLogo');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
 //enable the following line and disable the next line to test for tomorrow
-//var today =new Date(new Date().setDate(new Date().getDate()+1));
-var today =new Date();
+var today =new Date(new Date().setDate(new Date().getDate()+1));
+//var today =new Date();
 today.setHours(0, 0, 0, 0);
 today = today.getTime();
 console.log(today);
@@ -505,7 +505,7 @@ generateOTP = () => {
       (tempDate.getMonth() + 1) +
       '-' +
       tempDate.getFullYear()
-    const currDate = '' + date;
+    const currDate = this.formatDate(tempDate);
     return (
       <Wrapper from="branch">
         <Helmet>
