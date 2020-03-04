@@ -12,6 +12,7 @@ margin-top: ${props => props.marginTop ? props.marginTop : '0' };
     background-color: ${props => props.theme.accent};
     color: #fff;
     position:relative;
+    width: 12%;
 }
 > tbody > tr > td{
     font-size: 16px;
