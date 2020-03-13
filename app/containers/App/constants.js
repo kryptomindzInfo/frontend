@@ -18,9 +18,9 @@ export const DEFAULT_LOCALE = 'en';
 //export const CONTRACT_URL = 'http://34.70.46.65:8080/ipfs/';
 
 // production config k8s
-export const API_URL = 'http://91d90ac373dc.sn.mynetname.net/api';
-export const STATIC_URL = 'http://91d90ac373dc.sn.mynetname.net/uploads/';
-export const CONTRACT_URL = 'http://91d90ac373dc.sn.mynetname.net/ipfs/';
+export const API_URL = 'http://91d90ac373dc.sn.mynetname.net:2019/api';
+export const STATIC_URL = 'http://91d90ac373dc.sn.mynetname.net:2019/uploads/';
+export const CONTRACT_URL = 'http://91d90ac373dc.sn.mynetname.net:2019/ipfs/';
 // end production config
 
 export const CURRENCY = 'XOF';
