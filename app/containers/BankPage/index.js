@@ -33,7 +33,7 @@ import Col from 'components/Col';
 import A from 'components/A';
 // import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
 
-import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
+import { API_URL, STATIC_URL, CONTRACT_URL, SERVER_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -124,7 +124,7 @@ export default class BankPage extends Component {
   };
 
   getData = () => {
-    fetch(`http://localhost:4000/restaurants`)
+    fetch(`http://${SERVER_URL}:4000/restaurants`)
       .then(response => response.json())
       .then(data => {
         const { query } = this.state;
