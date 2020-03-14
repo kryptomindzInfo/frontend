@@ -124,7 +124,7 @@ export default class BankPage extends Component {
   };
 
   getData = () => {
-    fetch(`http://${SERVER_URL}:4000/restaurants`)
+    fetch(`http://${SERVER_URL}/restaurants`)
       .then(response => response.json())
       .then(data => {
         const { query } = this.state;
