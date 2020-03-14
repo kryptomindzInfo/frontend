@@ -82,21 +82,22 @@ import 'react-toastify/dist/ReactToastify.css';
 //import FeeList from '../FeeList';
 // import { CashierSendMoney } from '../CashierSendMoney';
 
+let savedTheme = localStorage.getItem("theme");
+savedTheme = (savedTheme) ? JSON.parse(savedTheme) : null;
 
 const appTheme = {
-  primary: '#417505',
-  // primary: "#ff0000",
-  // secondary: "#ff0000",
-  secondary: '#6cac69',
-  accent: '#f5a623',
+  primary: (savedTheme && savedTheme.primary) ? savedTheme.primary : '#417505',
+  secondary: (savedTheme && savedTheme.secondary) ? savedTheme.secondary : '#6cac69',
+  accent: (savedTheme && savedTheme.accent) ? savedTheme.accent : '#f5a623',
   danger: '#f52828',
-  light: '#9ea0a5',
+  light: (savedTheme && savedTheme.light) ? savedTheme.light : '#9ea0a5',
   greyLine: '#666565 ',
   vGradient: 'linear-gradient(to bottom, #6cac6a, #102910)',
-  hGradient: 'linear-gradient(to right, #6cac6a 1%, #102910)',
+  hGradient: (savedTheme && savedTheme.hGradient) ? savedTheme.hGradient: 'linear-gradient(to right, #6cac6a 1%, #102910)',
   font: 'Roboto',
   fontSize: '14px',
 };
+
 toast.configure();
 
 export default function App(props) {
@@ -138,7 +139,7 @@ export default function App(props) {
             component={BankCreationConfirmationPage}
           />
 
-          <Route exact path="/bank" component={BankLoginPage} />
+          <Route exact path="/bank" render={(props) => <BankLoginPage {...props} setTheme={setTheme} appTheme={theme} />}  />
           <Route exact path="/bank/setup" component={BankSetupPage} />
           <Route exact path="/bank/activate" component={BankActivate} />
           <Route
@@ -160,7 +161,7 @@ export default function App(props) {
           />
           <BankRoute path="/bank/users" component={BankUser} />
           <BankRoute path="/bank/create-fee" component={BankCreateFee} />
-          <BankRoute
+          {/*<BankRoute
             path="/bank/theme"
             component={BankTheme}
             setTheme={setTheme}
@@ -174,7 +175,7 @@ export default function App(props) {
             exact
             path="/bank/cashier/:branch?/:cashier?"
             component={BankCashierInfo}
-          />
+          />*/}
           <BankRoute exact path="/bank/create-fee" component={BankCreateFee} />
           <BankRoute exact path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
           <BankRoute exact path="/bank/operationalHistory" component={BankOperationalHistory} />

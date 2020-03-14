@@ -12,16 +12,16 @@ import { FormattedMessage } from 'react-intl';
 import { compose } from 'redux';
 import { SwatchesPicker } from 'react-color';
 import Color from 'color';
-
+import axios from 'axios';
 import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
 import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 import Main from 'components/Main';
 import Card from 'components/Card';
 import { Container as Con, Row, Col } from 'react-grid-system';
-
+import { API_URL } from '../App/constants';
 import messages from './messages';
-
+const token = localStorage.getItem('bankLogged');
 export function BankTheme(props) {
   // useEffect(() => {
   //   console.log(props);
@@ -29,6 +29,20 @@ export function BankTheme(props) {
   //     props.setTheme({ ...props.appTheme, primary: '#ff0000' });
   //   }, 3000);
   // }, []);
+  const saveTheme = (type, color) => {
+     axios
+        .post(`${API_URL}/bankThemeUpdate`, { token, type, color })
+        .then(res => {
+            if (res.status == 200) {
+              console.log(res.data);
+            }
+
+        })
+        .catch(err => {
+          console.log(err);
+        });
+  };
+
   return (
     <div>
       <Helmet>
@@ -58,7 +72,7 @@ export function BankTheme(props) {
                           color.hex
                         })`,
                       });
-
+                      saveTheme('primary', color.hex);
                       console.log(lightColor);
                     }}
                   />
@@ -72,6 +86,7 @@ export function BankTheme(props) {
                         ...props.appTheme,
                         secondary: color.hex,
                       });
+                      saveTheme('secondary', color.hex);
                     }}
                   />
                 </Col>
@@ -86,6 +101,7 @@ export function BankTheme(props) {
                         ...props.appTheme,
                         accent: color.hex,
                       });
+                      saveTheme('accent', color.hex);
                     }}
                   />
                 </Col>
@@ -98,6 +114,7 @@ export function BankTheme(props) {
                         ...props.appTheme,
                         light: color.hex,
                       });
+                      saveTheme('light', color.hex);
                     }}
                   />
                 </Col>

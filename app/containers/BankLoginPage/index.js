@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-
+import Color from 'color';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
@@ -78,7 +78,24 @@ export default class BankLoginPage extends Component {
         .post(`${API_URL}/bankLogin`, this.state)
         .then(res => {
           if (res.status == 200) {
-            console.log(res.data.token);
+            if(res.data.theme && res.data.theme != null){
+              console.log(this.props);
+               let theme = JSON.parse(res.data.theme);
+               let upd = {...this.props.appTheme};
+               for (var t in theme) {
+                 upd[t] = theme[t];
+                 if(t == 'primary'){
+                   const lightColor = Color(theme[t]);
+                   upd['hGradient']=`linear-gradient(to right, ${lightColor} 1%, ${
+                          theme[t]
+                        })`;
+                 }
+                 }
+                 console.log(upd);
+                  this.props.setTheme(upd);
+
+                 localStorage.setItem('theme', JSON.stringify(upd));
+               }
             localStorage.setItem('bankLogged', res.data.token);
             localStorage.setItem('bankName', res.data.name);
             localStorage.setItem('bankUserName', res.data.username);
