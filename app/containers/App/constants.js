@@ -20,7 +20,7 @@ export const DEFAULT_LOCALE = 'en';
 // production config k8s
 export const SERVER_URL = '91d90ac373dc.sn.mynetname.net:2019';
 export const API_URL = 'http://91d90ac373dc.sn.mynetname.net:2019/api';
-export const STATIC_URL = 'http://91d90ac373dc.sn.mynetname.net:2019/uploads';
+export const STATIC_URL = 'http://91d90ac373dc.sn.mynetname.net:2019/uploads/';
 export const CONTRACT_URL = 'http://91d90ac373dc.sn.mynetname.net:2019/ipfs/';
 // end production config
 
