@@ -291,7 +291,7 @@ export default class BankPage extends Component {
     console.log(e);
     var dis = this;
     axios
-      .post(`${API_URL}/bankStatus`, {
+      .post(`${API_URL}/bank/bankStatus`, {
         token,
         bank_id: e,
         status: s,
@@ -360,7 +360,7 @@ export default class BankPage extends Component {
     });
     event.preventDefault();
     axios
-      .post(`${API_URL}/addBank`, {
+      .post(`${API_URL}/bank/addBank`, {
         name: this.state.name,
         address1: this.state.address1,
         state: this.state.state,
@@ -411,7 +411,7 @@ export default class BankPage extends Component {
     });
     event.preventDefault();
     axios
-      .post(`${API_URL}/editBank`, {
+      .post(`${API_URL}/bank/editBank`, {
         name: this.state.name,
         address1: this.state.address1,
         state: this.state.state,
@@ -518,7 +518,7 @@ export default class BankPage extends Component {
 
   getBanks = () => {
     axios
-      .post(`${API_URL}/getBanks`, { token })
+      .post(`${API_URL}/index2/getBanks`, { token })
       .then(res => {
         if (res.status == 200) {
           this.setState({ loading: false, banks: res.data.banks });

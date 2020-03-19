@@ -118,7 +118,7 @@ export default class SetupPage extends Component {
       this.error('Passwords do not match');
     } else {
       axios
-        .post(`${API_URL}/setupUpdate`, this.state)
+        .post(`${API_URL}/infra/setupUpdate`, this.state)
         .then(res => {
           if (res.status == 200) {
             if (res.data.error) {
