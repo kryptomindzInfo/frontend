@@ -787,7 +787,6 @@ export default class BankPage extends Component {
                     <TextInput
                       type="text"
                       name="name"
-                      pattern=".{3,12}"
                       title="Minimum 3 characters"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
