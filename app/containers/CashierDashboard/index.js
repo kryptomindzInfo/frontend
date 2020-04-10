@@ -35,6 +35,7 @@ import Button from 'components/Button';
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
+import FormDialog from '../../components/FormDialog';
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -127,7 +128,7 @@ export default class CashierDashboard extends Component {
     this.setState({
       showPending: true
     });
-    
+
   };
 
   openCashier = e => {
@@ -213,7 +214,7 @@ generateOTP = () => {
   };
   verifyOpeningOTP = event => {
     event.preventDefault();
-  
+
     this.setState({
       verifyEditOTPLoading: true,
     });
@@ -361,7 +362,7 @@ generateOTP = () => {
           let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
           var closingTime = res.data.closingTime;
-          
+
           if(closingTime != undefined && closingTime != null){
              closingTime  = new Date(closingTime);
                           closingTime.setHours(0, 0, 0, 0);
@@ -474,7 +475,7 @@ generateOTP = () => {
         target.parentElement.querySelector('label').classList.remove('focused');
       }
     }
-    
+
     const { loading, redirect } = this.state;
     if (loading) {
       return <Loader fullPage />;
@@ -521,8 +522,9 @@ generateOTP = () => {
         <Container verticalMargin>
           <SidebarCashier refresh={this.getHistory.bind(this)} branchName={this.props.match.params.bank} ref={this.child} />
           <Main>
+            <FormDialog/>
             <div className="clr">
-              
+
             <Card
                 horizontalMargin="7px"
                 cardWidth="151px"
@@ -534,13 +536,13 @@ generateOTP = () => {
               >
                 <div className="cardValue">
                 {
-                  this.state.tomorrow ?  
+                  this.state.tomorrow ?
                   <Button onClick={this.openCashier}>Open Cashier</Button>
-                  : <Button disabled> Counter is Opened</Button> 
+                  : <Button disabled> Counter is Opened</Button>
                 }
                 </div>
               </Card>
-              
+
               <Card
                 horizontalMargin="7px"
                 cardWidth="151px"
@@ -684,7 +686,7 @@ generateOTP = () => {
                   this.state.showPending ?
                  <tbody>
                 {
-                  
+
                       this.state.pending && this.state.pending.length > 0
                       ? this.state.pending.map(function(b) {
 
@@ -697,28 +699,28 @@ generateOTP = () => {
                                 <div
                                   className="labelBlue"
                                 >
-                                  
+
                                     <span>
                                       Cash sent from{' '}
                                       {b.sender_name}{' '}
                                       to{' '}
                                       {b.receiver_name}
                                     </span>
-                                  
+
                                 </div>
                                 <div className="labelSmallGrey">
-                                  {b.status == 1 ? 
+                                  {b.status == 1 ?
                                     <div>
                                     <span>Approved</span>
                                     <br />
                                     <Button style={{marginTop: '10px'}} onClick={() => dis.proceed(JSON.parse(b.transaction_details))}>Proceed</Button>
                                     </div>
-                                  : 
-                                  b.status == 0 ? 
-                                    <span>Pending</span>
-                                  
                                   :
-                                 
+                                  b.status == 0 ?
+                                    <span>Pending</span>
+
+                                  :
+
                                     <span className="red">Rejected</span>
                                   }
                                 </div>
@@ -738,7 +740,7 @@ generateOTP = () => {
 
                   <tbody>
                     {
-                      
+
                       this.state.history && this.state.history.length > 0
                       ? this.state.history.map(function(b) {
                           // var sinfo = b.trans_type == "CR" ? b.sender_info ? null;
@@ -779,10 +781,10 @@ generateOTP = () => {
                                 <div className="labelSmallGrey">
                                   {b.status == 1 ? (
                                     <span>Completed</span>
-                                  ) : 
+                                  ) :
                                   b.status == 0 ? (
                                     <span>Pending</span>
-                                  ) 
+                                  )
                                   :
                                   (
                                     <span className="red">Failed</span>
@@ -921,10 +923,10 @@ generateOTP = () => {
               <div>
                 <h1>Open Cashier</h1>
                 <form action="" method="post" onSubmit={this.addOpeningBalance}>
-                 
+
 
                 <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
-                    
+
                     <Col cW="20%" textAlign="right">
                       <strong>Opening for the day</strong>
                     </Col>
@@ -936,7 +938,7 @@ generateOTP = () => {
                       currDate
                     }
                         {/* {Date.now().toISOString()} */}
-                      
+
                     </Col>
                   </Row>
 
@@ -959,20 +961,20 @@ generateOTP = () => {
                       <strong></strong>
                     </Col>
                     <Col cW="20%" textAlign="center">
-                      
+
                     </Col>
                     <Col cW="35%">
-                      
+
                     </Col>
                   </Row>
-                 
-                  
+
+
                   <div style={{
                     marginTop: '20px',
                     fontSize: '18px',
                     textAlign: 'center'
                     }}>
-                  <input type="checkbox" 
+                  <input type="checkbox"
                   name="agree"
                   value={this.state.agree}
                    checked={this.state.agree}
@@ -980,11 +982,11 @@ generateOTP = () => {
                               onClick={this.handleCheckbox} />  Agree to the opening balance?
                   </div>
 
-           
+
                     <Button filledBtn marginTop="50px">
                       <span>Open</span>
                     </Button>
-   
+
                 </form>
               </div>
             )}
