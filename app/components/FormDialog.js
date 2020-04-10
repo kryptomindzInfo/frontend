@@ -268,7 +268,10 @@ export default function FormDialog() {
                     throw res.data.error;
                   } else {
                     setUser(res.data.data);
-                    localStorage.setItem('editableUser', JSON.stringify(user));
+                    localStorage.setItem(
+                      'editableUser',
+                      JSON.stringify(res.data.data),
+                    );
                   }
                 })
                 .catch(error => {
@@ -401,6 +404,9 @@ export default function FormDialog() {
                     cashiertoken,
                     ...values,
                     docs_hash: user.docs_hash,
+                    bank: user.bank,
+                    password: user.password,
+                    otp: user.otp,
                   },
                 )
                 .then(res => {
@@ -409,9 +415,9 @@ export default function FormDialog() {
                   } else {
                     setOpen(false);
                     const { mobile } = JSON.parse(
-                      localStorage.getItem('userEditable'),
+                      localStorage.getItem('editableUser'),
                     );
-                    axios
+                    return axios
                       .post(`${API_URL}/cashier/activateUser`, {
                         token: cashiertoken,
                         mobile,
@@ -427,7 +433,6 @@ export default function FormDialog() {
                         console.log(error);
                         setUser(null);
                       });
-                    setUser(null);
                   }
                 })
                 .catch(error => {
