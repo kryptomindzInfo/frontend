@@ -11,7 +11,9 @@ import * as Yup from 'yup';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import axios from 'axios';
 import Paper from '@material-ui/core/Paper';
-import { API_URL } from '../containers/App/constants';
+import PdfIcon from '../images/pdf_icon.png';
+import DocumentIcon from '../images/document_icon.png';
+import { API_URL, CONTRACT_URL } from '../containers/App/constants';
 
 const dialogTilteStyles = theme => ({
   root: {
@@ -115,6 +117,9 @@ const dialogContentStyles = makeStyles(() => ({
   dialogPaper: {
     height: '500px',
     padding: '2%',
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
     margin: '2%',
     width: '100%',
   },
@@ -145,6 +150,22 @@ const dialogContentStyles = makeStyles(() => ({
     marginLeft: '80px',
     marginBottom: '10px',
   },
+  documentCard: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '178px',
+    height: '150px',
+    borderRadius: '5px',
+    justifyContent: 'center',
+    marginLeft: '20px',
+    marginTop: '20px',
+    alignItems: 'center',
+    border: 'solid 1px #e9eff4',
+    cursor: 'pointer',
+    '&:hover': {
+      border: 'solid 1px #4da1ff',
+    },
+  },
 }));
 
 export default function FormDialog() {
@@ -160,6 +181,57 @@ export default function FormDialog() {
     setOpen(false);
     setUser(null);
     localStorage.removeItem('editableUser');
+  };
+
+  const handleDocumentUploadChange = e => {
+    if (e.target.files !== undefined) {
+      Object.values(e.target.files).map(file => {
+        fileUpload(file, e.target.getAttribute('data-key'));
+      });
+    }
+  };
+  const triggerBrowse = inp => {
+    const input = document.getElementById(inp);
+    input.click();
+  };
+
+  const fileUpload = (file, key) => {
+    const doc = {};
+    doc.name = file.name;
+    doc.type = file.type;
+    const formData = new FormData();
+    formData.append('file', file);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    };
+    let method = 'fileUpload';
+
+    if (key === 'contract') {
+      method = 'ipfsUpload';
+    }
+
+    const token = localStorage.getItem('cashierLogged');
+
+    axios
+      .post(`${API_URL}/${method}?token=${token}`, formData, config)
+      .then(res => {
+        if (res.status === 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            doc.hash = res.data.name;
+            user.docs_hash.push(doc);
+            setUser(user);
+          }
+        } else {
+          throw res.data.error;
+        }
+      })
+      .catch(err => {
+        console.log('An error occurred while uploading document');
+      });
   };
 
   return (
@@ -313,6 +385,9 @@ export default function FormDialog() {
               id_type: '',
               id_number: '',
               valid_till: '',
+              city: '',
+              dob: '',
+              gender: '',
               sending_amount: '',
             }}
             onSubmit={values => {
@@ -325,12 +400,14 @@ export default function FormDialog() {
                   {
                     cashiertoken,
                     ...values,
+                    docs_hash: user.docs_hash,
                   },
                 )
                 .then(res => {
                   if (res.data.error) {
                     throw res.data.error;
                   } else {
+                    setOpen(false);
                     const { mobile } = JSON.parse(
                       localStorage.getItem('userEditable'),
                     );
@@ -797,9 +874,18 @@ export default function FormDialog() {
                           disableRipple
                           variant="contained"
                           color="primary"
-                          onClick={{}}
+                          onClick={() => triggerBrowse('contract')}
                           className={classes.dialogButton}
                         >
+                          <input
+                            id="contract"
+                            onChange={e => handleDocumentUploadChange(e)}
+                            data-key="contract"
+                            multiple
+                            style={{ width: '0px', visibility: 'hidden' }}
+                            accept=".pdf,.docs"
+                            type="file"
+                          />
                           Upload Documents
                         </Button>
 
@@ -807,9 +893,36 @@ export default function FormDialog() {
                           variant="outlined"
                           className={classes.dialogPaper}
                         >
-                          <Typography variant="headline">
-                            User Documents
-                          </Typography>
+                          {user.docs_hash.length > 0 ? (
+                            user.docs_hash.map((value, index) => (
+                              <a
+                                target="_blank"
+                                href={`${CONTRACT_URL}/${value.hash}`}
+                              >
+                                <div
+                                  key={index}
+                                  className={classes.documentCard}
+                                >
+                                  <img
+                                    width={60}
+                                    height={70}
+                                    src={
+                                      value.type === 'application/pdf'
+                                        ? PdfIcon
+                                        : DocumentIcon
+                                    }
+                                  />
+                                  <span style={{ marginTop: '20px' }}>
+                                    {value.name}
+                                  </span>
+                                </div>
+                              </a>
+                            ))
+                          ) : (
+                            <Typography variant="headline">
+                              No documents uploaded
+                            </Typography>
+                          )}
                         </Paper>
                         <Button
                           type="submit"
