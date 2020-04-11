@@ -401,12 +401,9 @@ export default function FormDialog() {
                     ? `${API_URL}/cashier/editUser`
                     : `${API_URL}/cashier/createUser`,
                   {
-                    cashiertoken,
+                    token: cashiertoken,
                     ...values,
                     docs_hash: user.docs_hash,
-                    bank: user.bank,
-                    password: user.password,
-                    otp: user.otp,
                   },
                 )
                 .then(res => {
