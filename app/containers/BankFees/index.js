@@ -5,20 +5,10 @@
  *
  */
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
 
-import { Grid, Typography, TextField } from '@material-ui/core';
-
-import MaterialTable from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-
-import MaterialButton from '@material-ui/core/Button';
-import classNames from 'classnames';
+import { withStyles } from '@material-ui/core';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import Wrapper from 'components/Wrapper';
@@ -37,11 +27,11 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import FormGroup from 'components/FormGroup';
 
-import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
+import { API_URL, CURRENCY } from '../App/constants';
 import RevenueRuleDistubutionPage from './RevenueRuleDistributionPage';
 
 import 'react-toastify/dist/ReactToastify.css';
-import { withStyles } from '@material-ui/core';
+
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -546,12 +536,6 @@ export class BankFees extends Component {
       }
     }
 
-    // function showInfraFeeView() {
-    //   console.log('working!!')
-    // }
-
-    // function showBankFeeView() {}
-
     const { loading, redirect } = this.state;
     if (loading) {
       return <Loader fullPage />;
@@ -576,146 +560,6 @@ export class BankFees extends Component {
               }`,
             }}
           >
-            {/* <ActionBar
-              marginBottom="33px"
-              inputWidth="calc(100% - 241px)"
-              className="clr"
-            >
-              <div className="clr">
-                <div
-                  className={`${
-                    this.state.isInfraFeeVisible ? 'ActiveTab' : 'InactiveTab'
-                  }`}
-                  onClick={this.showInfraFeeView}
-                >
-                  Bank and Infra
-                </div>
-                <div
-                  className={`${
-                    this.state.isInfraFeeVisible ? 'InactiveTab' : 'ActiveTab'
-                  }`}
-                  onClick={this.showBankFeeView}
-                >
-                  Bank and Users
-                </div>
-              </div>
-            </ActionBar> */}
-            <Card
-              bigPadding
-              style={{
-                display: `${this.state.isInfraFeeVisible ? 'block' : 'none'}`,
-              }}
-            >
-              <div className="cardHeader">
-                <div className="cardHeaderLeft">
-                  <i className="material-icons">supervised_user_circle</i>
-                </div>
-                <div className="cardHeaderRight">
-                  <h3>Revenue Sharing Rules</h3>
-                  <h5>Fees created by the infra</h5>
-                </div>
-              </div>
-              <div className="cardBody">
-                <Table marginTop="34px" smallTd>
-                  <thead>
-                    <tr>
-                      <th>Name</th>
-                      <th>Transaction Type</th>
-                      <th>Ranges</th>
-                      <th />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.state.rules && this.state.rules.length > 0
-                      ? this.state.rules.map((b, i) => {
-                          var r1 = JSON.parse(b.editedRanges);
-                          var r = r1.ranges;
-                          return (
-                            <tr key={b._id}>
-                              <td>
-                                {b.edit_status == 0 ? (
-                                  <span>{r1.name}</span>
-                                ) : (
-                                  <span>{b.name}</span>
-                                )}
-                              </td>
-                              <td className="tac">
-                                {b.edit_status == 0 ? (
-                                  <span>{r1.trans_type}</span>
-                                ) : (
-                                  <span>{b.trans_type}</span>
-                                )}
-                              </td>
-
-                              <td>
-                                {r.map(v => {
-                                  return (
-                                    <div>
-                                      Count:{' '}
-                                      <span className="green">
-                                        {v.trans_from} - {v.trans_to}
-                                      </span>
-                                      , Fixed:{' '}
-                                      <span className="green">
-                                        {CURRENCY + ' ' + v.fixed_amount}
-                                      </span>
-                                      , Percentage:{' '}
-                                      <span className="green">
-                                        {v.percentage}
-                                      </span>
-                                    </div>
-                                  );
-                                })}
-                              </td>
-                              <td className="tac bold">
-                                {b.active == 'Inactive' ? (
-                                  <span className="absoluteMiddleRight primary popMenuTrigger">
-                                    <i className="material-icons ">block</i>
-                                  </span>
-                                ) : (
-                                  <Button
-                                    className="addBankButton"
-                                    onClick={() =>
-                                      dis.goBankEdit(
-                                        // this.state.bankRules[i]._id,
-                                        b._id,
-                                      )
-                                    }
-                                  >
-                                    {b.edit_status == 0
-                                      ? 'Pending'
-                                      : b.edit_status == 2
-                                      ? 'Declined'
-                                      : 'Approved'}
-                                  </Button>
-                                )
-
-                                // b.edit_status != 0 ? (
-                                //   b.edit_status == 1 ? (
-                                //     // <a className="text-light">approved</a>
-                                //     <button onClick={() => dis.goBankEdit(this.state.bankRules[i]._id, b._id)}>edit</button>
-                                //   ) : (
-                                //     <a className="text-accent">declined</a>
-                                //   )
-                                // ) : (
-                                //   <Button
-                                //     onClick={() => dis.showMiniPopUp(b, r)}
-                                //     className="addBankButton"
-                                //   >
-                                //     <span>Approvec</span>
-                                //   </Button>
-                                //   // <span>Peding approval</span>
-                                // )
-                                }
-                              </td>
-                            </tr>
-                          );
-                        })
-                      : null}
-                  </tbody>
-                </Table>
-              </div>
-            </Card>
             <div
               style={{
                 display: `${this.state.isInfraFeeVisible ? 'none' : 'block'}`,
@@ -756,29 +600,20 @@ export class BankFees extends Component {
                       <tr>
                         <th>Name</th>
                         <th style={{ width: '10rem' }}>Transaction Type</th>
-                        {/* <th>Transaction Range</th> */}
                         <th>Transaction Range</th>
                         <th />
                         <th />
                       </tr>
                     </thead>
                     <tbody>
-                      {this.state.bankRules && this.state.bankRules.length > 0
-                        ? this.state.bankRules.map((b, i) => {
-                            var r = JSON.parse(b.editedRanges);
+                      {this.state.rules && this.state.rules.length > 0
+                        ? this.state.rules.map((b, i) => {
+                            var r = b.ranges;
 
                             return (
                               <tr key={b._id}>
                                 <td>{b.name}</td>
                                 <td className="tac">{b.trans_type}</td>
-                                {/* <td className="tac">
-                                  {CURRENCY}{' '}
-                                  <span className="green">{b.trans_from}</span>{' '}
-                                  - {CURRENCY}{' '}
-                                  <span className="green">{b.trans_to}</span>{' '}
-                                </td> */}
-                                {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
-                          <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
                                 <td>
                                   {r.map(v => {
                                     return (

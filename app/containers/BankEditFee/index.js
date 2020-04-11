@@ -11,32 +11,24 @@ import { Helmet } from 'react-helmet';
 
 import { toast } from 'react-toastify';
 
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
-
 import Wrapper from 'components/Wrapper';
-import TopBar from 'components/Header/TopBar';
 import Container from 'components/Container';
 import A from 'components/A';
-import Nav from 'components/Header/Nav';
-import Welcome from 'components/Header/Welcome';
-import SidebarTwo from 'components/Sidebar/SidebarTwo';
 import Main from 'components/Main';
-import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
 import Button from 'components/Button';
-import Table from 'components/Table';
-import Popup from 'components/Popup';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import SelectInput from 'components/SelectInput';
-import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import styled from 'styled-components';
 import Loader from 'components/Loader';
 import BankHeader from 'components/Header/BankHeader';
 import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
+import { API_URL } from '../App/constants';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 const H4 = styled.h4 `
  > span{
@@ -45,9 +37,6 @@ const H4 = styled.h4 `
  }
 `;
 
-import { API_URL, STATIC_URL } from '../App/constants';
-
-import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -523,7 +512,7 @@ export default class BankEditFee extends Component {
         }
       })
       .catch(err => {
-        
+      
       });
   };
 
@@ -533,7 +522,7 @@ export default class BankEditFee extends Component {
         console.log(res.data);
         let {ranges} = state;
         ranges = ranges.map(r => ({
-          ...r, 
+          ...r,
           revenue_sharing_fixed_amount: r.fixed_amount,
           revenue_sharing_percentage: r.percentage
         }))
@@ -559,7 +548,7 @@ export default class BankEditFee extends Component {
         }
       })
       .catch(err => {
-        
+        this.setState({loading:false})
       });
   };
 
@@ -719,7 +708,7 @@ Edit Revenue sharing Rule</h3>
                     <FormGroup>
                     <label>From*</label>
                     {
-                        i > 0 ? 
+                        i > 0 ?
                         <TextInput
                         type="text"
                         name="trans_from"
