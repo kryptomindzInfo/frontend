@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import React from 'react';
 import axios from 'axios';
-import { Helmet } from 'react-helmet';
 
-import { Grid, Typography, TextField, withStyles } from '@material-ui/core';
+import { Grid, TextField, Typography, withStyles } from '@material-ui/core';
 
 import MaterialTable from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -14,29 +12,11 @@ import TableRow from '@material-ui/core/TableRow';
 import MaterialButton from '@material-ui/core/Button';
 import classNames from 'classnames';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
-import Wrapper from 'components/Wrapper';
-import BankHeader from 'components/Header/BankHeader';
-import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
-import Container from 'components/Container';
-import Loader from 'components/Loader';
-import Main from 'components/Main';
-import ActionBar from 'components/ActionBar';
-import Card from 'components/Card';
 import Button from 'components/Button';
-import Table from 'components/Table';
-import A from 'components/A';
-import MiniPopUp from 'components/MiniPopUp';
-import Row from 'components/Row';
-import Col from 'components/Col';
-import FormGroup from 'components/FormGroup';
 import Divider from '@material-ui/core/Divider';
 import AddBranchModal from './AddBranchDialog';
 
-import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
-
-
-
+import { API_URL } from '../App/constants';
 
 const styles = theme => ({
     textField: {
@@ -206,7 +186,7 @@ class RevenueRuleDistubutionPage extends React.Component {
             this.createRevenueRule()
         }
       }
-      else 
+      else
       {
         toast.error("Fields cannot be empty");
         console.log("Empty revenue");
@@ -256,14 +236,11 @@ class RevenueRuleDistubutionPage extends React.Component {
         }];
     
         axios
-          .post(`${API_URL}/createRules`, {
-            name,
+          .post(`${API_URL}/bank/sendShareForApproval`, {
             trans_type,
-            active,
-            ranges,
-            bank_id,
             token,
-            selectedBankFeeId
+            percentage: this.state.revenuePercentage,
+            fixed: this.state.revenueAmount,
           })
           .then(res => {
             if (res.status == 200) {
@@ -384,7 +361,7 @@ class RevenueRuleDistubutionPage extends React.Component {
         this.setState(prevState => ({
           ...prevState,
           branchWithSpecificRevenue: [
-            ...prevState.branchWithSpecificRevenue, 
+            ...prevState.branchWithSpecificRevenue,
             { branchId : branchDetails[0].bcode, branchName: branchDetails[0].name, claim : 0, send : 0 }
           ]
         }))
@@ -493,7 +470,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                   >
 
                     {
-                      
+                    
                     this.props.revenueData ? this.props.revenueData.fee.status == 1 ? "Update" : "Pending" : "Send for Approval"}
                   </MaterialButton>
                 </Grid>
@@ -614,7 +591,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                   </TableHead>
                   <TableBody>
 
-                      
+                    
                     {/* {rows.map(row => (
                       <TableRow key={row.id}>
                         <TableCell component="th" scope="row">
@@ -709,7 +686,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                 </Grid>
                                 <Grid item>
                                
-                                 
+                                
                                 
                                
                                 </Grid>

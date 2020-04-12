@@ -544,20 +544,19 @@ export default class FeeList extends Component {
                   <tbody>
                     {this.state.rules && this.state.rules.length > 0
                       ? this.state.rules.map(b => {
-                          var r1 = JSON.parse(b.editedRanges);
-                          var r = r1.ranges;
+                          var r = b.ranges;
                           return (
                             <tr key={b._id}>
                               <td>
-                                {b.edit_status == 0 ? (
-                                  <span>{r1.name}</span>
+                                {b.status === 0 ? (
+                                  <span>{b.name}</span>
                                 ) : (
                                   <span>{b.name}</span>
                                 )}
                               </td>
                               <td className="tac">
-                                {b.edit_status == 0 ? (
-                                  <span>{r1.trans_type}</span>
+                                {b.status === 0 ? (
+                                  <span>{b.trans_type}</span>
                                 ) : (
                                   <span>{b.trans_type}</span>
                                 )}
