@@ -9,19 +9,19 @@
  * export const YOUR_ACTION_CONSTANT = 'yourproject/YourContainer/YOUR_ACTION_CONSTANT';
  */
 export const DEFAULT_LOCALE = 'en';
-// export const API_URL = 'http://localhost:3001/api';
-// export const STATIC_URL = 'http://localhost:3001/uploads/';
+export const API_URL = 'http://localhost:3001/api';
+export const STATIC_URL = 'http://localhost:3001/uploads/';
 
 // export const API_URL = 'http://35.204.144.169:3001/api';
 // export const STATIC_URL = 'http://35.204.144.169:3001/uploads/';
 
-//export const CONTRACT_URL = 'http://34.70.46.65:8080/ipfs/';
+// export const CONTRACT_URL = 'http://34.70.46.65:8080/ipfs/';
 
 // production config k8s
-export const SERVER_URL = '91d90ac373dc.sn.mynetname.net:2020';
-export const API_URL = 'http://91d90ac373dc.sn.mynetname.net:2020/api';
-export const STATIC_URL = 'http://91d90ac373dc.sn.mynetname.net:2020/uploads/';
-export const CONTRACT_URL = 'http://91d90ac373dc.sn.mynetname.net:2020/ipfs/';
+// export const SERVER_URL = '91d90ac373dc.sn.mynetname.net:2019';
+// export const API_URL = 'http://91d90ac373dc.sn.mynetname.net:2019/api';
+// export const STATIC_URL = 'http://91d90ac373dc.sn.mynetname.net:2019/uploads/';
+export const CONTRACT_URL = 'http://91d90ac373dc.sn.mynetname.net:2019/ipfs/';
 // end production config
 
 export const CURRENCY = 'XOF';

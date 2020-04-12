@@ -43,13 +43,13 @@ class RevenueRuleDistubutionPage extends React.Component {
     success = () => toast.success(this.state.notification);
 
     error = () => toast.error(this.state.notification);
-    
+
     warn = () => toast.warn(this.state.notification);
     state = {
         open : false,
         revenuePercentage: 0,
         revenueAmount : 0,
-        
+
         name : "", trans_type: "", active : "", ranges : "", bank_id: "", token: "",
 
         standardRevenueSharingRule: {
@@ -60,7 +60,7 @@ class RevenueRuleDistubutionPage extends React.Component {
         branchWithSpecificRevenue : [
             // {branchId : "branch 1", branchName: "Pranoy biswas", claim : 0, send : 0},
             // {branchId : "branch 1", branchName: "Pranoy biswas", claim : 0, send : 0}
-        
+
         ],
         token : window.localStorage.getItem("bankLogged"),
         bankBranchesTable: true
@@ -96,7 +96,7 @@ class RevenueRuleDistubutionPage extends React.Component {
             }).catch(err => {
                 console.log(err);
             })
-            
+
 
 
         }else {
@@ -122,10 +122,10 @@ class RevenueRuleDistubutionPage extends React.Component {
 
         if(revenueData) {
 
-            const ranges = JSON.parse(revenueData.fee.ranges);
+            const ranges = revenueData.fee.infra_share;
             console.log(ranges)
-            fixed_amount = ranges[0].fixed_amount;
-            percentage = ranges[0].percentage;
+            fixed_amount = ranges.fixed;
+            percentage = ranges.percentage;
 
 
             const {branchWithSpecificRevenue ,standardRevenueSharingRule} = revenueData.fee;
@@ -135,11 +135,11 @@ class RevenueRuleDistubutionPage extends React.Component {
 
 
               , revenuePercentage: percentage,
-              
+
               branchWithSpecificRevenue : branchWithSpecificRevenue ? branchWithSpecificRevenue : prevState.branchWithSpecificRevenue
-            
+
             }));
-    
+
         }else {
 
           this.setState( { ...state , name, trans_type, active, bank_id,selectedBankFeeId,revenueAmount:fixed_amount , revenuePercentage: percentage });
@@ -148,8 +148,8 @@ class RevenueRuleDistubutionPage extends React.Component {
         }
 
 
-       
-        
+
+
 
         // //find branches
         // axios.post(`${API_URL}/getBranches`, {token : this.state.token}).then(d => {
@@ -166,7 +166,7 @@ class RevenueRuleDistubutionPage extends React.Component {
         //     console.log(err);
         // })
 
-        
+
 
 
 
@@ -174,11 +174,11 @@ class RevenueRuleDistubutionPage extends React.Component {
     }
 
     saveRevenue = () => {
-     
-    
+
+
       if ((this.state.revenueAmount != "") || (this.state.revenuePercentage != "" ))
       {
-      
+
       console.log(this.props.revenueData);
         if(this.props.revenueData) {
             this.editRrRules(this.props.revenueData.fee._id);
@@ -201,7 +201,7 @@ class RevenueRuleDistubutionPage extends React.Component {
     showRevenueRuleDistributionPage = () => {
       // this.setState({ revenueRuleDistributionPage: 'true', selectedBankFeeId: bankFee._id, bankFeeDetails: bankFee });
       // console.log(bankFeeId);
-  
+
       axios.get(`${API_URL}/getRevenueFeeFromBankFeeId/${this.state.selectedBankFeeId}`).then(d => {
         const {data} = d
         console.log(data);
@@ -214,27 +214,27 @@ class RevenueRuleDistubutionPage extends React.Component {
             revenueData: ""
           })
         }
-  
+
       }).catch(err => {
         console.log(err);
       })
-  
+
     };
-  
+
 
 
 
     createRevenueRule = () => {
         this.setState({ createRulesLoading: true });
         let { name, trans_type, active, bank_id, token, revenuePercentage, revenueAmount, selectedBankFeeId } = this.state;
-    
+
         const ranges = [{
           trans_from: 0,
           trans_to: 0,
           fixed_amount: revenueAmount,
           percentage: revenuePercentage
         }];
-    
+
         axios
           .post(`${API_URL}/bank/sendShareForApproval`, {
             trans_type,
@@ -295,11 +295,11 @@ class RevenueRuleDistubutionPage extends React.Component {
           this.setState({
             editRulesLoading: true
           });
-    
-    
+
+
           let { name, trans_type, active, bank_id, token, revenuePercentage, revenueAmount, selectedBankFeeId } = this.state;
         //   let {name, trans_type, active, ranges, bank_id, token} = this.state;
-    
+
     let rule_id = rrId;
        const  ranges = [{
               trans_from: 0,
@@ -307,10 +307,10 @@ class RevenueRuleDistubutionPage extends React.Component {
               fixed_amount: revenueAmount,
               percentage: revenuePercentage,
         }];
-    
-    
+
+
         axios
-          .post(`${API_URL  }/editRule`, {
+          .post(`${API_URL  }/editBankBankRule`, {
             name,
             trans_type, active, ranges, bank_id, token, rule_id,selectedBankFeeId
           })
@@ -446,7 +446,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                     margin="dense"
                     variant="outlined"
                     required="true"
-                   
+
                     onChange={(e) => {
                         const val = e.target.value;
                         this.setState({
@@ -470,8 +470,8 @@ class RevenueRuleDistubutionPage extends React.Component {
                   >
 
                     {
-                    
-                    this.props.revenueData ? this.props.revenueData.fee.status == 1 ? "Update" : "Pending" : "Send for Approval"}
+
+                    this.props.revenueData ? this.props.revenueData.status == 1 ? "Update" : "Pending" : "Send for Approval"}
                   </MaterialButton>
                 </Grid>
               </Grid>
@@ -591,7 +591,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                   </TableHead>
                   <TableBody>
 
-                    
+
                     {/* {rows.map(row => (
                       <TableRow key={row.id}>
                         <TableCell component="th" scope="row">
@@ -616,7 +616,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                       <TableCell>ID</TableCell>
                       <TableCell align="right">Name</TableCell>
                       <TableCell align="right"></TableCell>
-                     
+
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -628,14 +628,14 @@ class RevenueRuleDistubutionPage extends React.Component {
                         </TableCell>
                         <TableCell align="right">{row.calories}</TableCell>
                         <TableCell align="right">{row.fat}</TableCell>
-                        
+
                       </TableRow>
                     ))} */}
                   </TableBody>
                 </MaterialTable>
 
                 <Grid container spacing={16}>
-                 
+
                     <Grid item xs={12}>
                         <div className={classes.border}>
                             <Grid container alignItems="center">
@@ -685,15 +685,15 @@ class RevenueRuleDistubutionPage extends React.Component {
                                     />
                                 </Grid>
                                 <Grid item>
-                               
-                                
-                                
-                               
+
+
+
+
                                 </Grid>
                             </Grid>
                         </div>
                     </Grid>
-                    
+
                     <Grid item xs={12}>
                     <div className={classes.border}>
                             <Grid container>
@@ -709,7 +709,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                     <Grid container spacing={4}  style={{paddingTop: 32}} alignItems="center">
                                         {this.state.branchWithSpecificRevenue.map((d,i) => (
                                             <>
-                                            
+
                                                 <Grid item xs={2}>
                                                     {d.branchId}
                                                 </Grid>
@@ -731,7 +731,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                                             let {branchWithSpecificRevenue} = this.state;
                                                             branchWithSpecificRevenue[i].claim = val;
                                                             this.setState({branchWithSpecificRevenue})
-                                                            
+
 
 
 
@@ -748,7 +748,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                                         variant="outlined"
                                                         onChange={(e) => {
                                                             const val = e.target.value;
-                                                            
+
                                                             // this.setState({
                                                             //     revenueAmount: val
                                                             // })
@@ -778,8 +778,8 @@ class RevenueRuleDistubutionPage extends React.Component {
 
                                                 }}> delete</Button>
                                                 </Grid>
-                                                
-                                            
+
+
                                             </>
                                         ))}
                                         <Grid item xs={12}><Divider /></Grid>
@@ -800,7 +800,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                         </MaterialButton>
                                         </Grid>
                                     </Grid>
-                                
+
                             </Grid>
                     </div>
                     </Grid>
@@ -808,7 +808,7 @@ class RevenueRuleDistubutionPage extends React.Component {
               </Grid>
               <AddBranchModal open={this.state.open} bank_id={this.state.bank_id} handleClose={() => this.setState({open : false})} getBranchDetailsFromModal={this.getBranchDetailsFromModal}/>
             </Grid>
-         
+
     }
 }
 
