@@ -541,7 +541,7 @@ export default class BankEditFee extends Component {
       .post(`${API_URL  }/getOne`, { token:token, page_id: this.state.rule_id, type: 'bank', page: 'bankfee' })
       .then(res => {
         if(res.status == 200){
-          var temp = JSON.parse(res.data.row.ranges);
+          var temp = res.data.row.ranges;
           this.setState({ loading:false, name: res.data.row.name, trans_type: res.data.row.trans_type, active: res.data.row.active, ranges: temp, trans_from: res.data.row.trans_from, trans_to: res.data.row.trans_to}, ()=>{
             // this.getRrFees();
           });
