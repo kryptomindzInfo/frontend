@@ -68,25 +68,14 @@ class RevenueRuleDistubutionPage extends React.Component {
 
 
     saveRevenueSharingRules = () => {
-
-
-      // if(this.state.branchWithSpecificRevenue.length == 0) {
-      //     this.setState({
-      //       notification: 'Please ',
-      //       editRulesLoading: false
-      //     });
-      //   return  this.error();
-      // }
-
-
-
         if(this.props.revenueData) {
             // this.editRxrRules(this.props.revenueData.fee._id);
 
 
-            axios.post(`${API_URL}/save-revenue-sharing-rules/${this.props.revenueData.fee._id}`, {
-                standardRevenueSharingRule : this.state.standardRevenueSharingRule,
-                branchWithSpecificRevenue : this.state.branchWithSpecificRevenue
+            axios.post(`${API_URL}/save-revenue-sharing-rules/${this.state.selectedBankFeeId}`, {
+              token: this.state.token,
+                revenue_sharing_rule : { branch_share: this.state.standardRevenueSharingRule,
+                  specific_branch_share: this.state.branchWithSpecificRevenue },
             }).then(d => {
                 this.setState({
                     notification: 'Rule updated successfully',
@@ -123,17 +112,16 @@ class RevenueRuleDistubutionPage extends React.Component {
         if(revenueData) {
 
             const ranges = revenueData.fee.infra_share;
-            console.log(ranges)
             fixed_amount = ranges.fixed;
             percentage = ranges.percentage;
 
 
-            const {branchWithSpecificRevenue ,standardRevenueSharingRule} = revenueData.fee;
+            const {specific_branch_share ,branch_share} = revenueData.fee;
 
             this.setState( prevState => ({ ...state , name, trans_type, active, bank_id,selectedBankFeeId,revenueAmount: fixed_amount,
-              standardRevenueSharingRule : standardRevenueSharingRule ?  standardRevenueSharingRule : prevState.standardRevenueSharingRule
+              standardRevenueSharingRule : branch_share ?  branch_share : prevState.branch_share
               , revenuePercentage: percentage,
-              branchWithSpecificRevenue : branchWithSpecificRevenue ? branchWithSpecificRevenue : prevState.branchWithSpecificRevenue
+              branchWithSpecificRevenue : specific_branch_share ? specific_branch_share : prevState.specific_branch_share
 
             }));
 
@@ -322,13 +310,13 @@ class RevenueRuleDistubutionPage extends React.Component {
 
         console.log(branchDetails);
         console.log(this.state.branchWithSpecificRevenue);
-        if(this.state.branchWithSpecificRevenue.map(d => d.branchId).includes(branchDetails[0].bcode)) return alert("Branch already saved")
+        if(this.state.branchWithSpecificRevenue.map(d => d.branch_code).includes(branchDetails[0].bcode)) return alert("Branch already saved")
 
         this.setState(prevState => ({
           ...prevState,
           branchWithSpecificRevenue: [
             ...prevState.branchWithSpecificRevenue,
-            { branchId : branchDetails[0].bcode, branchName: branchDetails[0].name, claim : 0, send : 0 }
+            { branch_code : branchDetails[0].bcode, branch_name: branchDetails[0].name, claim : 0, send : 0 }
           ]
         }))
 
@@ -676,10 +664,10 @@ class RevenueRuleDistubutionPage extends React.Component {
                                             <>
 
                                                 <Grid item xs={2}>
-                                                    {d.branchId}
+                                                    {d.branch_code}
                                                 </Grid>
                                                 <Grid item xs={2}>
-                                                    {d.branchName}
+                                                    {d.branch_name}
                                                 </Grid>
                                                 <Grid item xs={3}>
                                                     <TextField
@@ -738,7 +726,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                                     // let {branchWithSpecificRevenue} = this.state;
                                                     this.setState(prevState => ({
                                                       ...prevState,
-                                                      branchWithSpecificRevenue: prevState.branchWithSpecificRevenue.filter(b => b.branchId != d.branchId)
+                                                      branchWithSpecificRevenue: prevState.branchWithSpecificRevenue.filter(b => b.branch_code !== d.branch_code)
                                                     }))
 
                                                 }}> delete</Button>
