@@ -147,11 +147,9 @@ class RevenueRuleDistubutionPage extends React.Component {
 
       if ((this.state.revenueAmount != "") || (this.state.revenuePercentage != "" ))
       {
-
-      console.log(this.props.revenueData);
-        if(this.props.revenueData) {
-            this.editRrRules(this.props.revenueData.fee._id);
-        }else {
+        if(this.props.revenueData.infra_status === 1) {
+            this.editRrRules(this.props.revenueData.selectedBankFeeId);
+        }else if (this.props.revenueData.infra_status === 0) {
             this.createRevenueRule()
         }
       }

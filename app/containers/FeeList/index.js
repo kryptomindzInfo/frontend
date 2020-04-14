@@ -288,14 +288,13 @@ export default class FeeList extends Component {
 
   getRules = () => {
     axios
-      .post(`${API_URL}/getAll`, {
-        type: 'bank',
-        token,
-        page: 'bankfee',
+      .post(`${API_URL}/getRules`, {
+        token: token,
+        bank_id: this.props.match.params.bank,
       })
       .then(res => {
         if (res.status == 200) {
-          this.setState({ loading: false, rules: res.data.rows });
+          this.setState({ loading: false, rules: res.data.rules });
         }
       })
       .catch(err => {});
@@ -594,17 +593,17 @@ export default class FeeList extends Component {
                             </td> */}
 
                               <td className="tac bold">
-                                {b.status == 0 || b.edit_status == 0 ? (
+                                {b.status === 2 ? (
                                   <Button
                                     onClick={() => this.showMiniPopUp(b, r)}
                                     className="addBankButton"
                                   >
                                     <span>Approve</span>
                                   </Button>
-                                ) : b.status == 2 || b.edit_status == 2 ? (
-                                  <span>Declined</span>
-                                ) : (
+                                ) : b.status === 1 ? (
                                   <span>Approved</span>
+                                ) : (
+                                  <span>Declined</span>
                                 )
                                 // <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
                                 }
