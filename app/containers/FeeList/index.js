@@ -288,13 +288,14 @@ export default class FeeList extends Component {
 
   getRules = () => {
     axios
-      .post(`${API_URL}/getRules`, {
-        token: token,
-        bank_id: this.props.match.params.bank,
+      .post(`${API_URL}/getAll`, {
+        type: 'bank',
+        token,
+        page: 'bankfee',
       })
       .then(res => {
         if (res.status == 200) {
-          this.setState({ loading: false, rules: res.data.rules });
+          this.setState({ loading: false, rules: res.data.rows });
         }
       })
       .catch(err => {});

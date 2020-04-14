@@ -47,8 +47,8 @@ class RevenueRuleDistubutionPage extends React.Component {
     warn = () => toast.warn(this.state.notification);
     state = {
         open : false,
-        revenuePercentage: 0,
-        revenueAmount : 0,
+        revenuePercentage: this.props.bankFeeDetails.revenue_sharing_rule.infra_share.percentage || 0,
+        revenueAmount : this.props.bankFeeDetails.revenue_sharing_rule.infra_share.fixed || 0,
 
         name : "", trans_type: "", active : "", ranges : "", bank_id: "", token: "",
 
@@ -132,45 +132,14 @@ class RevenueRuleDistubutionPage extends React.Component {
 
             this.setState( prevState => ({ ...state , name, trans_type, active, bank_id,selectedBankFeeId,revenueAmount: fixed_amount,
               standardRevenueSharingRule : standardRevenueSharingRule ?  standardRevenueSharingRule : prevState.standardRevenueSharingRule
-
-
               , revenuePercentage: percentage,
-
               branchWithSpecificRevenue : branchWithSpecificRevenue ? branchWithSpecificRevenue : prevState.branchWithSpecificRevenue
 
             }));
 
         }else {
-
           this.setState( { ...state , name, trans_type, active, bank_id,selectedBankFeeId,revenueAmount:fixed_amount , revenuePercentage: percentage });
-
-
         }
-
-
-
-
-
-        // //find branches
-        // axios.post(`${API_URL}/getBranches`, {token : this.state.token}).then(d => {
-        //     let branchWithSpecificRevenue = [];
-        //     const {branches} = d.data;
-        //     branchWithSpecificRevenue = branches.map(b => ({
-        //         branchId : b.bcode, branchName: b.name, claim : 0, send : 0
-        //     }))
-
-
-
-
-        // }).catch(err => {
-        //     console.log(err);
-        // })
-
-
-
-
-
-
     }
 
     saveRevenue = () => {
@@ -202,9 +171,8 @@ class RevenueRuleDistubutionPage extends React.Component {
       // this.setState({ revenueRuleDistributionPage: 'true', selectedBankFeeId: bankFee._id, bankFeeDetails: bankFee });
       // console.log(bankFeeId);
 
-      axios.get(`${API_URL}/getRevenueFeeFromBankFeeId/${this.state.selectedBankFeeId}`).then(d => {
+      axios.post(`${API_URL}/getRevenueFeeFromBankFeeId/${this.state.selectedBankFeeId}`,{ token: this.state.token }).then(d => {
         const {data} = d
-        console.log(data);
         if(data.code == 1) {
           this.setState({
             revenueData: data
@@ -470,8 +438,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                   >
 
                     {
-
-                    this.props.revenueData ? this.props.revenueData.status == 1 ? "Update" : "Pending" : "Send for Approval"}
+                    this.props.revenueData.infra_status === 1 ? "Update" : this.props.revenueData.infra_status === 2 ? "Pending" : "Send for Approval"}
                   </MaterialButton>
                 </Grid>
               </Grid>

@@ -487,11 +487,11 @@ export class BankFees extends Component {
     // console.log(bankFeeId);
 
     axios
-      .get(`${API_URL}/getRevenueFeeFromBankFeeId/${bankFee._id}`)
+      .post(`${API_URL}/getRevenueFeeFromBankFeeId/${bankFee._id}`, { token })
       .then(d => {
         const { data } = d;
         console.log(data);
-        if (data.code == 1) {
+        if (data.status == 1) {
           this.setState({
             revenueData: data,
           });
