@@ -35,7 +35,7 @@ const DialogTitle = withStyles(dialogTilteStyles)(props => {
   const { children, classes, onClose, ...other } = props;
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
+      <Typography variant="h5">{children}</Typography>
       {onClose ? (
         <IconButton
           aria-label="close"
@@ -68,13 +68,13 @@ const dialogContentStyles = makeStyles(() => ({
     paddingTop: '5%',
     paddingBottom: '2%',
     paddingLeft: '10%',
-    paddingRight: '2%',
+    paddingRight: '5%',
   },
   dialogGridRight: {
     paddingTop: '5%',
     paddingBottom: '2%',
     paddingRight: '10%',
-    paddingLeft: '2%',
+    paddingLeft: '5%',
     marginRight: '5px',
   },
   dialogTextFieldGrid: {
@@ -99,23 +99,31 @@ const dialogContentStyles = makeStyles(() => ({
     paddingRight: '3%',
     paddingLeft: '3%',
   },
+  dialogSubHeader2: {
+    paddingTop: '4%',
+    paddingRight: '3%',
+    paddingLeft: '3%',
+  },
   dialogButton: {
-    padding: '2%',
+    paddingTop: '3%',
+    paddingBottom: '3%',
   },
   dialogPaperSmall: {
+    borderRadius: '20px',
     minHeight: '40%',
     maxHeight: '40%',
     minWidth: '50%',
     maxWidth: '50%',
   },
   dialogPaperLarge: {
-    minHeight: '75%',
-    maxHeight: '75%',
-    minWidth: '75%',
-    maxWidth: '75%',
+    borderRadius: '25px',
+    minHeight: '70%',
+    maxHeight: '70%',
+    minWidth: '65%',
+    maxWidth: '60%',
   },
   dialogPaper: {
-    height: '500px',
+    height: '350px',
     padding: '2%',
     display: 'flex',
     flexWrap: 'wrap',
@@ -153,8 +161,8 @@ const dialogContentStyles = makeStyles(() => ({
   documentCard: {
     display: 'flex',
     flexDirection: 'column',
-    width: '178px',
-    height: '150px',
+    width: '140px',
+    height: '140px',
     borderRadius: '5px',
     justifyContent: 'center',
     marginLeft: '20px',
@@ -353,16 +361,19 @@ export default function FormDialog() {
                         >
                           <Button
                             type="submit"
-                            fullWidth
                             className={classes.proceedButton}
                             variant="contained"
                             color="primary"
                             disableElevation
                             onClick={handleSubmit}
                             disabled={isSubmitting}
-                            style={{ padding: '3%', width: '60%' }}
+                            style={{
+                              width: '60%',
+                              paddingBottom: '2%',
+                              paddingTop: '2%',
+                            }}
                           >
-                            Proceed
+                            <Typography variant="h5">Proceed</Typography>
                           </Button>
                         </Grid>
                       </Grid>
@@ -391,7 +402,6 @@ export default function FormDialog() {
               city: '',
               dob: '',
               gender: '',
-              sending_amount: '',
             }}
             onSubmit={values => {
               const cashiertoken = localStorage.getItem('cashierLogged');
@@ -454,7 +464,6 @@ export default function FormDialog() {
               id_name: Yup.string().required('Name is required'),
               id_number: Yup.number().required('Number no is required'),
               valid_till: Yup.string().required('Date is required'),
-              sending_amount: Yup.number().required('Amount is required'),
             })}
           >
             {formikProps => {
@@ -816,51 +825,6 @@ export default function FormDialog() {
                             />
                           </Grid>
                         </Grid>
-
-                        <Grid container direction="row" alignItems="flex-start">
-                          <Grid
-                            item
-                            xs={2}
-                            alignItems="center"
-                            className={classes.dialogTextFieldGrid}
-                          >
-                            <TextField
-                              id="form-amount-pre"
-                              label="XOF"
-                              variant="outlined"
-                              type="text"
-                              disabled
-                            />
-                          </Grid>
-                          <Grid
-                            item
-                            xs={10}
-                            alignItems="center"
-                            className={classes.dialogTextFieldGrid}
-                          >
-                            <TextField
-                              name="sending_amount"
-                              id="form-sending-amount"
-                              label="Amount"
-                              fullWidth
-                              placeholder=""
-                              variant="outlined"
-                              type="number"
-                              value={values.sending_amount}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              className={classes.dialogTextFieldGridFullRow}
-                              error={
-                                errors.sending_amount && touched.sending_amount
-                              }
-                              helperText={
-                                errors.sending_amount && touched.sending_amount
-                                  ? errors.sending_amount
-                                  : ''
-                              }
-                            />
-                          </Grid>
-                        </Grid>
                       </Grid>
                     </Grid>
                     <Grid item md={6} xs={12}>
@@ -868,16 +832,16 @@ export default function FormDialog() {
                         container
                         direction="column"
                         justify="space-evenly"
-                        alignItems="center"
+                        alignItems="flex-start"
                         className={classes.dialogGridRight}
                       >
                         <Button
-                          fullWidth
                           disableRipple
                           variant="contained"
                           color="primary"
                           onClick={() => triggerBrowse('contract')}
                           className={classes.dialogButton}
+                          style={{ width: '50%', padding: '2%' }}
                         >
                           <input
                             id="contract"
@@ -888,9 +852,22 @@ export default function FormDialog() {
                             accept=".pdf,.docs"
                             type="file"
                           />
-                          Upload Documents
+                          <Typography variant="h5">Upload Documents</Typography>
                         </Button>
-
+                        <Grid
+                          container
+                          direction="column"
+                          justify="flex-start"
+                          alignItems="flex-start"
+                          className={classes.dialogSubHeader2}
+                        >
+                          <Typography
+                            variant="h6"
+                            style={{ color: '#323c47' }}
+                          >
+                            User Document
+                          </Typography>
+                        </Grid>
                         <Paper
                           variant="outlined"
                           className={classes.dialogPaper}
@@ -914,29 +891,32 @@ export default function FormDialog() {
                                         : DocumentIcon
                                     }
                                   />
-                                  <span style={{ marginTop: '20px' }}>
+                                  <span style={{ marginTop: '10px' }}>
                                     {value.name}
                                   </span>
                                 </div>
                               </a>
                             ))
                           ) : (
-                            <Typography variant="headline">
+                            <Typography variant="subtitle1">
                               No documents uploaded
                             </Typography>
                           )}
                         </Paper>
                         <Button
                           type="submit"
-                          fullWidth
                           className={classes.dialogButton}
                           variant="contained"
                           color="primary"
                           disableRipple
                           onClick={handleSubmit}
                           disabled={isSubmitting}
+                          style={{
+                            width: '90%',
+                            marginTop: '5%',
+                          }}
                         >
-                          Proceed
+                          <Typography variant="h5">Proceed</Typography>
                         </Button>
                       </Grid>
                     </Grid>

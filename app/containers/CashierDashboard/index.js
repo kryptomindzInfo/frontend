@@ -5,17 +5,12 @@
  *
  */
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
 
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
-import A from 'components/A';
 import CashierHeader from 'components/Header/CashierHeader';
 import Container from 'components/Container';
 import Loader from 'components/Loader';
@@ -32,10 +27,11 @@ import Col from 'components/Col';
 import FormGroup from 'components/FormGroup';
 import Button from 'components/Button';
 
-import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
+import { API_URL, CURRENCY, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 import FormDialog from '../../components/FormDialog';
+
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -522,12 +518,12 @@ generateOTP = () => {
         <Container verticalMargin>
           <SidebarCashier refresh={this.getHistory.bind(this)} branchName={this.props.match.params.bank} ref={this.child} />
           <Main>
-            <FormDialog/>
+
             <div className="clr">
 
             <Card
                 horizontalMargin="7px"
-                cardWidth="151px"
+                cardWidth="125px"
                 h4FontSize="16px"
                 smallValue
                 textAlign="center"
@@ -560,7 +556,7 @@ generateOTP = () => {
               </Card>
               <Card
                 horizontalMargin="7px"
-                cardWidth="151px"
+                cardWidth="125px"
                 h4FontSize="16px"
                 smallValue
                 textAlign="center"
@@ -573,7 +569,7 @@ generateOTP = () => {
               </Card>
               <Card
                 horizontalMargin="7px"
-                cardWidth="151px"
+                cardWidth="125px"
                 h4FontSize="16px"
                 smallValue
                 textAlign="center"
@@ -586,7 +582,7 @@ generateOTP = () => {
               </Card>
               <Card
                 horizontalMargin="7px"
-                cardWidth="151px"
+                cardWidth="125px"
                 smallValue
                 h4FontSize="16px"
                 textAlign="center"
@@ -597,7 +593,21 @@ generateOTP = () => {
                   {CURRENCY} {this.state.feeGenerated.toFixed(2)}
                 </div>
               </Card>
+              <Card
+                horizontalMargin="7px"
+                cardWidth="125px"
+                smallValue
+                h4FontSize="16px"
+                textAlign="center"
+                col
+              >
+                <div className="cardValue">
+                  <FormDialog />
+                </div>
+              </Card>
+
             </div>
+
             <ActionBar
               marginBottom="15px"
               marginTop="15px"
