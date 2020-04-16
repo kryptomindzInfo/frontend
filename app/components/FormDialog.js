@@ -11,6 +11,7 @@ import * as Yup from 'yup';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import axios from 'axios';
 import Paper from '@material-ui/core/Paper';
+import { toast } from 'react-toastify';
 import PdfIcon from '../images/pdf_icon.png';
 import DocumentIcon from '../images/document_icon.png';
 import { API_URL, CONTRACT_URL } from '../containers/App/constants';
@@ -117,8 +118,8 @@ const dialogContentStyles = makeStyles(() => ({
   },
   dialogPaperLarge: {
     borderRadius: '25px',
-    minHeight: '70%',
-    maxHeight: '70%',
+    minHeight: '80%',
+    maxHeight: '80%',
     minWidth: '65%',
     maxWidth: '60%',
   },
@@ -273,17 +274,20 @@ export default function FormDialog() {
                 .then(res => {
                   if (res.data.error) {
                     setUser({});
-                    throw res.data.error;
+                    setOpen(false);
+                    toast.error(res.data.error);
                   } else {
                     setUser(res.data.data);
                     localStorage.setItem(
                       'editableUser',
                       JSON.stringify(res.data.data),
                     );
+                    toast.success('User fetch successful');
                   }
                 })
                 .catch(error => {
-                  console.log(error);
+                  setOpen(false);
+                  toast.error('Something went wrong');
                 });
             }}
             validationSchema={Yup.object().shape({
@@ -431,14 +435,15 @@ export default function FormDialog() {
                       })
                       .then(r => {
                         if (r.data.error) {
-                          throw r.data.error;
+                          toast.error(r.data.error);
                         } else {
                           setUser(null);
+                          toast.success('User verification successful');
                         }
                       })
                       .catch(error => {
-                        console.log(error);
                         setUser(null);
+                        toast.error('Something went wrong');
                       });
                   }
                 })
@@ -861,10 +866,7 @@ export default function FormDialog() {
                           alignItems="flex-start"
                           className={classes.dialogSubHeader2}
                         >
-                          <Typography
-                            variant="h6"
-                            style={{ color: '#323c47' }}
-                          >
+                          <Typography variant="h6" style={{ color: '#323c47' }}>
                             User Document
                           </Typography>
                         </Grid>

@@ -49,8 +49,7 @@ class RevenueRuleDistubutionPage extends React.Component {
         open : false,
         revenuePercentage: this.props.bankFeeDetails.revenue_sharing_rule.infra_share.percentage || 0,
         revenueAmount : this.props.bankFeeDetails.revenue_sharing_rule.infra_share.fixed || 0,
-
-        name : "", trans_type: "", active : "", ranges : "", bank_id: "", token: "",
+        name : this.props.bankFeeDetails , trans_type: "", active : "", ranges : "", bank_id: "", token: "",
 
         standardRevenueSharingRule: {
             claim: 0,
@@ -136,7 +135,7 @@ class RevenueRuleDistubutionPage extends React.Component {
       if ((this.state.revenueAmount != "") || (this.state.revenuePercentage != "" ))
       {
         if(this.props.revenueData.infra_status === 1) {
-            this.editRrRules(this.props.revenueData.selectedBankFeeId);
+            this.editRrRules(this.props.revenueData.selectedBankFeeId,this.state.name);
         }else if (this.props.revenueData.infra_status === 0) {
             this.createRevenueRule()
         }
@@ -203,7 +202,7 @@ class RevenueRuleDistubutionPage extends React.Component {
               } else {
                 this.setState(
                   {
-                    notification: 'Rule added',
+                    notification: 'Rule sent for Approval',
                   },
                   () => {
                     this.success();
@@ -211,10 +210,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                     let history = this.props.history;
                     setTimeout(() =>  {
                     //   history.push('/bank/fees/');
-
-                      //get revenue rule and put it into state
-                      console.log("kia")
-                      this.props.showRevenueRuleDistributionPage({_id: selectedBankFeeId})
+                      this.props.showRevenueRuleDistributionPage({_id: selectedBankFeeId, name: this.state.name})
 
                     }, 1000);
                   },
@@ -275,14 +271,14 @@ class RevenueRuleDistubutionPage extends React.Component {
               }else{
                 //console.log(res.data);
                 this.setState({
-                  notification: 'Rule updated'
+                  notification: 'Bank Rule Updated'
                 }, () => {
                   this.success();
                   let ba = this.state.bank;
                   let history = this.props.history;
                   setTimeout(() => {
                     // history.push('/bank/fees/');
-                    this.props.showRevenueRuleDistributionPage({_id: selectedBankFeeId})
+                    this.props.showRevenueRuleDistributionPage({_id: selectedBankFeeId ,name: name })
                   }, 1000);
               });
               }
@@ -344,7 +340,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                   variant="h4"
                    style={{ color: 'white' }}
                 >
-                  { "Revenue Rule Distribution ( " +this.props.bankFeeDetails.name + " )"}
+                  { "Revenue Rule Distribution ( " +this.state.name + " )"}
                 </Typography>
                 </Grid>
                 <Grid item>
@@ -412,6 +408,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                 </Grid>
                 <Grid item md={3}>
                   <MaterialButton
+                    disabled={this.props.revenueData.infra_status === 2}
                     variant="contained"
                     color="primary"
                     style={{
