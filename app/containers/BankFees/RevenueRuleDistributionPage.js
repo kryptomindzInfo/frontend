@@ -433,6 +433,9 @@ class RevenueRuleDistubutionPage extends React.Component {
                   margin: '2%',
                   border: '1px solid #d0d6d1',
                   paddingTop: '3%',
+                  display: `${
+                    this.state.trans_type === 'Wallet to Wallet' ? 'none' : 'flex'
+                  }`,
                 }}
                 container
                 spacing={16}
@@ -609,6 +612,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                     className={classNames(classes.textField, classes.dense)}
                                     margin="dense"
                                     variant="outlined"
+                                    disabled={this.state.trans_type === 'Non Wallet To Wallet'}
                                     onChange={(e) => {
                                         const val = e.target.value;
                                         this.setState((prevState) => ({
@@ -625,6 +629,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                     <TextField
                                         type="number"
                                         label="send%"
+                                        disabled={this.state.trans_type === 'Wallet to Non Wallet'}
                                         className={classNames(classes.textField, classes.dense)}
                                         margin="dense"
                                         variant="outlined"
@@ -673,6 +678,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                                     <TextField
                                                         type="number"
                                                         label="claim%"
+                                                        disabled={this.state.trans_type === 'Non Wallet to Wallet'}
                                                         className={classNames(classes.textField, classes.dense)}
                                                         margin="dense"
                                                         variant="outlined"
@@ -696,6 +702,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                                     <TextField
                                                         type="number"
                                                         label="send%"
+                                                        disabled={this.state.trans_type === 'Wallet to Non Wallet'}
                                                         className={classNames(classes.textField, classes.dense)}
                                                         margin="dense"
                                                         variant="outlined"
