@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import TopBar from 'components/Header/TopBar';
@@ -33,6 +32,7 @@ import Col from 'components/Col';
 import A from 'components/A';
 import Loader from 'components/Loader';
 import MiniPopUp from 'components/MiniPopUp';
+import messages from './messages';
 
 import { API_URL, CURRENCY, STATIC_URL } from '../App/constants';
 
@@ -48,7 +48,7 @@ toast.configure({
 });
 
 const token = localStorage.getItem('logged');
-var isAdmin = localStorage.getItem('isAdmin');
+const isAdmin = localStorage.getItem('isAdmin');
 
 export default class FeeList extends Component {
   constructor() {
@@ -99,14 +99,14 @@ export default class FeeList extends Component {
   };
 
   showPopup = () => {
-    //this.setState({ popup: true });
-    this.props.history.push('/createfee/' + this.props.match.params.bank);
+    // this.setState({ popup: true });
+    this.props.history.push(`/createfee/${this.props.match.params.bank}`);
   };
 
   goEdit = (a, b) => {
-    //this.setState({ popup: true });
+    // this.setState({ popup: true });
     localStorage.setItem('feeid', b);
-    this.props.history.push('/editfee/' + a);
+    this.props.history.push(`/editfee/${a}`);
   };
 
   closePopup = () => {
@@ -274,7 +274,7 @@ export default class FeeList extends Component {
   getBanks = () => {
     axios
       .post(`${API_URL}/getBank`, {
-        token: token,
+        token,
         bank_id: this.props.match.params.bank,
       })
       .then(res => {
@@ -289,7 +289,7 @@ export default class FeeList extends Component {
   getRules = () => {
     axios
       .post(`${API_URL}/getRules`, {
-        token: token,
+        token,
         bank_id: this.props.match.params.bank,
       })
       .then(res => {
@@ -333,8 +333,9 @@ export default class FeeList extends Component {
       popupMini: true,
       html: r,
     });
-    //this.props.history.push('/createfee/'+this.state.bank_id);
+    // this.props.history.push('/createfee/'+this.state.bank_id);
   };
+
   closeMiniPopUp = () => {
     this.setState({
       popupMini: false,
@@ -544,7 +545,7 @@ export default class FeeList extends Component {
                   <tbody>
                     {this.state.rules && this.state.rules.length > 0
                       ? this.state.rules.map(b => {
-                          var r = b.ranges;
+                          var r = b.revenue_sharing_rule.infra_share;
                           return (
                             <tr key={b._id}>
                               <td>
@@ -562,25 +563,19 @@ export default class FeeList extends Component {
                                 )}
                               </td>
                               <td>
-                                {r.map((v, i) => {
-                                  return (
-                                    <div key={i}>
-                                      {/* Count:{' '}
+                                <div>
+                                  {/* Count:{' '}
                                       <span className="green">
                                         {v.trans_from} - {v.trans_to}
                                       </span>
                                       ,  */}
-                                      Fixed:{' '}
-                                      <span className="green">
-                                        {CURRENCY + ' ' + v.fixed_amount}
-                                      </span>
-                                      , Percentage:{' '}
-                                      <span className="green">
-                                        {v.percentage}
-                                      </span>
-                                    </div>
-                                  );
-                                })}
+                                  Fixed:{' '}
+                                <span className="green">
+                                  {`${CURRENCY} ${r.fixed}`}
+                                  </span>
+                                  , Percentage:{' '}
+                                  <span className="green">{r.percentage}</span>
+                                </div>
                               </td>
                               {/* <td className="tac bold">
                             {
@@ -589,7 +584,7 @@ export default class FeeList extends Component {
                               :
                               <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
                             }
-                            
+
                             </td> */}
 
                               <td className="tac bold">
@@ -658,22 +653,14 @@ export default class FeeList extends Component {
                     {' '}
                     Sending from <span id="poptype">{this.state.poptype}</span>
                   </p>
-                  {this.state.html.map(function(v) {
-                    return (
-                      <div>
-                        Count:{' '}
-                        <span className="green">
-                          {v.trans_from} - {v.trans_to}
-                        </span>
-                        , Fixed:{' '}
-                        <span className="green">
-                          {CURRENCY + ' ' + v.fixed_amount}
-                        </span>
-                        , Percentage:{' '}
-                        <span className="green">{v.percentage}</span>
-                      </div>
-                    );
-                  })}
+                  <div>
+                    Fixed:{' '}
+                    <span className="green">
+                      {`${CURRENCY} ${this.state.html.fixed_amount}`}
+                    </span>
+                    , Percentage:{' '}
+                    <span className="green">{this.state.html.percentage}</span>
+                  </div>
 
                   <Row>
                     <Col>
@@ -902,7 +889,7 @@ export default class FeeList extends Component {
 
                   <FormGroup>
                     {/* <UploadedFile>
-                    
+
                       <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
                     </UploadedFile>
                   : */}
@@ -939,7 +926,7 @@ export default class FeeList extends Component {
                   </FormGroup>
 
                   <FormGroup>
-                    <UploadArea bgImg={STATIC_URL + 'main/pdf-icon.png'}>
+                    <UploadArea bgImg={`${STATIC_URL}main/pdf-icon.png`}>
                       {this.state.contract ? (
                         <a
                           className="uploadedImg"
