@@ -16,14 +16,10 @@ import Container from 'components/Container';
 import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
 
-import {
-  API_URL,
-  STATIC_URL,
-  CURRENCY,
-  CONTRACT_URL,
-} from 'containers/App/constants';
+import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
+
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -391,8 +387,17 @@ console.log(items);
             throw res.data.error;
           } else {
             let o = res.data.row;
+            if(o.sender_id){
+              let senderid = JSON.parse(o.sender_id);
+              this.setState({
+                sender_id: senderid,
+                senderIdentificationCountry: senderid.country || '',
+                senderIdentificationType: senderid.type || '',
+                senderIdentificationNumber: senderid.number || '',
+                senderIdentificationValidTill: senderid.valid || '',
+              });
+            }
             let sender = JSON.parse(o.sender_info);
-            let senderid = JSON.parse(o.sender_id);
             let receiver = JSON.parse(o.receiver_info);
             let receiverid = JSON.parse(o.receiver_id);
 
@@ -408,11 +413,6 @@ console.log(items);
               zip: sender.zip,
               country: sender.country,
               note: sender.note,
-
-              senderIdentificationCountry: senderid.country,
-              senderIdentificationType: senderid.type,
-              senderIdentificationNumber: senderid.number,
-              senderIdentificationValidTill: senderid.valid,
 
               receiverMobile: receiver.mobile,
               receiverEmail: receiver.email,
@@ -585,6 +585,7 @@ console.log(items);
                 notification: 'OTP verified successfully',
               });
               this.success();
+              this.startClaiming();
             } else {
               this.startClaiming();
             }
@@ -651,13 +652,15 @@ console.log(items);
             console.log(res.data.status);
             this.setState({
               notification: 'Transaction Successfully Done',
+              showVerifyClaimMoney: false,
+              popupClaimMoney: false,
             });
             this.success();
-            this.closePopupSendMoney();
-
             this.props.refresh();
           }
         } else {
+          this.closePopupSendMoney();
+          this.props.refresh();
           throw res.data.error;
         }
         this.setState({
@@ -665,6 +668,8 @@ console.log(items);
         });
       })
       .catch(err => {
+        this.closePopupSendMoney();
+        this.props.refresh();
         this.setState(
           {
             notification: err.response
@@ -815,7 +820,7 @@ console.log(items);
               <FormattedMessage {...messages.sendmoney} />
             </Button>
           }
-            
+          
           </Col>
           <Col>
           {
@@ -961,7 +966,7 @@ console.log(items);
                     </Container>
                     <Container>
                       <Row vAlign="flex-start">
-                        <Col sm="12" md="4">
+                        <Col sm="12" md="4" style={{display: this.state.sender_id ? 'block' : 'none'}}>
                           <div
                             style={{
                               fontSize: '24px',
@@ -1112,7 +1117,7 @@ console.log(items);
                         </Col>
                       </Row>
                       <Row vAlign="flex-start">
-                        <Col>
+                        <Col style={{display: this.state.sender_id ? 'block' : 'none'}}>
                           <div
                             style={{
                               fontSize: '24px',
@@ -1384,7 +1389,7 @@ console.log(items);
                   </p>
                 </form>
               </div>
-            ) : 
+            ) :
             
               this.state.showConfirmPending ? (
                 <div>
@@ -2252,7 +2257,7 @@ console.log(items);
                   </Container>
                   </div>
                 }
-                 
+                
                 </form>
               </div>
             )}

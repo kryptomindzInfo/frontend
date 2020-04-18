@@ -210,7 +210,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                     let history = this.props.history;
                     setTimeout(() =>  {
                     //   history.push('/bank/fees/');
-                      this.props.showRevenueRuleDistributionPage({_id: selectedBankFeeId, name: this.state.name})
+                      this.props.showRevenueRuleDistributionPage({trans_type,_id: selectedBankFeeId, name: this.state.name})
 
                     }, 1000);
                   },
@@ -278,7 +278,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                   let history = this.props.history;
                   setTimeout(() => {
                     // history.push('/bank/fees/');
-                    this.props.showRevenueRuleDistributionPage({_id: selectedBankFeeId ,name: name })
+                    this.props.showRevenueRuleDistributionPage({trans_type,_id: selectedBankFeeId , name })
                   }, 1000);
               });
               }
@@ -609,7 +609,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                                     className={classNames(classes.textField, classes.dense)}
                                     margin="dense"
                                     variant="outlined"
-                                    disabled={this.state.trans_type === 'Non Wallet To Wallet'}
+                                    disabled={this.state.trans_type === 'Non Wallet to Wallet'}
                                     onChange={(e) => {
                                         const val = e.target.value;
                                         this.setState((prevState) => ({
