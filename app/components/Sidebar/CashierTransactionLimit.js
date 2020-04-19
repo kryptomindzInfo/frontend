@@ -22,6 +22,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import CashierPopupToggle from './CashierPopupToggle';
 import CashierToWalletForm from './CashierToWalletForm';
+
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -286,6 +287,7 @@ console.log(items);
       receiverIdentificationAmount: '',
       isWallet: false,
       showSendMoneyToWalletOTP: false,
+      verifySendMoneyOTPLoading: false,
     });
   };
 
@@ -752,6 +754,9 @@ console.log(items);
     axios
       .post(`${API_URL}/cashier/sendMoneyToWallet`, toWalletFormValues )
       .then(res => {
+      this.setState({
+        verifySendMoneyOTPLoading: true,
+      });
         if (res.status === 200) {
           if (res.data.error) {
             throw res.data.error;

@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { Form, Formik } from 'formik';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import { withStyles } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 import { API_URL, CURRENCY } from '../../containers/App/constants';
@@ -144,22 +141,24 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
 
   const getLiveFee = (event, amount) => {
     const token = localStorage.getItem('cashierLogged');
-    axios
-      .post(`${API_URL}/cashier/checkNonWalToWalFee`, { token, amount })
-      .then(res => {
-        if (res.status === 200) {
-          if (res.data.error) {
-            throw res.data.error;
+    if (amount !== '') {
+      axios
+        .post(`${API_URL}/cashier/checkNonWalToWalFee`, { token, amount })
+        .then(res => {
+          if (res.status === 200) {
+            if (res.data.error) {
+              throw res.data.error;
+            } else {
+              setLiveFee(res.data.fee);
+            }
           } else {
-            setLiveFee(res.data.fee);
+            throw res.data.error;
           }
-        } else {
-          throw res.data.error;
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
 
   const handleOnProceedClick = values => {
@@ -170,20 +169,12 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
       <Formik
         initialValues={values}
         onSubmit={async values => {
-          values.livefee;
+          values.livefee = liveFee;
           values.requireOTP = '111111';
           setValues(values);
           handleOnProceedClick(values);
         }}
         validationSchema={Yup.object().shape({
-          receiverMobile: Yup.string()
-            .min(10, 'number should be atleast 10 digits')
-            .max(10, 'number cannot exceed 10 digits')
-            .matches(
-              /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
-              'Mobile no must be valid',
-            )
-            .required('Mobile no is required'),
           mobile: Yup.string()
             .min(10, 'number should be atleast 10 digits')
             .max(10, 'number cannot exceed 10 digits')
@@ -192,6 +183,42 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
               'Mobile no must be valid',
             )
             .required('Mobile no is required'),
+          receiverMobile: Yup.string()
+            .min(10, 'number should be atleast 10 digits')
+            .max(10, 'number cannot exceed 10 digits')
+            .matches(
+              /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
+              'Mobile no must be valid',
+            )
+            .required('Mobile no is required')
+            .test('numberMatch', 'You cannot send money to yourself!', function(
+              value,
+            ) {
+              return this.parent.mobile !== value;
+            })
+            .test(
+              'WalletCheck',
+              'Wallet for this number does not exist!',
+              function(value) {
+                const token = localStorage.getItem('cashierLogged');
+                if (value.toString().length === 10) {
+                  return new Promise((resolve, reject) => {
+                    axios
+                      .post(`${API_URL}/cashier/getUser`, {
+                        token,
+                        mobile: value,
+                      })
+                      .then(res => {
+                        if (res.data.error || res.data.status !== 1) {
+                          resolve(false);
+                        }
+                        resolve(true);
+                      })
+                      .catch(err => resolve(false));
+                  });
+                }
+              },
+            ),
           givenname: Yup.string().required('Given Name is required'),
           familyname: Yup.string().required('Family Name is required'),
           country: Yup.string().required('Country is required'),
@@ -602,15 +629,12 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
                         />
                       </Grid>
                     </Grid>
-                    <Grid container direction="column" alignItems="flex-start">
+                    {/*  <Grid container direction="column" alignItems="flex-start">
                       <Grid item className={classes.dialogTextFieldGrid}>
-                        <Checkbox
-                          onChange={() => handleOnRequireOtp()}
-                          name="requireOTP"
-                        />
+                        <Checkbox name="requireOTP"/>
                         <span>require OTP</span>
                       </Grid>
-                    </Grid>
+                    </Grid> */}
                   </Grid>
                 </Grid>
                 <Grid item md={6} xs={12}>
