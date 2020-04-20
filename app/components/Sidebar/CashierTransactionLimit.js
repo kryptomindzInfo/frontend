@@ -394,7 +394,7 @@ console.log(items);
   getClaimMoney = event => {
     event.preventDefault();
     this.setState({
-      getClaimMoneyLoading: true,
+      claimMoneyLoading: true,
     });
     axios
       .post(`${API_URL}/getClaimMoney`, {
@@ -457,7 +457,7 @@ console.log(items);
           const error = res.data.error;
         }
         this.setState({
-          getClaimMoneyLoading: false,
+          claimMoneyLoading: false,
         });
       })
       .catch(err => {
@@ -469,7 +469,7 @@ console.log(items);
         });
         this.error();
         this.setState({
-          getClaimMoneyLoading: false,
+          claimMoneyLoading: false,
         });
       });
   };
@@ -1390,7 +1390,7 @@ console.log(items);
                       <Col md="4" />
                       <Col sm="12" md="4">
                         <FormGroup>
-                          {this.getClaimMoneyLoading ? (
+                          {this.state.claimMoneyLoading ? (
                             <Button filledBtn marginTop="20px" disabled>
                               <Loader />
                             </Button>
