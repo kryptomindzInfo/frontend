@@ -749,14 +749,13 @@ console.log(items);
   verifySendMoneyToWallet = event => {
     event.preventDefault();
     const { toWalletFormValues } = this.state;
-    console.log(toWalletFormValues);
+    this.setState({
+      verifySendMoneyOTPLoading: true,
+    });
     toWalletFormValues.token = token;
     axios
       .post(`${API_URL}/cashier/sendMoneyToWallet`, toWalletFormValues )
       .then(res => {
-      this.setState({
-        verifySendMoneyOTPLoading: true,
-      });
         if (res.status === 200) {
           if (res.data.error) {
             throw res.data.error;
