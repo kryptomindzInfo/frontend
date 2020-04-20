@@ -7,21 +7,8 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
-import { withStyles } from '@material-ui/core';
-import Dialog from '@material-ui/core/Dialog';
 import { API_URL, CURRENCY } from '../../containers/App/constants';
 import { Checkbox } from './FormCheckBox';
-
-const verifyDialogStyles = () => ({
-  paper: {
-    minHeight: '50%',
-    maxHeight: '50%',
-    minWidth: '50%',
-    maxWidth: '50%',
-  },
-});
-
-const VerifyDialogModal = withStyles(verifyDialogStyles)(Dialog);
 
 const styles = makeStyles(() => ({
   '@global': {
@@ -34,12 +21,12 @@ const styles = makeStyles(() => ({
   },
   dialogGridLeft: {
     paddingBottom: '2%',
-    paddingLeft: '20%',
+    paddingLeft: '10%',
     paddingRight: '2%',
   },
   dialogGridRight: {
     paddingBottom: '2%',
-    paddingRight: '20%',
+    paddingRight: '10%',
     paddingLeft: '2%',
   },
   dialogTextFieldGrid: {
@@ -201,21 +188,23 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
               'Wallet for this number does not exist!',
               function(value) {
                 const token = localStorage.getItem('cashierLogged');
-                if (value.toString().length === 10) {
-                  return new Promise((resolve, reject) => {
-                    axios
-                      .post(`${API_URL}/cashier/getUser`, {
-                        token,
-                        mobile: value,
-                      })
-                      .then(res => {
-                        if (res.data.error || res.data.status !== 1) {
-                          resolve(false);
-                        }
-                        resolve(true);
-                      })
-                      .catch(err => resolve(false));
-                  });
+                if (value && value !== '') {
+                  if (value.toString().length === 10) {
+                    return new Promise((resolve, reject) => {
+                      axios
+                        .post(`${API_URL}/cashier/getUser`, {
+                          token,
+                          mobile: value,
+                        })
+                        .then(res => {
+                          if (res.data.error || res.data.status !== 1) {
+                            resolve(false);
+                          }
+                          resolve(true);
+                        })
+                        .catch(err => resolve(false));
+                    });
+                  }
                 }
               },
             ),

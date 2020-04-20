@@ -773,19 +773,22 @@ generateOTP = () => {
                                   {b.sender_info ? (
                                     <span>
                                       Cash sent from{' '}
-                                      {JSON.parse(b.sender_info).givenname +
-                                        ' ' +
-                                        JSON.parse(b.sender_info)
-                                          .familyname}{' '}
+                                      {JSON.parse(b.sender_info).givenname !== undefined && JSON.parse(b.sender_info).familyname !== undefined ?
+                                        JSON.parse(b.sender_info).givenname +
+                                          ' ' +
+                                        JSON.parse(b.sender_info).familyname: JSON.parse(b.sender_info).mobile}{' '}
                                       to{' '}
-                                      {JSON.parse(b.receiver_info).givenname +
+                                      {JSON.parse(b.receiver_info).givenname !== undefined && JSON.parse(b.receiver_info).familyname !== undefined ?
+                                        JSON.parse(b.receiver_info).givenname +
                                         ' ' +
-                                        JSON.parse(b.receiver_info).familyname}
+                                        JSON.parse(b.receiver_info).familyname : JSON.parse(b.receiver_info).mobile}
                                     </span>
                                   ) : (
                                     <span>
-                                      Cash claimed from {b.sender_name} to{' '}
-                                      {b.receiver_name}
+                                      Cash claimed from {JSON.parse(b.sender_info).givenname !== undefined && JSON.parse(b.sender_info).familyname !== undefined ?
+                                      JSON.parse(b.sender_info).givenname : JSON.parse(b.sender_info).mobile} to{' '}
+                                      {JSON.parse(b.receiver_info).givenname !== undefined && JSON.parse(b.receiver_info).familyname !== undefined ?
+                                        JSON.parse(b.receiver_info).givenname : JSON.parse(b.receiver_info).mobile }
                                     </span>
                                   )}
                                 </div>
