@@ -379,11 +379,12 @@ export default class BankOperationalHistory extends Component {
       .then(res => {
         if (res.status == 200) {
           // console.log(res.data);
+          const history = res.data.history.reverse();
           this.setState(
             {
               loading: false,
-              allhistory: res.data.history,
-              totalCount: res.data.history.length,
+              allhistory: history,
+              totalCount: history.length,
             },
             () => {
               this.showHistory();
@@ -575,7 +576,7 @@ export default class BankOperationalHistory extends Component {
                                     :
                                     <span>{CURRENCY} {b.Value.amount}</span>
                                   }
-                                  
+
                                 </div>
                               </td>
                             </tr>
