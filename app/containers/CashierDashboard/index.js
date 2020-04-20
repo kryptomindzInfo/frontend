@@ -613,6 +613,7 @@ generateOTP = () => {
               marginTop="15px"
               inputWidth="calc(100% - 241px)"
               className="clr"
+              style={{ display: 'none' }}
             >
               {this.state.ticker ? (
                 <p className="notification">
@@ -651,7 +652,7 @@ generateOTP = () => {
               ) : null}
             </ActionBar>
 
-            <Card bigPadding>
+            <Card bigPadding style={{marginTop: '50px'}}>
               <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">playlist_add_check</i>
