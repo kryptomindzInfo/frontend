@@ -11,29 +11,19 @@ import { Helmet } from 'react-helmet';
 
 import { toast } from 'react-toastify';
 
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
-
 import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
-import Nav from 'components/Header/Nav';
 import Loader from 'components/Loader';
 import SidebarBank from 'components/Sidebar/SidebarBank';
 import Main from 'components/Main';
-import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
-import Button from 'components/Button';
 import Table from 'components/Table';
-import Popup from 'components/Popup';
-import FormGroup from 'components/FormGroup';
-import TextInput from 'components/TextInput';
-import SelectInput from 'components/SelectInput';
 import Pagination from 'react-js-pagination';
-import Row from 'components/Row';
-import A from 'components/A';
 import styled from 'styled-components';
+import { API_URL, CURRENCY } from '../App/constants';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 const H4 = styled.h4`
   > span {
@@ -42,9 +32,6 @@ const H4 = styled.h4`
   }
 `;
 
-import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
-
-import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -547,13 +534,12 @@ export default class BankOperationalHistory extends Component {
                           var isoformat = b.Timestamp;
                           var readable = new Date(isoformat);
                           var m = readable.getMonth(); // returns 6
-                          var d = readable.getDay(); // returns 15
-                          var y = readable.getFullYear();
+                          var d = readable.toDateString(); // returns 15
                           var h = readable.getHours();
                           var mi = readable.getMinutes();
                           var mlong = months[m];
                           var fulldate =
-                            d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+                            d + ' ' + h + ':' + mi;
 
                           return dis.state.filter == b.Value.tx_data.tx_type ||
                             dis.state.filter == '' ? (
