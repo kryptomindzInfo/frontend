@@ -5,7 +5,6 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import { makeStyles } from '@material-ui/core/styles';
 
 const dialogContentStyles = makeStyles(theme => ({
-
   toggleButtonGroup: {
     color: 'green',
     marginTop: '10px',
@@ -27,15 +26,15 @@ const dialogContentStyles = makeStyles(theme => ({
 
 const CashierPopupToggle = ({ handleToggleChange }) => {
   const classes = dialogContentStyles();
-  const [isWallet, setIsWallet] = React.useState(true);
+  const [isWallet, setIsWallet] = React.useState(false);
   const handleOnchange = (e, value) => {
     if (value === 'wallet') {
       handleToggleChange(true);
-      setIsWallet(false);
+      setIsWallet(true);
     }
     if (value === 'nonWallet') {
       handleToggleChange(false);
-      setIsWallet(true);
+      setIsWallet(false);
     }
   };
   return (
@@ -50,19 +49,17 @@ const CashierPopupToggle = ({ handleToggleChange }) => {
             exclusive
           >
             <ToggleButton
-              key={2}
               value="wallet"
               className={
-                !isWallet ? classes.toggleButton : classes.toggleButtonDisabled
+                isWallet ? classes.toggleButton : classes.toggleButtonDisabled
               }
             >
               To Wallet
             </ToggleButton>
             <ToggleButton
-              key={1}
               value="nonWallet"
               className={
-                isWallet ? classes.toggleButton : classes.toggleButtonDisabled
+                !isWallet ? classes.toggleButton : classes.toggleButtonDisabled
               }
             >
               To Non Wallet

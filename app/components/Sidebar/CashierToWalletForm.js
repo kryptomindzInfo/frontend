@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
+import { toast } from 'react-toastify';
 import { API_URL, CURRENCY } from '../../containers/App/constants';
 import { Checkbox } from './FormCheckBox';
 
@@ -115,7 +116,7 @@ const initialValues = {
   requireOTP: '',
   receiverMobile: '',
   receiverIdentificationAmount: '',
-  termsAndCondition: false,
+  // termsAndCondition: false,
 };
 const CashierToWalletForm = ({ onClose, formValues }) => {
   const classes = styles();
@@ -126,7 +127,7 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
     onClose();
   };
 
-  const getLiveFee = (event, amount) => {
+  const getLiveFee = amount => {
     const token = localStorage.getItem('cashierLogged');
     if (amount !== '') {
       axios
@@ -134,16 +135,14 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
         .then(res => {
           if (res.status === 200) {
             if (res.data.error) {
-              throw res.data.error;
+              toast.error(res.data.error);
             } else {
               setLiveFee(res.data.fee);
             }
-          } else {
-            throw res.data.error;
           }
         })
         .catch(err => {
-          console.log(err);
+          toast.error(err.response.data.error);
         });
     }
   };
@@ -227,10 +226,10 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
           senderIdentificationCountry: Yup.string().required(
             'Country is required',
           ),
-          termsAndCondition: Yup.boolean().oneOf(
-            [true],
-            'You must accept the terms and conditions.',
-          ),
+          // termsAndCondition: Yup.boolean().oneOf(
+          //   [true],
+          //   'You must accept the terms and conditions.',
+          // ),
         })}
       >
         {formikProps => {
@@ -721,7 +720,7 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
                           value={values.receiverIdentificationAmount}
                           onChange={handleChange}
                           onBlur={e =>
-                            getLiveFee(e, values.receiverIdentificationAmount)
+                            getLiveFee(values.receiverIdentificationAmount)
                           }
                           className={classes.dialogTextFieldGridFullRow}
                           error={
@@ -777,7 +776,7 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
                         Total Fee {CURRENCY} {liveFee} will be charged
                       </Typography>
 
-                      <div>
+                      {/* <div>
                         <Checkbox name="termsAndCondition" />
                         <span>
                           I have read the <u> terms and conditions </u>
@@ -789,7 +788,7 @@ const CashierToWalletForm = ({ onClose, formValues }) => {
                         </div>
                       ) : (
                         ''
-                      )}
+                      )} */}
                     </Grid>
                     <Grid
                       container
