@@ -656,7 +656,7 @@ export default class FeeList extends Component {
                   <div>
                     Fixed:{' '}
                     <span className="green">
-                      {`${CURRENCY} ${this.state.html.fixed_amount}`}
+                      {`${CURRENCY} ${this.state.html.fixed}`}
                     </span>
                     , Percentage:{' '}
                     <span className="green">{this.state.html.percentage}</span>
