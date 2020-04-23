@@ -844,7 +844,7 @@ class CashierTransactionLimit extends Component {
 
   getLiveFee = (amount, isWallet) => {
     this.setState({
-      isValidFee: false,
+      isValidFee: true,
     });
     if (amount !== '') {
       axios

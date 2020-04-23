@@ -39,7 +39,7 @@ const CashierPopupToggle = ({ handleToggleChange }) => {
   };
   return (
     <div>
-      <Grid xs={12} md={12} container direction="column" alignItems="center">
+      <Grid container direction="column" alignItems="center">
         <Grid item>
           <ToggleButtonGroup
             className={classes.toggleButtonGroup}
