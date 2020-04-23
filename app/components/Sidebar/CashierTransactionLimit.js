@@ -27,8 +27,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import CashierPopupToggle from './CashierPopupToggle';
 import CashierToWalletForm from './CashierToWalletForm';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
+import Blur from '../Blur';
 
 toast.configure({
   position: 'bottom-right',
@@ -57,7 +56,7 @@ class CashierTransactionLimit extends Component {
       showSendMoneyOTP: false,
       isWallet: false,
       toWalletFormValues: {},
-      isValidFee: false,
+      isValidFee: true,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -1578,7 +1577,7 @@ class CashierTransactionLimit extends Component {
                         marginBottom="50px"
                         onClick={this.confirmPending}
                       >
-                        ><span>Yes</span>
+                        <span>Yes</span>
                       </Button>
                     )}
                   </Col>
@@ -1850,645 +1849,614 @@ class CashierTransactionLimit extends Component {
                       </Container>
                     </div>
                   ) : (
-                    <div>
+                    <div style={{ width: '100%', height: '100%' }}>
                       <CashierPopupToggle
                         handleToggleChange={value =>
                           this.handleToggleChange(value)
                         }
                       />
                       {this.state.isWallet ? (
-                        this.state.isValidFee ? (
+                        <Blur isValidFee={this.state.isValidFee}>
                           <CashierToWalletForm
+                            isValidFee={this.state.isValidFee}
                             onClose={() => this.closePopupSendMoney()}
                             formValues={values =>
                               this.setToWalletFormValues(values)
                             }
                           />
-                        ) : (
-                          <Grid
-                            container
-                            direction="column"
-                            justify="center"
-                            alignItems="center"
-                          >
-                            <Typography
-                              variant="h6"
-                              noWrap
-                              style={{
-                                paddingTop: '10%',
-                                paddingBottom: '10%',
-                              }}
-                            >
-                              This feature is not available.
-                            </Typography>
-                          </Grid>
-                        )
-                      ) : this.state.isValidFee ? (
-                        <Container>
-                          <Row>
-                            <Col sm="12" md="5" cW="49%">
-                              <div
-                                style={{
-                                  fontSize: '24px',
-                                  fontWeight: 'bold',
-                                  padding: '13px 0px',
-                                  color: '#417505',
-                                }}
-                              >
-                                Sender's Info
-                              </div>
-
-                              <Row>
-                                <Col cW="20%" mR="2%">
-                                  <FormGroup>
-                                    <TextInput
-                                      type="text"
-                                      name="ccode"
-                                      readOnly
-                                      placeholder="+000"
-                                      value={this.state.ccode}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                <Col cW="78%">
-                                  <FormGroup>
-                                    <label>
-                                      Mobile Number
-                                      <span style={{ color: 'red' }}>*</span>
-                                      {/* <FormattedMessage {...messages.popup7} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="text"
-                                      pattern="[0-9]{10}"
-                                      title="10 Digit numeric value"
-                                      name="mobile"
-                                      autoFocus
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={this.state.mobile}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                              </Row>
-                              <Row>
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      Given Name
-                                      <span style={{ color: 'red' }}>*</span>
-                                    </label>
-                                    <TextInput
-                                      type="text"
-                                      name="givenname"
-                                      pattern=".{3,12}"
-                                      autoFocus
-                                      title="Minimum 3 characters"
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={this.state.givenname}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      Family Name
-                                      <span style={{ color: 'red' }}>*</span>
-                                      {/* <FormattedMessage {...messages.popup1} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="text"
-                                      name="familyname"
-                                      autoFocus
-                                      pattern=".{3,12}"
-                                      title="Minimum 3 characters"
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={this.state.familyname}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                              </Row>
-
-                              <FormGroup>
-                                <label>
-                                  Address<span style={{ color: 'red' }}>*</span>
-                                  {/* <FormattedMessage {...messages.popup2} />* */}
-                                </label>
-                                <TextInput
-                                  type="text"
-                                  name="address1"
-                                  onFocus={inputFocus}
-                                  onBlur={inputBlur}
-                                  autoFocus
-                                  value={this.state.address1}
-                                  onChange={this.handleInputChange}
-                                  required
-                                />
-                              </FormGroup>
-
-                              <Row>
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      State
-                                      {/* <FormattedMessage {...messages.popup3} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="text"
-                                      name="state"
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      autoFocus
-                                      value={this.state.state}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      Zip Code
-                                      {/* <FormattedMessage {...messages.popup4} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="text"
-                                      name="zip"
-                                      autoFocus
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={this.state.zip}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                              </Row>
-                              <Row>
-                                <Col>
-                                  <FormGroup>
-                                    <CountrySelectBox
-                                      type="text"
-                                      autoFocus
-                                      name="country"
-                                      value={this.state.country}
-                                      onChange={this.countryChange}
-                                      data-change="ccode"
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      Authorised Email
-                                      {/* <FormattedMessage {...messages.popup8} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="email"
-                                      name="email"
-                                      autoFocus
-                                      pattern="(^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$)"
-                                      onInput={e =>
-                                        e.target.setCustomValidity('')
-                                      }
-                                      onInvalid={e =>
-                                        e.target.setCustomValidity(
-                                          'Enter a valid email address',
-                                        )
-                                      }
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={this.state.email}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                {/* <form.Group controlId="exampleForm.ControlTextarea1">
-                        <form.Label>Example textarea</form.Label>
-                        <form.Control as="textarea" rows="3" />
-                      </form.Group> */}
-                              </Row>
-                              <FormGroup>
-                                <label>
-                                  Note
-                                  {/* <FormattedMessage {...messages.popup2} />* */}
-                                </label>
-                                <TextInput
-                                  multiline
-                                  numberOfLines={3}
-                                  type="text"
-                                  autoFocus
-                                  name="note"
-                                  onFocus={inputFocus}
-                                  onBlur={inputBlur}
-                                  value={this.state.note}
-                                  onChange={this.handleInputChange}
-                                  required
-                                />
-                              </FormGroup>
-                              <div
-                                style={{
-                                  fontSize: '24px',
-                                  fontWeight: 'bold',
-                                  padding: '10px 0px',
-                                }}
-                              >
-                                Sender's Identification
-                              </div>
-                              <Row>
-                                <Col>
-                                  <FormGroup>
-                                    <CountrySelectBox
-                                      type="text"
-                                      autoFocus
-                                      name="senderIdentificationCountry"
-                                      value={
-                                        this.state.senderIdentificationCountry
-                                      }
-                                      onChange={this.countryChange}
-                                      data-change="ccc"
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      Type
-                                      {/* <FormattedMessage {...messages.popup1} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="text"
-                                      autoFocus
-                                      name="senderIdentificationType"
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={
-                                        this.state.senderIdentificationType
-                                      }
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                              </Row>
-                              <Row>
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      Number
-                                      {/* <FormattedMessage {...messages.popup1} />* */}
-                                    </label>
-                                    <TextInput
-                                      autoFocus
-                                      type="text"
-                                      name="senderIdentificationNumber"
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={
-                                        this.state.senderIdentificationNumber
-                                      }
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      Valid till
-                                      {/* <FormattedMessage {...messages.popup1} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="text"
-                                      name="senderIdentificationValidTill"
-                                      autoFocus
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={
-                                        this.state.senderIdentificationValidTill
-                                      }
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                              </Row>
-                            </Col>
-                            <Col sm="12" md="2" cW="2%" />
-                            <Col sm="12" md="5" cW="49%">
-                              <div
-                                style={{
-                                  fontSize: '24px',
-                                  fontWeight: 'bold',
-                                  padding: '13px 0px',
-                                  color: '#417505',
-                                }}
-                              >
-                                Receiver's Info
-                              </div>
-                              <Row>
-                                <Col cW="20%" mR="2%">
-                                  <FormGroup>
-                                    <TextInput
-                                      type="text"
-                                      placeholder="+000"
-                                      autoFocus
-                                      name="receiverccode"
-                                      readOnly
-                                      value={this.state.receiverccode}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                <Col cW="78%">
-                                  <FormGroup>
-                                    <label>
-                                      Mobile Number
-                                      <span style={{ color: 'red' }}>*</span>
-                                      {/* <FormattedMessage {...messages.popup7} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="text"
-                                      pattern="[0-9]{10}"
-                                      autoFocus
-                                      title="10 Digit numeric value"
-                                      name="receiverMobile"
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={this.state.receiverMobile}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                              </Row>
-                              <Row>
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      Given Name
-                                      <span style={{ color: 'red' }}>*</span>
-                                      {/* <FormattedMessage {...messages.popup1} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="text"
-                                      name="receiverGivenName"
-                                      pattern=".{3,12}"
-                                      autoFocus
-                                      title="Minimum 3 characters"
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={this.state.receiverGivenName}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      Family Name
-                                      <span style={{ color: 'red' }}>*</span>
-                                      {/* <FormattedMessage {...messages.popup1} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="text"
-                                      name="receiverFamilyName"
-                                      pattern=".{3,12}"
-                                      autoFocus
-                                      title="Minimum 3 characters"
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={this.state.receiverFamilyName}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                              </Row>
-                              <Row>
-                                <Col>
-                                  <FormGroup>
-                                    <CountrySelectBox
-                                      type="text"
-                                      name="receiverCountry"
-                                      autoFocus
-                                      value={this.state.receiverCountry}
-                                      onChange={this.countryChange}
-                                      data-change="receiverccode"
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-
-                                <Col>
-                                  <FormGroup>
-                                    <label>
-                                      Authorised Email
-                                      {/* <FormattedMessage {...messages.popup8} />* */}
-                                    </label>
-                                    <TextInput
-                                      type="email"
-                                      name="receiverEmail"
-                                      autoFocus
-                                      pattern="(^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$)"
-                                      onInput={e =>
-                                        e.target.setCustomValidity('')
-                                      }
-                                      onInvalid={e =>
-                                        e.target.setCustomValidity(
-                                          'Enter a valid email address',
-                                        )
-                                      }
-                                      onFocus={inputFocus}
-                                      onBlur={inputBlur}
-                                      value={this.state.receiverEmail}
-                                      onChange={this.handleInputChange}
-                                      required
-                                    />
-                                  </FormGroup>
-                                </Col>
-                                {/* <form.Group controlId="exampleForm.ControlTextarea1">
-                        <form.Label>Example textarea</form.Label>
-                        <form.Control as="textarea" rows="3" />
-                      </form.Group> */}
-                              </Row>
-                              <Label mT="20px">
-                                <input
-                                  type="checkbox"
-                                  onChange={this.toggleIdentificationBlock}
-                                  value="1"
-                                  checked={this.state.withoutID}
-                                />{' '}
-                                Pay without requesting physical id
-                                <input
-                                  style={{ marginLeft: '20px' }}
-                                  type="checkbox"
-                                  onChange={this.checkboxChange}
-                                  value="1"
-                                  checked={this.state.requireOTP}
-                                />{' '}
-                                Require OTP
-                              </Label>
-                              {this.state.withoutID ? null : (
-                                <div>
-                                  <div
-                                    style={{
-                                      fontSize: '24px',
-                                      fontWeight: 'bold',
-                                      padding: '13px 0px',
-                                    }}
-                                  >
-                                    Receiver's Identification
-                                  </div>
-                                  <Row>
-                                    <Col>
-                                      <FormGroup>
-                                        <CountrySelectBox
-                                          type="text"
-                                          name="receiverIdentificationCountry"
-                                          value={
-                                            this.state
-                                              .receiverIdentificationCountry
-                                          }
-                                          autoFocus
-                                          onChange={this.countryChange}
-                                          data-change="ccc"
-                                          required
-                                        />
-                                      </FormGroup>
-                                    </Col>
-                                    <Col>
-                                      <FormGroup>
-                                        <label>
-                                          Type
-                                          {/* <FormattedMessage {...messages.popup1} />* */}
-                                        </label>
-                                        <TextInput
-                                          type="text"
-                                          autoFocus
-                                          name="receiverIdentificationType"
-                                          onFocus={inputFocus}
-                                          onBlur={inputBlur}
-                                          value={
-                                            this.state
-                                              .receiverIdentificationType
-                                          }
-                                          onChange={this.handleInputChange}
-                                          required
-                                        />
-                                      </FormGroup>
-                                    </Col>
-                                  </Row>
-                                  <Row>
-                                    <Col>
-                                      <FormGroup>
-                                        <label>
-                                          Number
-                                          {/* <FormattedMessage {...messages.popup1} />* */}
-                                        </label>
-                                        <TextInput
-                                          type="text"
-                                          autoFocus
-                                          name="receiverIdentificationNumber"
-                                          onFocus={inputFocus}
-                                          onBlur={inputBlur}
-                                          value={
-                                            this.state
-                                              .receiverIdentificationNumber
-                                          }
-                                          onChange={this.handleInputChange}
-                                          required
-                                        />
-                                      </FormGroup>
-                                    </Col>
-                                    <Col>
-                                      <FormGroup>
-                                        <label>
-                                          Valid till
-                                          {/* <FormattedMessage {...messages.popup1} />* */}
-                                        </label>
-                                        <TextInput
-                                          type="text"
-                                          autoFocus
-                                          name="receiverIdentificationValidTill"
-                                          onFocus={inputFocus}
-                                          onBlur={inputBlur}
-                                          value={
-                                            this.state
-                                              .receiverIdentificationValidTill
-                                          }
-                                          onChange={this.handleInputChange}
-                                          required
-                                        />
-                                      </FormGroup>
-                                    </Col>
-                                  </Row>
-                                </div>
-                              )}
-                              <FormGroup>
-                                <label>
-                                  Amount
-                                  {/* <FormattedMessage {...messages.popup1} />* */}
-                                </label>
-                                <TextInput
-                                  type="text"
-                                  // pattern="[0-9]"
-                                  name="receiverIdentificationAmount"
-                                  onFocus={inputFocus}
-                                  autoFocus
-                                  onBlur={inputBlur}
-                                  value={
-                                    this.state.receiverIdentificationAmount
-                                  }
-                                  onChange={this.amountChange}
-                                  required
-                                />
-                              </FormGroup>
-
-                              <Button filledBtn marginTop="20px">
-                                <span>Proceed</span>
-                              </Button>
-                              <p className="note">
-                                <span style={{ color: 'red' }}>*</span> Total
-                                Fee {CURRENCY} {this.state.livefee} will be
-                                charged
-                              </p>
-                            </Col>
-                          </Row>
-                        </Container>
+                        </Blur>
                       ) : (
-                        <Grid
-                          container
-                          direction="column"
-                          justify="center"
-                          alignItems="center"
-                        >
-                          <Typography
-                            variant="h6"
-                            noWrap
-                            style={{
-                              paddingTop: '10%',
-                              paddingBottom: '10%',
-                            }}
-                          >
-                            This feature is not available.
-                          </Typography>
-                        </Grid>
+                        <Blur isValidFee={this.state.isValidFee}>
+                          <Container>
+                            <Row>
+                              <Col sm="12" md="5" cW="49%">
+                                <div
+                                  style={{
+                                    fontSize: '24px',
+                                    fontWeight: 'bold',
+                                    padding: '13px 0px',
+                                    color: '#417505',
+                                  }}
+                                >
+                                  Sender's Info
+                                </div>
+
+                                <Row>
+                                  <Col cW="20%" mR="2%">
+                                    <FormGroup>
+                                      <TextInput
+                                        type="text"
+                                        name="ccode"
+                                        readOnly
+                                        placeholder="+000"
+                                        value={this.state.ccode}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  <Col cW="78%">
+                                    <FormGroup>
+                                      <label>
+                                        Mobile Number
+                                        <span style={{ color: 'red' }}>*</span>
+                                        {/* <FormattedMessage {...messages.popup7} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="text"
+                                        pattern="[0-9]{10}"
+                                        title="10 Digit numeric value"
+                                        name="mobile"
+                                        autoFocus
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={this.state.mobile}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        Given Name
+                                        <span style={{ color: 'red' }}>*</span>
+                                      </label>
+                                      <TextInput
+                                        type="text"
+                                        name="givenname"
+                                        pattern=".{3,12}"
+                                        autoFocus
+                                        title="Minimum 3 characters"
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={this.state.givenname}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        Family Name
+                                        <span style={{ color: 'red' }}>*</span>
+                                        {/* <FormattedMessage {...messages.popup1} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="text"
+                                        name="familyname"
+                                        autoFocus
+                                        pattern=".{3,12}"
+                                        title="Minimum 3 characters"
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={this.state.familyname}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                </Row>
+
+                                <FormGroup>
+                                  <label>
+                                    Address
+                                    <span style={{ color: 'red' }}>*</span>
+                                    {/* <FormattedMessage {...messages.popup2} />* */}
+                                  </label>
+                                  <TextInput
+                                    type="text"
+                                    name="address1"
+                                    onFocus={inputFocus}
+                                    onBlur={inputBlur}
+                                    autoFocus
+                                    value={this.state.address1}
+                                    onChange={this.handleInputChange}
+                                    required
+                                  />
+                                </FormGroup>
+
+                                <Row>
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        State
+                                        {/* <FormattedMessage {...messages.popup3} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="text"
+                                        name="state"
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        autoFocus
+                                        value={this.state.state}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        Zip Code
+                                        {/* <FormattedMessage {...messages.popup4} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="text"
+                                        name="zip"
+                                        autoFocus
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={this.state.zip}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                  <Col>
+                                    <FormGroup>
+                                      <CountrySelectBox
+                                        type="text"
+                                        autoFocus
+                                        name="country"
+                                        value={this.state.country}
+                                        onChange={this.countryChange}
+                                        data-change="ccode"
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        Authorised Email
+                                        {/* <FormattedMessage {...messages.popup8} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="email"
+                                        name="email"
+                                        autoFocus
+                                        pattern="(^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$)"
+                                        onInput={e =>
+                                          e.target.setCustomValidity('')
+                                        }
+                                        onInvalid={e =>
+                                          e.target.setCustomValidity(
+                                            'Enter a valid email address',
+                                          )
+                                        }
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={this.state.email}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  {/* <form.Group controlId="exampleForm.ControlTextarea1">
+                        <form.Label>Example textarea</form.Label>
+                        <form.Control as="textarea" rows="3" />
+                      </form.Group> */}
+                                </Row>
+                                <FormGroup>
+                                  <label>
+                                    Note
+                                    {/* <FormattedMessage {...messages.popup2} />* */}
+                                  </label>
+                                  <TextInput
+                                    multiline
+                                    numberOfLines={3}
+                                    type="text"
+                                    autoFocus
+                                    name="note"
+                                    onFocus={inputFocus}
+                                    onBlur={inputBlur}
+                                    value={this.state.note}
+                                    onChange={this.handleInputChange}
+                                    required
+                                  />
+                                </FormGroup>
+                                <div
+                                  style={{
+                                    fontSize: '24px',
+                                    fontWeight: 'bold',
+                                    padding: '10px 0px',
+                                  }}
+                                >
+                                  Sender's Identification
+                                </div>
+                                <Row>
+                                  <Col>
+                                    <FormGroup>
+                                      <CountrySelectBox
+                                        type="text"
+                                        autoFocus
+                                        name="senderIdentificationCountry"
+                                        value={
+                                          this.state.senderIdentificationCountry
+                                        }
+                                        onChange={this.countryChange}
+                                        data-change="ccc"
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        Type
+                                        {/* <FormattedMessage {...messages.popup1} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="text"
+                                        autoFocus
+                                        name="senderIdentificationType"
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={
+                                          this.state.senderIdentificationType
+                                        }
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        Number
+                                        {/* <FormattedMessage {...messages.popup1} />* */}
+                                      </label>
+                                      <TextInput
+                                        autoFocus
+                                        type="text"
+                                        name="senderIdentificationNumber"
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={
+                                          this.state.senderIdentificationNumber
+                                        }
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        Valid till
+                                        {/* <FormattedMessage {...messages.popup1} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="text"
+                                        name="senderIdentificationValidTill"
+                                        autoFocus
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={
+                                          this.state
+                                            .senderIdentificationValidTill
+                                        }
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                </Row>
+                              </Col>
+                              <Col sm="12" md="2" cW="2%" />
+                              <Col sm="12" md="5" cW="49%">
+                                <div
+                                  style={{
+                                    fontSize: '24px',
+                                    fontWeight: 'bold',
+                                    padding: '13px 0px',
+                                    color: '#417505',
+                                  }}
+                                >
+                                  Receiver's Info
+                                </div>
+                                <Row>
+                                  <Col cW="20%" mR="2%">
+                                    <FormGroup>
+                                      <TextInput
+                                        type="text"
+                                        placeholder="+000"
+                                        autoFocus
+                                        name="receiverccode"
+                                        readOnly
+                                        value={this.state.receiverccode}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  <Col cW="78%">
+                                    <FormGroup>
+                                      <label>
+                                        Mobile Number
+                                        <span style={{ color: 'red' }}>*</span>
+                                        {/* <FormattedMessage {...messages.popup7} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="text"
+                                        pattern="[0-9]{10}"
+                                        autoFocus
+                                        title="10 Digit numeric value"
+                                        name="receiverMobile"
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={this.state.receiverMobile}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        Given Name
+                                        <span style={{ color: 'red' }}>*</span>
+                                        {/* <FormattedMessage {...messages.popup1} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="text"
+                                        name="receiverGivenName"
+                                        pattern=".{3,12}"
+                                        autoFocus
+                                        title="Minimum 3 characters"
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={this.state.receiverGivenName}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        Family Name
+                                        <span style={{ color: 'red' }}>*</span>
+                                        {/* <FormattedMessage {...messages.popup1} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="text"
+                                        name="receiverFamilyName"
+                                        pattern=".{3,12}"
+                                        autoFocus
+                                        title="Minimum 3 characters"
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={this.state.receiverFamilyName}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                </Row>
+                                <Row>
+                                  <Col>
+                                    <FormGroup>
+                                      <CountrySelectBox
+                                        type="text"
+                                        name="receiverCountry"
+                                        autoFocus
+                                        value={this.state.receiverCountry}
+                                        onChange={this.countryChange}
+                                        data-change="receiverccode"
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+
+                                  <Col>
+                                    <FormGroup>
+                                      <label>
+                                        Authorised Email
+                                        {/* <FormattedMessage {...messages.popup8} />* */}
+                                      </label>
+                                      <TextInput
+                                        type="email"
+                                        name="receiverEmail"
+                                        autoFocus
+                                        pattern="(^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$)"
+                                        onInput={e =>
+                                          e.target.setCustomValidity('')
+                                        }
+                                        onInvalid={e =>
+                                          e.target.setCustomValidity(
+                                            'Enter a valid email address',
+                                          )
+                                        }
+                                        onFocus={inputFocus}
+                                        onBlur={inputBlur}
+                                        value={this.state.receiverEmail}
+                                        onChange={this.handleInputChange}
+                                        required
+                                      />
+                                    </FormGroup>
+                                  </Col>
+                                  {/* <form.Group controlId="exampleForm.ControlTextarea1">
+                        <form.Label>Example textarea</form.Label>
+                        <form.Control as="textarea" rows="3" />
+                      </form.Group> */}
+                                </Row>
+                                <Label mT="20px">
+                                  <input
+                                    type="checkbox"
+                                    onChange={this.toggleIdentificationBlock}
+                                    value="1"
+                                    checked={this.state.withoutID}
+                                  />{' '}
+                                  Pay without requesting physical id
+                                  <input
+                                    style={{ marginLeft: '20px' }}
+                                    type="checkbox"
+                                    onChange={this.checkboxChange}
+                                    value="1"
+                                    checked={this.state.requireOTP}
+                                  />{' '}
+                                  Require OTP
+                                </Label>
+                                {this.state.withoutID ? null : (
+                                  <div>
+                                    <div
+                                      style={{
+                                        fontSize: '24px',
+                                        fontWeight: 'bold',
+                                        padding: '13px 0px',
+                                      }}
+                                    >
+                                      Receiver's Identification
+                                    </div>
+                                    <Row>
+                                      <Col>
+                                        <FormGroup>
+                                          <CountrySelectBox
+                                            type="text"
+                                            name="receiverIdentificationCountry"
+                                            value={
+                                              this.state
+                                                .receiverIdentificationCountry
+                                            }
+                                            autoFocus
+                                            onChange={this.countryChange}
+                                            data-change="ccc"
+                                            required
+                                          />
+                                        </FormGroup>
+                                      </Col>
+                                      <Col>
+                                        <FormGroup>
+                                          <label>
+                                            Type
+                                            {/* <FormattedMessage {...messages.popup1} />* */}
+                                          </label>
+                                          <TextInput
+                                            type="text"
+                                            autoFocus
+                                            name="receiverIdentificationType"
+                                            onFocus={inputFocus}
+                                            onBlur={inputBlur}
+                                            value={
+                                              this.state
+                                                .receiverIdentificationType
+                                            }
+                                            onChange={this.handleInputChange}
+                                            required
+                                          />
+                                        </FormGroup>
+                                      </Col>
+                                    </Row>
+                                    <Row>
+                                      <Col>
+                                        <FormGroup>
+                                          <label>
+                                            Number
+                                            {/* <FormattedMessage {...messages.popup1} />* */}
+                                          </label>
+                                          <TextInput
+                                            type="text"
+                                            autoFocus
+                                            name="receiverIdentificationNumber"
+                                            onFocus={inputFocus}
+                                            onBlur={inputBlur}
+                                            value={
+                                              this.state
+                                                .receiverIdentificationNumber
+                                            }
+                                            onChange={this.handleInputChange}
+                                            required
+                                          />
+                                        </FormGroup>
+                                      </Col>
+                                      <Col>
+                                        <FormGroup>
+                                          <label>
+                                            Valid till
+                                            {/* <FormattedMessage {...messages.popup1} />* */}
+                                          </label>
+                                          <TextInput
+                                            type="text"
+                                            autoFocus
+                                            name="receiverIdentificationValidTill"
+                                            onFocus={inputFocus}
+                                            onBlur={inputBlur}
+                                            value={
+                                              this.state
+                                                .receiverIdentificationValidTill
+                                            }
+                                            onChange={this.handleInputChange}
+                                            required
+                                          />
+                                        </FormGroup>
+                                      </Col>
+                                    </Row>
+                                  </div>
+                                )}
+                                <FormGroup>
+                                  <label>
+                                    Amount
+                                    {/* <FormattedMessage {...messages.popup1} />* */}
+                                  </label>
+                                  <TextInput
+                                    type="text"
+                                    // pattern="[0-9]"
+                                    name="receiverIdentificationAmount"
+                                    onFocus={inputFocus}
+                                    autoFocus
+                                    onBlur={inputBlur}
+                                    value={
+                                      this.state.receiverIdentificationAmount
+                                    }
+                                    onChange={this.amountChange}
+                                    required
+                                  />
+                                </FormGroup>
+
+                                <Button filledBtn marginTop="20px">
+                                  <span>Proceed</span>
+                                </Button>
+                                <p className="note">
+                                  <span style={{ color: 'red' }}>*</span> Total
+                                  Fee {CURRENCY} {this.state.livefee} will be
+                                  charged
+                                </p>
+                              </Col>
+                            </Row>
+                          </Container>
+                        </Blur>
                       )}
                     </div>
                   )}
