@@ -15,12 +15,7 @@ import Container from 'components/Container';
 import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
 
-import {
-  API_URL,
-  CONTRACT_URL,
-  CURRENCY,
-  STATIC_URL,
-} from 'containers/App/constants';
+import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
 import messages from './messages';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -452,7 +447,7 @@ class CashierTransactionLimit extends Component {
               receiverIdentificationAmount: o.amount,
               withoutID: o.without_id,
               requireOTP: o.require_otp,
-              dateClaimMoney: o.created_at.toString(),
+              dateClaimMoney: new Date(o.created_at).toDateString(),
 
               showClaimMoneyDetails: true,
             });
@@ -1300,15 +1295,6 @@ class CashierTransactionLimit extends Component {
                           </Row>
                         </Col>
                         <Col>
-                          <p className="note">
-                            <span style={{ color: 'red' }}>
-                              <input type="checkbox" required value="1" />
-                            </span>{' '}
-                            I have read the
-                            <a onClick={() => window.open('/termsConditions')}>
-                              Terms and Conditions
-                            </a>
-                          </p>
                           {this.state.withoutID ? null : (
                             <FormGroup>
                               <UploadArea
