@@ -13,7 +13,6 @@ import axios from 'axios';
 import Paper from '@material-ui/core/Paper';
 import { toast } from 'react-toastify';
 import PdfIcon from '../images/pdf_icon.png';
-import DocumentIcon from '../images/document_icon.png';
 import { API_URL, CONTRACT_URL } from '../containers/App/constants';
 
 const dialogTilteStyles = theme => ({
@@ -71,8 +70,8 @@ const dialogContentStyles = makeStyles(() => ({
     paddingLeft: '10%',
     paddingRight: '5%',
   },
-  dialogGridRight: {
-    paddingTop: '5%',
+  verifyDialogRight: {
+    paddingTop: '2%',
     paddingBottom: '2%',
     paddingRight: '10%',
     paddingLeft: '5%',
@@ -105,9 +104,9 @@ const dialogContentStyles = makeStyles(() => ({
     paddingRight: '3%',
     paddingLeft: '3%',
   },
-  dialogButton: {
-    paddingTop: '3%',
-    paddingBottom: '3%',
+  verifyUserDialogButton: {
+    paddingTop: '1%',
+    paddingBottom: '1%',
   },
   dialogPaperSmall: {
     borderRadius: '20px',
@@ -846,15 +845,15 @@ export default function FormDialog() {
                         direction="column"
                         justify="space-evenly"
                         alignItems="flex-start"
-                        className={classes.dialogGridRight}
+                        className={classes.verifyDialogRight}
                       >
                         <Button
                           disableRipple
                           variant="contained"
                           color="primary"
                           onClick={() => triggerBrowse('contract')}
-                          className={classes.dialogButton}
-                          style={{ width: '50%', padding: '2%' }}
+                          className={classes.verifyUserDialogButton}
+                          style={{ width: '50%', padding: '1%' }}
                         >
                           <input
                             id="contract"
@@ -926,7 +925,8 @@ export default function FormDialog() {
                                 ? user.docs_hash.map((value, index) => (
                                   <a
                                     target="docFrame"
-                                    href={`${CONTRACT_URL}/${value.hash}`}>
+                                    href={`${CONTRACT_URL}/${value.hash}`}
+                                  >
                                     <div
                                       key={index}
                                       className={classes.documentCard}
@@ -958,7 +958,7 @@ export default function FormDialog() {
                         </Grid>
                         <Button
                           type="submit"
-                          className={classes.dialogButton}
+                          className={classes.verifyUserDialogButton}
                           variant="contained"
                           color="primary"
                           disableRipple
@@ -966,7 +966,7 @@ export default function FormDialog() {
                           disabled={isSubmitting}
                           style={{
                             width: '90%',
-                            marginTop: '5%',
+                            marginTop: '1%',
                           }}
                         >
                           <Typography variant="h5">Proceed</Typography>

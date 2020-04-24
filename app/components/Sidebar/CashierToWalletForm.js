@@ -226,7 +226,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   };
 
   const handleWalletSelection = wallet => {
-    setWalletBankName('@' + wallet);
+    setWalletBankName(`@${wallet}`);
     setWalletPopup(false);
   };
 
@@ -278,13 +278,20 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
               livefee: '',
               requireOTP: '',
               receiverMobile: '',
+              feeType: 'inclusive',
               receiverIdentificationAmount: '',
               // termsAndCondition: false,
             }
         }
         onSubmit={async values => {
+          const fee = values.livefee;
           values.livefee = liveFee;
           values.requireOTP = '111111';
+          if (values.feeType == 'inclusive') {
+            values.receiverIdentificationAmount =
+              parseFloat(values.receiverIdentificationAmount) - parseFloat(fee);
+            values.livefee = 0;
+          }
           handleOnProceedClick(values);
         }}
         validationSchema={Yup.object().shape({
@@ -798,7 +805,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                                     fontWeight: '600',
                                   }}
                                 >
-                                   {walletBankName}
+                                  {walletBankName}
                                 </span>
                               </InputAdornment>
                             ),

@@ -15,12 +15,7 @@ import Container from 'components/Container';
 import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
 
-import {
-  API_URL,
-  CONTRACT_URL,
-  CURRENCY,
-  STATIC_URL,
-} from 'containers/App/constants';
+import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -1926,6 +1921,7 @@ class CashierTransactionLimit extends Component {
                                   <Col cW="20%" mR="2%">
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -1948,6 +1944,7 @@ class CashierTransactionLimit extends Component {
                                   <Col cW="78%">
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -1974,6 +1971,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -1995,6 +1993,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2018,6 +2017,7 @@ class CashierTransactionLimit extends Component {
 
                                 <FormGroup>
                                   <TextField
+                                    size="small"
                                     InputLabelProps={{
                                       shrink: true,
                                     }}
@@ -2040,6 +2040,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2061,6 +2062,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2097,6 +2099,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2130,6 +2133,7 @@ class CashierTransactionLimit extends Component {
                                 </Row>
                                 <FormGroup>
                                   <TextField
+                                    size="small"
                                     InputLabelProps={{
                                       shrink: true,
                                     }}
@@ -2176,6 +2180,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2201,6 +2206,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2224,6 +2230,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2263,6 +2270,7 @@ class CashierTransactionLimit extends Component {
                                   <Col cW="20%" mR="2%">
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2285,6 +2293,7 @@ class CashierTransactionLimit extends Component {
                                   <Col cW="78%">
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2309,6 +2318,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2331,6 +2341,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2368,6 +2379,7 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        size="small"
                                         InputLabelProps={{
                                           shrink: true,
                                         }}
@@ -2446,6 +2458,7 @@ class CashierTransactionLimit extends Component {
                                       <Col>
                                         <FormGroup>
                                           <TextField
+                                            size="small"
                                             InputLabelProps={{
                                               shrink: true,
                                             }}
@@ -2472,6 +2485,7 @@ class CashierTransactionLimit extends Component {
                                       <Col>
                                         <FormGroup>
                                           <TextField
+                                            size="small"
                                             InputLabelProps={{
                                               shrink: true,
                                             }}
@@ -2496,6 +2510,7 @@ class CashierTransactionLimit extends Component {
                                       <Col>
                                         <FormGroup>
                                           <TextField
+                                            size="small"
                                             InputLabelProps={{
                                               shrink: true,
                                             }}
@@ -2522,10 +2537,11 @@ class CashierTransactionLimit extends Component {
                                 )}
                                 <FormGroup>
                                   <TextField
+                                    size="small"
                                     InputLabelProps={{
                                       shrink: true,
                                     }}
-                                    label="Ammount"
+                                    label="Amount"
                                     style={{
                                       marginTop: '6px',
                                       marginBottom: '6px',
