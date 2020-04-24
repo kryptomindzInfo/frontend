@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Formik } from 'formik';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -126,6 +126,28 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
     onClose();
   };
 
+  const getDummyLiveFee = amount => {
+    const token = localStorage.getItem('cashierLogged');
+    if (amount !== '') {
+      axios
+        .post(`${API_URL}/cashier/checkNonWalToWalFee`, { token, amount })
+        .then(res => {
+          if (res.status === 200) {
+            if (res.data.error) {
+              setIsFeeValid(false);
+              toast.error(res.data.error);
+            } else {
+              setIsFeeValid(true);
+            }
+          }
+        })
+        .catch(err => {
+          setIsFeeValid(false);
+          toast.error(err.response.data.error);
+        });
+    }
+  };
+
   const getLiveFee = amount => {
     const token = localStorage.getItem('cashierLogged');
     if (amount !== '') {
@@ -134,6 +156,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
         .then(res => {
           if (res.status === 200) {
             if (res.data.error) {
+              setLiveFee('');
               toast.error(res.data.error);
             } else {
               setLiveFee(res.data.fee);
@@ -141,9 +164,37 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
           }
         })
         .catch(err => {
+          setLiveFee('');
           toast.error(err.response.data.error);
         });
     }
+  };
+
+  const getUser = value => {
+    const token = localStorage.getItem('cashierLogged');
+    if (value) {
+      if (value.length === 10) {
+        return new Promise((resolve, reject) => {
+          axios
+            .post(`${API_URL}/cashier/getUser`, {
+              mobile: value,
+              token,
+            })
+            .then(res => {
+              if (res.data.error || res.data.status !== 1) {
+                resolve(false);
+              } else {
+                resolve(true);
+              }
+            })
+            .catch(err => {
+              resolve(false);
+            });
+        });
+      }
+      return false;
+    }
+    return false;
   };
 
   const handleOnProceedClick = values => {
@@ -184,29 +235,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
             .test(
               'WalletCheck',
               'Wallet for this number does not exist!',
-              function(value) {
-                const token = localStorage.getItem('cashierLogged');
-                if (value) {
-                  if (value.length === 10) {
-                    return new Promise((resolve, reject) => {
-                      axios
-                        .post(`${API_URL}/cashier/getUser`, {
-                          token,
-                          mobile: value,
-                        })
-                        .then(res => {
-                          if (res.data.error || res.data.status !== 1) {
-                            resolve(false);
-                          }
-                          resolve(true);
-                        })
-                        .catch(err => resolve(false));
-                    });
-                  }
-                  return false;
-                }
-                return false;
-              },
+              value => getUser(value),
             ),
           givenname: Yup.string().required('Given Name is required'),
           familyname: Yup.string().required('Family Name is required'),
@@ -287,7 +316,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           autoFocus
                           error={errors.mobile && touched.mobile}
@@ -297,7 +325,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                           fullWidth
                           placeholder=""
                           variant="outlined"
-                          type="number"
+                          type="text"
                           value={values.mobile}
                           onChange={handleChange}
                           onBlur={handleBlur}
@@ -316,7 +344,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="givenname"
                           id="form-given-name"
@@ -344,7 +371,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="familyname"
                           id="form-family-name"
@@ -376,7 +402,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="address1"
                           id="form-address"
@@ -401,7 +426,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="state"
                           id="form-state"
@@ -423,7 +447,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="zip"
                           id="form-zip"
@@ -448,7 +471,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="country"
                           id="form-country"
@@ -476,7 +498,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="email"
                           id="form-email"
@@ -512,7 +533,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="senderIdentificationCountry"
                           id="form-identification-country"
@@ -534,7 +554,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="senderIdentificationType"
                           id="form-fidentification-type"
@@ -569,7 +588,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="senderIdentificationNumber"
                           id="form-identification-number"
@@ -601,7 +619,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="senderIdentificationValidTill"
                           id="form-idetification-valid-till"
@@ -674,7 +691,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           autoFocus
                           error={
@@ -723,7 +739,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="receiverIdentificationAmount"
                           id="form-sending-amount"
@@ -760,7 +775,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          disabled={!isFeeValid}
                           size="small"
                           name="note"
                           id="form-note"
@@ -821,7 +835,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         variant="contained"
                         color="primary"
                         disableElevation
-                        disabled={isSubmitting || !isFeeValid}
+                        disabled={isSubmitting && isFeeValid}
                       >
                         <Typography variant="h6">Proceed</Typography>
                       </Button>
