@@ -928,20 +928,20 @@ class CashierTransactionLimit extends Component {
                 toast.error(res.data.error);
               } else {
                 this.setState({
-                  mobile: res.data.data.mobile,
-                  givenname: res.data.data.name,
-                  familyname: res.data.data.last_name,
+                  mobile: res.data.data.mobile || '',
+                  givenname: res.data.data.name || '',
+                  familyname: res.data.data.last_name || '',
                   note: '',
-                  senderIdentificationCountry: res.data.data.country,
-                  senderIdentificationType: res.data.data.id_type,
-                  senderIdentificationNumber: res.data.data.id_number,
-                  senderIdentificationValidTill: res.data.data.valid_till,
-                  address1: res.data.data.address,
-                  state: res.data.data.state,
-                  zip: res.data.data.zip,
+                  senderIdentificationCountry: res.data.data.country || '',
+                  senderIdentificationType: res.data.data.id_type || '',
+                  senderIdentificationNumber: res.data.data.id_number || '',
+                  senderIdentificationValidTill: res.data.data.valid_till || '',
+                  address1: res.data.data.address || '',
+                  state: res.data.data.state || '',
+                  zip: res.data.data.zip || '',
                   ccode: '',
-                  country: res.data.data.country,
-                  email: res.data.data.email,
+                  country: res.data.data.country || '',
+                  email: res.data.data.email || '',
                 });
               }
             })
@@ -1926,6 +1926,9 @@ class CashierTransactionLimit extends Component {
                                   <Col cW="20%" mR="2%">
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         style={{
                                           marginTop: '6px',
                                           marginBottom: '6px',
@@ -1945,6 +1948,9 @@ class CashierTransactionLimit extends Component {
                                   <Col cW="78%">
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Mobile"
                                         style={{
                                           marginTop: '6px',
@@ -1968,6 +1974,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Given Name"
                                         style={{
                                           marginTop: '6px',
@@ -1986,6 +1995,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Family Name"
                                         style={{
                                           marginTop: '6px',
@@ -2006,11 +2018,14 @@ class CashierTransactionLimit extends Component {
 
                                 <FormGroup>
                                   <TextField
+                                    InputLabelProps={{
+                                      shrink: true,
+                                    }}
                                     label="Address"
                                     style={{
-                                          marginTop: '6px',
-                                          marginBottom: '6px',
-                                        }}
+                                      marginTop: '6px',
+                                      marginBottom: '6px',
+                                    }}
                                     fullWidth
                                     variant="outlined"
                                     type="text"
@@ -2025,6 +2040,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="State"
                                         style={{
                                           marginTop: '6px',
@@ -2043,6 +2061,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Zip"
                                         style={{
                                           marginTop: '6px',
@@ -2076,6 +2097,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Email"
                                         style={{
                                           marginTop: '6px',
@@ -2106,11 +2130,14 @@ class CashierTransactionLimit extends Component {
                                 </Row>
                                 <FormGroup>
                                   <TextField
+                                    InputLabelProps={{
+                                      shrink: true,
+                                    }}
                                     label="Note"
                                     style={{
-                                          marginTop: '6px',
-                                          marginBottom: '6px',
-                                        }}
+                                      marginTop: '6px',
+                                      marginBottom: '6px',
+                                    }}
                                     fullWidth
                                     variant="outlined"
                                     multiline
@@ -2149,6 +2176,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Type"
                                         style={{
                                           marginTop: '6px',
@@ -2171,6 +2201,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Id Number"
                                         style={{
                                           marginTop: '6px',
@@ -2191,6 +2224,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Valid till"
                                         style={{
                                           marginTop: '6px',
@@ -2227,6 +2263,9 @@ class CashierTransactionLimit extends Component {
                                   <Col cW="20%" mR="2%">
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         style={{
                                           marginTop: '6px',
                                           marginBottom: '6px',
@@ -2246,6 +2285,9 @@ class CashierTransactionLimit extends Component {
                                   <Col cW="78%">
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Mobile"
                                         style={{
                                           marginTop: '6px',
@@ -2267,6 +2309,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Given Name"
                                         style={{
                                           marginTop: '6px',
@@ -2286,6 +2331,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Family Name"
                                         style={{
                                           marginTop: '6px',
@@ -2320,6 +2368,9 @@ class CashierTransactionLimit extends Component {
                                   <Col>
                                     <FormGroup>
                                       <TextField
+                                        InputLabelProps={{
+                                          shrink: true,
+                                        }}
                                         label="Email"
                                         style={{
                                           marginTop: '6px',
@@ -2395,11 +2446,14 @@ class CashierTransactionLimit extends Component {
                                       <Col>
                                         <FormGroup>
                                           <TextField
+                                            InputLabelProps={{
+                                              shrink: true,
+                                            }}
                                             label="Type"
                                             style={{
-                                          marginTop: '6px',
-                                          marginBottom: '6px',
-                                        }}
+                                              marginTop: '6px',
+                                              marginBottom: '6px',
+                                            }}
                                             fullWidth
                                             variant="outlined"
                                             type="text"
@@ -2418,11 +2472,14 @@ class CashierTransactionLimit extends Component {
                                       <Col>
                                         <FormGroup>
                                           <TextField
+                                            InputLabelProps={{
+                                              shrink: true,
+                                            }}
                                             label="Id Number"
                                             style={{
-                                          marginTop: '6px',
-                                          marginBottom: '6px',
-                                        }}
+                                              marginTop: '6px',
+                                              marginBottom: '6px',
+                                            }}
                                             fullWidth
                                             variant="outlined"
                                             type="text"
@@ -2439,11 +2496,14 @@ class CashierTransactionLimit extends Component {
                                       <Col>
                                         <FormGroup>
                                           <TextField
+                                            InputLabelProps={{
+                                              shrink: true,
+                                            }}
                                             label="Valid Till"
                                             style={{
-                                          marginTop: '6px',
-                                          marginBottom: '6px',
-                                        }}
+                                              marginTop: '6px',
+                                              marginBottom: '6px',
+                                            }}
                                             fullWidth
                                             variant="outlined"
                                             type="text"
@@ -2462,11 +2522,14 @@ class CashierTransactionLimit extends Component {
                                 )}
                                 <FormGroup>
                                   <TextField
+                                    InputLabelProps={{
+                                      shrink: true,
+                                    }}
                                     label="Ammount"
                                     style={{
-                                          marginTop: '6px',
-                                          marginBottom: '6px',
-                                        }}
+                                      marginTop: '6px',
+                                      marginBottom: '6px',
+                                    }}
                                     fullWidth
                                     variant="outlined"
                                     type="number"
@@ -2505,9 +2568,9 @@ class CashierTransactionLimit extends Component {
                                         Inclusive of Fee - Total {CURRENCY}{' '}
                                         {this.state.receiverIdentificationAmount
                                           ? parseFloat(
-                                          this.state
-                                            .receiverIdentificationAmount,
-                                        ) - parseFloat(this.state.livefee)
+                                              this.state
+                                              .receiverIdentificationAmount,
+                                          ) - parseFloat(this.state.livefee)
                                           : parseFloat(this.state.livefee)}{' '}
                                         will be sent to the receiver
                                       </Typography>
@@ -2538,9 +2601,9 @@ class CashierTransactionLimit extends Component {
                                         Exclusive of Fee - Total {CURRENCY}{' '}
                                         {this.state.receiverIdentificationAmount
                                           ? parseFloat(
-                                          this.state
-                                            .receiverIdentificationAmount,
-                                        ) + parseFloat(this.state.livefee)
+                                              this.state
+                                              .receiverIdentificationAmount,
+                                          ) + parseFloat(this.state.livefee)
                                           : parseFloat(this.state.livefee)}{' '}
                                         will be charged
                                       </Typography>
