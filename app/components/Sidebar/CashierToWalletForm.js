@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Formik } from 'formik';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
@@ -8,6 +8,15 @@ import axios from 'axios';
 import * as Yup from 'yup';
 import { makeStyles } from '@material-ui/core/styles';
 import { toast } from 'react-toastify';
+import Popper from '@material-ui/core/Popper';
+import Grow from '@material-ui/core/Grow/Grow';
+import Paper from '@material-ui/core/Paper/Paper';
+import MenuList from '@material-ui/core/MenuList/MenuList';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Radio from '@material-ui/core/Radio';
 import { API_URL, CURRENCY } from '../../containers/App/constants';
 
 const styles = makeStyles(() => ({
@@ -115,6 +124,7 @@ const initialValues = {
   requireOTP: '',
   receiverMobile: '',
   receiverIdentificationAmount: '',
+  feeType: 'inclusive',
   // termsAndCondition: false,
 };
 const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
@@ -122,6 +132,11 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   const [values, setValues] = useState(initialValues);
   const [liveFee, setLiveFee] = useState(0);
   const [isFeeValid, setIsFeeValid] = useState(isValidFee);
+  const anchorRef = React.useRef(null);
+  const [walletBankName, setWalletBankName] = React.useState('');
+  const [availableWallet, setAvailableWallet] = React.useState('');
+  const [openWalletPopup, setWalletPopup] = React.useState(false);
+  const [isUserLoading, setUserLoading] = React.useState(false);
   const handleClose = () => {
     onClose();
   };
@@ -182,10 +197,19 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
             })
             .then(res => {
               if (res.data.error || res.data.status !== 1) {
+                setAvailableWallet('');
+                setWalletBankName('');
                 resolve(false);
-              } else {
-                resolve(true);
+                setUserLoading(false);
+                return false;
               }
+              setAvailableWallet(res.data.data.bank);
+              if (!walletBankName) {
+                setWalletPopup(true);
+              }
+              resolve(true);
+              setUserLoading(false);
+              return true;
             })
             .catch(err => {
               resolve(false);
@@ -195,6 +219,11 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
       return false;
     }
     return false;
+  };
+
+  const handleWalletSelection = wallet => {
+    setWalletBankName('@' + wallet);
+    setWalletPopup(false);
   };
 
   const handleOnProceedClick = values => {
@@ -271,6 +300,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
             handleChange,
             handleBlur,
             handleSubmit,
+            setFieldValue,
           } = formikProps;
           return (
             <Form>
@@ -704,7 +734,27 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                           variant="outlined"
                           type="text"
                           value={values.receiverMobile}
+                          ref={anchorRef}
+                          aria-controls={
+                            openWalletPopup ? 'menu-list-grow' : undefined
+                          }
+                          aria-haspopup="true"
                           onChange={handleChange}
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <span
+                                  style={{
+                                    color: '#417505',
+                                    fontSize: '13px',
+                                    fontWeight: '600',
+                                  }}
+                                >
+                                   {walletBankName}
+                                </span>
+                              </InputAdornment>
+                            ),
+                          }}
                           onBlur={handleBlur}
                           className={classes.dialogTextFieldGrid}
                           helperText={
@@ -713,6 +763,45 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                               : ''
                           }
                         />
+                        <Popper
+                          open={openWalletPopup}
+                          anchorEl={anchorRef.current}
+                          role={undefined}
+                          transition
+                          style={{ width: '300px', zIndex: '1' }}
+                          disablePortal
+                        >
+                          {({ TransitionProps, placement }) => (
+                            <Grow
+                              {...TransitionProps}
+                              style={{
+                                transformOrigin:
+                                  placement === 'bottom'
+                                    ? 'center top'
+                                    : 'center bottom',
+                              }}
+                            >
+                              <Paper>
+                                <MenuList
+                                  autoFocusItem={openWalletPopup}
+                                  id="menu-list-grow"
+                                >
+                                  {isUserLoading ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    <MenuItem
+                                      onClick={() =>
+                                        handleWalletSelection(availableWallet)
+                                      }
+                                    >
+                                      {values.receiverMobile}@{availableWallet}
+                                    </MenuItem>
+                                  )}
+                                </MenuList>
+                              </Paper>
+                            </Grow>
+                          )}
+                        </Popper>
                       </Grid>
                     </Grid>
 
@@ -792,33 +881,57 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                     </Grid>
                     <Grid
                       container
-                      direction="column"
                       alignItems="flex-start"
                       className={classes.dialogTextFieldGrid}
                     >
-                      <Typography
-                        style={{
-                          color: 'rgb(53, 153, 51)',
-                          marginBottom: '10px',
-                          fontSize: '10px',
-                        }}
-                      >
-                        Total Fee {CURRENCY} {liveFee} will be charged
-                      </Typography>
-
-                      {/* <div>
-                        <Checkbox name="termsAndCondition" />
-                        <span>
-                          I have read the <u> terms and conditions </u>
-                        </span>
-                      </div>
-                      {errors.termsAndCondition && touched.termsAndCondition ? (
-                        <div style={{ color: 'red', fontSize: '12px' }}>
-                          {errors.termsAndCondition}
-                        </div>
-                      ) : (
-                        ''
-                      )} */}
+                      <FormControlLabel
+                        value="inclusive"
+                        control={
+                          <Radio
+                            value="inclusive"
+                            checked={values.feeType === 'inclusive'}
+                            onChange={() =>
+                              setFieldValue('feeType', 'inclusive')
+                            }
+                          />
+                        }
+                        label={
+                          <Typography
+                            style={{
+                              color: 'rgb(53, 153, 51)',
+                              fontSize: '14px',
+                            }}
+                          >
+                            Inclusive of Fee - Total {CURRENCY}{' '}
+                            {values.receiverIdentificationAmount - liveFee} will
+                            be sent to the receiver
+                          </Typography>
+                        }
+                      />
+                      <FormControlLabel
+                        value="exclusive"
+                        control={
+                          <Radio
+                            value="exclusive"
+                            checked={values.feeType === 'exclusive'}
+                            onChange={() =>
+                              setFieldValue('feeType', 'exclusive')
+                            }
+                          />
+                        }
+                        label={
+                          <Typography
+                            style={{
+                              color: 'rgb(53, 153, 51)',
+                              fontSize: '14px',
+                            }}
+                          >
+                            Exclusive of Fee - Total {CURRENCY}{' '}
+                            {values.receiverIdentificationAmount + liveFee} will
+                            be charged
+                          </Typography>
+                        }
+                      />
                     </Grid>
                     <Grid
                       container

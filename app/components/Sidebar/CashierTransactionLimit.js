@@ -23,6 +23,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import CashierPopupToggle from './CashierPopupToggle';
 import CashierToWalletForm from './CashierToWalletForm';
 import Blur from '../Blur';
+import Grid from '@material-ui/core/Grid';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Radio from '@material-ui/core/Radio';
+import Typography from '@material-ui/core/Typography';
 
 toast.configure({
   position: 'bottom-right',
@@ -48,10 +52,12 @@ class CashierTransactionLimit extends Component {
       token,
       proceed: false,
       livefee: 0,
+      receiverIdentificationAmount: '',
       showSendMoneyOTP: false,
       isWallet: false,
       toWalletFormValues: {},
       isValidFee: true,
+      feeType: 'inclusive',
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -374,7 +380,7 @@ class CashierTransactionLimit extends Component {
                 } else {
                   this.setState(
                     {
-                      livefee: res.data.fee,
+                      livefee: parseFloat(res.data.fee),
                     },
                     function() {},
                   );
@@ -701,6 +707,13 @@ class CashierTransactionLimit extends Component {
 
   verifySendMoney = event => {
     event.preventDefault();
+    if (this.state.feeType === 'inclusive') {
+      this.setState({
+        recieverIdentificationAmount:
+          this.state.recieverIdentificationAmount - this.state.livefee,
+        livefee: 0,
+      });
+    }
     this.setState({
       verifySendMoneyOTPLoading: true,
     });
@@ -2417,7 +2430,7 @@ class CashierTransactionLimit extends Component {
                                     {/* <FormattedMessage {...messages.popup1} />* */}
                                   </label>
                                   <TextInput
-                                    type="text"
+                                    type="number"
                                     // pattern="[0-9]"
                                     name="receiverIdentificationAmount"
                                     onFocus={inputFocus}
@@ -2430,15 +2443,78 @@ class CashierTransactionLimit extends Component {
                                     required
                                   />
                                 </FormGroup>
+                                <Grid container alignItems="flex-start">
+                                  <FormControlLabel
+                                    value="inclusive"
+                                    control={
+                                      <Radio
+                                        value="inclusive"
+                                        onChange={() =>
+                                          this.setState({
+                                            feeType: 'inclusive',
+                                          })
+                                        }
+                                        checked={
+                                          this.state.feeType === 'inclusive'
+                                        }
+                                      />
+                                    }
+                                    label={
+                                      <Typography
+                                        style={{
+                                          color: 'rgb(53, 153, 51)',
+                                          fontSize: '14px',
+                                        }}
+                                      >
+                                        Inclusive of Fee - Total {CURRENCY}{' '}
+                                        {this.state.receiverIdentificationAmount
+                                          ? parseFloat(
+                                              this.state
+                                              .receiverIdentificationAmount,
+                                            ) - parseFloat(this.state.livefee)
+                                          : parseFloat(this.state.livefee)}{' '}
+                                        will be sent to the receiver
+                                      </Typography>
+                                    }
+                                  />
+                                  <FormControlLabel
+                                    value="exclusive"
+                                    control={
+                                      <Radio
+                                        value="exclusive"
+                                        onChange={() =>
+                                          this.setState({
+                                            feeType: 'exclusive',
+                                          })
+                                        }
+                                        checked={
+                                          this.state.feeType === 'exclusive'
+                                        }
+                                      />
+                                    }
+                                    label={
+                                      <Typography
+                                        style={{
+                                          color: 'rgb(53, 153, 51)',
+                                          fontSize: '14px',
+                                        }}
+                                      >
+                                        Exclusive of Fee - Total {CURRENCY}{' '}
+                                        {this.state.receiverIdentificationAmount
+                                          ? parseFloat(
+                                              this.state
+                                              .receiverIdentificationAmount,
+                                            ) + parseFloat(this.state.livefee)
+                                          : parseFloat(this.state.livefee)}{' '}
+                                        will be charged
+                                      </Typography>
+                                    }
+                                  />
+                                </Grid>
 
                                 <Button filledBtn marginTop="20px">
                                   <span>Proceed</span>
                                 </Button>
-                                <p className="note">
-                                  <span style={{ color: 'red' }}>*</span> Total
-                                  Fee {CURRENCY} {this.state.livefee} will be
-                                  charged
-                                </p>
                               </Col>
                             </Row>
                           </Container>

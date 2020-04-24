@@ -245,7 +245,12 @@ export default function FormDialog() {
 
   return (
     <Fragment>
-      <Button variant="outlined" color="primary" style={{textTransform: 'initial', fontSize: '11px'}} onClick={handleClickOpen}>
+      <Button
+        variant="outlined"
+        color="primary"
+        style={{ textTransform: 'initial', fontSize: '11px' }}
+        onClick={handleClickOpen}
+      >
         Verify User
       </Button>
       <Dialog
