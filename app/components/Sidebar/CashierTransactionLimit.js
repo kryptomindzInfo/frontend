@@ -1927,8 +1927,8 @@ class CashierTransactionLimit extends Component {
                                     <FormGroup>
                                       <TextField
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -1947,8 +1947,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Mobile"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -1970,8 +1970,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Given Name"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -1988,8 +1988,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Family Name"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2008,9 +2008,9 @@ class CashierTransactionLimit extends Component {
                                   <TextField
                                     label="Address"
                                     style={{
-                                      marginTop: '10px',
-                                      marginBottom: '10px',
-                                    }}
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
+                                        }}
                                     fullWidth
                                     variant="outlined"
                                     type="text"
@@ -2027,8 +2027,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="State"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2045,8 +2045,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Zip"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2078,8 +2078,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Email"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2108,13 +2108,13 @@ class CashierTransactionLimit extends Component {
                                   <TextField
                                     label="Note"
                                     style={{
-                                      marginTop: '10px',
-                                      marginBottom: '10px',
-                                    }}
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
+                                        }}
                                     fullWidth
                                     variant="outlined"
                                     multiline
-                                    numberOfLines={3}
+                                    rows="4"
                                     type="text"
                                     name="note"
                                     value={this.state.note}
@@ -2151,8 +2151,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Type"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2173,8 +2173,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Id Number"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2193,8 +2193,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Valid till"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2228,8 +2228,8 @@ class CashierTransactionLimit extends Component {
                                     <FormGroup>
                                       <TextField
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2248,8 +2248,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Mobile"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2269,8 +2269,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Given Name"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2288,8 +2288,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Family Name"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2322,8 +2322,8 @@ class CashierTransactionLimit extends Component {
                                       <TextField
                                         label="Email"
                                         style={{
-                                          marginTop: '10px',
-                                          marginBottom: '10px',
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
                                         }}
                                         fullWidth
                                         variant="outlined"
@@ -2397,9 +2397,9 @@ class CashierTransactionLimit extends Component {
                                           <TextField
                                             label="Type"
                                             style={{
-                                              marginTop: '10px',
-                                              marginBottom: '10px',
-                                            }}
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
+                                        }}
                                             fullWidth
                                             variant="outlined"
                                             type="text"
@@ -2420,9 +2420,9 @@ class CashierTransactionLimit extends Component {
                                           <TextField
                                             label="Id Number"
                                             style={{
-                                              marginTop: '10px',
-                                              marginBottom: '10px',
-                                            }}
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
+                                        }}
                                             fullWidth
                                             variant="outlined"
                                             type="text"
@@ -2441,9 +2441,9 @@ class CashierTransactionLimit extends Component {
                                           <TextField
                                             label="Valid Till"
                                             style={{
-                                              marginTop: '10px',
-                                              marginBottom: '10px',
-                                            }}
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
+                                        }}
                                             fullWidth
                                             variant="outlined"
                                             type="text"
@@ -2464,9 +2464,9 @@ class CashierTransactionLimit extends Component {
                                   <TextField
                                     label="Ammount"
                                     style={{
-                                      marginTop: '10px',
-                                      marginBottom: '10px',
-                                    }}
+                                          marginTop: '6px',
+                                          marginBottom: '6px',
+                                        }}
                                     fullWidth
                                     variant="outlined"
                                     type="number"
@@ -2505,9 +2505,9 @@ class CashierTransactionLimit extends Component {
                                         Inclusive of Fee - Total {CURRENCY}{' '}
                                         {this.state.receiverIdentificationAmount
                                           ? parseFloat(
-                                              this.state
-                                              .receiverIdentificationAmount,
-                                          ) - parseFloat(this.state.livefee)
+                                          this.state
+                                            .receiverIdentificationAmount,
+                                        ) - parseFloat(this.state.livefee)
                                           : parseFloat(this.state.livefee)}{' '}
                                         will be sent to the receiver
                                       </Typography>
@@ -2538,9 +2538,9 @@ class CashierTransactionLimit extends Component {
                                         Exclusive of Fee - Total {CURRENCY}{' '}
                                         {this.state.receiverIdentificationAmount
                                           ? parseFloat(
-                                              this.state
-                                              .receiverIdentificationAmount,
-                                          ) + parseFloat(this.state.livefee)
+                                          this.state
+                                            .receiverIdentificationAmount,
+                                        ) + parseFloat(this.state.livefee)
                                           : parseFloat(this.state.livefee)}{' '}
                                         will be charged
                                       </Typography>
