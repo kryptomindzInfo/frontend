@@ -118,18 +118,22 @@ const dialogContentStyles = makeStyles(() => ({
   },
   dialogPaperLarge: {
     borderRadius: '25px',
-    minHeight: '80%',
-    maxHeight: '80%',
-    minWidth: '65%',
-    maxWidth: '60%',
+    minHeight: '95%',
+    maxHeight: '95%',
+    minWidth: '90%',
+    maxWidth: '90%',
   },
   dialogPaper: {
-    height: '350px',
+    height: '500px',
     padding: '2%',
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
     margin: '2%',
+    width: '100%',
+  },
+  dialogDocView: {
+    height: '98%',
     width: '100%',
   },
   noteTextField: {
@@ -162,14 +166,13 @@ const dialogContentStyles = makeStyles(() => ({
   documentCard: {
     display: 'flex',
     flexDirection: 'column',
-    width: '140px',
-    height: '140px',
+    width: '100px',
+    height: '100px',
     borderRadius: '5px',
     justifyContent: 'center',
     marginLeft: '20px',
     marginTop: '20px',
     alignItems: 'center',
-    border: 'solid 1px #e9eff4',
     cursor: 'pointer',
     '&:hover': {
       border: 'solid 1px #4da1ff',
@@ -859,7 +862,7 @@ export default function FormDialog() {
                             data-key="contract"
                             multiple
                             style={{ width: '0px', visibility: 'hidden' }}
-                            accept=".pdf,.docs"
+                            accept=".pdf,.docs,.png,.jpg"
                             type="file"
                           />
                           <Typography variant="h5">Upload Documents</Typography>
@@ -875,41 +878,84 @@ export default function FormDialog() {
                             User Document
                           </Typography>
                         </Grid>
-                        <Paper
-                          variant="outlined"
-                          className={classes.dialogPaper}
+                        <Grid
+                          container
+                          direction="row"
+                          alignItems="flex-start"
+                          justify="center"
                         >
-                          {user.docs_hash.length > 0 ? (
-                            user.docs_hash.map((value, index) => (
-                              <a
-                                target="_blank"
-                                href={`${CONTRACT_URL}/${value.hash}`}
-                              >
-                                <div
-                                  key={index}
-                                  className={classes.documentCard}
-                                >
-                                  <img
-                                    width={60}
-                                    height={70}
-                                    src={
-                                      value.type === 'application/pdf'
-                                        ? PdfIcon
-                                        : DocumentIcon
-                                    }
-                                  />
-                                  <span style={{ marginTop: '10px' }}>
-                                    {value.name}
-                                  </span>
-                                </div>
-                              </a>
-                            ))
-                          ) : (
-                            <Typography variant="subtitle1">
-                              No documents uploaded
-                            </Typography>
-                          )}
-                        </Paper>
+                          <Grid
+                            item
+                            xs={10}
+                            alignItems="center"
+                            className={classes.dialogTextFieldGrid}
+                          >
+                            <Paper
+                              variant="outlined"
+                              className={classes.dialogPaper}
+                            >
+                              {user.docs_hash.length > 0 ? (
+                                <iframe
+                                  name="docFrame"
+                                  className={classes.dialogDocView}
+                                  src={`${CONTRACT_URL}/${
+                                    user.docs_hash[0].hash
+                                  }`}
+                                  id="docFrame"
+                                />
+                              ) : (
+                                <Typography variant="subtitle1">
+                                  No documents uploaded
+                                </Typography>
+                              )}
+                            </Paper>
+                          </Grid>
+                          <Grid
+                            item
+                            xs={2}
+                            alignItems="center"
+                            className={classes.dialogTextFieldGrid}
+                          >
+                            <Grid
+                              container
+                              direction="column"
+                              alignItems="center"
+                              justify="center"
+                            >
+                              {user.docs_hash.length > 0
+                                ? user.docs_hash.map((value, index) => (
+                                  <a
+                                    target="docFrame"
+                                    href={`${CONTRACT_URL}/${value.hash}`}>
+                                    <div
+                                      key={index}
+                                      className={classes.documentCard}
+                                    >
+                                      <img
+                                        width={60}
+                                        height={70}
+                                        src={
+                                          value.type === 'application/pdf'
+                                            ? PdfIcon
+                                            : `${CONTRACT_URL}/${value.hash}`
+                                        }
+                                      />
+                                      <Typography
+                                        noWrap
+                                        style={{
+                                          width: '90px',
+                                          textOverflow: 'ellipsis',
+                                        }}
+                                      >
+                                          {value.name}
+                                        </Typography>
+                                    </div>
+                                  </a>
+                                ))
+                                : ''}
+                            </Grid>
+                          </Grid>
+                        </Grid>
                         <Button
                           type="submit"
                           className={classes.dialogButton}

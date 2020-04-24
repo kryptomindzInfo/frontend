@@ -15,18 +15,24 @@ import Container from 'components/Container';
 import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
 
-import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
-import messages from './messages';
+import {
+  API_URL,
+  CONTRACT_URL,
+  CURRENCY,
+  STATIC_URL,
+} from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 
-import CashierPopupToggle from './CashierPopupToggle';
-import CashierToWalletForm from './CashierToWalletForm';
-import Blur from '../Blur';
 import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
+import Blur from '../Blur';
+import CashierToWalletForm from './CashierToWalletForm';
+import CashierPopupToggle from './CashierPopupToggle';
+import messages from './messages';
 
 toast.configure({
   position: 'bottom-right',
@@ -909,6 +915,42 @@ class CashierTransactionLimit extends Component {
         target.parentElement.querySelector('label').classList.remove('focused');
       }
     }
+    const getSenderUser = value => {
+      if (value) {
+        if (value.length === 10) {
+          axios
+            .post(`${API_URL}/cashier/getUser`, {
+              mobile: value,
+              token,
+            })
+            .then(res => {
+              if (res.data.error || res.data.status !== 1) {
+                toast.error(res.data.error);
+              } else {
+                this.setState({
+                  mobile: res.data.data.mobile,
+                  givenname: res.data.data.name,
+                  familyname: res.data.data.last_name,
+                  note: '',
+                  senderIdentificationCountry: res.data.data.country,
+                  senderIdentificationType: res.data.data.id_type,
+                  senderIdentificationNumber: res.data.data.id_number,
+                  senderIdentificationValidTill: res.data.data.valid_till,
+                  address1: res.data.data.address,
+                  state: res.data.data.state,
+                  zip: res.data.data.zip,
+                  ccode: '',
+                  country: res.data.data.country,
+                  email: res.data.data.email,
+                });
+              }
+            })
+            .catch(err => {
+              toast.error('something went wrong');
+            });
+        }
+      }
+    };
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
         <h3>Max. Daily Cash Out Amount</h3>
@@ -1883,7 +1925,13 @@ class CashierTransactionLimit extends Component {
                                 <Row>
                                   <Col cW="20%" mR="2%">
                                     <FormGroup>
-                                      <TextInput
+                                      <TextField
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
                                         name="ccode"
                                         readOnly
@@ -1896,19 +1944,19 @@ class CashierTransactionLimit extends Component {
                                   </Col>
                                   <Col cW="78%">
                                     <FormGroup>
-                                      <label>
-                                        Mobile Number
-                                        <span style={{ color: 'red' }}>*</span>
-                                        {/* <FormattedMessage {...messages.popup7} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Mobile"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
-                                        pattern="[0-9]{10}"
-                                        title="10 Digit numeric value"
                                         name="mobile"
-                                        autoFocus
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
+                                        onBlur={() =>
+                                          getSenderUser(this.state.mobile)
+                                        }
                                         value={this.state.mobile}
                                         onChange={this.handleInputChange}
                                         required
@@ -1919,18 +1967,16 @@ class CashierTransactionLimit extends Component {
                                 <Row>
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        Given Name
-                                        <span style={{ color: 'red' }}>*</span>
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Given Name"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
                                         name="givenname"
-                                        pattern=".{3,12}"
-                                        autoFocus
-                                        title="Minimum 3 characters"
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={this.state.givenname}
                                         onChange={this.handleInputChange}
                                         required
@@ -1939,19 +1985,17 @@ class CashierTransactionLimit extends Component {
                                   </Col>
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        Family Name
-                                        <span style={{ color: 'red' }}>*</span>
-                                        {/* <FormattedMessage {...messages.popup1} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Family Name"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
                                         name="familyname"
-                                        autoFocus
-                                        pattern=".{3,12}"
                                         title="Minimum 3 characters"
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={this.state.familyname}
                                         onChange={this.handleInputChange}
                                         required
@@ -1961,17 +2005,16 @@ class CashierTransactionLimit extends Component {
                                 </Row>
 
                                 <FormGroup>
-                                  <label>
-                                    Address
-                                    <span style={{ color: 'red' }}>*</span>
-                                    {/* <FormattedMessage {...messages.popup2} />* */}
-                                  </label>
-                                  <TextInput
+                                  <TextField
+                                    label="Address"
+                                    style={{
+                                      marginTop: '10px',
+                                      marginBottom: '10px',
+                                    }}
+                                    fullWidth
+                                    variant="outlined"
                                     type="text"
                                     name="address1"
-                                    onFocus={inputFocus}
-                                    onBlur={inputBlur}
-                                    autoFocus
                                     value={this.state.address1}
                                     onChange={this.handleInputChange}
                                     required
@@ -1981,16 +2024,16 @@ class CashierTransactionLimit extends Component {
                                 <Row>
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        State
-                                        {/* <FormattedMessage {...messages.popup3} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="State"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
                                         name="state"
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
-                                        autoFocus
                                         value={this.state.state}
                                         onChange={this.handleInputChange}
                                         required
@@ -1999,16 +2042,16 @@ class CashierTransactionLimit extends Component {
                                   </Col>
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        Zip Code
-                                        {/* <FormattedMessage {...messages.popup4} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Zip"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
                                         name="zip"
-                                        autoFocus
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={this.state.zip}
                                         onChange={this.handleInputChange}
                                         required
@@ -2021,7 +2064,6 @@ class CashierTransactionLimit extends Component {
                                     <FormGroup>
                                       <CountrySelectBox
                                         type="text"
-                                        autoFocus
                                         name="country"
                                         value={this.state.country}
                                         onChange={this.countryChange}
@@ -2033,15 +2075,16 @@ class CashierTransactionLimit extends Component {
 
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        Authorised Email
-                                        {/* <FormattedMessage {...messages.popup8} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Email"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="email"
                                         name="email"
-                                        autoFocus
-                                        pattern="(^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$)"
                                         onInput={e =>
                                           e.target.setCustomValidity('')
                                         }
@@ -2050,8 +2093,6 @@ class CashierTransactionLimit extends Component {
                                             'Enter a valid email address',
                                           )
                                         }
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={this.state.email}
                                         onChange={this.handleInputChange}
                                         required
@@ -2064,18 +2105,18 @@ class CashierTransactionLimit extends Component {
                       </form.Group> */}
                                 </Row>
                                 <FormGroup>
-                                  <label>
-                                    Note
-                                    {/* <FormattedMessage {...messages.popup2} />* */}
-                                  </label>
-                                  <TextInput
+                                  <TextField
+                                    label="Note"
+                                    style={{
+                                      marginTop: '10px',
+                                      marginBottom: '10px',
+                                    }}
+                                    fullWidth
+                                    variant="outlined"
                                     multiline
                                     numberOfLines={3}
                                     type="text"
-                                    autoFocus
                                     name="note"
-                                    onFocus={inputFocus}
-                                    onBlur={inputBlur}
                                     value={this.state.note}
                                     onChange={this.handleInputChange}
                                     required
@@ -2095,7 +2136,6 @@ class CashierTransactionLimit extends Component {
                                     <FormGroup>
                                       <CountrySelectBox
                                         type="text"
-                                        autoFocus
                                         name="senderIdentificationCountry"
                                         value={
                                           this.state.senderIdentificationCountry
@@ -2108,16 +2148,16 @@ class CashierTransactionLimit extends Component {
                                   </Col>
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        Type
-                                        {/* <FormattedMessage {...messages.popup1} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Type"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
-                                        autoFocus
                                         name="senderIdentificationType"
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={
                                           this.state.senderIdentificationType
                                         }
@@ -2130,16 +2170,16 @@ class CashierTransactionLimit extends Component {
                                 <Row>
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        Number
-                                        {/* <FormattedMessage {...messages.popup1} />* */}
-                                      </label>
-                                      <TextInput
-                                        autoFocus
+                                      <TextField
+                                        label="Id Number"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
                                         name="senderIdentificationNumber"
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={
                                           this.state.senderIdentificationNumber
                                         }
@@ -2150,16 +2190,16 @@ class CashierTransactionLimit extends Component {
                                   </Col>
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        Valid till
-                                        {/* <FormattedMessage {...messages.popup1} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Valid till"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
                                         name="senderIdentificationValidTill"
-                                        autoFocus
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={
                                           this.state
                                             .senderIdentificationValidTill
@@ -2186,10 +2226,15 @@ class CashierTransactionLimit extends Component {
                                 <Row>
                                   <Col cW="20%" mR="2%">
                                     <FormGroup>
-                                      <TextInput
+                                      <TextField
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
                                         placeholder="+000"
-                                        autoFocus
                                         name="receiverccode"
                                         readOnly
                                         value={this.state.receiverccode}
@@ -2200,19 +2245,17 @@ class CashierTransactionLimit extends Component {
                                   </Col>
                                   <Col cW="78%">
                                     <FormGroup>
-                                      <label>
-                                        Mobile Number
-                                        <span style={{ color: 'red' }}>*</span>
-                                        {/* <FormattedMessage {...messages.popup7} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Mobile"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
-                                        pattern="[0-9]{10}"
-                                        autoFocus
                                         title="10 Digit numeric value"
                                         name="receiverMobile"
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={this.state.receiverMobile}
                                         onChange={this.handleInputChange}
                                         required
@@ -2223,19 +2266,17 @@ class CashierTransactionLimit extends Component {
                                 <Row>
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        Given Name
-                                        <span style={{ color: 'red' }}>*</span>
-                                        {/* <FormattedMessage {...messages.popup1} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Given Name"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
                                         name="receiverGivenName"
-                                        pattern=".{3,12}"
-                                        autoFocus
                                         title="Minimum 3 characters"
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={this.state.receiverGivenName}
                                         onChange={this.handleInputChange}
                                         required
@@ -2244,19 +2285,17 @@ class CashierTransactionLimit extends Component {
                                   </Col>
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        Family Name
-                                        <span style={{ color: 'red' }}>*</span>
-                                        {/* <FormattedMessage {...messages.popup1} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Family Name"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="text"
                                         name="receiverFamilyName"
-                                        pattern=".{3,12}"
-                                        autoFocus
                                         title="Minimum 3 characters"
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={this.state.receiverFamilyName}
                                         onChange={this.handleInputChange}
                                         required
@@ -2270,7 +2309,6 @@ class CashierTransactionLimit extends Component {
                                       <CountrySelectBox
                                         type="text"
                                         name="receiverCountry"
-                                        autoFocus
                                         value={this.state.receiverCountry}
                                         onChange={this.countryChange}
                                         data-change="receiverccode"
@@ -2281,15 +2319,16 @@ class CashierTransactionLimit extends Component {
 
                                   <Col>
                                     <FormGroup>
-                                      <label>
-                                        Authorised Email
-                                        {/* <FormattedMessage {...messages.popup8} />* */}
-                                      </label>
-                                      <TextInput
+                                      <TextField
+                                        label="Email"
+                                        style={{
+                                          marginTop: '10px',
+                                          marginBottom: '10px',
+                                        }}
+                                        fullWidth
+                                        variant="outlined"
                                         type="email"
                                         name="receiverEmail"
-                                        autoFocus
-                                        pattern="(^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$)"
                                         onInput={e =>
                                           e.target.setCustomValidity('')
                                         }
@@ -2298,8 +2337,6 @@ class CashierTransactionLimit extends Component {
                                             'Enter a valid email address',
                                           )
                                         }
-                                        onFocus={inputFocus}
-                                        onBlur={inputBlur}
                                         value={this.state.receiverEmail}
                                         onChange={this.handleInputChange}
                                         required
@@ -2349,7 +2386,6 @@ class CashierTransactionLimit extends Component {
                                               this.state
                                                 .receiverIdentificationCountry
                                             }
-                                            autoFocus
                                             onChange={this.countryChange}
                                             data-change="ccc"
                                             required
@@ -2358,16 +2394,16 @@ class CashierTransactionLimit extends Component {
                                       </Col>
                                       <Col>
                                         <FormGroup>
-                                          <label>
-                                            Type
-                                            {/* <FormattedMessage {...messages.popup1} />* */}
-                                          </label>
-                                          <TextInput
+                                          <TextField
+                                            label="Type"
+                                            style={{
+                                              marginTop: '10px',
+                                              marginBottom: '10px',
+                                            }}
+                                            fullWidth
+                                            variant="outlined"
                                             type="text"
-                                            autoFocus
                                             name="receiverIdentificationType"
-                                            onFocus={inputFocus}
-                                            onBlur={inputBlur}
                                             value={
                                               this.state
                                                 .receiverIdentificationType
@@ -2381,16 +2417,16 @@ class CashierTransactionLimit extends Component {
                                     <Row>
                                       <Col>
                                         <FormGroup>
-                                          <label>
-                                            Number
-                                            {/* <FormattedMessage {...messages.popup1} />* */}
-                                          </label>
-                                          <TextInput
+                                          <TextField
+                                            label="Id Number"
+                                            style={{
+                                              marginTop: '10px',
+                                              marginBottom: '10px',
+                                            }}
+                                            fullWidth
+                                            variant="outlined"
                                             type="text"
-                                            autoFocus
                                             name="receiverIdentificationNumber"
-                                            onFocus={inputFocus}
-                                            onBlur={inputBlur}
                                             value={
                                               this.state
                                                 .receiverIdentificationNumber
@@ -2402,16 +2438,16 @@ class CashierTransactionLimit extends Component {
                                       </Col>
                                       <Col>
                                         <FormGroup>
-                                          <label>
-                                            Valid till
-                                            {/* <FormattedMessage {...messages.popup1} />* */}
-                                          </label>
-                                          <TextInput
+                                          <TextField
+                                            label="Valid Till"
+                                            style={{
+                                              marginTop: '10px',
+                                              marginBottom: '10px',
+                                            }}
+                                            fullWidth
+                                            variant="outlined"
                                             type="text"
-                                            autoFocus
                                             name="receiverIdentificationValidTill"
-                                            onFocus={inputFocus}
-                                            onBlur={inputBlur}
                                             value={
                                               this.state
                                                 .receiverIdentificationValidTill
@@ -2425,17 +2461,17 @@ class CashierTransactionLimit extends Component {
                                   </div>
                                 )}
                                 <FormGroup>
-                                  <label>
-                                    Amount
-                                    {/* <FormattedMessage {...messages.popup1} />* */}
-                                  </label>
-                                  <TextInput
+                                  <TextField
+                                    label="Ammount"
+                                    style={{
+                                      marginTop: '10px',
+                                      marginBottom: '10px',
+                                    }}
+                                    fullWidth
+                                    variant="outlined"
                                     type="number"
-                                    // pattern="[0-9]"
+                                    //
                                     name="receiverIdentificationAmount"
-                                    onFocus={inputFocus}
-                                    autoFocus
-                                    onBlur={inputBlur}
                                     value={
                                       this.state.receiverIdentificationAmount
                                     }
@@ -2471,7 +2507,7 @@ class CashierTransactionLimit extends Component {
                                           ? parseFloat(
                                               this.state
                                               .receiverIdentificationAmount,
-                                            ) - parseFloat(this.state.livefee)
+                                          ) - parseFloat(this.state.livefee)
                                           : parseFloat(this.state.livefee)}{' '}
                                         will be sent to the receiver
                                       </Typography>
@@ -2504,7 +2540,7 @@ class CashierTransactionLimit extends Component {
                                           ? parseFloat(
                                               this.state
                                               .receiverIdentificationAmount,
-                                            ) + parseFloat(this.state.livefee)
+                                          ) + parseFloat(this.state.livefee)
                                           : parseFloat(this.state.livefee)}{' '}
                                         will be charged
                                       </Typography>

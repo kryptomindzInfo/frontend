@@ -105,33 +105,13 @@ const styles = makeStyles(() => ({
     paddingBottom: '1%',
   },
 }));
-const initialValues = {
-  givenname: '',
-  familyname: '',
-  note: '',
-  senderIdentificationCountry: '',
-  senderIdentificationType: '',
-  senderIdentificationNumber: '',
-  senderIdentificationValidTill: '',
-  address1: '',
-  state: '',
-  zip: '',
-  ccode: '',
-  country: '',
-  email: '',
-  mobile: '',
-  livefee: '',
-  requireOTP: '',
-  receiverMobile: '',
-  receiverIdentificationAmount: '',
-  feeType: 'inclusive',
-  // termsAndCondition: false,
-};
+
 const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   const classes = styles();
-  const [values, setValues] = useState(initialValues);
+  const [user, setUser] = React.useState(null);
   const [liveFee, setLiveFee] = useState(0);
   const [isFeeValid, setIsFeeValid] = useState(isValidFee);
+
   const anchorRef = React.useRef(null);
   const [walletBankName, setWalletBankName] = React.useState('');
   const [availableWallet, setAvailableWallet] = React.useState('');
@@ -221,6 +201,30 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
     return false;
   };
 
+  const getSenderUser = value => {
+    const token = localStorage.getItem('cashierLogged');
+    if (value) {
+      if (value.length === 10) {
+        axios
+          .post(`${API_URL}/cashier/getUser`, {
+            mobile: value,
+            token,
+          })
+          .then(res => {
+            if (res.data.error || res.data.status !== 1) {
+              setUser({});
+              toast.error(res.data.error);
+            } else {
+              setUser(res.data.data);
+            }
+          })
+          .catch(err => {
+            toast.error(err.response.data.error);
+          });
+      }
+    }
+  };
+
   const handleWalletSelection = wallet => {
     setWalletBankName('@' + wallet);
     setWalletPopup(false);
@@ -232,11 +236,55 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   return (
     <div>
       <Formik
-        initialValues={values}
+        enableReinitialize={user}
+        initialValues={
+          user
+            ? {
+              givenname: user.name,
+              familyname: user.last_name,
+              note: '',
+              senderIdentificationCountry: user.country,
+              senderIdentificationType: user.id_type,
+              senderIdentificationNumber: user.id_number,
+              senderIdentificationValidTill: user.valid_till,
+              address1: user.address,
+              state: user.state,
+              zip: user.zip,
+              ccode: '',
+              country: user.country,
+              email: user.email,
+              mobile: user.mobile,
+              livefee: '',
+              requireOTP: '',
+              receiverMobile: '',
+              receiverIdentificationAmount: '',
+              // termsAndCondition: false,
+            }
+            : {
+              givenname: '',
+              familyname: '',
+              note: '',
+              senderIdentificationCountry: '',
+              senderIdentificationType: '',
+              senderIdentificationNumber: '',
+              senderIdentificationValidTill: '',
+              address1: '',
+              state: '',
+              zip: '',
+              ccode: '',
+              country: '',
+              email: '',
+              mobile: '',
+              livefee: '',
+              requireOTP: '',
+              receiverMobile: '',
+              receiverIdentificationAmount: '',
+              // termsAndCondition: false,
+            }
+        }
         onSubmit={async values => {
           values.livefee = liveFee;
           values.requireOTP = '111111';
-          setValues(values);
           handleOnProceedClick(values);
         }}
         validationSchema={Yup.object().shape({
@@ -358,7 +406,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                           type="text"
                           value={values.mobile}
                           onChange={handleChange}
-                          onBlur={handleBlur}
+                          onBlur={() => getSenderUser(values.mobile)}
                           className={classes.dialogTextFieldGrid}
                           helperText={
                             errors.mobile && touched.mobile ? errors.mobile : ''
