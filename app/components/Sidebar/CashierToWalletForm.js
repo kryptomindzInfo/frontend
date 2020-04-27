@@ -766,74 +766,67 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         />
                       </Grid>
                       <Grid
-                        container
-                        row
-                        xs={10}
-                        md={10}
+                        item
+                        xs={6}
+                        md={6}
                         alignItems="center"
                         className={classes.dialogTextFieldGrid}
                       >
-                        <Grid
-                          item
-                          xs={5}
-                          md={5}
-                          alignItems="center"
+                        <TextField
+                          size="small"
+                          autoFocus
+                          error={
+                            errors.receiverMobile && touched.receiverMobile
+                          }
+                          name="receiverMobile"
+                          id="form-phone"
+                          label="Phone No"
+                          placeholder=""
+                          variant="outlined"
+                          type="text"
+                          fullWidth
+                          value={values.receiverMobile}
+                          ref={anchorRef}
+                          aria-controls={
+                            openWalletPopup ? 'menu-list-grow' : undefined
+                          }
+                          aria-haspopup="true"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
                           className={classes.dialogTextFieldGrid}
-                        >
+                          helperText={
+                            errors.receiverMobile && touched.receiverMobile
+                              ? errors.receiverMobile
+                              : ''
+                          }
+                        />
+                      </Grid>
+                      <Grid
+                        item
+                        xs={4}
+                        md={4}
+                        alignItems="center"
+                        className={classes.dialogTextFieldGrid}
+                      >
+                        {walletBankName ? (
                           <TextField
-                            size="small"
-                            autoFocus
-                            error={
-                              errors.receiverMobile && touched.receiverMobile
-                            }
-                            name="receiverMobile"
-                            id="form-phone"
-                            label="Phone No"
-                            placeholder=""
-                            variant="outlined"
-                            type="text"
-                            value={values.receiverMobile}
-                            ref={anchorRef}
-                            aria-controls={
-                              openWalletPopup ? 'menu-list-grow' : undefined
-                            }
-                            aria-haspopup="true"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            id="walletName"
+                            disabled
+                            fullWidth
                             className={classes.dialogTextFieldGrid}
-                            helperText={
-                              errors.receiverMobile && touched.receiverMobile
-                                ? errors.receiverMobile
-                                : ''
-                            }
+                            variant="outlined"
+                            style={{
+                              color: 'green',
+                              fontSize: '13px',
+                              fontWeight: '600',
+                            }}
+                            type="text"
+                            size="small"
+                            value={walletBankName}
                           />
-                        </Grid>
-                        <Grid
-                          item
-                          xs={5}
-                          md={5}
-                          alignItems="center"
-                          className={classes.dialogTextFieldGrid}
-                        >
-                          {walletBankName ? (
-                            <TextField
-                              id="walletName"
-                              disabled
-                              className={classes.dialogTextFieldGrid}
-                              variant="outlined"
-                              style={{
-                                color: 'green',
-                                fontSize: '13px',
-                                fontWeight: '600',
-                              }}
-                              type="text"
-                              size="small"
-                              value={walletBankName}
-                            />
-                          ) : (
-                            ''
-                          )}
-                        </Grid>
+                        ) : (
+                          ''
+                        )}
                       </Grid>
                       <Popper
                         open={openWalletPopup}
