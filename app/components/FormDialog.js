@@ -169,12 +169,22 @@ const dialogContentStyles = makeStyles(() => ({
     height: '100px',
     borderRadius: '5px',
     justifyContent: 'center',
-    marginLeft: '20px',
-    marginTop: '20px',
     alignItems: 'center',
+    alignContent: 'center',
     cursor: 'pointer',
+  },
+  documentLink: {
+    maxWidth: '120px',
+    margin: '5px',
+    padding: '5px',
+    cursor: 'pointer',
+    borderRadius: '5px',
     '&:hover': {
       border: 'solid 1px #4da1ff',
+    },
+    '&:focus': {
+      border: 'solid 1px #4da1ff',
+      boxShadow: '0 0 10px gray',
     },
   },
 }));
@@ -861,7 +871,7 @@ export default function FormDialog() {
                             data-key="contract"
                             multiple
                             style={{ width: '0px', visibility: 'hidden' }}
-                            accept=".pdf,.docs,.png,.jpg"
+                            accept=".pdf,.docs,image/*"
                             type="file"
                           />
                           <Typography variant="h5">Upload Documents</Typography>
@@ -924,6 +934,7 @@ export default function FormDialog() {
                               {user.docs_hash.length > 0
                                 ? user.docs_hash.map((value, index) => (
                                   <a
+                                    className={classes.documentLink}
                                     target="docFrame"
                                     href={`${CONTRACT_URL}/${value.hash}`}
                                   >
@@ -947,8 +958,8 @@ export default function FormDialog() {
                                           textOverflow: 'ellipsis',
                                         }}
                                       >
-                                          {value.name}
-                                        </Typography>
+                                        {value.name}
+                                      </Typography>
                                     </div>
                                   </a>
                                 ))
