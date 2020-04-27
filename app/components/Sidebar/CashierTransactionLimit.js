@@ -706,13 +706,13 @@ class CashierTransactionLimit extends Component {
       });
   };
 
-  verifySendMoney = event => {
+  verifySendMoney = async event => {
     event.preventDefault();
+    const amount = parseFloat(this.state.receiverIdentificationAmount);
+    const fee = this.state.livefee;
     if (this.state.feeType === 'inclusive') {
-      this.setState({
-        recieverIdentificationAmount:
-          this.state.recieverIdentificationAmount - this.state.livefee,
-        livefee: 0,
+      await this.setState({
+        receiverIdentificationAmount: amount - fee,
       });
     }
     this.setState({

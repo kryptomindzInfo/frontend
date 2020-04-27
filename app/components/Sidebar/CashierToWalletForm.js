@@ -284,13 +284,11 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
             }
         }
         onSubmit={async values => {
-          const fee = values.livefee;
           values.livefee = liveFee;
           values.requireOTP = '111111';
-          if (values.feeType == 'inclusive') {
+          if (values.feeType === 'inclusive') {
             values.receiverIdentificationAmount =
-              parseFloat(values.receiverIdentificationAmount) - parseFloat(fee);
-            values.livefee = 0;
+             values.receiverIdentificationAmount - liveFee;
           }
           handleOnProceedClick(values);
         }}
