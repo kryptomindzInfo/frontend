@@ -18,8 +18,6 @@ import Loader from 'components/Loader';
 import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
-
-import Grid from '@material-ui/core/Grid';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Radio from '@material-ui/core/Radio';
 import Typography from '@material-ui/core/Typography';
@@ -58,7 +56,7 @@ class CashierTransactionLimit extends Component {
       isWallet: false,
       toWalletFormValues: {},
       isValidFee: true,
-      feeType: 'inclusive',
+      feeType: 'exclusive',
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -706,13 +704,13 @@ class CashierTransactionLimit extends Component {
       });
   };
 
-  verifySendMoney = event => {
+  verifySendMoney = async event => {
     event.preventDefault();
+    const amount = parseFloat(this.state.receiverIdentificationAmount);
+    const fee = this.state.livefee;
     if (this.state.feeType === 'inclusive') {
-      this.setState({
-        recieverIdentificationAmount:
-          this.state.recieverIdentificationAmount - this.state.livefee,
-        livefee: 0,
+      await this.setState({
+        receiverIdentificationAmount: amount - fee,
       });
     }
     this.setState({
@@ -1252,7 +1250,7 @@ class CashierTransactionLimit extends Component {
                           <Row>
                             <Col className="popInfoLeft">Transaction ID</Col>
                             <Col className="popInfoRight">
-                              {this.state.transferCode}
+                              {this.state.master_code}
                             </Col>
                           </Row>
                           <Row>
@@ -2558,7 +2556,7 @@ class CashierTransactionLimit extends Component {
                                     required
                                   />
                                 </FormGroup>
-                                <Grid container alignItems="flex-start">
+                                <div>
                                   <FormControlLabel
                                     value="inclusive"
                                     control={
@@ -2574,23 +2572,7 @@ class CashierTransactionLimit extends Component {
                                         }
                                       />
                                     }
-                                    label={
-                                      <Typography
-                                        style={{
-                                          color: 'rgb(53, 153, 51)',
-                                          fontSize: '14px',
-                                        }}
-                                      >
-                                        Inclusive of Fee - Total {CURRENCY}{' '}
-                                        {this.state.receiverIdentificationAmount
-                                          ? parseFloat(
-                                              this.state
-                                              .receiverIdentificationAmount,
-                                          ) - parseFloat(this.state.livefee)
-                                          : parseFloat(this.state.livefee)}{' '}
-                                        will be sent to the receiver
-                                      </Typography>
-                                    }
+                                    label="Inclusive of Fee"
                                   />
                                   <FormControlLabel
                                     value="exclusive"
@@ -2607,26 +2589,28 @@ class CashierTransactionLimit extends Component {
                                         }
                                       />
                                     }
-                                    label={
-                                      <Typography
-                                        style={{
-                                          color: 'rgb(53, 153, 51)',
-                                          fontSize: '14px',
-                                        }}
-                                      >
-                                        Exclusive of Fee - Total {CURRENCY}{' '}
-                                        {this.state.receiverIdentificationAmount
-                                          ? parseFloat(
-                                              this.state
-                                              .receiverIdentificationAmount,
-                                          ) + parseFloat(this.state.livefee)
-                                          : parseFloat(this.state.livefee)}{' '}
-                                        will be charged
-                                      </Typography>
-                                    }
+                                    label="Exclusive of Fee"
                                   />
-                                </Grid>
-
+                                </div>
+                                <Typography
+                                  style={{
+                                    color: 'rgb(53, 153, 51)',
+                                    fontSize: '14px',
+                                  }}
+                                >
+                                  {CURRENCY} {this.state.livefee} will be
+                                  charged as fee and {CURRENCY}{' '}
+                                  {this.state.feeType === 'inclusive'
+                                    ? this.state.receiverIdentificationAmount
+                                      ? this.state
+                                        .receiverIdentificationAmount -
+                                        this.state.livefee
+                                      : '0'
+                                    : this.state.receiverIdentificationAmount
+                                    ? this.state.receiverIdentificationAmount
+                                    : '0'}{' '}
+                                  will be sent to the receiver
+                                </Typography>
                                 <Button filledBtn marginTop="20px">
                                   <span>Proceed</span>
                                 </Button>
