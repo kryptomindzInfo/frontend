@@ -121,6 +121,7 @@ const dialogContentStyles = makeStyles(() => ({
     maxHeight: '95%',
     minWidth: '90%',
     maxWidth: '90%',
+    overflowY: 'hidden',
   },
   dialogPaper: {
     height: '500px',

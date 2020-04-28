@@ -116,6 +116,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   const [availableWallet, setAvailableWallet] = React.useState('');
   const [openWalletPopup, setWalletPopup] = React.useState(false);
   const [isUserLoading, setUserLoading] = React.useState(false);
+  const [selectedMobile, setSelectedMobile] = React.useState('');
   const handleClose = () => {
     onClose();
   };
@@ -166,10 +167,13 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
 
   const getUser = value => {
     const token = localStorage.getItem('cashierLogged');
-    setAvailableWallet('');
-    setWalletBankName('');
     if (value) {
       if (value.length === 10) {
+        if(value === selectedMobile) {
+          return true;
+        }
+        setAvailableWallet('');
+        setWalletBankName('');
         return new Promise((resolve, reject) => {
           axios
             .post(`${API_URL}/cashier/getUser`, {
@@ -180,17 +184,20 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
               if (res.data.error || res.data.status !== 1) {
                 resolve(false);
                 setUserLoading(false);
+                setSelectedMobile('');
                 return false;
               }
               setAvailableWallet(res.data.data.bank);
               if (!walletBankName) {
                 setWalletPopup(true);
               }
+              setSelectedMobile(value);
               resolve(true);
               setUserLoading(false);
               return true;
             })
             .catch(err => {
+            setSelectedMobile('');
               resolve(false);
             });
         });
@@ -757,7 +764,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                       >
                         <TextField
                           size="small"
-                          autoFocus
                           id="form-phone-pre"
                           label="+91"
                           variant="outlined"
@@ -774,7 +780,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                       >
                         <TextField
                           size="small"
-                          autoFocus
                           error={
                             errors.receiverMobile && touched.receiverMobile
                           }
