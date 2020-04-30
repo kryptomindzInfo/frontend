@@ -138,7 +138,7 @@ class CashierTransactionLimit extends Component {
             throw res.data.error;
           } else {
             this.setState({
-              [key]: res.data.name,
+              [key]: res.data.hash,
             });
           }
         } else {
@@ -453,6 +453,7 @@ class CashierTransactionLimit extends Component {
               withoutID: o.without_id,
               requireOTP: o.require_otp,
               dateClaimMoney: new Date(o.created_at).toDateString(),
+              master_code: o.master_code,
 
               showClaimMoneyDetails: true,
             });
