@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const SelectInput = styled.select`
   width: 100%;
   z-index: 1;
-  height: 35px;
+  height: auto;
   background: transparent;
   box-sizing: border-box;
   padding: 10px;
@@ -23,14 +23,6 @@ const SelectInput = styled.select`
 `;
 
 class TypeSelectBox extends Component {
-  sendCloseSignal = event => {
-    if (
-      !document.getElementById('CountrySelectBoxBody').contains(event.target)
-    ) {
-      this.props.close();
-    }
-  };
-
   componentDidMount() {
     console.log(this.props);
   }

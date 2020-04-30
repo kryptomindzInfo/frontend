@@ -156,24 +156,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
     setWalletPopup(false);
   };
 
-  const senderIdentificationCountryChange = event => {
-    const { value } = event.target;
-    setSenderIdentificationCountry(value);
-  };
-
-  const senderIdentificationTypeChange = event => {
-    const { value } = event.target;
-    setSenderIdentificationType(value);
-  };
-
-  const countryChange = event => {
-    const { value } = event.target;
-    const { title } = event.target.options[event.target.selectedIndex];
-    const ccode = event.target.getAttribute('data-change');
-    setCcCode(title);
-    setCountry(value);
-  };
-
   const getLiveFee = amount => {
     const token = localStorage.getItem('cashierLogged');
     if (amount !== '') {
@@ -275,18 +257,18 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
       <Formik
         enableReinitialize={user}
         initialValues={{
-          ccode: ccCode || '',
+          ccode: '+000',
           givenname: user.name || '',
           familyname: user.last_name || '',
           note: '',
-          senderIdentificationCountry,
-          senderIdentificationType,
+          senderIdentificationCountry: user.country || '',
+          senderIdentificationType: '',
           senderIdentificationNumber: user.id_number || '',
           senderIdentificationValidTill: user.valid_till || '',
           address1: user.address || '',
           state: user.state || '',
           zip: user.zip || '',
-          country: country || 'Senegal',
+          country: user.country || '',
           email: user.email || '',
           mobile: user.mobile || '',
           livefee: '',
@@ -366,6 +348,20 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
             handleSubmit,
             setFieldValue,
           } = formikProps;
+          const senderIdentificationTypeChange = event => {
+            const { value } = event.target;
+            setFieldValue('senderIdentificationType', value, true);
+          };
+          const senderIdentificationCountryChange = event => {
+            const { value } = event.target;
+            setFieldValue('senderIdentificationCountry', value, true);
+          };
+          const countryChange = event => {
+            const { value } = event.target;
+            const { title } = event.target.options[event.target.selectedIndex];
+            setFieldValue('cccode', title, true);
+            setFieldValue('country', value, true);
+          };
           return (
             <Form>
               <Grid
@@ -612,7 +608,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                           type="text"
                           name="country"
                           value={values.country}
-                          onChange={setFieldValue}
+                          onChange={countryChange}
                           data-change="ccode"
                           required
                         />
