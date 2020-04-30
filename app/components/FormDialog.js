@@ -121,6 +121,7 @@ const dialogContentStyles = makeStyles(() => ({
     maxHeight: '95%',
     minWidth: '90%',
     maxWidth: '90%',
+    overflowY: 'hidden',
   },
   dialogPaper: {
     height: '500px',
@@ -248,7 +249,7 @@ export default function FormDialog() {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            doc.hash = res.data.name;
+            doc.hash = res.data.hash;
             user.docs_hash.push(doc);
             setUser(user);
           }

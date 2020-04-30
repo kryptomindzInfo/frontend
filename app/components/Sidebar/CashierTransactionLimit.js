@@ -14,12 +14,12 @@ import Col from 'components/Col';
 import Container from 'components/Container';
 import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
+import MuiCheckbox from '@material-ui/core/Checkbox';
 
 import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Blur from '../Blur';
@@ -56,7 +56,7 @@ class CashierTransactionLimit extends Component {
       isWallet: false,
       toWalletFormValues: {},
       isValidFee: true,
-      feeType: 'exclusive',
+      includeFee: false,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -361,38 +361,30 @@ class CashierTransactionLimit extends Component {
   };
 
   amountChange = event => {
-    const { value, name } = event.target;
-    this.setState(
-      {
-        [name]: value,
-      },
-      () => {
-        if (this.state.receiverIdentificationAmount != '') {
-          axios
-            .post(`${API_URL}/checkCashierFee`, {
-              amount: this.state.receiverIdentificationAmount,
-              token,
-            })
-            .then(res => {
-              if (res.status == 200) {
-                if (res.data.error) {
-                } else {
-                  this.setState(
-                    {
-                      livefee: parseFloat(res.data.fee),
-                    },
-                    function() {},
-                  );
-                }
-              }
-            });
-        } else {
-          this.setState({
-            livefee: 0,
-          });
-        }
-      },
-    );
+    if (this.state.receiverIdentificationAmount != '') {
+      axios
+        .post(`${API_URL}/checkCashierFee`, {
+          amount: this.state.receiverIdentificationAmount,
+          token,
+        })
+        .then(res => {
+          if (res.status == 200) {
+            if (res.data.error) {
+            } else {
+              this.setState(
+                {
+                  livefee: parseFloat(res.data.fee),
+                },
+                function() {},
+              );
+            }
+          }
+        });
+    } else {
+      this.setState({
+        livefee: 0,
+      });
+    }
   };
 
   getClaimMoney = event => {
@@ -709,9 +701,9 @@ class CashierTransactionLimit extends Component {
     event.preventDefault();
     const amount = parseFloat(this.state.receiverIdentificationAmount);
     const fee = this.state.livefee;
-    if (this.state.feeType === 'inclusive') {
+    if (!this.state.includeFee) {
       await this.setState({
-        receiverIdentificationAmount: amount - fee,
+        receiverIdentificationAmount: amount + fee,
       });
     }
     this.setState({
@@ -895,6 +887,10 @@ class CashierTransactionLimit extends Component {
       },
       this.getLiveFee(45, value),
     );
+  };
+
+  handleFeeTypeChange = event => {
+    this.setState({ [event.target.name]: event.target.checked });
   };
 
   render() {
@@ -2553,44 +2549,29 @@ class CashierTransactionLimit extends Component {
                                     value={
                                       this.state.receiverIdentificationAmount
                                     }
-                                    onChange={this.amountChange}
+                                    onChange={ event => {
+                                       this.setState({
+                                        receiverIdentificationAmount:
+                                          event.target.value,
+                                      });
+                                    }}
+                                    onBlur={this.amountChange}
                                     required
                                   />
                                 </FormGroup>
                                 <div>
                                   <FormControlLabel
-                                    value="inclusive"
                                     control={
-                                      <Radio
-                                        value="inclusive"
-                                        onChange={() =>
-                                          this.setState({
-                                            feeType: 'inclusive',
-                                          })
+                                      <MuiCheckbox
+                                        checked={this.state.includeFee}
+                                        onChange={event =>
+                                          this.handleFeeTypeChange(event)
                                         }
-                                        checked={
-                                          this.state.feeType === 'inclusive'
-                                        }
+                                        name="includeFee"
+                                        color="primary"
                                       />
                                     }
-                                    label="Inclusive of Fee"
-                                  />
-                                  <FormControlLabel
-                                    value="exclusive"
-                                    control={
-                                      <Radio
-                                        value="exclusive"
-                                        onChange={() =>
-                                          this.setState({
-                                            feeType: 'exclusive',
-                                          })
-                                        }
-                                        checked={
-                                          this.state.feeType === 'exclusive'
-                                        }
-                                      />
-                                    }
-                                    label="Exclusive of Fee"
+                                    label="Receiver pays transaction fees"
                                   />
                                 </div>
                                 <Typography
@@ -2601,7 +2582,7 @@ class CashierTransactionLimit extends Component {
                                 >
                                   {CURRENCY} {this.state.livefee} will be
                                   charged as fee and {CURRENCY}{' '}
-                                  {this.state.feeType === 'inclusive'
+                                  {this.state.includeFee
                                     ? this.state.receiverIdentificationAmount
                                       ? this.state
                                         .receiverIdentificationAmount -
@@ -2613,7 +2594,28 @@ class CashierTransactionLimit extends Component {
                                   will be sent to the receiver
                                 </Typography>
                                 <Button filledBtn marginTop="20px">
-                                  <span>Proceed</span>
+                                  <span>
+                                    <Typography variant="h6">
+                                      {this.state.receiverIdentificationAmount
+                                        ? 'Collect '
+                                        : ''}
+                                      {this.state.receiverIdentificationAmount
+                                        ? this.state.includeFee
+                                          ? `${
+                                              this.state
+                                                .receiverIdentificationAmount
+                                            } and `
+                                          : `${parseFloat(
+                                            this.state
+                                              .receiverIdentificationAmount,
+                                          ) +
+                                              parseFloat(
+                                                this.state.livefee,
+                                              )} and `
+                                        : ''}
+                                      Proceed
+                                    </Typography>
+                                  </span>
                                 </Button>
                               </Col>
                             </Row>

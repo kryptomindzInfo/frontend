@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Formik } from 'formik';
+import { Form, Formik, useField } from 'formik';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
@@ -14,8 +14,7 @@ import Paper from '@material-ui/core/Paper/Paper';
 import MenuList from '@material-ui/core/MenuList/MenuList';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MenuItem from '@material-ui/core/MenuItem';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Radio from '@material-ui/core/Radio';
+import MuiCheckbox from '@material-ui/core/Checkbox';
 import { API_URL, CURRENCY } from '../../containers/App/constants';
 
 const styles = makeStyles(() => ({
@@ -105,6 +104,23 @@ const styles = makeStyles(() => ({
   },
 }));
 
+export const Checkbox = ({ ...props }) => {
+  const [field] = useField(props.name);
+
+  return (
+    <MuiCheckbox
+      {...field}
+      style={{
+        color: 'rgb(53, 153, 51)',
+        '&$checked': {
+          color: 'rgb(53, 153, 51)',
+        },
+      }}
+      checked={field.value}
+    />
+  );
+};
+
 const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   const classes = styles();
   const [user, setUser] = React.useState(null);
@@ -116,8 +132,16 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   const [availableWallet, setAvailableWallet] = React.useState('');
   const [openWalletPopup, setWalletPopup] = React.useState(false);
   const [isUserLoading, setUserLoading] = React.useState(false);
+  const [selectedMobile, setSelectedMobile] = React.useState('');
   const handleClose = () => {
     onClose();
+  };
+
+  const resetWallet = () => {
+    setAvailableWallet('');
+    setWalletBankName('');
+    setSelectedMobile('');
+    setWalletPopup(false);
   };
 
   const getDummyLiveFee = amount => {
@@ -166,10 +190,13 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
 
   const getUser = value => {
     const token = localStorage.getItem('cashierLogged');
-    setAvailableWallet('');
-    setWalletBankName('');
     if (value) {
       if (value.length === 10) {
+        if (value === selectedMobile) {
+          return true;
+        }
+        setAvailableWallet('');
+        setWalletBankName('');
         return new Promise((resolve, reject) => {
           axios
             .post(`${API_URL}/cashier/getUser`, {
@@ -180,17 +207,20 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
               if (res.data.error || res.data.status !== 1) {
                 resolve(false);
                 setUserLoading(false);
+                setSelectedMobile('');
                 return false;
               }
               setAvailableWallet(res.data.data.bank);
               if (!walletBankName) {
                 setWalletPopup(true);
               }
+              setSelectedMobile(value);
               resolve(true);
               setUserLoading(false);
               return true;
             })
             .catch(err => {
+              setSelectedMobile('');
               resolve(false);
             });
         });
@@ -277,7 +307,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
               livefee: '',
               requireOTP: '',
               receiverMobile: '',
-              feeType: 'exclusive',
+              includeFee: false,
               receiverIdentificationAmount: '',
               // termsAndCondition: false,
             }
@@ -285,8 +315,8 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
         onSubmit={async values => {
           values.livefee = liveFee;
           values.requireOTP = '111111';
-          if (values.feeType === 'inclusive') {
-            values.receiverIdentificationAmount -= liveFee;
+          if (!values.includeFee) {
+            values.receiverIdentificationAmount += liveFee;
           }
           handleOnProceedClick(values);
         }}
@@ -757,7 +787,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                       >
                         <TextField
                           size="small"
-                          autoFocus
                           id="form-phone-pre"
                           label="+91"
                           variant="outlined"
@@ -774,7 +803,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                       >
                         <TextField
                           size="small"
-                          autoFocus
                           error={
                             errors.receiverMobile && touched.receiverMobile
                           }
@@ -791,7 +819,10 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                             openWalletPopup ? 'menu-list-grow' : undefined
                           }
                           aria-haspopup="true"
-                          onChange={handleChange}
+                          onChange={e => {
+                            handleChange(e);
+                            resetWallet();
+                          }}
                           onBlur={handleBlur}
                           className={classes.dialogTextFieldGrid}
                           helperText={
@@ -952,32 +983,8 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                       </Grid>
                     </Grid>
                     <div>
-                      <FormControlLabel
-                        value="inclusive"
-                        control={
-                          <Radio
-                            value="inclusive"
-                            checked={values.feeType === 'inclusive'}
-                            onChange={() =>
-                              setFieldValue('feeType', 'inclusive')
-                            }
-                          />
-                        }
-                        label="Inclusive of Fee"
-                      />
-                      <FormControlLabel
-                        value="exclusive"
-                        control={
-                          <Radio
-                            value="exclusive"
-                            checked={values.feeType === 'exclusive'}
-                            onChange={() =>
-                              setFieldValue('feeType', 'exclusive')
-                            }
-                          />
-                        }
-                        label="Exclusive of Fee"
-                      />
+                      <Checkbox name="includeFee" />
+                      <span>Receiver pays transaction fees</span>
                     </div>
                     <Typography
                       style={{
@@ -987,7 +994,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                       }}
                     >
                       {CURRENCY} {liveFee} will be charged as fee and {CURRENCY}{' '}
-                      {values.feeType === 'exclusive'
+                      {!values.includeFee
                         ? values.receiverIdentificationAmount
                           ? values.receiverIdentificationAmount
                           : '0'
@@ -1011,9 +1018,24 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         variant="contained"
                         color="primary"
                         disableElevation
-                        disabled={isSubmitting && isFeeValid}
+                        disabled={
+                          isSubmitting &&
+                          isFeeValid &&
+                          values.receiverIdentificationAmount
+                        }
                       >
-                        <Typography variant="h6">Proceed</Typography>
+                        <Typography variant="h6">
+                          {values.receiverIdentificationAmount
+                            ? 'Collect '
+                            : ''}
+                          {values.receiverIdentificationAmount
+                            ? values.includeFee
+                              ? `${values.receiverIdentificationAmount} and `
+                              : `${values.receiverIdentificationAmount +
+                                  liveFee} and `
+                            : ''}
+                          Proceed
+                        </Typography>
                       </Button>
                     </Grid>
                   </Grid>
