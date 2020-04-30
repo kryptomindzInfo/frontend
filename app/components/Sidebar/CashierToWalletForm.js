@@ -1022,7 +1022,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         />
                       </Grid>
                     </Grid>
-                    <div>
+                    <div style={{ marginLeft: '1%' }}>
                       <Checkbox name="includeFee" />
                       <span>Receiver pays transaction fees</span>
                     </div>
