@@ -249,7 +249,7 @@ export default function FormDialog() {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            doc.hash = res.data.name;
+            doc.hash = res.data.hash;
             user.docs_hash.push(doc);
             setUser(user);
           }

@@ -36,8 +36,8 @@ class CountrySelectBox extends Component {
   render() {
     return (
       <SelectInput {...this.props}>
-        <option title="" value="">
-          Select Country*
+        <option title="+221">
+          Senegal
           {/* {`${<span style={{ color: 'red' }}>*</span>}`} */}
           {/* { $`Select Country $`<span style={{color: 'red'}}>*</span>`} */}
         </option>
