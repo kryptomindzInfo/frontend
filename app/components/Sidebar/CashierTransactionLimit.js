@@ -16,7 +16,12 @@ import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
 import MuiCheckbox from '@material-ui/core/Checkbox';
 
-import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
+import {
+  API_URL,
+  CONTRACT_URL,
+  CURRENCY,
+  STATIC_URL,
+} from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -26,6 +31,7 @@ import Blur from '../Blur';
 import CashierToWalletForm from './CashierToWalletForm';
 import CashierPopupToggle from './CashierPopupToggle';
 import messages from './messages';
+import TypeSelectBox from '../Form/TypeSelectBox';
 
 toast.configure({
   position: 'bottom-right',
@@ -308,6 +314,13 @@ class CashierTransactionLimit extends Component {
     this.setState({
       [name]: value,
       [ccode]: title,
+    });
+  };
+
+  typeChange = event => {
+    const { value, name } = event.target;
+    this.setState({
+      [name]: value,
     });
   };
 
@@ -2174,24 +2187,13 @@ class CashierTransactionLimit extends Component {
                                   </Col>
                                   <Col>
                                     <FormGroup>
-                                      <TextField
-                                        size="small"
-                                        InputLabelProps={{
-                                          shrink: true,
-                                        }}
-                                        label="Type"
-                                        style={{
-                                          marginTop: '6px',
-                                          marginBottom: '6px',
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
+                                      <TypeSelectBox
                                         type="text"
                                         name="senderIdentificationType"
                                         value={
                                           this.state.senderIdentificationType
                                         }
-                                        onChange={this.handleInputChange}
+                                        onChange={this.typeChange}
                                         required
                                       />
                                     </FormGroup>
@@ -2452,25 +2454,14 @@ class CashierTransactionLimit extends Component {
                                       </Col>
                                       <Col>
                                         <FormGroup>
-                                          <TextField
-                                            size="small"
-                                            InputLabelProps={{
-                                              shrink: true,
-                                            }}
-                                            label="Type"
-                                            style={{
-                                              marginTop: '6px',
-                                              marginBottom: '6px',
-                                            }}
-                                            fullWidth
-                                            variant="outlined"
+                                          <TypeSelectBox
                                             type="text"
-                                            name="receiverIdentificationType"
+                                            name="receiverIdentificationCountry"
                                             value={
                                               this.state
                                                 .receiverIdentificationType
                                             }
-                                            onChange={this.handleInputChange}
+                                            onChange={this.typeChange}
                                             required
                                           />
                                         </FormGroup>
@@ -2549,8 +2540,8 @@ class CashierTransactionLimit extends Component {
                                     value={
                                       this.state.receiverIdentificationAmount
                                     }
-                                    onChange={ event => {
-                                       this.setState({
+                                    onChange={event => {
+                                      this.setState({
                                         receiverIdentificationAmount:
                                           event.target.value,
                                       });

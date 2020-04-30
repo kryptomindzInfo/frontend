@@ -261,14 +261,14 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
           givenname: user.name || '',
           familyname: user.last_name || '',
           note: '',
-          senderIdentificationCountry: user.country || '',
+          senderIdentificationCountry: user.country || 'Senegal',
           senderIdentificationType: '',
           senderIdentificationNumber: user.id_number || '',
           senderIdentificationValidTill: user.valid_till || '',
           address1: user.address || '',
           state: user.state || '',
           zip: user.zip || '',
-          country: user.country || '',
+          country: user.country || 'Senegal',
           email: user.email || '',
           mobile: user.mobile || '',
           livefee: '',
@@ -582,28 +582,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         alignItems="center"
                         className={classes.dialogTextFieldGrid}
                       >
-                        {/* <TextField InputLabelProps={{
-                                      shrink: true,
-                                    }}
-                          size="small"
-                          name="country"
-                          id="form-country"
-                          label="Country"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
-                          type="text"
-                          value={values.country}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={classes.dialogTextFieldGrid}
-                          error={errors.country && touched.country}
-                          helperText={
-                            errors.country && touched.country
-                              ? errors.country
-                              : ''
-                          }
-                        /> */}
                         <CountrySelectBox
                           type="text"
                           name="country"
@@ -808,9 +786,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
                           size="small"
                           id="form-phone-pre"
                           label="+91"
@@ -947,9 +922,6 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
                           size="small"
                           id="form-amount-pre"
                           label="XOF"
