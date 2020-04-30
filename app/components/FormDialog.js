@@ -183,10 +183,15 @@ const dialogContentStyles = makeStyles(() => ({
     '&:hover': {
       border: 'solid 1px #4da1ff',
     },
-    '&:focus': {
-      border: 'solid 1px #4da1ff',
-      boxShadow: '0 0 10px gray',
-    },
+  },
+  documentLinkActive: {
+    maxWidth: '120px',
+    margin: '5px',
+    padding: '5px',
+    cursor: 'pointer',
+    borderRadius: '5px',
+    border: 'solid 1px #4da1ff',
+    boxShadow: '0 0 10px gray',
   },
 }));
 
@@ -194,6 +199,7 @@ export default function FormDialog() {
   const classes = dialogContentStyles();
   const [open, setOpen] = React.useState(false);
   const [user, setUser] = React.useState(null);
+  const [activeLinkId, setActiveLinkId] = React.useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -935,14 +941,17 @@ export default function FormDialog() {
                               {user.docs_hash.length > 0
                                 ? user.docs_hash.map((value, index) => (
                                   <a
-                                    className={classes.documentLink}
+                                    key={index}
+                                    className={
+                                      activeLinkId === index
+                                        ? classes.documentLinkActive
+                                        : classes.documentLink
+                                    }
                                     target="docFrame"
                                     href={`${CONTRACT_URL}/${value.hash}`}
+                                    onClick={e => setActiveLinkId(index)}
                                   >
-                                    <div
-                                      key={index}
-                                      className={classes.documentCard}
-                                    >
+                                    <div className={classes.documentCard}>
                                       <img
                                         width={60}
                                         height={70}
