@@ -4,6 +4,7 @@ import styled from 'styled-components';
 const SelectInput = styled.select`
   width: 100%;
   z-index: 1;
+  height: 35px;
   background: transparent;
   box-sizing: border-box;
   padding: 10px;
@@ -12,7 +13,7 @@ const SelectInput = styled.select`
 
   border-radius: 4px;
   display: block;
-  margin-bottom: 14px;
+  margin-bottom: 5px;
   outline: 0;
   font-size: 14px;
   line-height: 19px;
