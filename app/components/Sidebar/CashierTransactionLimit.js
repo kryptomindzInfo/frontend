@@ -1942,10 +1942,10 @@ class CashierTransactionLimit extends Component {
                                         type="text"
                                         name="ccode"
                                         readOnly
-                                        placeholder="+000"
+                                        placeholder="+221"
                                         value={this.state.ccode}
+                                        disabled
                                         onChange={this.handleInputChange}
-                                        required
                                       />
                                     </FormGroup>
                                   </Col>
@@ -2085,7 +2085,6 @@ class CashierTransactionLimit extends Component {
                                         name="zip"
                                         value={this.state.zip}
                                         onChange={this.handleInputChange}
-                                        required
                                       />
                                     </FormGroup>
                                   </Col>
@@ -2158,7 +2157,6 @@ class CashierTransactionLimit extends Component {
                                     name="note"
                                     value={this.state.note}
                                     onChange={this.handleInputChange}
-                                    required
                                   />
                                 </FormGroup>
                                 <div
@@ -2278,12 +2276,12 @@ class CashierTransactionLimit extends Component {
                                         fullWidth
                                         variant="outlined"
                                         type="text"
-                                        placeholder="+000"
+                                        placeholder="+221"
                                         name="receiverccode"
                                         readOnly
                                         value={this.state.receiverccode}
                                         onChange={this.handleInputChange}
-                                        required
+                                        disabled
                                       />
                                     </FormGroup>
                                   </Col>

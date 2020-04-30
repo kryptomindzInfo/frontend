@@ -257,7 +257,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
       <Formik
         enableReinitialize={user}
         initialValues={{
-          ccode: '+000',
+          ccode: '+221',
           givenname: user.name || '',
           familyname: user.last_name || '',
           note: '',
@@ -359,7 +359,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
           const countryChange = event => {
             const { value } = event.target;
             const { title } = event.target.options[event.target.selectedIndex];
-            setFieldValue('cccode', title, true);
+            setFieldValue('ccode', title, true);
             setFieldValue('country', value, true);
           };
           return (
@@ -788,9 +788,10 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         <TextField
                           size="small"
                           id="form-phone-pre"
-                          label="+91"
+                          value={values.ccode}
                           variant="outlined"
                           type="text"
+                          name="ccode"
                           disabled
                         />
                       </Grid>
