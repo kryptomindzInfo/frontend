@@ -16,6 +16,8 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import MenuItem from '@material-ui/core/MenuItem';
 import MuiCheckbox from '@material-ui/core/Checkbox';
 import { API_URL, CURRENCY } from '../../containers/App/constants';
+import CountrySelectBox from '../Form/CountrySelectBox';
+import TypeSelectBox from '../Form/TypeSelectBox';
 
 const styles = makeStyles(() => ({
   '@global': {
@@ -123,7 +125,7 @@ export const Checkbox = ({ ...props }) => {
 
 const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   const classes = styles();
-  const [user, setUser] = React.useState(null);
+  const [user, setUser] = React.useState({});
   const [liveFee, setLiveFee] = useState(0);
   const [isFeeValid, setIsFeeValid] = useState(isValidFee);
 
@@ -133,6 +135,16 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   const [openWalletPopup, setWalletPopup] = React.useState(false);
   const [isUserLoading, setUserLoading] = React.useState(false);
   const [selectedMobile, setSelectedMobile] = React.useState('');
+  const [ccCode, setCcCode] = React.useState('+000');
+  const [country, setCountry] = React.useState('');
+  const [
+    senderIdentificationCountry,
+    setSenderIdentificationCountry,
+  ] = React.useState('');
+  const [
+    senderIdentificationType,
+    setSenderIdentificationType,
+  ] = React.useState('');
   const handleClose = () => {
     onClose();
   };
@@ -144,26 +156,22 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
     setWalletPopup(false);
   };
 
-  const getDummyLiveFee = amount => {
-    const token = localStorage.getItem('cashierLogged');
-    if (amount !== '') {
-      axios
-        .post(`${API_URL}/cashier/checkNonWalToWalFee`, { token, amount })
-        .then(res => {
-          if (res.status === 200) {
-            if (res.data.error) {
-              setIsFeeValid(false);
-              toast.error(res.data.error);
-            } else {
-              setIsFeeValid(true);
-            }
-          }
-        })
-        .catch(err => {
-          setIsFeeValid(false);
-          toast.error(err.response.data.error);
-        });
-    }
+  const senderIdentificationCountryChange = event => {
+    const { value } = event.target;
+    setSenderIdentificationCountry(value);
+  };
+
+  const senderIdentificationTypeChange = event => {
+    const { value } = event.target;
+    setSenderIdentificationType(value);
+  };
+
+  const countryChange = event => {
+    const { value } = event.target;
+    const { title } = event.target.options[event.target.selectedIndex];
+    const ccode = event.target.getAttribute('data-change');
+    setCcCode(title);
+    setCountry(value);
   };
 
   const getLiveFee = amount => {
@@ -266,52 +274,27 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
     <div>
       <Formik
         enableReinitialize={user}
-        initialValues={
-          user
-            ? {
-              givenname: user.name,
-              familyname: user.last_name,
-              note: '',
-              senderIdentificationCountry: user.country,
-              senderIdentificationType: user.id_type,
-              senderIdentificationNumber: user.id_number,
-              senderIdentificationValidTill: user.valid_till,
-              address1: user.address,
-              state: user.state,
-              zip: user.zip,
-              ccode: '',
-              country: user.country,
-              email: user.email,
-              mobile: user.mobile,
-              livefee: '',
-              requireOTP: '',
-              receiverMobile: '',
-              receiverIdentificationAmount: '',
-              // termsAndCondition: false,
-            }
-            : {
-              givenname: '',
-              familyname: '',
-              note: '',
-              senderIdentificationCountry: '',
-              senderIdentificationType: '',
-              senderIdentificationNumber: '',
-              senderIdentificationValidTill: '',
-              address1: '',
-              state: '',
-              zip: '',
-              ccode: '',
-              country: '',
-              email: '',
-              mobile: '',
-              livefee: '',
-              requireOTP: '',
-              receiverMobile: '',
-              includeFee: false,
-              receiverIdentificationAmount: '',
-              // termsAndCondition: false,
-            }
-        }
+        initialValues={{
+          ccode: ccCode || '',
+          givenname: user.name || '',
+          familyname: user.last_name || '',
+          note: '',
+          senderIdentificationCountry,
+          senderIdentificationType,
+          senderIdentificationNumber: user.id_number || '',
+          senderIdentificationValidTill: user.valid_till || '',
+          address1: user.address || '',
+          state: user.state || '',
+          zip: user.zip || '',
+          country: country || 'Senegal',
+          email: user.email || '',
+          mobile: user.mobile || '',
+          livefee: '',
+          requireOTP: '',
+          receiverMobile: '',
+          receiverIdentificationAmount: '',
+          // termsAndCondition: false,
+        }}
         onSubmit={async values => {
           values.livefee = liveFee;
           values.requireOTP = '111111';
@@ -411,12 +394,16 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           autoFocus
                           id="form-phone-pre"
-                          label="+91"
+                          value={values.ccode}
                           variant="outlined"
                           type="text"
+                          name="ccode"
                           disabled
                         />
                       </Grid>
@@ -427,6 +414,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           autoFocus
                           error={errors.mobile && touched.mobile}
@@ -455,6 +445,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           name="givenname"
                           id="form-given-name"
@@ -482,6 +475,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           name="familyname"
                           id="form-family-name"
@@ -513,6 +509,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           name="address1"
                           id="form-address"
@@ -537,6 +536,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           name="state"
                           id="form-state"
@@ -558,6 +560,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           name="zip"
                           id="form-zip"
@@ -581,7 +586,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         alignItems="center"
                         className={classes.dialogTextFieldGrid}
                       >
-                        <TextField
+                        {/* <TextField InputLabelProps={{
+                                      shrink: true,
+                                    }}
                           size="small"
                           name="country"
                           id="form-country"
@@ -600,7 +607,28 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                               ? errors.country
                               : ''
                           }
+                        /> */}
+                        <CountrySelectBox
+                          type="text"
+                          name="country"
+                          value={values.country}
+                          onChange={setFieldValue}
+                          data-change="ccode"
+                          required
                         />
+                        {errors.country && touched.country ? (
+                          <div
+                            style={{
+                              fontSize: '10px',
+                              color: 'red',
+                              paddingLeft: '5px',
+                            }}
+                          >
+                            {errors.country}
+                          </div>
+                        ) : (
+                          ''
+                        )}
                       </Grid>
                       <Grid
                         item
@@ -609,6 +637,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           name="email"
                           id="form-email"
@@ -643,19 +674,11 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         alignItems="center"
                         className={classes.dialogTextFieldGrid}
                       >
-                        <TextField
-                          size="small"
-                          name="senderIdentificationCountry"
-                          id="form-identification-country"
-                          label="Country"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
+                        <CountrySelectBox
                           type="text"
+                          name="country"
                           value={values.senderIdentificationCountry}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={classes.dialogTextField}
+                          onChange={senderIdentificationCountryChange}
                         />
                       </Grid>
                       <Grid
@@ -664,30 +687,27 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         alignItems="center"
                         className={classes.dialogTextFieldGrid}
                       >
-                        <TextField
-                          size="small"
-                          name="senderIdentificationType"
-                          id="form-fidentification-type"
-                          label="Type"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
+                        <TypeSelectBox
                           type="text"
+                          name="senderIdentificationType"
                           value={values.senderIdentificationType}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={classes.dialogTextFieldGrid}
-                          error={
-                            errors.senderIdentificationType &&
-                            touched.senderIdentificationType
-                          }
-                          helperText={
-                            errors.senderIdentificationType &&
-                            touched.senderIdentificationType
-                              ? errors.senderIdentificationType
-                              : ''
-                          }
+                          onChange={senderIdentificationTypeChange}
+                          required
                         />
+                        {errors.senderIdentificationType &&
+                        touched.senderIdentificationType ? (
+                            <div
+                              style={{
+                                fontSize: '10px',
+                                color: 'red',
+                                paddingLeft: '5px',
+                              }}
+                            >
+                              {errors.senderIdentificationType}
+                            </div>
+                          ) : (
+                            ''
+                          )}
                       </Grid>
                     </Grid>
 
@@ -699,6 +719,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           name="senderIdentificationNumber"
                           id="form-identification-number"
@@ -730,6 +753,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           name="senderIdentificationValidTill"
                           id="form-idetification-valid-till"
@@ -786,6 +812,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           id="form-phone-pre"
                           label="+91"
@@ -802,6 +831,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           error={
                             errors.receiverMobile && touched.receiverMobile
@@ -841,6 +873,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                       >
                         {walletBankName ? (
                           <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
                             id="walletName"
                             disabled
                             fullWidth
@@ -916,6 +951,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           id="form-amount-pre"
                           label="XOF"
@@ -931,6 +969,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           name="receiverIdentificationAmount"
                           id="form-sending-amount"
@@ -967,6 +1008,9 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         className={classes.dialogTextFieldGrid}
                       >
                         <TextField
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                           size="small"
                           name="note"
                           id="form-note"
@@ -999,8 +1043,8 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                           ? values.receiverIdentificationAmount
                           : '0'
                         : values.receiverIdentificationAmount
-                        ? values.receiverIdentificationAmount - liveFee
-                        : '0'}{' '}
+                          ? values.receiverIdentificationAmount - liveFee
+                          : '0'}{' '}
                       will be sent to the receiver
                     </Typography>
                     <Grid
