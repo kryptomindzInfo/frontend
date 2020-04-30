@@ -30,9 +30,9 @@ class TypeSelectBox extends Component {
   render() {
     return (
       <SelectInput {...this.props}>
-        <option title="" value="">Select Type</option>
+        <option value="">Select Type</option>
         <option value="passport">Passport</option>
-        <option title="national-id">National Id</option>
+        <option value="national-id">National Id</option>
       </SelectInput>
     );
   }
