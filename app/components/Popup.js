@@ -93,7 +93,7 @@ class Popup extends Component {
   render() {
     return (
       
-      <PopupWrap className="popupwrap" onClick={this.sendCloseSignal} bigBody={this.props.bigBody}>
+      <PopupWrap className="popupwrap" bigBody={this.props.bigBody}>
         <PopupBody id="popupBody" bigBody={this.props.bigBody}>
           <i
             className="material-icons popClose"

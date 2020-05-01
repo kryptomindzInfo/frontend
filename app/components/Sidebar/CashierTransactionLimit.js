@@ -16,17 +16,14 @@ import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
 import MuiCheckbox from '@material-ui/core/Checkbox';
 
-import {
-  API_URL,
-  CONTRACT_URL,
-  CURRENCY,
-  STATIC_URL,
-} from 'containers/App/constants';
+import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 import Blur from '../Blur';
 import CashierToWalletForm from './CashierToWalletForm';
 import CashierPopupToggle from './CashierPopupToggle';
@@ -62,7 +59,7 @@ class CashierTransactionLimit extends Component {
       isWallet: false,
       toWalletFormValues: {},
       isValidFee: true,
-      includeFee: false,
+      isInclusive: false,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -335,6 +332,13 @@ class CashierTransactionLimit extends Component {
         dis.setState({ timer: time });
       }
     }, 1000);
+  };
+
+  handleDateChange = (date, field) => {
+    const formattedDate = new Date(date).toLocaleDateString();
+    this.setState({
+      [field]: formattedDate,
+    });
   };
 
   generateOTP = () => {
@@ -712,13 +716,6 @@ class CashierTransactionLimit extends Component {
 
   verifySendMoney = async event => {
     event.preventDefault();
-    const amount = parseFloat(this.state.receiverIdentificationAmount);
-    const fee = this.state.livefee;
-    if (!this.state.includeFee) {
-      await this.setState({
-        receiverIdentificationAmount: amount + fee,
-      });
-    }
     this.setState({
       verifySendMoneyOTPLoading: true,
     });
@@ -2224,27 +2221,35 @@ class CashierTransactionLimit extends Component {
                                   </Col>
                                   <Col>
                                     <FormGroup>
-                                      <TextField
-                                        size="small"
-                                        InputLabelProps={{
-                                          shrink: true,
-                                        }}
-                                        label="Valid till"
-                                        style={{
-                                          marginTop: '6px',
-                                          marginBottom: '6px',
-                                        }}
-                                        fullWidth
-                                        variant="outlined"
-                                        type="text"
-                                        name="senderIdentificationValidTill"
-                                        value={
-                                          this.state
-                                            .senderIdentificationValidTill
-                                        }
-                                        onChange={this.handleInputChange}
-                                        required
-                                      />
+                                      <MuiPickersUtilsProvider
+                                        utils={DateFnsUtils}
+                                      >
+                                        <KeyboardDatePicker
+                                          id="date-picker-dialog"
+                                          label="Valid Till"
+                                          size="small"
+                                          fullWidth
+                                          inputVariant="outlined"
+                                          format="dd/MM/yyyy"
+                                          required
+                                          InputLabelProps={{
+                                            shrink: true,
+                                          }}
+                                          value={
+                                            this.state
+                                              .senderIdentificationValidTill
+                                          }
+                                          onChange={date =>
+                                            this.handleDateChange(
+                                              date,
+                                              'senderIdentificationValidTill',
+                                            )
+                                          }
+                                          KeyboardButtonProps={{
+                                            'aria-label': 'change date',
+                                          }}
+                                        />
+                                      </MuiPickersUtilsProvider>
                                     </FormGroup>
                                   </Col>
                                 </Row>
@@ -2493,27 +2498,35 @@ class CashierTransactionLimit extends Component {
                                       </Col>
                                       <Col>
                                         <FormGroup>
-                                          <TextField
-                                            size="small"
-                                            InputLabelProps={{
-                                              shrink: true,
-                                            }}
-                                            label="Valid Till"
-                                            style={{
-                                              marginTop: '6px',
-                                              marginBottom: '6px',
-                                            }}
-                                            fullWidth
-                                            variant="outlined"
-                                            type="text"
-                                            name="receiverIdentificationValidTill"
-                                            value={
-                                              this.state
-                                                .receiverIdentificationValidTill
-                                            }
-                                            onChange={this.handleInputChange}
-                                            required
-                                          />
+                                          <MuiPickersUtilsProvider
+                                            utils={DateFnsUtils}
+                                          >
+                                            <KeyboardDatePicker
+                                              id="date-picker-dialog"
+                                              label="Valid Till"
+                                              size="small"
+                                              fullWidth
+                                              inputVariant="outlined"
+                                              format="dd/MM/yyyy"
+                                              required
+                                              InputLabelProps={{
+                                                shrink: true,
+                                              }}
+                                              value={
+                                                this.state
+                                                  .receiverIdentificationValidTill
+                                              }
+                                              onChange={date =>
+                                                this.handleDateChange(
+                                                  date,
+                                                  'receiverIdentificationValidTill',
+                                                )
+                                              }
+                                              KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                              }}
+                                            />
+                                          </MuiPickersUtilsProvider>
                                         </FormGroup>
                                       </Col>
                                     </Row>
@@ -2552,11 +2565,11 @@ class CashierTransactionLimit extends Component {
                                   <FormControlLabel
                                     control={
                                       <MuiCheckbox
-                                        checked={this.state.includeFee}
+                                        checked={this.state.isInclusive}
                                         onChange={event =>
                                           this.handleFeeTypeChange(event)
                                         }
-                                        name="includeFee"
+                                        name="isInclusive"
                                         color="primary"
                                       />
                                     }
@@ -2571,7 +2584,7 @@ class CashierTransactionLimit extends Component {
                                 >
                                   {CURRENCY} {this.state.livefee} will be
                                   charged as fee and {CURRENCY}{' '}
-                                  {this.state.includeFee
+                                  {this.state.isInclusive
                                     ? this.state.receiverIdentificationAmount
                                       ? this.state
                                         .receiverIdentificationAmount -
@@ -2589,7 +2602,7 @@ class CashierTransactionLimit extends Component {
                                         ? 'Collect '
                                         : ''}
                                       {this.state.receiverIdentificationAmount
-                                        ? this.state.includeFee
+                                        ? this.state.isInclusive
                                           ? `${
                                               this.state
                                                 .receiverIdentificationAmount

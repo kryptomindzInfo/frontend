@@ -15,6 +15,8 @@ import MenuList from '@material-ui/core/MenuList/MenuList';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import MenuItem from '@material-ui/core/MenuItem';
 import MuiCheckbox from '@material-ui/core/Checkbox';
+import DateFnsUtils from '@date-io/date-fns';
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { API_URL, CURRENCY } from '../../containers/App/constants';
 import CountrySelectBox from '../Form/CountrySelectBox';
 import TypeSelectBox from '../Form/TypeSelectBox';
@@ -275,14 +277,12 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
           requireOTP: '',
           receiverMobile: '',
           receiverIdentificationAmount: '',
+          isInclusive: false,
           // termsAndCondition: false,
         }}
         onSubmit={async values => {
           values.livefee = liveFee;
           values.requireOTP = '111111';
-          if (!values.includeFee) {
-            values.receiverIdentificationAmount += liveFee;
-          }
           handleOnProceedClick(values);
         }}
         validationSchema={Yup.object().shape({
@@ -362,6 +362,11 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
             setFieldValue('ccode', title, true);
             setFieldValue('country', value, true);
           };
+          const handleDateChange = (date, field) => {
+            const formattedDate = new Date(date).toLocaleDateString();
+            setFieldValue(field, formattedDate, true);
+          };
+
           return (
             <Form>
               <Grid
@@ -726,36 +731,39 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                         alignItems="center"
                         className={classes.dialogTextFieldGrid}
                       >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          name="senderIdentificationValidTill"
-                          id="form-idetification-valid-till"
-                          label="Valid Till"
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          placeholder=""
-                          variant="outlined"
-                          type="date"
-                          value={values.senderIdentificationValidTill}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={classes.dialogTextFieldGrid}
-                          error={
-                            errors.senderIdentificationValidTill &&
-                            touched.senderIdentificationValidTill
-                          }
-                          helperText={
-                            errors.senderIdentificationValidTill &&
-                            touched.senderIdentificationValidTill
-                              ? errors.senderIdentificationValidTill
-                              : ''
-                          }
-                        />
+                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                          <KeyboardDatePicker
+                            id="date-picker-dialog"
+                            label="Valid Till"
+                            size="small"
+                            fullWidth
+                            inputVariant="outlined"
+                            format="dd/MM/yyyy"
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            value={values.senderIdentificationValidTill}
+                            onChange={date =>
+                              handleDateChange(
+                                date,
+                                'senderIdentificationValidTill',
+                              )
+                            }
+                            KeyboardButtonProps={{
+                              'aria-label': 'change date',
+                            }}
+                            error={
+                              errors.senderIdentificationValidTill &&
+                              touched.senderIdentificationValidTill
+                            }
+                            helperText={
+                              errors.senderIdentificationValidTill &&
+                              touched.senderIdentificationValidTill
+                                ? errors.senderIdentificationValidTill
+                                : ''
+                            }
+                          />
+                        </MuiPickersUtilsProvider>
                       </Grid>
                     </Grid>
                     {/*  <Grid container direction="column" alignItems="flex-start">
@@ -996,7 +1004,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                       </Grid>
                     </Grid>
                     <div style={{ marginLeft: '1%' }}>
-                      <Checkbox name="includeFee" />
+                      <Checkbox name="isInclusive" />
                       <span>Receiver pays transaction fees</span>
                     </div>
                     <Typography
@@ -1007,7 +1015,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                       }}
                     >
                       {CURRENCY} {liveFee} will be charged as fee and {CURRENCY}{' '}
-                      {!values.includeFee
+                      {!values.isInclusive
                         ? values.receiverIdentificationAmount
                           ? values.receiverIdentificationAmount
                           : '0'
@@ -1042,7 +1050,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                             ? 'Collect '
                             : ''}
                           {values.receiverIdentificationAmount
-                            ? values.includeFee
+                            ? values.isInclusive
                               ? `${values.receiverIdentificationAmount} and `
                               : `${values.receiverIdentificationAmount +
                                   liveFee} and `
