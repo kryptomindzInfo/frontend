@@ -639,9 +639,9 @@ export default class BranchDashboard extends Component {
           //     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()// implicit conversion in number
           // });
           // var l = result.length;
-
+          const history = res.data.result.reverse();
           this.setState({
-            popresult: res.data.result,
+            popresult: history,
             historyLoading: false,
             popmaster: master_code,
           });
@@ -665,9 +665,9 @@ export default class BranchDashboard extends Component {
           //     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()// implicit conversion in number
           // });
           // var l = result.length;
-
+          const perndingHistory = res.data.rows.reverse();
           this.setState({
-            pending: res.data.rows,
+            pending: perndingHistory,
             historyLoading: false
           });
         }
@@ -714,14 +714,14 @@ export default class BranchDashboard extends Component {
             ); // implicit conversion in number
           });
           var l = result.length;
-
+          const history = result;
           this.setState(
             {
-              ticker: result[l - 1],
-              result: result,
+              ticker: history[l - 1],
+              result: history,
               loading: false,
-              allhistory: result,
-              totalCount: result.length,
+              allhistory: history,
+              totalCount: history.length,
             },
             () => {
               this.showHistory();
@@ -923,7 +923,7 @@ export default class BranchDashboard extends Component {
                   </div>
                 </Card>
               </Col> */}
-              
+
               <Col>
                 <Card
                   marginBottom="54px"
@@ -974,7 +974,7 @@ export default class BranchDashboard extends Component {
                       <th>Fee collected</th>
                       <th>Status</th>
                       <th>Pending Trans. Count</th>
-                      
+
                     </tr>
                   </thead>
                   <tbody>
@@ -984,7 +984,7 @@ export default class BranchDashboard extends Component {
                             <tr key={b._id}>
                               <td>{b.name}</td>
                               <td className="tac">
-                               
+
                                 {(
                                   b.opening_balance +
                                   (b.cash_received - b.cash_paid)
@@ -1017,15 +1017,15 @@ export default class BranchDashboard extends Component {
                               </td>
 
                               <td style = {{color: b.is_closed ? 'red' : 'green' }}>
-                                   {b.is_closed  ? 
+                                   {b.is_closed  ?
                                       "Close"
                                    : "Open" }
                               </td>
                               <td className="tac bold green">
                                 <span onClick={() => this.showPending(b._id)}> {b.pending_trans}</span>
-                               
+
                               </td>
-                              
+
                             </tr>
                           );
                         })
@@ -1743,7 +1743,7 @@ export default class BranchDashboard extends Component {
                 <Table marginTop="34px" smallTd textAlign="left">
                   <tbody>
                 {
-                  
+
                       this.state.pending && this.state.pending.length > 0
                       ? this.state.pending.map(function(b) {
 
@@ -1756,24 +1756,24 @@ export default class BranchDashboard extends Component {
                                 <div
                                   className="labelBlue"
                                 >
-                                  
+
                                     <span onClick={() => dis.showPendingDetails(b._id, JSON.parse(b.transaction_details))}>
                                       Cash sent from{' '}
                                       {b.sender_name}{' '}
                                       to{' '}
                                       {b.receiver_name}
                                     </span>
-                                  
+
                                 </div>
                                 <div className="labelSmallGrey">
-                                  {b.status == 1 ? 
+                                  {b.status == 1 ?
                                     <span>Approved</span>
-                                  : 
-                                  b.status == 0 ? 
-                                    <span>Pending</span>
-                                  
                                   :
-                                 
+                                  b.status == 0 ?
+                                    <span>Pending</span>
+
+                                  :
+
                                     <span className="red">Rejected</span>
                                   }
                                 </div>
@@ -1798,10 +1798,10 @@ export default class BranchDashboard extends Component {
 
          {this.state.popupClaimMoney ? (
           <Popup bigBody close={this.closePopup.bind(this)} accentedH1>
-        
+
                 <div>
                   <h1>Transaction Details</h1>
-        
+
                     <Container>
                       <Row vAlign="flex-start">
                         <Col sm="12" md="4">
@@ -2026,7 +2026,7 @@ export default class BranchDashboard extends Component {
                           </Row>
                         </Col>
                         <Col>
-         
+
                        <Row>
                        <Col cW="49%" mR="2%">
                        {this.state.claimMoneyLoading ? (
@@ -2055,7 +2055,7 @@ export default class BranchDashboard extends Component {
                           )}
                        </Col>
                        </Row>
-                          
+
 
                           <br />
                           {/* <p className="note">
@@ -2065,9 +2065,9 @@ export default class BranchDashboard extends Component {
                         </Col>
                       </Row>
                     </Container>
-        
+
                 </div>
-           
+
           </Popup>
         ) : null}
 

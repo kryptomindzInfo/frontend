@@ -2459,7 +2459,7 @@ class CashierTransactionLimit extends Component {
                                         <FormGroup>
                                           <TypeSelectBox
                                             type="text"
-                                            name="receiverIdentificationCountry"
+                                            name="receiverIdentificationType"
                                             value={
                                               this.state
                                                 .receiverIdentificationType

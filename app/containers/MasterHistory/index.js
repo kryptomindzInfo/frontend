@@ -379,10 +379,11 @@ export default class MasterHistory extends Component {
       .then(res => {
         if (res.status == 200) {
           // console.log(res.data);
+          const history = res.data.history.reverse();
           this.setState(
             {
               loading: false,
-              allhistory: res.data.history,
+              allhistory: history,
               totalCount: res.data.history.length,
             },
             () => {

@@ -379,10 +379,11 @@ export default class BankEscrowHistory extends Component {
       .then(res => {
         if (res.status == 200) {
           // console.log(res.data);
+          const history = res.data.history.reverse();
           this.setState(
             {
               loading: false,
-              allhistory: res.data.history,
+              allhistory: history,
               totalCount: res.data.history.length,
             },
             () => {
@@ -424,7 +425,7 @@ export default class BankEscrowHistory extends Component {
   componentDidMount() {
     // this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      
+
       // this.getBanks();
       let dis = this;
       setInterval(function(){
@@ -575,7 +576,7 @@ export default class BankEscrowHistory extends Component {
                                     :
                                     <span>{CURRENCY} {b.Value.amount}</span>
                                   }
-                                  
+
                                 </div>
                               </td>
                             </tr>

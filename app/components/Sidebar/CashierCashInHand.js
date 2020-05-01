@@ -384,8 +384,9 @@ class CashierCashInHand extends Component {
       })
       .then(res => {
         if (res.status == 200) {
+          const history = res.data.history.reverse();
           this.setState({
-            popresult: res.data.history,
+            popresult: history,
             historyLoading: false
           });
         }
@@ -437,8 +438,9 @@ class CashierCashInHand extends Component {
       })
       .then(res => {
         if (res.status == 200) {
+          const history = res.data.result.reverse();
           this.setState({
-            incoming: res.data.result
+            incoming: history
           }, () => {
 
             var dis = this;

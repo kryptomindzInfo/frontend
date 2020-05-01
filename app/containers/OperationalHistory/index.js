@@ -379,10 +379,11 @@ export default class OperationalHistory extends Component {
       .then(res => {
         if (res.status == 200) {
           // console.log(res.data);
+          const history = res.data.history.reverse();
           this.setState(
             {
               loading: false,
-              allhistory: res.data.history,
+              allhistory: history,
               totalCount: res.data.history.length,
             },
             () => {
@@ -528,7 +529,7 @@ export default class OperationalHistory extends Component {
               <h2>{this.state.banks && this.state.banks.name}</h2>
             </div>
           </div>
-      
+
           <SidebarOne bankId={this.state.bank} />
           <Main>
             {/* <ActionBar marginBottom="33px" inputWidth="calc(100% - 344px)" className="clr">
@@ -618,7 +619,7 @@ export default class OperationalHistory extends Component {
                                     :
                                     <span>{CURRENCY} {b.Value.amount}</span>
                                   }
-                                  
+
                                 </div>
                               </td>
                             </tr>

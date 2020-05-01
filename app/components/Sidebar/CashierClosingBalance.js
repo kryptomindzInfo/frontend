@@ -115,9 +115,10 @@ class CashierClosingBalance extends Component {
       })
       .then(res => {
         if (res.status == 200) {
+          const history =  res.data.rows.reverse()
           this.setState(
             {
-              history: res.data.rows,
+              history: history,
             },
             () => {
               this.setState({ historyLoading: false });

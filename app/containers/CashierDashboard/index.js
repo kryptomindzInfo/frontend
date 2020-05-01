@@ -274,9 +274,9 @@ generateOTP = () => {
           //     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()// implicit conversion in number
           // });
           // var l = result.length;
-
+          const history = res.data.result.reverse();
           this.setState({
-            popresult: res.data.result,
+            popresult: history,
             historyLoading: false,
             popmaster: master_code,
           });
@@ -329,13 +329,14 @@ generateOTP = () => {
           var l = result.length;
           console.log(result.length);
           console.log(result[l - 1]);
-
+          const allHistory = result;
+          const pendingHistory = res.data.history3.reverse();
           this.setState(
             {
-              pending: res.data.history3,
-              ticker: result[0],
+              pending: pendingHistory,
+              ticker: allHistory[0],
               loading: false,
-              allhistory: result,
+              allhistory: allHistory,
               totalCount: result.length,
             },
             () => {
