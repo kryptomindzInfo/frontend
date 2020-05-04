@@ -29,6 +29,7 @@ import CashierToWalletForm from './CashierToWalletForm';
 import CashierPopupToggle from './CashierPopupToggle';
 import messages from './messages';
 import TypeSelectBox from '../Form/TypeSelectBox';
+import getCountryDialCode from '../../utils/CountryUtil';
 
 toast.configure({
   position: 'bottom-right',
@@ -939,7 +940,7 @@ class CashierTransactionLimit extends Component {
                   address1: res.data.data.address || '',
                   state: res.data.data.state || '',
                   zip: res.data.data.zip || '',
-                  ccode: '',
+                  ccode: getCountryDialCode(res.data.data.country),
                   country: res.data.data.country || '',
                   email: res.data.data.email || '',
                 });
