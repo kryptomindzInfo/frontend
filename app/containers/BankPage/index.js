@@ -498,9 +498,13 @@ export default class BankPage extends Component {
         if (res.status == 200) {
           if (res.data.error) {
             throw res.data.error;
-          } else {
+          } else if (key === 'contract') {
             this.setState({
               [key]: res.data.hash,
+            });
+          } else {
+            this.setState({
+              [key]: res.data.name,
             });
           }
         } else {
