@@ -31,11 +31,10 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
-// import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
-
-import { API_URL, STATIC_URL, CONTRACT_URL, SERVER_URL } from '../App/constants';
+import { API_URL, CONTRACT_URL, SERVER_URL, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
+// import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -501,7 +500,7 @@ export default class BankPage extends Component {
             throw res.data.error;
           } else {
             this.setState({
-              [key]: res.data.name,
+              [key]: res.data.hash,
             });
           }
         } else {
