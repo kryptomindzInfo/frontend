@@ -785,7 +785,7 @@ generateOTP = () => {
                                     </span>
                                   ) : (
                                     <span>
-                                      Cash claimed from {b["sender_name"]} to{' '}
+                                      Cash claimed from {!b.sender_name.includes('undefined') ? b.sender_name : b.sender_mobile} to{' '}
                                       {b.receiver_name}
                                     </span>
                                   )}
