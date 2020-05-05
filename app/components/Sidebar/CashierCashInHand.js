@@ -6,22 +6,18 @@ import axios from 'axios';
 import Card from 'components/Card';
 import Popup from 'components/Popup';
 import TextInput from 'components/TextInput';
-import Label from 'components/Label';
 import FormGroup from 'components/FormGroup';
 import Button from 'components/Button';
-import CountrySelectBox from 'components/Form/CountrySelectBox';
 import Row from 'components/Row';
 import Col from 'components/Col';
-import Container from 'components/Container';
-import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
-import A from 'components/A';
 import SelectInput from 'components/SelectInput';
 import Table from 'components/Table';
 
-import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
+import { API_URL, CURRENCY } from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
+
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -507,45 +503,44 @@ class CashierCashInHand extends Component {
     var dis = this;
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
+        <h3> Cash in Hand </h3>
+        <h5>
+          <FormattedMessage {...messages.available} />
+        </h5>
+        <div className="cardValue">
+          {CURRENCY}
+        </div>
         <h3>
-          Cash in Hand
           {
             this.state.transactionStarted && !this.state.isClosed ?
-              <span style={{ float: "right", position: "relative", color: "#555", cursor: "pointer", top: '100px', right: '141px', fontSize: '16px' }} onClick={this.showIncoming}>
+              <span style={{ float: "right", position: "relative", color: "#555", marginRight: '-20px',cursor: "pointer", right: '141px', fontSize: '16px' }} onClick={this.showIncoming}>
+                 <span>Pending</span>
                 <span style={{
-                  position: "absolute",
-                  top: "0px",
                   fontSize: "16px",
                   color: "#ff1818",
                   fontWeight: "bold",
-                  right: "-20px",
+                  marginLeft: '10px',
                 }}>{this.state.incoming.length}</span>
-                <span>Pending</span>
                 {/* <i class="material-icons">notifications</i> */}
 
               </span>
               :
-              <span style={{ float: "right", position: "relative", color: "#555", cursor: "pointer", top: '100px', right: '141px', fontSize: '16px' }} disabled>
-                <span style={{
-                  position: "absolute",
-                  top: "0px",
-                  fontSize: "16px",
-                  color: "#ff1818",
-                  fontWeight: "bold",
-                  right: "-20px",
-                }}>{this.state.incoming.length}</span>
+              <span style={{ float: "right", position: "relative", color: "#555", marginRight: '-20px', cursor: "pointer", right: '141px', fontSize: '16px' }} disabled>
                 <span>Pending</span>
+                 <span style={{
+                   fontSize: "16px",
+                   color: "#ff1818",
+                   fontWeight: "bold",
+                   marginLeft: '10px',
+                 }}>{this.state.incoming.length}</span>
                 {/* <i class="material-icons">notifications</i> */}
 
               </span>
           }
 
         </h3>
-        <h5>
-          <FormattedMessage {...messages.available} />
-        </h5>
         <div className="cardValue">
-          {CURRENCY} {this.state.balance.toFixed(2)}
+         {this.state.balance.toFixed(2)}
         </div>
         {
           this.state.transactionStarted && !this.state.isClosed ?
