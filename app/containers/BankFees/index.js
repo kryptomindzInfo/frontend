@@ -153,7 +153,7 @@ export class BankFees extends Component {
   };
 
   goBankEdit = b => {
-    this.props.history.push('/bank/edit-fee/' + b);
+    this.props.history.push(`/bank/edit-fee/${b}`);
   };
 
   showMiniPopUp = (b, r) => {
@@ -164,7 +164,7 @@ export class BankFees extends Component {
       popup: true,
       html: r,
     });
-    //this.props.history.push('/createfee/'+this.state.bank_id);
+    // this.props.history.push('/createfee/'+this.state.bank_id);
   };
 
   closeMiniPopUp = () => {
@@ -423,7 +423,7 @@ export class BankFees extends Component {
     axios
       .post(`${API_URL}/getAll`, {
         type: 'bank',
-        token: token,
+        token,
         page: 'bankfee',
       })
       .then(res => {
@@ -450,6 +450,7 @@ export class BankFees extends Component {
     console.log('working!!');
     this.setState({ isInfraFeeVisible: true });
   };
+
   showBankFeeView = () => {
     console.log('working bank!!');
     this.setState({ isInfraFeeVisible: false });
@@ -458,6 +459,7 @@ export class BankFees extends Component {
   showPopup = () => {
     this.setState({ popup: true });
   };
+
   closePopup = () => {
     this.setState({
       popup: false,
@@ -513,6 +515,7 @@ export class BankFees extends Component {
       bankMerchantsTable: false,
     });
   };
+
   showBankPartners = () => {
     this.setState({
       bankBranchesTable: false,
@@ -637,24 +640,22 @@ export class BankFees extends Component {
                               </td>
 
                               <td>
-                                {r.map(v => {
-                                  return (
-                                    <div>
-                                      Count:{' '}
-                                      <span className="green">
-                                        {v.trans_from} - {v.trans_to}
-                                      </span>
-                                      , Fixed:{' '}
-                                      <span className="green">
-                                        {CURRENCY + ' ' + v.fixed_amount}
-                                      </span>
-                                      , Percentage:{' '}
-                                      <span className="green">
-                                        {v.percentage}
-                                      </span>
-                                    </div>
-                                  );
-                                })}
+                                {r.map(v => (
+                                  <div>
+                                    Count:{' '}
+                                  <span className="green">
+                                      {v.trans_from} - {v.trans_to}
+                                  </span>
+                                    , Fixed:{' '}
+                                    <span className="green">
+                                    {`${CURRENCY} ${v.fixed_amount}`}
+                                    </span>
+                                    , Percentage:{' '}
+                                    <span className="green">
+                                      {v.percentage}
+                                  </span>
+                                  </div>
+                                ))}
                               </td>
                               <td className="tac bold">
                                 {b.active == 'Inactive' ? (
@@ -769,38 +770,36 @@ export class BankFees extends Component {
                                 {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
                           <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
                                 <td>
-                                  {r.map(v => {
-                                    return (
-                                      <div>
-                                        Range:{' '}
-                                        <span className="green">
-                                          {v.trans_from} - {v.trans_to}
-                                        </span>
-                                        , Fixed:{' '}
-                                        <span className="green">
-                                          {CURRENCY + ' ' + v.fixed_amount}
-                                        </span>
-                                        , Percentage:{' '}
-                                        <span className="green">
-                                          {v.percentage}
-                                        </span>
-                                      </div>
-                                    );
-                                  })}
+                                  {r.map(v => (
+                                  <div>
+                                      Range:{' '}
+                                      <span className="green">
+                                      {v.trans_from} - {v.trans_to}
+                                      </span>
+                                      , Fixed:{' '}
+                                      <span className="green">
+                                        {`${CURRENCY} ${v.fixed_amount}`}
+                                    </span>
+                                      , Percentage:{' '}
+                                      <span className="green">
+                                      {v.percentage}
+                                      </span>
+                                  </div>
+                                ))}
                                 </td>
                                 <td className="tac bold">
-                                    <Button
-                                      className="addBankButton"
-                                      onClick={() =>
-                                        dis.goBankEdit(
-                                          b._id,
-                                          // this.state.rules[i]._id,
-                                        )
-                                      }
-                                      className="pointer"
-                                    >
-                                      Edit
-                                    </Button>
+                                  <Button
+                                  className="addBankButton"
+                                  onClick={() =>
+                                      dis.goBankEdit(
+                                        b._id,
+                                      // this.state.rules[i]._id,
+                                      )
+                                  }
+                                  className="pointer"
+                                  >
+                                    Edit
+                                </Button>
                                 </td>
                                 <td>
                                   <Button
@@ -839,7 +838,7 @@ export class BankFees extends Component {
         </Container>
 
         {/* {this.state.popup ? (
-         
+
           <div>
             <Main style={{ display: 'none' }} />
             <Card bigPadding>hiiiiiii</Card>
@@ -893,7 +892,7 @@ export class BankFees extends Component {
                         </span>
                         , Fixed:{' '}
                         <span className="green">
-                          {CURRENCY + ' ' + v.fixed_amount}
+                          {`${CURRENCY} ${v.fixed_amount}`}
                         </span>
                         , Percentage:{' '}
                         <span className="green">{v.percentage}</span>

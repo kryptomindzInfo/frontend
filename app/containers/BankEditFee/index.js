@@ -147,7 +147,7 @@ export default class BankEditFee extends Component {
       last = Number(last)+1;
     temp.push({
         trans_from: last,
-        trans_to: '',
+        trans_to: '999999999',
         fixed_amount: '',
         percentage: ''
     });
@@ -162,13 +162,13 @@ export default class BankEditFee extends Component {
     const { value, name } = event.target;
     var temp = this.state.ranges;
     var k = event.target.getAttribute("data-key");
-    
+
      temp[k][name] = value;
      console.log(temp[k]);
     this.setState({
       ranges : temp
     });
-    
+
     // this.setState({
     //   [name]: value,
     // });
@@ -184,7 +184,7 @@ export default class BankEditFee extends Component {
     });
     // console.log(temp);
     // var out = [];
-    
+
     // for(var i = 0; i < temp.length; i++){
     //   if(i != k){
     //     out.push(temp[i]);
@@ -195,7 +195,7 @@ export default class BankEditFee extends Component {
     //     });
     //   }
     // }
-    
+
   };
   logout = () => {
     // event.preventDefault();
@@ -366,7 +366,7 @@ export default class BankEditFee extends Component {
 
   editRules = event => {
     event.preventDefault();
-    
+
       this.setState({
         editRulesLoading: true
       });
@@ -507,12 +507,12 @@ export default class BankEditFee extends Component {
       .post(`${API_URL  }/getBank`, { token:token, bank_id: this.props.match.params.bank })
       .then(res => {
         if(res.status == 200){
-          
+
           this.setState({ banks: res.data.banks, logo: res.data.banks.logo, bank_id: this.props.match.params.bank});
         }
       })
       .catch(err => {
-      
+
       });
   };
 
@@ -552,7 +552,7 @@ export default class BankEditFee extends Component {
       });
   };
 
-  
+
 
   componentDidMount() {
     this.setState({ rule_id: this.props.match.params.fee }, () => {
@@ -605,8 +605,7 @@ export default class BankEditFee extends Component {
                   <A  href={"/bank/fees/"}>
                   <i className="material-icons">arrow_back</i>
                   </A>
-                  <h3>
-Edit Revenue sharing Rule</h3>
+                  <h3>Edit Fee Rule</h3>
                 </div>
               </div>
               <div className="cardBody">
@@ -647,7 +646,7 @@ Edit Revenue sharing Rule</h3>
                     <option >Wallet to Bank Account</option>
                     <option >Bank Account to Wallet Request</option>
                   </SelectInput>
-                 
+
                   </FormGroup>
                   </Col>
                   <Col>
@@ -702,7 +701,7 @@ Edit Revenue sharing Rule</h3>
                 <H4>Transaction Range</H4>
                 {
                   this.state.ranges.map(function(v, i) {
-                    
+
                     return <Row key={i}>
                     <Col cW="20%" mR="2%">
                     <FormGroup>
@@ -736,7 +735,7 @@ Edit Revenue sharing Rule</h3>
                         required
                       />
                       }
-                  
+
                     </FormGroup>
                     </Col>
                     <Col cW="20%" mR="2%">
@@ -770,7 +769,7 @@ Edit Revenue sharing Rule</h3>
                       autoFocus
                       onChange={dis.handleInputChange2}
                       data-key = {i}
-                      
+
                     />
                     </FormGroup>
                     </Col>
@@ -787,10 +786,10 @@ Edit Revenue sharing Rule</h3>
                       autoFocus
                       onChange={dis.handleInputChange2}
                       data-key = {i}
-                      
+
                     />
                     </FormGroup>
-                    
+
                     {i > 0 ? (
                             <span
                               onClick={() => dis.removeRange(i)}
@@ -830,7 +829,7 @@ Edit Revenue sharing Rule</h3>
                               data-key={i}
                             />
                           </FormGroup> */}
-                         
+
                         {/* </Col> */}
                   </Row>
                   })
@@ -848,13 +847,13 @@ Edit Revenue sharing Rule</h3>
                 <span>Update Rule</span>
               </Button>
                 }
-              
+
             </form>
               </div>
             </Card>
           </Main>
         </Container>
-     
+
       </Wrapper>
     );
   }

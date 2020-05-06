@@ -69,7 +69,7 @@ export default class BankCreateFee extends Component {
       ranges: [
         {
           trans_from: '',
-          trans_to: '',
+          trans_to: '999999999',
           fixed_amount: '',
           percentage: '',
 
@@ -398,7 +398,7 @@ export default class BankCreateFee extends Component {
       last = Number(last) + 1;
       temp.push({
         trans_from: last,
-        trans_to: '',
+        trans_to: '999999999',
         fixed_amount: '',
         percentage: '',
         revenue_sharing_fixed_amount: '',
@@ -436,7 +436,7 @@ export default class BankCreateFee extends Component {
       last = Number(last) + 1;
       temp.push({
         trans_from: last,
-        trans_to: '',
+        trans_to: '999999999',
         fixed_amount: '',
         percentage: '',
       });
@@ -734,7 +734,7 @@ export default class BankCreateFee extends Component {
                         </Col>
                         <Col cW="20%" mR="2%">
                           <FormGroup>
-                            <label>To*</label>
+                            <label className="focused">To*</label>
                             <TextInput
                               type="text"
                               pattern="[0-9]{1,}"
@@ -816,7 +816,7 @@ export default class BankCreateFee extends Component {
                               data-key={i}
                             />
                           </FormGroup> */}
-                          
+
                         {/* </Col> */}
                       </Row>
                     );
@@ -830,7 +830,7 @@ export default class BankCreateFee extends Component {
                     <span>Add Another Range</span>
                   </Button>
 
-                  {/* 
+                  {/*
                   <div style={{padding: 12}} />
                   <H4>Revenue sharing rules tracsaction count</H4>
                   {this.state.revenueSharingRule.map(function(v, i) {

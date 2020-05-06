@@ -20,17 +20,20 @@ function Blur(props) {
       <div className={!isValidFee ? classes.featureNotAvailable : ''}>
         {children}
       </div>
+
       <Grid
         style={{
+          width: '100%',
+          height: '500px',
           cursor: 'not-allowed',
           position: 'absolute',
-          top: '50%',
+          top: '25%',
         }}
         hidden={isValidFee}
         container
         direction="row"
         justify="center"
-        alignItems="center"
+        alignContent="center"
       >
         <Icon fontSize="large">error</Icon>
         <Typography variant="h4" noWrap align="center">

@@ -12,8 +12,12 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import axios from 'axios';
 import Paper from '@material-ui/core/Paper';
 import { toast } from 'react-toastify';
+import Icon from '@material-ui/core/Icon';
 import PdfIcon from '../images/pdf_icon.png';
 import { API_URL, CONTRACT_URL } from '../containers/App/constants';
+import CountrySelectBox from './Form/CountrySelectBox';
+import TypeSelectBox from './Form/TypeSelectBox';
+import getCountryDialCode from '../utils/CountryUtil';
 
 const dialogTilteStyles = theme => ({
   root: {
@@ -283,7 +287,23 @@ export default function FormDialog() {
         }}
       >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
-          Verify User
+          <Typography variant="h4" noWrap align="center">
+            {user === null ? (
+              'Verify User'
+            ) : user.status === 1 ? (
+              <Typography variant="h4">
+                Update User ( User Verified{' '}
+                <Icon fontSize="default" color="primary">
+                  verified_user
+                </Icon>{' '}
+                )
+              </Typography>
+            ) : user.status === 2 || user.status === 3 || user.status === 4 ? (
+              'Verify User'
+            ) : (
+              'Create User'
+            )}{' '}
+          </Typography>
         </DialogTitle>
         {user === null ? (
           <Formik
@@ -297,8 +317,11 @@ export default function FormDialog() {
                 .post(`${API_URL}/cashier/getUser`, { token, mobile })
                 .then(res => {
                   if (res.data.error) {
-                    setUser({});
-                    setOpen(false);
+                    setUser({
+                      docs_hash: [],
+                      status: res.data.error,
+                      country: 'Senegal',
+                    });
                     toast.error(res.data.error);
                   } else {
                     setUser(res.data.data);
@@ -311,6 +334,7 @@ export default function FormDialog() {
                 })
                 .catch(error => {
                   setOpen(false);
+                  setUser(null);
                   toast.error('Something went wrong');
                 });
             }}
@@ -394,7 +418,6 @@ export default function FormDialog() {
                             color="primary"
                             disableElevation
                             onClick={handleSubmit}
-                            disabled={isSubmitting}
                             style={{
                               width: '60%',
                               paddingBottom: '2%',
@@ -415,13 +438,14 @@ export default function FormDialog() {
           <Formik
             enableReinitialize={user}
             initialValues={{
+              ccode: getCountryDialCode(user.country) || '+221',
               mobile: user.mobile || '',
               name: user.name || '',
               last_name: '',
               address: user.address || '',
               state: user.state || '',
               receiverZip: user.zip || '',
-              country: user.country || '',
+              country: user.country || 'Senegal',
               email: user.email || '',
               id_name: '',
               id_type: '',
@@ -435,7 +459,7 @@ export default function FormDialog() {
               const cashiertoken = localStorage.getItem('cashierLogged');
               axios
                 .post(
-                  user
+                  user.status !== 0
                     ? `${API_URL}/cashier/editUser`
                     : `${API_URL}/cashier/createUser`,
                   {
@@ -503,8 +527,21 @@ export default function FormDialog() {
                 isSubmitting,
                 handleChange,
                 handleBlur,
+                setFieldValue,
                 handleSubmit,
               } = formikProps;
+              const countryChange = event => {
+                const { value } = event.target;
+                const { title } = event.target.options[
+                  event.target.selectedIndex
+                ];
+                setFieldValue('ccode', title, true);
+                setFieldValue('country', value, true);
+              };
+              const typeChange = event => {
+                const { value } = event.target;
+                setFieldValue('senderIdentificationType', value, true);
+              };
               return (
                 <Form onSubmit={handleSubmit}>
                   <Grid container direction="row">
@@ -524,9 +561,9 @@ export default function FormDialog() {
                             <TextField
                               autoFocus
                               id="form-phone-pre"
-                              label="+91"
                               className={classes.formField}
                               variant="outlined"
+                              value={values.ccode}
                               type="text"
                               disabled
                             />
@@ -687,25 +724,27 @@ export default function FormDialog() {
                             alignItems="center"
                             className={classes.dialogTextFieldGrid}
                           >
-                            <TextField
-                              name="country"
-                              id="form-country"
-                              label="Country"
-                              fullWidth
-                              placeholder=""
-                              variant="outlined"
+                            <CountrySelectBox
                               type="text"
+                              name="country"
                               value={values.country}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              className={classes.dialogTextFieldGrid}
-                              error={errors.country && touched.country}
-                              helperText={
-                                errors.country && touched.country
-                                  ? errors.country
-                                  : ''
-                              }
+                              onChange={countryChange}
+                              data-change="ccode"
+                              required
                             />
+                            {errors.country && touched.country ? (
+                              <div
+                                style={{
+                                  fontSize: '10px',
+                                  color: 'red',
+                                  paddingLeft: '5px',
+                                }}
+                              >
+                                {errors.country}
+                              </div>
+                            ) : (
+                              ''
+                            )}
                           </Grid>
                           <Grid
                             item
@@ -775,25 +814,26 @@ export default function FormDialog() {
                             alignItems="center"
                             className={classes.dialogTextFieldGrid}
                           >
-                            <TextField
-                              name="id_type"
-                              id="form-fidentification-type"
-                              label="Type"
-                              fullWidth
-                              placeholder=""
-                              variant="outlined"
+                            <TypeSelectBox
                               type="text"
+                              name="id_type"
                               value={values.id_type}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              className={classes.dialogTextFieldGrid}
-                              error={errors.id_type && touched.id_type}
-                              helperText={
-                                errors.id_type && touched.id_type
-                                  ? errors.id_type
-                                  : ''
-                              }
+                              onChange={typeChange}
+                              required
                             />
+                            {errors.id_type && touched.id_type ? (
+                              <div
+                                style={{
+                                  fontSize: '10px',
+                                  color: 'red',
+                                  paddingLeft: '5px',
+                                }}
+                              >
+                                {errors.id_type}
+                              </div>
+                            ) : (
+                              ''
+                            )}
                           </Grid>
                         </Grid>
 
@@ -990,7 +1030,15 @@ export default function FormDialog() {
                             marginTop: '1%',
                           }}
                         >
-                          <Typography variant="h5">Proceed</Typography>
+                          <Typography variant="h5">
+                            {user.status === 1
+                              ? 'Update User'
+                              : user.status === 2 ||
+                                user.status === 3 ||
+                                user.status === 4
+                                ? 'Verify User'
+                                : 'Create User'}
+                          </Typography>
                         </Button>
                       </Grid>
                     </Grid>
