@@ -319,7 +319,7 @@ export default function FormDialog() {
                   if (res.data.error) {
                     setUser({
                       docs_hash: [],
-                      status: res.data.error,
+                      status: res.data.status,
                       country: 'Senegal',
                     });
                     toast.error(res.data.error);
@@ -540,7 +540,7 @@ export default function FormDialog() {
               };
               const typeChange = event => {
                 const { value } = event.target;
-                setFieldValue('senderIdentificationType', value, true);
+                setFieldValue('id_type', value, true);
               };
               return (
                 <Form onSubmit={handleSubmit}>
