@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 import A from 'components/A';
+import messages from './messages';
 
 const NavTag = styled.nav`
   float: left;
@@ -45,22 +45,20 @@ class BankNav extends Component {
             </Link>
           </A>
           <A href="/bank/users">
-            <Link active={bankusers}>
-              Bank User
-            </Link>
+            <Link active={bankusers}>Bank User</Link>
           </A>
-          
-          <A >
+
+          <A href="/bank/merchants">
             <Link active={merchants}>
               <FormattedMessage {...messages.menu3} />
             </Link>
           </A>
-          <A >
+          <A>
             <Link active={users}>
               <FormattedMessage {...messages.bmenu3} />
             </Link>
           </A>
-          <A >
+          <A>
             <Link active={reports}>
               <FormattedMessage {...messages.menu4} />
             </Link>

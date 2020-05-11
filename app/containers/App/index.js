@@ -7,14 +7,13 @@
  *
  */
 
-import React, { useState, useEffect } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Route, Switch } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import InfraRoute from './InfraRoute';
 import BankRoute from './BankRoute';
 import BranchRoute from './BranchRoute';
 import CashierRoute from './CashierRoute';
-
 
 import HomePage from 'containers/HomePage/Loadable';
 import SignupPage from 'containers/SignupPage/Loadable';
@@ -79,6 +78,7 @@ import { ThemeProvider } from 'styled-components';
 import GlobalStyle from '../../global-styles';
 
 import 'react-toastify/dist/ReactToastify.css';
+import BankMerchantList from '../BankMerchantList/BankMerchantList';
 //import FeeList from '../FeeList';
 // import { CashierSendMoney } from '../CashierSendMoney';
 
@@ -181,6 +181,7 @@ export default function App(props) {
           <BankRoute exact path="/bank/escrowHistory" component={BankEscrowHistory} />
           <BankRoute exact path="/bank/cashier/:branch?/:cashier?" component={BankCashierInfo} />
           <BankRoute exact path="/bank/edit-fee/:fee?" component={BankEditFee} />
+          <BankRoute exact path="/bank/merchants" component={BankMerchantList} />
 
           <Route exact path="/branch/:bank?" component={BranchLogin} />
           <Route

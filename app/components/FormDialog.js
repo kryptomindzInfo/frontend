@@ -13,6 +13,8 @@ import axios from 'axios';
 import Paper from '@material-ui/core/Paper';
 import { toast } from 'react-toastify';
 import Icon from '@material-ui/core/Icon';
+import DateFnsUtils from '@date-io/date-fns';
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import PdfIcon from '../images/pdf_icon.png';
 import { API_URL, CONTRACT_URL } from '../containers/App/constants';
 import CountrySelectBox from './Form/CountrySelectBox';
@@ -542,6 +544,12 @@ export default function FormDialog() {
                 const { value } = event.target;
                 setFieldValue('id_type', value, true);
               };
+
+              const handleDateChange = (date, field) => {
+                const formattedDate = new Date(date).toLocaleDateString();
+                setFieldValue(field, formattedDate, true);
+              };
+
               return (
                 <Form onSubmit={handleSubmit}>
                   <Grid container direction="row">
@@ -816,6 +824,7 @@ export default function FormDialog() {
                           >
                             <TypeSelectBox
                               type="text"
+                              style={{ padding: '5%' }}
                               name="id_type"
                               value={values.id_type}
                               onChange={typeChange}
@@ -870,28 +879,32 @@ export default function FormDialog() {
                             alignItems="center"
                             className={classes.dialogTextFieldGrid}
                           >
-                            <TextField
-                              name="valid_till"
-                              id="form-idetification-valid-till"
-                              label="Valid Till"
-                              fullWidth
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                              placeholder=""
-                              variant="outlined"
-                              type="date"
-                              value={values.valid_till}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              className={classes.dialogTextFieldGrid}
-                              error={errors.valid_till && touched.valid_till}
-                              helperText={
-                                errors.valid_till && touched.valid_till
-                                  ? errors.valid_till
-                                  : ''
-                              }
-                            />
+                            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                              <KeyboardDatePicker
+                                id="date-picker-dialog"
+                                label="Valid Till"
+                                fullWidth
+                                inputVariant="outlined"
+                                format="dd/MM/yyyy"
+                                required
+                                InputLabelProps={{
+                                  shrink: true,
+                                }}
+                                value={values.valid_till}
+                                onChange={date =>
+                                  handleDateChange(date, 'valid_till')
+                                }
+                                KeyboardButtonProps={{
+                                  'aria-label': 'change date',
+                                }}
+                                error={errors.valid_till && touched.valid_till}
+                                helperText={
+                                  errors.valid_till && touched.valid_till
+                                    ? errors.valid_till
+                                    : ''
+                                }
+                              />
+                            </MuiPickersUtilsProvider>
                           </Grid>
                         </Grid>
                       </Grid>
