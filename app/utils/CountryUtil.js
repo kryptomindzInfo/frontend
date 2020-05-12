@@ -19595,8 +19595,10 @@ const getCountryDialCode = name => {
   let selectedCountry =  countryList.filter(value => {
     return value.name === name
   });
-  
-  return `+${selectedCountry[0].callingCodes[0]}`
+  if(selectedCountry && selectedCountry.length > 0) {
+    return `+${selectedCountry[0].callingCodes[0]}`
+  }
+    return `+221`;
 };
 
 export default getCountryDialCode
