@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import BankHeader from '../../components/Header/BankHeader';
 import Wrapper from '../../components/Wrapper';
 import Container from '../../components/Container';
@@ -10,9 +12,12 @@ import Button from '../../components/Button';
 import Card from '../../components/Card';
 import Table from '../../components/Table';
 import CreateMerchantPopup from './CreateMerchantPopup';
+import { API_URL, STATIC_URL } from '../App/constants';
 
 function BankMerchantList() {
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
+  const [merchantList, setMerchantList] = React.useState([]);
+
   const handleAddMerchantClick = () => {
     setAddMerchantPopup(true);
   };
@@ -20,6 +25,29 @@ function BankMerchantList() {
   const onPopupClose = () => {
     setAddMerchantPopup(false);
   };
+
+  useEffect(() => {
+    async function fetchMerchantList() {
+      try {
+        const token = localStorage.getItem('bankLogged');
+        const res = await axios.post(`${API_URL}/bank/listMerchant`, {
+          token,
+        });
+        if (res.status === 200) {
+          if (res.data.status === 0) {
+            toast.error(res.data.message);
+          } else {
+            setMerchantList(res.data.list);
+          }
+        } else {
+          toast.error(res.data.message);
+        }
+      } catch (err) {
+        toast.error('Something went wrong');
+      }
+    }
+    fetchMerchantList();
+  }, []); // Or [] if effect doesn't need props or state
 
   return (
     <Wrapper from="bank">
@@ -73,57 +101,42 @@ function BankMerchantList() {
                     <th>Fee Generated</th>
                   </tr>
                 </thead>
-                {/* <tbody>
-              {this.state.branches && this.state.branches.length > 0
-                ? this.state.branches.map(function(b) {
-                  return (
-                    <tr key={b._id}>
-                      <td>{b.name}</td>
-                      <td className="tac">{b.total_cashiers}</td>
-                      <td className="tac">{b.credit_limit}</td>
-                      <td className="tac">{b.cash_in_hand}</td>
-                    
-                      <td className="tac bold">
-                        <Row className="green">
-                          <Col>0</Col>
-                          <Col>0</Col>
-                          <Col>0</Col>
-                          <Col>0</Col>
-                        </Row>
-                        <span className="absoluteMiddleRight primary popMenuTrigger">
-                                  <i className="material-icons ">more_vert</i>
-                                  <div className="popMenu">
-                                    <A href={'/bank/branch/' + b._id}>
-                                      Branch Info
-                                    </A>
-                                    <span onClick={() => dis.showEditPopup(b)}>
-                                      Edit
-                                    </span>
-                                    {b.status == -1 ? (
-                                      <span
-                                        onClick={() =>
-                                          dis.blockBranch(b._id, 1)
-                                        }
-                                      >
-                                        Unblock
-                                      </span>
-                                    ) : (
-                                      <span
-                                        onClick={() =>
-                                          dis.blockBranch(b._id, -1)
-                                        }
-                                      >
-                                        Block
-                                      </span>
-                                    )}
-                                  </div>
-                                </span>
-                      </td>
-                    </tr>
-                  );
-                })
-                : null}
-              </tbody> */}
+                <tbody>
+                  {merchantList && merchantList.length > 0
+                    ? merchantList.map(function(merchant) {
+                        return (
+                        <tr key={merchant._id}>
+                          <td className="tac">
+                            <img
+                              style={{ height: '22%' }}
+                              src={`${STATIC_URL}/${merchant.logo_hash}`}
+                            />
+                          </td>
+                            <td className="tac">{merchant.logo_hash}</td>
+                            <td className="tac">{merchant.name}</td>
+                          <td className="tac">{merchant.bills_paid}</td>
+                            <td className="tac">{merchant.bills_raised}</td>
+                          <td className="tac">{merchant.amount_collected}</td>
+                            <td className="tac">{merchant.fee}</td>
+
+                          <td className="tac bold">
+                            <span className="absoluteMiddleRight primary popMenuTrigger">
+                                <i className="material-icons ">more_vert</i>
+                              <div className="popMenu">
+                                  <span>Edit</span>
+                                {merchant.status === -1 ? (
+                                    <span>Unblock</span>
+                                ) : (
+                                    <span>Block</span>
+                                )}
+                                </div>
+                            </span>
+                            </td>
+                        </tr>
+                        );
+                      })
+                    : null}
+                </tbody>
               </Table>
             </div>
           </Card>
