@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet';
-import axios from 'axios';
-import { toast } from 'react-toastify';
 import BankHeader from '../../components/Header/BankHeader';
 import Wrapper from '../../components/Wrapper';
 import Container from '../../components/Container';
@@ -12,43 +10,40 @@ import Button from '../../components/Button';
 import Card from '../../components/Card';
 import Table from '../../components/Table';
 import CreateMerchantPopup from './CreateMerchantPopup';
-import { API_URL, STATIC_URL } from '../App/constants';
+import { STATIC_URL } from '../App/constants';
+import Loader from '../../components/Loader';
+import { fetchMerchantList } from './api/merchantAPI';
 
 function BankMerchantList() {
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
   const [merchantList, setMerchantList] = React.useState([]);
+  const [popupType, setPopupType] = React.useState('new');
+  const [editingMerchant, setEditingMerchant] = React.useState({});
+  const [isLoading, setLoading] = React.useState(false);
 
-  const handleAddMerchantClick = () => {
+  const handleMerchantPopupClick = (type, merchant) => {
+    setEditingMerchant(merchant);
+    setPopupType(type);
     setAddMerchantPopup(true);
   };
 
   const onPopupClose = () => {
     setAddMerchantPopup(false);
   };
+  const getMerchantList = async () => {
+    const data = await fetchMerchantList();
+    setMerchantList(data.list);
+    setLoading(data.loading);
+  };
 
-  useEffect(() => {
-    async function fetchMerchantList() {
-      try {
-        const token = localStorage.getItem('bankLogged');
-        const res = await axios.post(`${API_URL}/bank/listMerchant`, {
-          token,
-        });
-        if (res.status === 200) {
-          if (res.data.status === 0) {
-            toast.error(res.data.message);
-          } else {
-            setMerchantList(res.data.list);
-          }
-        } else {
-          toast.error(res.data.message);
-        }
-      } catch (err) {
-        toast.error('Something went wrong');
-      }
-    }
-    fetchMerchantList();
+  useEffect(async () => {
+    setLoading(true);
+    await getMerchantList();
   }, []); // Or [] if effect doesn't need props or state
 
+  if (isLoading) {
+    return <Loader fullPage />;
+  }
   return (
     <Wrapper from="bank">
       <Helmet>
@@ -72,7 +67,7 @@ function BankMerchantList() {
             <Button
               className="addBankButton"
               flex
-              onClick={handleAddMerchantClick}
+              onClick={() => handleMerchantPopupClick('new', {})}
             >
               <i className="material-icons">add</i>
               <span>Add Merchant</span>
@@ -112,25 +107,43 @@ function BankMerchantList() {
                               src={`${STATIC_URL}/${merchant.logo_hash}`}
                             />
                           </td>
-                            <td className="tac">{merchant.logo_hash}</td>
                             <td className="tac">{merchant.name}</td>
                           <td className="tac">{merchant.bills_paid}</td>
                             <td className="tac">{merchant.bills_raised}</td>
                           <td className="tac">{merchant.amount_collected}</td>
-                            <td className="tac">{merchant.fee}</td>
+                          <td className="tac">{merchant.amount_due}</td>
 
                           <td className="tac bold">
-                            <span className="absoluteMiddleRight primary popMenuTrigger">
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <td className="tac">
+                                {merchant.fee_generated}
+                              </td>
+                              <span className="absoluteMiddleRight primary popMenuTrigger">
                                 <i className="material-icons ">more_vert</i>
-                              <div className="popMenu">
-                                  <span>Edit</span>
-                                {merchant.status === -1 ? (
+                                  <div className="popMenu">
+                                  <span
+                                    onClick={() =>
+                                      handleMerchantPopupClick(
+                                        'update',
+                                        merchant,
+                                      )
+                                    }
+                                  >
+                                      Edit
+                                  </span>
+                                  {merchant.status === -1 ? (
                                     <span>Unblock</span>
-                                ) : (
+                                    ) : (
                                     <span>Block</span>
-                                )}
+                                    )}
                                 </div>
-                            </span>
+                              </span>
+                            </div>
                             </td>
                         </tr>
                         );
@@ -143,7 +156,12 @@ function BankMerchantList() {
         </Main>
       </Container>
       {addMerchantPopup ? (
-        <CreateMerchantPopup onClose={() => onPopupClose()} />
+        <CreateMerchantPopup
+          type={popupType}
+          merchant={editingMerchant}
+          refreshMerchantList={() => getMerchantList()}
+          onClose={() => onPopupClose()}
+        />
       ) : null}
     </Wrapper>
   );

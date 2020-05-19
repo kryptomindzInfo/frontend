@@ -5,12 +5,15 @@ import TextField from '@material-ui/core/TextField';
 import axios from 'axios';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+import Typography from '@material-ui/core/Typography';
 import Popup from '../../components/Popup';
 import FormGroup from '../../components/FormGroup';
 import Button from '../../components/Button';
 import { API_URL, CONTRACT_URL, STATIC_URL } from '../App/constants';
 import messages from '../BankPage/messages';
 import UploadArea from '../../components/UploadArea';
+import { createMerchant, editMerchant } from './api/merchantAPI';
 
 function CreateMerchantPopup(props) {
   const token = localStorage.getItem('bankLogged');
@@ -18,34 +21,42 @@ function CreateMerchantPopup(props) {
     <Popup accentedH1 close={props.onClose.bind(this)}>
       <Formik
         initialValues={{
-          name: '',
-          logo_hash: '',
-          description: '',
-          document_hash: '',
-          email: '',
-          mobile: '',
-          merchant_id: '',
+          name: props.merchant.name || '',
+          logo_hash: props.merchant.logo_hash || '',
+          description: props.merchant.description || '',
+          document_hash: props.merchant.document_hash || '',
+          email: props.merchant.email || '',
+          mobile: props.merchant.mobile || '',
+          merchant_id: props.merchant.username || '',
         }}
         onSubmit={async values => {
-          try {
-            const res = await axios.post(`${API_URL}/bank/createMerchant`, {
-              token,
-              ...values,
-            });
-            if (res.status === 200) {
-              if (res.data.status === 0) {
-                toast.error(res.data.message);
-              } else {
-                toast.success(res.data.message);
-                props.onClose();
-              }
-            } else {
-              toast.error(res.data.message);
-            }
-          } catch (err) {
-            toast.error('Something went wrong');
+          if (props.type === 'update') {
+            await editMerchant(props, values, token);
+          } else {
+            await createMerchant(props, values, token);
           }
         }}
+        validationSchema={Yup.object().shape({
+          mobile: Yup.string()
+            .min(10, 'number should be atleast 10 digits')
+            .max(10, 'number cannot exceed 10 digits')
+            .matches(
+              /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
+              'Mobile no must be valid',
+            )
+            .required('Mobile no is required'),
+          merchant_id: Yup.string()
+            .min(3, 'Merchant Id should be atleast 3 characters')
+            .required('Merchant Id is required'),
+          name: Yup.string()
+            .min(3, 'Merchant name should be atleast 3 characters')
+            .required('Merchant name is required'),
+          logo_hash: Yup.string().required('Merchant logo is required'),
+          document_hash: Yup.string().required('Merchant contract is required'),
+          email: Yup.string()
+            .email('Please provide a valid email')
+            .required('Email is required'),
+        })}
       >
         {formikProps => {
           const {
@@ -106,7 +117,9 @@ function CreateMerchantPopup(props) {
 
           return (
             <div>
-              <h1>Add Merchant</h1>
+              <h1>
+                {props.type === 'update' ? 'Update Merchant' : 'Add Merchant'}
+              </h1>
               <Form>
                 <FormGroup>
                   <TextField
@@ -120,6 +133,13 @@ function CreateMerchantPopup(props) {
                     value={values.merchant_id}
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    helperText={
+                      <Typography variant="body2" color="error">
+                        {errors.merchant_id && touched.merchant_id
+                          ? errors.merchant_id
+                          : ''}
+                      </Typography>
+                    }
                   />
                 </FormGroup>
                 <FormGroup>
@@ -134,6 +154,11 @@ function CreateMerchantPopup(props) {
                     value={values.name}
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    helperText={
+                      <Typography variant="body2" color="error">
+                        {errors.name && touched.name ? errors.name : ''}
+                      </Typography>
+                    }
                   />
                 </FormGroup>
                 <FormGroup>
@@ -162,6 +187,11 @@ function CreateMerchantPopup(props) {
                     value={values.email}
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    helperText={
+                      <Typography variant="body2" color="error">
+                        {errors.email && touched.email ? errors.email : ''}
+                      </Typography>
+                    }
                   />
                 </FormGroup>
                 <FormGroup>
@@ -176,6 +206,11 @@ function CreateMerchantPopup(props) {
                     value={values.mobile}
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    helperText={
+                      <Typography variant="body2" color="error">
+                        {errors.mobile && touched.mobile ? errors.mobile : ''}
+                      </Typography>
+                    }
                   />
                 </FormGroup>
                 <FormGroup>
@@ -215,6 +250,11 @@ function CreateMerchantPopup(props) {
                       </label>
                     </div>
                   </UploadArea>
+                  <Typography variant="body2" color="error">
+                    {errors.logo_hash && touched.logo_hash
+                      ? errors.logo_hash
+                      : ''}
+                  </Typography>
                 </FormGroup>
                 <FormGroup>
                   <UploadArea bgImg={`${STATIC_URL}main/pdf-icon.png`}>
@@ -267,12 +307,27 @@ function CreateMerchantPopup(props) {
                       </label>
                     </div>
                   </UploadArea>
+                  <Typography variant="body2" color="error">
+                    {errors.document_hash && touched.document_hash
+                      ? errors.document_hash
+                      : ''}
+                  </Typography>
                 </FormGroup>
-                <Button disabled={isSubmitting} filledBtn marginTop="10px">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  filledBtn
+                  marginTop="10px"
+                >
                   {isSubmitting ? (
                     <CircularProgress size={30} thickness={5} color="primary" />
                   ) : (
-                    <span>Add Merchant</span>
+                    <span>
+                      {' '}
+                      {props.type === 'update'
+                        ? 'Update Merchant'
+                        : 'Add Merchant'}
+                    </span>
                   )}
                 </Button>
               </Form>
