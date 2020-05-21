@@ -30,15 +30,15 @@ function BankMerchantList() {
   const onPopupClose = () => {
     setAddMerchantPopup(false);
   };
-  const getMerchantList = async () => {
-    const data = await fetchMerchantList();
-    setMerchantList(data.list);
-    setLoading(data.loading);
-  };
 
-  useEffect(async () => {
+  useEffect(() => {
     setLoading(true);
-    await getMerchantList();
+    const getMerchantList = async () => {
+      const data = await fetchMerchantList();
+      setMerchantList(data.list);
+      setLoading(data.loading);
+    };
+    getMerchantList();
   }, []); // Or [] if effect doesn't need props or state
 
   if (isLoading) {
