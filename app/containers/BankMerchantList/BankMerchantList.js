@@ -31,6 +31,12 @@ function BankMerchantList() {
     setAddMerchantPopup(false);
   };
 
+  const refreshMerchantList = async () => {
+    const data = await fetchMerchantList();
+    setMerchantList(data.list);
+    setLoading(data.loading);
+  };
+
   useEffect(() => {
     setLoading(true);
     const getMerchantList = async () => {
@@ -159,7 +165,7 @@ function BankMerchantList() {
         <CreateMerchantPopup
           type={popupType}
           merchant={editingMerchant}
-          refreshMerchantList={() => getMerchantList()}
+          refreshMerchantList={() => refreshMerchantList()}
           onClose={() => onPopupClose()}
         />
       ) : null}
