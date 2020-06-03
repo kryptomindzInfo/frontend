@@ -51,7 +51,7 @@ const editMerchant = async (props, values, token) => {
 const fetchMerchantList = async () => {
   try {
     const token = localStorage.getItem('bankLogged');
-    const res = await axios.post(`${API_URL}/bank/listMerchant`, {
+    const res = await axios.post(`${API_URL}/bank/listMerchants`, {
       token,
     });
     if (res.status === 200) {
