@@ -110,7 +110,7 @@ function BankMerchantList() {
                           <td className="tac">
                             <img
                               style={{ height: '22%' }}
-                              src={`${STATIC_URL}/${merchant.logo_hash}`}
+                              src={`${STATIC_URL}/${merchant.logo}`}
                             />
                           </td>
                             <td className="tac">{merchant.name}</td>

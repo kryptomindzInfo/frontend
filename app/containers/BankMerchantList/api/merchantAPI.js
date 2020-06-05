@@ -26,7 +26,6 @@ const createMerchant = async (props, values, token) => {
 
 const editMerchant = async (props, values, token) => {
   try {
-    values.username = values.merchant_id;
     const res = await axios.post(`${API_URL}/bank/editMerchant`, {
       token,
       status: 1,
