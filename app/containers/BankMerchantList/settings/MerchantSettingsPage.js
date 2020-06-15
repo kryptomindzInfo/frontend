@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import Wrapper from '../../../components/Wrapper';
 import Container from '../../../components/Container';
@@ -13,16 +13,12 @@ import Loader from '../../../components/Loader';
 import SettingSideBar from '../SettingSidebar';
 import BankHeader from '../../../components/Header/BankHeader';
 
-const MerchantSettingsPage = () => {
+const MerchantSettingsPage = (props) => {
   const [editMerchantPopup, setEditMerchantPopup] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [merchantInfo, setMerchantInfo] = useState({});
-  useEffect(() => {
-    setLoading(true);
-    // const merchant = JSON.parse(localStorage.getItem('merchantLogged')).details;
-    setMerchantInfo({});
-    setLoading(false);
-  }, []);
+  const [merchantInfo, setMerchantInfo] = useState(props.location.state);
+  const { match } = props;
+  const { id } = match.params;
   const handlePopupClick = () => {
     setEditMerchantPopup(true);
   };
@@ -48,7 +44,7 @@ const MerchantSettingsPage = () => {
       </Helmet>
       <BankHeader active="merchants" />
       <Container verticalMargin>
-        <SettingSideBar active="info" />
+        <SettingSideBar merchantId={id} active="info" />
         <Main>
           <ActionBar
             marginBottom="33px"

@@ -14,7 +14,7 @@ import { STATIC_URL } from '../App/constants';
 import Loader from '../../components/Loader';
 import { fetchMerchantList } from './api/merchantAPI';
 
-function BankMerchantList() {
+function BankMerchantList(props) {
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
   const [merchantList, setMerchantList] = React.useState([]);
   const [popupType, setPopupType] = React.useState('new');
@@ -141,6 +141,18 @@ function BankMerchantList() {
                                     }
                                   >
                                       Edit
+                                  </span>
+                                  <span
+                                    onClick={() =>
+                                      props.history.push({
+                                        pathname: `/bank/merchants/info/${
+                                          merchant._id
+                                        }`,
+                                        state: merchant,
+                                      })
+                                    }
+                                  >
+                                      Info
                                   </span>
                                   {merchant.status === -1 ? (
                                     <span>Unblock</span>

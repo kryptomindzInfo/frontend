@@ -1,22 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
-import Card from '../commission/node_modules/components/Card';
-import Button from '../commission/node_modules/components/Button';
-import FormGroup from '../commission/node_modules/components/FormGroup';
-import TextInput from '../commission/node_modules/components/TextInput';
-import SelectInput from '../commission/node_modules/components/SelectInput';
-import Row from '../commission/node_modules/components/Row';
-import Col from '../commission/node_modules/components/Col';
-import Loader from '../commission/node_modules/components/Loader';
-
-import '../commission/node_modules/react-toastify/dist/ReactToastify.css';
-import { Form, Formik, FieldArray, ErrorMessage } from 'formik';
-import {
-  correctFocus,
-  inputBlur,
-  inputFocus,
-} from '../../../components/handleInputFocus';
+import { ErrorMessage, FieldArray, Form, Formik } from 'formik';
+import Card from '../../../components/Card';
+import FormGroup from '../../../components/FormGroup';
+import TextInput from '../../../components/TextInput';
+import Row from '../../../components/Row';
+import Col from '../../../components/Col';
+import SelectInput from '../../../components/SelectInput';
+import Button from '../../../components/Button';
+import Loader from '../../../components/Loader';
+import { correctFocus, inputBlur, inputFocus } from '../../../components/handleInputFocus';
+import { createMerchantRule } from '../api/merchantAPI';
 
 toast.configure({
   position: 'bottom-right',
@@ -52,9 +47,9 @@ const MerchantFee = props => {
           enableReinitialize
           initialValues={{
             name: rule.name || '',
-            transType: rule.transType || '',
+            type: rule.type || '',
             active: rule.active || '',
-            transactions: rule.transactions || [
+            ranges: rule.ranges || [
               {
                 trans_from: '',
                 trans_to: '',
@@ -65,7 +60,7 @@ const MerchantFee = props => {
           }}
           validationSchema={Yup.object().shape({
             name: Yup.string().required('Name is required'),
-            transType: Yup.string().required('Transaction Type is required'),
+            type: Yup.string().required('Transaction Type is required'),
             active: Yup.string().required('Status is required'),
             transaction: Yup.array().of(
               Yup.object().shape({
@@ -78,7 +73,20 @@ const MerchantFee = props => {
               }),
             ),
           })}
-          onSubmit={() => {}}
+          onSubmit={values => {
+            setLoading(true);
+            if (rule) {
+              values.fee_id = rule.fee_id;
+              editMerchantRule(props, 'revenue', values).then(() => {
+                setLoading(false);
+              });
+            } else {
+              values.merchant_id = props.merchantId;
+              createMerchantRule(props, 'revenue', values).then(() => {
+                setLoading(false);
+              });
+            }
+          }}
         >
           {formikProps => {
             const { handleChange, handleBlur } = formikProps;
@@ -107,21 +115,15 @@ const MerchantFee = props => {
                     <FormGroup>
                       <SelectInput
                         type="text"
-                        name="transType"
-                        value={formikProps.values.transType}
+                        name="type"
+                        value={formikProps.values.type}
                         onChange={handleChange}
                       >
                         <option value="">Transaction Type*</option>
-                        <option>Wallet to Wallet</option>
-                        <option>Non Wallet to Non Wallet</option>
-                        <option>Non Wallet to Wallet</option>
-                        <option>Wallet to Non Wallet</option>
-                        <option>Wallet to merchant</option>
-                        <option>Non Wallet to Merchant</option>
-                        <option>Wallet to Bank Account</option>
-                        <option>Bank Account to Wallet Request</option>
+                        <option value="0">Wallet to Merchant</option>
+                        <option value="1">Non Wallet to Merchant</option>
                       </SelectInput>
-                      <ErrorMessage name="transType" />
+                      <ErrorMessage name="type" />
                     </FormGroup>
                   </Col>
                   <Col>
@@ -133,36 +135,35 @@ const MerchantFee = props => {
                         onChange={handleChange}
                       >
                         <option value="">Status Type*</option>
-                        <option>Active</option>
-                        <option>Inactive </option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive </option>
                       </SelectInput>
                       <ErrorMessage name="active" />
                     </FormGroup>
                   </Col>
                 </Row>
                 <FormGroup>
-                  <label htmlFor="transactions">Transaction</label>
-                  <FieldArray name="transactions">
+                  <label htmlFor="ranges">Transaction</label>
+                  <FieldArray name="ranges">
                     {fieldArrayProps => {
                       const { push, remove, form } = fieldArrayProps;
                       const { values } = form;
-                      const { transactions } = values;
-                      console.log(fieldArrayProps);
+                      const { ranges } = values;
                       return (
                         <div>
-                          {transactions.map((transaction, index) => (
+                          {ranges.map((transaction, index) => (
                             <Row key={index}>
                               <Col>
                                 <FormGroup>
                                   <label
-                                    className="focused"
-                                    htmlFor={`transactions[${index}].trans_from`}
+                                    htmlFor={`ranges[${index}].trans_from`}
                                   >
                                     Transaction From
                                   </label>
                                   <TextInput
                                     type="number"
-                                    name={`transactions[${index}].trans_from`}
+                                    name={`ranges[${index}].trans_from`}
+                                    value={transaction.trans_from}
                                     onFocus={e => {
                                       inputFocus(e);
                                       handleChange(e);
@@ -171,24 +172,23 @@ const MerchantFee = props => {
                                       inputBlur(e);
                                       handleBlur(e);
                                     }}
-                                    onChange={handleChange}
-                                    value={transaction.trans_from}
+                                    onChange={e => {
+                                      handleChange(e);
+                                    }}
                                   />
                                   <ErrorMessage
-                                    name={`transactions[${index}].trans_from`}
+                                    name={`ranges[${index}].trans_from`}
                                   />
                                 </FormGroup>
                               </Col>
                               <Col>
                                 <FormGroup>
-                                  <label
-                                    htmlFor={`transactions[${index}].trans_to`}
-                                  >
+                                  <label htmlFor={`ranges[${index}].trans_to`}>
                                     Transaction To
                                   </label>
                                   <TextInput
                                     type="number"
-                                    name={`transactions[${index}].trans_to`}
+                                    name={`ranges[${index}].trans_to`}
                                     value={transaction.trans_to}
                                     onFocus={e => {
                                       inputFocus(e);
@@ -203,20 +203,20 @@ const MerchantFee = props => {
                                     }}
                                   />
                                   <ErrorMessage
-                                    name={`transactions[${index}].trans_to`}
+                                    name={`ranges[${index}].trans_to`}
                                   />
                                 </FormGroup>
                               </Col>
                               <Col>
                                 <FormGroup>
                                   <label
-                                    htmlFor={`transactions[${index}].fixed_amount`}
+                                    htmlFor={`ranges[${index}].fixed_amount`}
                                   >
                                     Fixed Amount
                                   </label>
                                   <TextInput
                                     type="number"
-                                    name={`transactions[${index}].fixed_amount`}
+                                    name={`ranges[${index}].fixed_amount`}
                                     value={transaction.fixed_amount}
                                     onFocus={e => {
                                       inputFocus(e);
@@ -229,20 +229,20 @@ const MerchantFee = props => {
                                     onChange={handleChange}
                                   />
                                   <ErrorMessage
-                                    name={`transactions[${index}].fixed_amount`}
+                                    name={`ranges[${index}].fixed_amount`}
                                   />
                                 </FormGroup>
                               </Col>
                               <Col>
                                 <FormGroup>
                                   <label
-                                    htmlFor={`transactions[${index}].percentage`}
+                                    htmlFor={`ranges[${index}].percentage`}
                                   >
                                     Percentage
                                   </label>
                                   <TextInput
                                     type="number"
-                                    name={`transactions[${index}].percentage`}
+                                    name={`ranges[${index}].percentage`}
                                     value={transaction.percentage}
                                     onFocus={e => {
                                       inputFocus(e);
@@ -255,7 +255,7 @@ const MerchantFee = props => {
                                     onChange={handleChange}
                                   />
                                   <ErrorMessage
-                                    name={`transactions[${index}].percentage`}
+                                    name={`ranges[${index}].percentage`}
                                   />
                                 </FormGroup>
                               </Col>
@@ -283,8 +283,7 @@ const MerchantFee = props => {
                             onClick={() => {
                               push({
                                 trans_from:
-                                  transactions[transactions.length - 1]
-                                    .trans_to + 1,
+                                  ranges[ranges.length - 1].trans_to + 1,
                                 trans_to: '',
                                 fixed_amount: '',
                                 percentage: '',

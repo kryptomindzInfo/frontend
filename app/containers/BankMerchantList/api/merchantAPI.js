@@ -46,10 +46,10 @@ const editMerchant = async (props, values, token) => {
     toast.error('Something went wrong');
   }
 };
+const token = localStorage.getItem('bankLogged');
 
 const fetchMerchantList = async () => {
   try {
-    const token = localStorage.getItem('bankLogged');
     const res = await axios.post(`${API_URL}/bank/listMerchants`, {
       token,
     });
@@ -68,4 +68,86 @@ const fetchMerchantList = async () => {
   }
 };
 
-export { createMerchant, editMerchant, fetchMerchantList };
+// Revenue Rule APIs
+
+const createMerchantRule = async (props, ruleType, payload) => {
+  let URL = '';
+  if (ruleType === 'revenue') {
+    URL = `${API_URL}/bank/merchantFee/createRule`;
+  } else {
+    URL = `${API_URL}/bank/commission/createRule`;
+  }
+  try {
+    const res = await axios.post(URL, {
+      token,
+      ...payload,
+    });
+    if (res.status === 200) {
+      if (res.data.status === 0) {
+        toast.error(res.data.message);
+      } else {
+        toast.success(res.data.message);
+        props.refreshRuleList();
+        props.onClose();
+      }
+    } else {
+      toast.error(res.data.message);
+    }
+  } catch (e) {
+    toast.error('Something went wrong');
+  }
+};
+
+const editMerchantRule = async (props, ruleType, payload) => {
+  let URL = '';
+  if (ruleType === 'revenue') {
+    URL = `${API_URL}/bank/merchantFee/editRule`;
+  } else {
+    URL = `${API_URL}/bank/commission/editRule`;
+  }
+  try {
+    const res = await axios.post(URL, {
+      token,
+      ...payload,
+    });
+    if (res.status === 200) {
+      if (res.data.status === 0) {
+        toast.error(res.data.message);
+      } else {
+        toast.success(res.data.message);
+        props.refreshRuleList();
+        props.onClose();
+      }
+    } else {
+      toast.error(res.data.message);
+    }
+  } catch (e) {
+    toast.error('Something went wrong');
+  }
+};
+
+const getRules = async (ruleType, merchantId) => {
+  try {
+    let URL = '';
+    if (ruleType === 'revenue') {
+      URL = `${API_URL}/bank/merchantFee/getRule`;
+    } else {
+      URL = `${API_URL}/bank/commission/getRule`;
+    }
+    const res = await axios.post(URL, { token, merchant_id: merchantId });
+    if (res.status === 200) {
+      if (res.data.status === 0) {
+        notify(res.data.message, 'error');
+        return { list: [], loading: false };
+      }
+      return { list: res.data.rule, loading: false };
+    }
+    notify(res.data.message, 'error');
+    return { list: [], loading: false };
+  } catch (err) {
+    notify('Something went wrong', 'error');
+    return { list: [], loading: false };
+  }
+};
+
+export { createMerchant, editMerchant, fetchMerchantList, createMerchantRule, getRules,editMerchantRule };

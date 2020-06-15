@@ -76,8 +76,6 @@ import BranchRoute from './BranchRoute';
 import BankRoute from './BankRoute';
 import InfraRoute from './InfraRoute';
 import GlobalStyle from '../../global-styles';
-
-import '../BankMerchantList/commission/node_modules/react-toastify/dist/ReactToastify.css';
 import BankMerchantList from '../BankMerchantList/BankMerchantList';
 import MerchantFeesPage from '../BankMerchantList/fees/MerchantFeesPage';
 import CommissionFeesPage from '../BankMerchantList/commission/CommissionFeesPage';
@@ -212,12 +210,12 @@ export default function App(props) {
           />
           <BankRoute
             exact
-            path="/bank/merchants/fee"
+            path="/bank/merchants/fee/:id"
             component={MerchantFeesPage}
           />
           <BankRoute
             exact
-            path="/bank/merchants/info"
+            path="/bank/merchants/info/:id"
             component={MerchantSettingsPage}
           />
           <BankRoute

@@ -12,63 +12,44 @@ import SettingSideBar from '../SettingSidebar';
 import BankHeader from '../../../components/Header/BankHeader';
 import { CURRENCY } from '../../App/constants';
 import MerchantFee from './MerchantFee';
+import { getRules } from '../api/merchantAPI';
 
-const MerchantFeesPage = () => {
+const MerchantFeesPage = props => {
   const [isLoading, setLoading] = useState(false);
-  const [rules, setRules] = useState([
-    {
-      name: 'Hello',
-      transType: 'Wallet to Wallet',
-      active: 'Inactive',
-      transactions: [
-        {
-          trans_from: 10000,
-          trans_to: 100001,
-          fixed_amount: 1000,
-          percentage: 10,
-        },
-        {
-          trans_from: 10000,
-          trans_to: 100001,
-          fixed_amount: 1000,
-          percentage: 10,
-        },
-      ],
-    },
-  ]);
-  const [permissions, setPermissions] = useState(false);
-  const [merchantInfo, setMerchantInfo] = useState({});
+  const [rules, setRules] = useState([]);
   const [editRulePage, setEditRulePage] = useState(false);
   const [createRulePage, setCreateRulePage] = useState(false);
-  const [rule, setRule] = useState({});
+  const [editingRule, setEditingRule] = useState({});
+  const { match } = props;
+  const { id } = match.params;
 
   useEffect(() => {
     setLoading(true);
-    // const merchant = JSON.parse(localStorage.getItem('merchantLogged')).details;
-    setMerchantInfo({});
-    setLoading(false);
+    getRules('revenue', id).then(r => {
+      setRules(r.list);
+      setLoading(false);
+    });
   }, []);
 
   if (isLoading) {
     return <Loader fullPage />;
   }
-  const rulesMap = rules.map((b, index) => (
-    <tr key={b._id}>
+  const rulesMap = rules.map((r, index) => (
+    <tr key={r._id}>
       <td>
-        <span>{b.name}</span>
+        <span>Demo</span>
       </td>
       <td className="tac">
-        <span>{b.transType}</span>
+        <span>
+          {r.type === '0' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
+        </span>
       </td>
       <td>
-        {b.transactions.map((transaction, i) => (
+        {r.ranges.map((range, i) => (
           <div key={i}>
-            Fixed:{' '}
-            <span className="green">{`${CURRENCY} ${
-              transaction.fixed_amount
-            }`}</span>
+            Fixed: <span className="green">{`${CURRENCY} ${range.fixed}`}</span>
             , Percentage:{' '}
-            <span className="green">{`${transaction.percentage} %`}</span>
+            <span className="green">{`${range.percentage} %`}</span>
           </div>
         ))}
       </td>
@@ -83,7 +64,7 @@ const MerchantFeesPage = () => {
       >
         <Button
           onClick={() => {
-            setRule(rules[index]);
+            setEditingRule(rules[index]);
             setEditRulePage(true);
           }}
           className="addBankButton"
@@ -157,7 +138,8 @@ const MerchantFeesPage = () => {
           )}
           {editRulePage ? (
             <MerchantFee
-              rules={rule}
+              merchantId={id}
+              rules={editingRule}
               onBack={() => {
                 setEditRulePage(false);
               }}
@@ -167,6 +149,7 @@ const MerchantFeesPage = () => {
           )}
           {createRulePage ? (
             <MerchantFee
+              merchantId={id}
               rules={{}}
               onBack={() => {
                 setCreateRulePage(false);
