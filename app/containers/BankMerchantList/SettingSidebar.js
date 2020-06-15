@@ -60,13 +60,13 @@ const SettingSidebar = props => {
   const commission = active === 'commission';
   return (
     <SidebarStyle marginRight>
-      <h3>SETTINGS</h3>
+      <H1>SETTINGS</H1>
       <A href="/bank/merchants/info">
         <Card rounded selected={info} className="sideNav">
           <i className="material-icons">
             <PersonIcon />
           </i>
-          <h3>Info</h3>
+          <H3>Info</H3>
         </Card>
       </A>
       <A href="/bank/merchants/fee">
@@ -74,7 +74,7 @@ const SettingSidebar = props => {
           <i className="material-icons">
             <FolderIcon />
           </i>
-          <h3>Fee</h3>
+          <H3>Fee</H3>
         </Card>
       </A>
       <A href="/bank/merchants/commision">
@@ -82,7 +82,7 @@ const SettingSidebar = props => {
           <i className="material-icons">
             <MobileScreenShareIcon />
           </i>
-          <h3>Commission</h3>
+          <H3>Commission</H3>
         </Card>
       </A>
     </SidebarStyle>

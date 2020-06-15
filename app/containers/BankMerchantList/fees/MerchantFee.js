@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import Card from 'components/Card';
+import Button from 'components/Button';
+import FormGroup from 'components/FormGroup';
+import TextInput from 'components/TextInput';
+import SelectInput from 'components/SelectInput';
+import Row from 'components/Row';
+import Col from 'components/Col';
+import Loader from 'components/Loader';
 import * as Yup from 'yup';
-import Card from '../commission/node_modules/components/Card';
-import Button from '../commission/node_modules/components/Button';
-import FormGroup from '../commission/node_modules/components/FormGroup';
-import TextInput from '../commission/node_modules/components/TextInput';
-import SelectInput from '../commission/node_modules/components/SelectInput';
-import Row from '../commission/node_modules/components/Row';
-import Col from '../commission/node_modules/components/Col';
-import Loader from '../commission/node_modules/components/Loader';
 
-import '../commission/node_modules/react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
 import { Form, Formik, FieldArray, ErrorMessage } from 'formik';
 import {
   correctFocus,
