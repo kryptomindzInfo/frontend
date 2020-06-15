@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import Card from 'components/Card';
+import Button from 'components/Button';
+import FormGroup from 'components/FormGroup';
+import TextInput from 'components/TextInput';
+import SelectInput from 'components/SelectInput';
+import Row from 'components/Row';
+import Col from 'components/Col';
+import Loader from 'components/Loader';
 import * as Yup from 'yup';
-import { ErrorMessage, FieldArray, Form, Formik } from 'formik';
-import Card from '../../../components/Card';
-import FormGroup from '../../../components/FormGroup';
-import TextInput from '../../../components/TextInput';
-import Row from '../../../components/Row';
-import Col from '../../../components/Col';
-import SelectInput from '../../../components/SelectInput';
-import Button from '../../../components/Button';
-import Loader from '../../../components/Loader';
-import { correctFocus, inputBlur, inputFocus } from '../../../components/handleInputFocus';
-import { createMerchantRule } from '../api/merchantAPI';
+import { Form, Formik, FieldArray, ErrorMessage } from 'formik';
+import {
+  correctFocus,
+  inputBlur,
+  inputFocus,
+} from '../../../components/handleInputFocus';
 
 toast.configure({
   position: 'bottom-right',

@@ -11,7 +11,7 @@ import Loader from '../../../components/Loader';
 import SettingSideBar from '../SettingSidebar';
 import BankHeader from '../../../components/Header/BankHeader';
 import { CURRENCY } from '../../App/constants';
-import MerchantFee from './CommissionFee';
+import CommissionFee from './CommissionFee';
 
 const CommissionFeesPage = () => {
   const [isLoading, setLoading] = useState(false);
@@ -102,7 +102,7 @@ const CommissionFeesPage = () => {
       </Helmet>
       <BankHeader active="merchants" />
       <Container verticalMargin>
-        <SettingSideBar active="fee" />
+        <SettingSideBar active="commission" />
         <Main big>
           {!createRulePage && !editRulePage ? (
             <div>
@@ -156,7 +156,7 @@ const CommissionFeesPage = () => {
             ''
           )}
           {editRulePage ? (
-            <MerchantFee
+            <CommissionFee
               rules={rule}
               onBack={() => {
                 setEditRulePage(false);
@@ -166,7 +166,7 @@ const CommissionFeesPage = () => {
             ''
           )}
           {createRulePage ? (
-            <MerchantFee
+            <CommissionFee
               rules={{}}
               onBack={() => {
                 setCreateRulePage(false);
