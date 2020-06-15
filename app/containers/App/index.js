@@ -10,10 +10,6 @@
 import React, { useState } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import InfraRoute from './InfraRoute';
-import BankRoute from './BankRoute';
-import BranchRoute from './BranchRoute';
-import CashierRoute from './CashierRoute';
 
 import HomePage from 'containers/HomePage/Loadable';
 import SignupPage from 'containers/SignupPage/Loadable';
@@ -50,7 +46,6 @@ import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
 import BankEscrowHistory from 'containers/BankEscrowHistory/Loadable';
 import BankBranchList from 'containers/BankBranchList/Loadable';
 import TermsConditions from 'components/TermsConditions';
-import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
 import BankCreateFee from 'containers/BankCreateFee/Loadable';
 import BankCashierList from 'containers/BankCashierList/Loadable';
 import BankUser from 'containers/BankUser';
@@ -75,13 +70,20 @@ import BankEditFee from 'containers/BankEditFee';
 import FeeList from 'containers/FeeList';
 
 import { ThemeProvider } from 'styled-components';
+import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
+import CashierRoute from './CashierRoute';
+import BranchRoute from './BranchRoute';
+import BankRoute from './BankRoute';
+import InfraRoute from './InfraRoute';
 import GlobalStyle from '../../global-styles';
 
-import 'react-toastify/dist/ReactToastify.css';
+import '../BankMerchantList/commission/node_modules/react-toastify/dist/ReactToastify.css';
 import BankMerchantList from '../BankMerchantList/BankMerchantList';
-//import FeeList from '../FeeList';
+import MerchantFeesPage from '../BankMerchantList/fees/MerchantFeesPage';
+import CommissionFeesPage from '../BankMerchantList/commission/CommissionFeesPage';
+import MerchantSettingsPage from '../BankMerchantList/settings/MerchantSettingsPage';
+// import FeeList from '../FeeList';
 // import { CashierSendMoney } from '../CashierSendMoney';
-
 
 const appTheme = {
   primary: '#417505',
@@ -176,12 +178,53 @@ export default function App(props) {
             component={BankCashierInfo}
           />
           <BankRoute exact path="/bank/create-fee" component={BankCreateFee} />
-          <BankRoute exact path="/bank/theme" component={BankTheme} setTheme={setTheme} appTheme={theme} />
-          <BankRoute exact path="/bank/operationalHistory" component={BankOperationalHistory} />
-          <BankRoute exact path="/bank/escrowHistory" component={BankEscrowHistory} />
-          <BankRoute exact path="/bank/cashier/:branch?/:cashier?" component={BankCashierInfo} />
-          <BankRoute exact path="/bank/edit-fee/:fee?" component={BankEditFee} />
-          <BankRoute exact path="/bank/merchants" component={BankMerchantList} />
+          <BankRoute
+            exact
+            path="/bank/theme"
+            component={BankTheme}
+            setTheme={setTheme}
+            appTheme={theme}
+          />
+          <BankRoute
+            exact
+            path="/bank/operationalHistory"
+            component={BankOperationalHistory}
+          />
+          <BankRoute
+            exact
+            path="/bank/escrowHistory"
+            component={BankEscrowHistory}
+          />
+          <BankRoute
+            exact
+            path="/bank/cashier/:branch?/:cashier?"
+            component={BankCashierInfo}
+          />
+          <BankRoute
+            exact
+            path="/bank/edit-fee/:fee?"
+            component={BankEditFee}
+          />
+          <BankRoute
+            exact
+            path="/bank/merchants"
+            component={BankMerchantList}
+          />
+          <BankRoute
+            exact
+            path="/bank/merchants/fee"
+            component={MerchantFeesPage}
+          />
+          <BankRoute
+            exact
+            path="/bank/merchants/info"
+            component={MerchantSettingsPage}
+          />
+          <BankRoute
+            exact
+            path="/bank/merchants/commision"
+            component={CommissionFeesPage}
+          />
 
           <Route exact path="/branch/:bank?" component={BranchLogin} />
           <Route
@@ -196,7 +239,7 @@ export default function App(props) {
             path="/branch/:bank?/dashboard"
             component={BranchDashboard}
           />
-           {/* <BranchRoute
+          {/* <BranchRoute
             exact
             path="/branch/operationalHistory"
             component={BranchOperationalHistory}
@@ -221,14 +264,30 @@ export default function App(props) {
             path="/branch/:bank?/cashier/:cashier?"
             component={BranchCashierInfo}
           />
-          <BranchRoute exact path="/branch/:bank?/dashboard/send-money" component={CashierSendMoney} />
+          <BranchRoute
+            exact
+            path="/branch/:bank?/dashboard/send-money"
+            component={CashierSendMoney}
+          />
 
           <Route exact path="/cashier/:bank?" component={CashierLogin} />
-          <Route exact path="/cashier/:bank?/forgot-password" component={CashierForgotPassword} />
+          <Route
+            exact
+            path="/cashier/:bank?/forgot-password"
+            component={CashierForgotPassword}
+          />
           <Route exact path="/cashier/:bank?/otp" component={CashierOTPPage} />
           <Route exact path="/cashier/:bank?/setup" component={CashierSetup} />
-          <CashierRoute exact path="/cashier/:bank?/dashboard" component={CashierDashboard} />
-          <CashierRoute exact path="/cashier/:bank?/info" component={CashierInfo} />
+          <CashierRoute
+            exact
+            path="/cashier/:bank?/dashboard"
+            component={CashierDashboard}
+          />
+          <CashierRoute
+            exact
+            path="/cashier/:bank?/info"
+            component={CashierInfo}
+          />
 
           <Route component={NotFoundPage} />
         </Switch>
