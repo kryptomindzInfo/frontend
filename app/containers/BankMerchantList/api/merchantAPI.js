@@ -137,17 +137,24 @@ const getRules = async (ruleType, merchantId) => {
     const res = await axios.post(URL, { token, merchant_id: merchantId });
     if (res.status === 200) {
       if (res.data.status === 0) {
-        notify(res.data.message, 'error');
+        toast.error(res.data.message);
         return { list: [], loading: false };
       }
       return { list: res.data.rule, loading: false };
     }
-    notify(res.data.message, 'error');
+    toast.error(res.data.message);
     return { list: [], loading: false };
   } catch (err) {
-    notify('Something went wrong', 'error');
+    toast.error('Something went wrong');
     return { list: [], loading: false };
   }
 };
 
-export { createMerchant, editMerchant, fetchMerchantList, createMerchantRule, getRules,editMerchantRule };
+export {
+  createMerchant,
+  editMerchant,
+  fetchMerchantList,
+  createMerchantRule,
+  getRules,
+  editMerchantRule,
+};
