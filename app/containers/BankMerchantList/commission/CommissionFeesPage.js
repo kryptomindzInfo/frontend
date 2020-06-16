@@ -12,63 +12,77 @@ import SettingSideBar from '../SettingSidebar';
 import BankHeader from '../../../components/Header/BankHeader';
 import { CURRENCY } from '../../App/constants';
 import CommissionFee from './CommissionFee';
+import CommissionRevenueSharingRule from './CommissionRevenueSharingRule';
 
 const CommissionFeesPage = () => {
   const [isLoading, setLoading] = useState(false);
   const [rules, setRules] = useState([
     {
-      name: 'Hello',
-      transType: 'Wallet to Wallet',
-      active: 'Inactive',
-      transactions: [
+      infra_share: {
+        fixed: 0,
+        percentage: 0,
+      },
+      edited: {
+        ranges: [],
+      },
+      status: 0,
+      active: 0,
+      type_desc: '0-Wallet, 1-Non-Wallet',
+      rule_edit_status: 0,
+      infra_share_edit_status: 0,
+      merchant_approve_status: 0,
+      infra_approve_status: 0,
+      partner_share_percentage: '0',
+      _id: '5ee771c37b23e70007a14507',
+      ranges: [
         {
-          trans_from: 10000,
-          trans_to: 100001,
-          fixed_amount: 1000,
-          percentage: 10,
-        },
-        {
-          trans_from: 10000,
-          trans_to: 100001,
-          fixed_amount: 1000,
-          percentage: 10,
+          trans_from: 0,
+          trans_to: 1000,
+          fixed: 0,
+          percentage: 0,
+          _id: '5ee771c37b23e70007a14508',
         },
       ],
+      specific_partners_share: [],
+      merchant_id: '5ec3c0696b0b22000798bed4',
+      type: 0,
+      __v: 0,
     },
   ]);
-  const [permissions, setPermissions] = useState(false);
-  const [merchantInfo, setMerchantInfo] = useState({});
   const [editRulePage, setEditRulePage] = useState(false);
   const [createRulePage, setCreateRulePage] = useState(false);
-  const [rule, setRule] = useState({});
+  const [revenueSharingRulePage, setRevenueSharingRulePage] = useState(false);
+  const [editingRule, setEditingRule] = useState({});
+  const { match } = props;
+  const { id } = match.params;
 
   useEffect(() => {
-    setLoading(true);
-    // const merchant = JSON.parse(localStorage.getItem('merchantLogged')).details;
-    setMerchantInfo({});
-    setLoading(false);
+    // setLoading(true);
+    // getRules('revenue', id).then(r => {
+    //   setRules(r.list);
+    //   setLoading(false);
+    // });
   }, []);
 
   if (isLoading) {
     return <Loader fullPage />;
   }
-  const rulesMap = rules.map((b, index) => (
-    <tr key={b._id}>
+  const rulesMap = rules.map((r, index) => (
+    <tr key={r._id}>
       <td>
-        <span>{b.name}</span>
+        <span>Demo</span>
       </td>
       <td className="tac">
-        <span>{b.transType}</span>
+        <span>
+          {r.type === '0' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
+        </span>
       </td>
       <td>
-        {b.transactions.map((transaction, i) => (
-          <div key={i}>
-            Fixed:{' '}
-            <span className="green">{`${CURRENCY} ${
-              transaction.fixed_amount
-            }`}</span>
+        {r.ranges.map(range => (
+          <div key={range._id}>
+            Fixed: <span className="green">{`${CURRENCY} ${range.fixed}`}</span>
             , Percentage:{' '}
-            <span className="green">{`${transaction.percentage} %`}</span>
+            <span className="green">{`${range.percentage} %`}</span>
           </div>
         ))}
       </td>
@@ -83,14 +97,22 @@ const CommissionFeesPage = () => {
       >
         <Button
           onClick={() => {
-            setRule(rules[index]);
+            setEditingRule(rules[index]);
             setEditRulePage(true);
           }}
           className="addBankButton"
         >
           <span>Edit</span>
         </Button>
-        <Button onClick={() => {}}>Revenue Sharing Rule</Button>
+        <Button
+          onClick={() => {
+            setEditingRule(rules[index]);
+            setRevenueSharingRulePage(true);
+          }}
+          className="addBankButton"
+        >
+          Revenue Sharing Rule
+        </Button>
       </td>
     </tr>
   ));
@@ -104,7 +126,7 @@ const CommissionFeesPage = () => {
       <Container verticalMargin>
         <SettingSideBar active="commission" />
         <Main big>
-          {!createRulePage && !editRulePage ? (
+          {!createRulePage && !editRulePage && !revenueSharingRulePage ? (
             <div>
               <ActionBar
                 marginBottom="33px"
@@ -157,7 +179,8 @@ const CommissionFeesPage = () => {
           )}
           {editRulePage ? (
             <CommissionFee
-              rules={rule}
+              merchantId={id}
+              rules={editingRule}
               onBack={() => {
                 setEditRulePage(false);
               }}
@@ -167,9 +190,22 @@ const CommissionFeesPage = () => {
           )}
           {createRulePage ? (
             <CommissionFee
+              merchantId={id}
               rules={{}}
               onBack={() => {
                 setCreateRulePage(false);
+              }}
+            />
+          ) : (
+            ''
+          )}
+          {revenueSharingRulePage ? (
+            <CommissionRevenueSharingRule
+              merchantId={id}
+              rules={editingRule}
+              status={editingRule.infra_share_edit_status}
+              onBack={() => {
+                setRevenueSharingRulePage(false);
               }}
             />
           ) : (
