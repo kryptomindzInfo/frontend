@@ -80,6 +80,7 @@ import BankMerchantList from '../BankMerchantList/BankMerchantList';
 import MerchantFeesPage from '../BankMerchantList/fees/MerchantFeesPage';
 import CommissionFeesPage from '../BankMerchantList/commission/CommissionFeesPage';
 import MerchantSettingsPage from '../BankMerchantList/settings/MerchantSettingsPage';
+import { FeeListPage } from '../InfraMerchant/FeeListPage';
 // import FeeList from '../FeeList';
 // import { CashierSendMoney } from '../CashierSendMoney';
 
@@ -137,7 +138,16 @@ export default function App(props) {
             path="/bankCreation-confirmationPage"
             component={BankCreationConfirmationPage}
           />
-
+          <InfraRoute
+            exact
+            path="/merchant/fees/:id"
+            component={p => <FeeListPage feeType="Revenue" {...p} />}
+          />
+          <InfraRoute
+            exact
+            path="/merchant/commission/:id"
+            component={p => <FeeListPage feeType="Commission" {...p} />}
+          />
           <Route exact path="/bank" component={BankLoginPage} />
           <Route exact path="/bank/setup" component={BankSetupPage} />
           <Route exact path="/bank/activate" component={BankActivate} />
