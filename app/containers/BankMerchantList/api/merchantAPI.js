@@ -2,6 +2,15 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../../App/constants';
 
+toast.configure({
+  position: 'bottom-right',
+  autoClose: 4000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+});
+
 const createMerchant = async (props, values, token) => {
   try {
     const res = await axios.post(`${API_URL}/bank/createMerchant`, {
