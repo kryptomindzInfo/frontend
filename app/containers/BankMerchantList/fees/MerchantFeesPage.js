@@ -38,13 +38,10 @@ const MerchantFeesPage = props => {
   }
   const rulesMap = rules.map((r, index) => (
     <tr key={r._id}>
-      <td>
-        <span>Demo</span>
-      </td>
       <td className="tac">
-        <span>
+        <h3>
           {r.type === '0' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
-        </span>
+        </h3>
       </td>
       <td>
         {r.ranges.map(range => (
@@ -171,8 +168,10 @@ const MerchantFeesPage = props => {
           {revenueSharingRulePage ? (
             <MerchantRevenueSharingRule
               merchantId={id}
-              rules={editingRule}
+              share={editingRule.infra_share}
               status={editingRule.infra_share_edit_status}
+              type={editingRule.type}
+              id={editingRule._id}
               onBack={() => {
                 setRevenueSharingRulePage(false);
               }}

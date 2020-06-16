@@ -13,42 +13,11 @@ import BankHeader from '../../../components/Header/BankHeader';
 import { CURRENCY } from '../../App/constants';
 import CommissionFee from './CommissionFee';
 import CommissionRevenueSharingRule from './CommissionRevenueSharingRule';
+import { getRules } from '../api/merchantAPI';
 
 const CommissionFeesPage = () => {
   const [isLoading, setLoading] = useState(false);
-  const [rules, setRules] = useState([
-    {
-      infra_share: {
-        fixed: 0,
-        percentage: 0,
-      },
-      edited: {
-        ranges: [],
-      },
-      status: 0,
-      active: 0,
-      type_desc: '0-Wallet, 1-Non-Wallet',
-      rule_edit_status: 0,
-      infra_share_edit_status: 0,
-      merchant_approve_status: 0,
-      infra_approve_status: 0,
-      partner_share_percentage: '0',
-      _id: '5ee771c37b23e70007a14507',
-      ranges: [
-        {
-          trans_from: 0,
-          trans_to: 1000,
-          fixed: 0,
-          percentage: 0,
-          _id: '5ee771c37b23e70007a14508',
-        },
-      ],
-      specific_partners_share: [],
-      merchant_id: '5ec3c0696b0b22000798bed4',
-      type: 0,
-      __v: 0,
-    },
-  ]);
+  const [rules, setRules] = useState([]);
   const [editRulePage, setEditRulePage] = useState(false);
   const [createRulePage, setCreateRulePage] = useState(false);
   const [revenueSharingRulePage, setRevenueSharingRulePage] = useState(false);
@@ -57,11 +26,11 @@ const CommissionFeesPage = () => {
   const { id } = match.params;
 
   useEffect(() => {
-    // setLoading(true);
-    // getRules('revenue', id).then(r => {
-    //   setRules(r.list);
-    //   setLoading(false);
-    // });
+    setLoading(true);
+    getRules('commission', id).then(r => {
+      setRules(r.list);
+      setLoading(false);
+    });
   }, []);
 
   if (isLoading) {
@@ -69,13 +38,10 @@ const CommissionFeesPage = () => {
   }
   const rulesMap = rules.map((r, index) => (
     <tr key={r._id}>
-      <td>
-        <span>Demo</span>
-      </td>
       <td className="tac">
-        <span>
+        <h3>
           {r.type === '0' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
-        </span>
+        </h3>
       </td>
       <td>
         {r.ranges.map(range => (
@@ -202,8 +168,10 @@ const CommissionFeesPage = () => {
           {revenueSharingRulePage ? (
             <CommissionRevenueSharingRule
               merchantId={id}
-              rules={editingRule}
+              share={editingRule.infra_share}
               status={editingRule.infra_share_edit_status}
+              type={editingRule.type}
+              id={editingRule._id}
               onBack={() => {
                 setRevenueSharingRulePage(false);
               }}

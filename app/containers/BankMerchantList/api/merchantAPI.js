@@ -159,6 +159,62 @@ const getRules = async (ruleType, merchantId) => {
   }
 };
 
+const addInfraShare = async (ruleType, payload) => {
+  let URL = '';
+  if (ruleType === 'revenue') {
+    URL = `${API_URL}/bank/merchantFee/addInfraShare`;
+  } else {
+    URL = `${API_URL}/bank/commission/addInfraShare`;
+  }
+  try {
+    const res = await axios.post(URL, {
+      token,
+      ...payload,
+    });
+    if (res.status === 200) {
+      if (res.data.status === 0) {
+        toast.error(res.data.message);
+        return { status: 0, loading: false };
+      }
+      toast.success(res.data.message);
+      return { status: res.data.status, loading: false };
+    }
+    toast.error(res.data.message);
+    return { status: 0, loading: false };
+  } catch (e) {
+    toast.error('Something went wrong');
+    return { status: 0, loading: false };
+  }
+};
+
+const editInfraShare = async (ruleType, payload) => {
+  let URL = '';
+  if (ruleType === 'revenue') {
+    URL = `${API_URL}/bank/merchantFee/editInfraShare`;
+  } else {
+    URL = `${API_URL}/bank/commission/editInfraShare`;
+  }
+  try {
+    const res = await axios.post(URL, {
+      token,
+      ...payload,
+    });
+    if (res.status === 200) {
+      if (res.data.status === 0) {
+        toast.error(res.data.message);
+        return { status: 0, loading: false };
+      }
+      toast.success(res.data.message);
+      return { status: res.data.status, loading: false };
+    }
+    toast.error(res.data.message);
+    return { status: 0, loading: false };
+  } catch (e) {
+    toast.error('Something went wrong');
+    return { status: 0, loading: false };
+  }
+};
+
 export {
   createMerchant,
   editMerchant,
@@ -166,4 +222,6 @@ export {
   createMerchantRule,
   getRules,
   editMerchantRule,
+  addInfraShare,
+  editInfraShare,
 };

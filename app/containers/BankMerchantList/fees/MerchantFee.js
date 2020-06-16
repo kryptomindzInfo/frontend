@@ -79,8 +79,8 @@ const MerchantFee = props => {
           })}
           onSubmit={values => {
             setLoading(true);
-            if (rule) {
-              values.fee_id = rule.fee_id;
+            if (Object.keys(rule).length > 0) {
+              values.fee_id = rule._id;
               editMerchantRule(props, 'revenue', values).then(() => {
                 setLoading(false);
               });

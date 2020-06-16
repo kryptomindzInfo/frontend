@@ -16,6 +16,7 @@ import {
   inputBlur,
   inputFocus,
 } from '../../../components/handleInputFocus';
+import { addInfraShare, editInfraShare } from '../api/merchantAPI';
 
 toast.configure({
   position: 'bottom-right',
@@ -28,11 +29,13 @@ toast.configure({
 
 const MerchantRevenueSharingRule = props => {
   const [isLoading, setLoading] = useState(false);
-  const [rule, setRule] = useState(props.rules);
+  const [share, setShare] = useState(props.share);
   const [infraStatus, setInfraStatus] = useState(props.status);
+  const [type, setType] = useState(props.type);
+  const [id, setId] = useState(props.id);
 
   useEffect(() => {
-    if (Object.keys(rule).length > 0) {
+    if (Object.keys(share).length > 0) {
       correctFocus('update');
     }
   });
@@ -56,7 +59,7 @@ const MerchantRevenueSharingRule = props => {
             arrow_back
           </i>
           <h3 style={{ color: '#417505' }}>{`Revenue with Infra(${
-            rule.type === '0' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'
+            type === '0' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'
           })`}</h3>
         </div>
       </div>
@@ -64,8 +67,8 @@ const MerchantRevenueSharingRule = props => {
         <Formik
           enableReinitialize
           initialValues={{
-            fixed: rule.infra_share.fixed || '',
-            percentage: rule.infra_share.percentage || '',
+            fixed: share.fixed || '',
+            percentage: share.percentage || '',
           }}
           validationSchema={Yup.object().shape({
             fixed: Yup.number().required('Fixed Amount is required'),
@@ -73,7 +76,21 @@ const MerchantRevenueSharingRule = props => {
               .max(100, 'Cannot exceed 100')
               .required('Percentage is required'),
           })}
-          onSubmit={() => {}}
+          onSubmit={values => {
+            setLoading(true);
+            values.fee_id = id;
+            if (infraStatus === 1) {
+              editInfraShare(infraStatus, 'revenue', values).then(r => {
+                setInfraStatus(r.status);
+                setLoading(false);
+              });
+            } else {
+              addInfraShare(infraStatus, 'revenue', values).then(r => {
+                setInfraStatus(r.status);
+                setLoading(false);
+              });
+            }
+          }}
         >
           {formikProps => {
             const { handleChange, handleBlur, values } = formikProps;
