@@ -15,6 +15,7 @@ import {
   inputBlur,
   inputFocus,
 } from '../../../components/handleInputFocus';
+import { createMerchantRule, editMerchantRule } from '../api/merchantAPI';
 
 toast.configure({
   position: 'bottom-right',
@@ -155,7 +156,7 @@ const MerchantFee = props => {
                       return (
                         <div>
                           {ranges.map((transaction, index) => (
-                            <Row key={index}>
+                            <Row key={transaction._id}>
                               <Col>
                                 <FormGroup>
                                   <label

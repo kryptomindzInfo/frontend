@@ -13,12 +13,14 @@ import BankHeader from '../../../components/Header/BankHeader';
 import { CURRENCY } from '../../App/constants';
 import MerchantFee from './MerchantFee';
 import { getRules } from '../api/merchantAPI';
+import MerchantRevenueSharingRule from './MerchantRevenueSharingRule';
 
 const MerchantFeesPage = props => {
   const [isLoading, setLoading] = useState(false);
   const [rules, setRules] = useState([]);
   const [editRulePage, setEditRulePage] = useState(false);
   const [createRulePage, setCreateRulePage] = useState(false);
+  const [revenueSharingRulePage, setRevenueSharingRulePage] = useState(false);
   const [editingRule, setEditingRule] = useState({});
   const { match } = props;
   const { id } = match.params;
@@ -45,8 +47,8 @@ const MerchantFeesPage = props => {
         </span>
       </td>
       <td>
-        {r.ranges.map((range, i) => (
-          <div key={i}>
+        {r.ranges.map(range => (
+          <div key={range._id}>
             Fixed: <span className="green">{`${CURRENCY} ${range.fixed}`}</span>
             , Percentage:{' '}
             <span className="green">{`${range.percentage} %`}</span>
@@ -71,7 +73,15 @@ const MerchantFeesPage = props => {
         >
           <span>Edit</span>
         </Button>
-        <Button onClick={() => {}}>Revenue Sharing Rule</Button>
+        <Button
+          onClick={() => {
+            setEditingRule(rules[index]);
+            setRevenueSharingRulePage(true);
+          }}
+          className="addBankButton"
+        >
+          Revenue Sharing Rule
+        </Button>
       </td>
     </tr>
   ));
@@ -85,7 +95,7 @@ const MerchantFeesPage = props => {
       <Container verticalMargin>
         <SettingSideBar active="fee" />
         <Main big>
-          {!createRulePage && !editRulePage ? (
+          {!createRulePage && !editRulePage && !revenueSharingRulePage ? (
             <div>
               <ActionBar
                 marginBottom="33px"
@@ -153,6 +163,18 @@ const MerchantFeesPage = props => {
               rules={{}}
               onBack={() => {
                 setCreateRulePage(false);
+              }}
+            />
+          ) : (
+            ''
+          )}
+          {revenueSharingRulePage ? (
+            <MerchantRevenueSharingRule
+              merchantId={id}
+              rules={editingRule}
+              status={editingRule.infra_share_edit_status}
+              onBack={() => {
+                setRevenueSharingRulePage(false);
               }}
             />
           ) : (
