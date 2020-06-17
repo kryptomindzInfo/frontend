@@ -45,6 +45,8 @@ const MerchantRevenueSharingRule = props => {
       case 1:
         return 'Update';
       case 2:
+        return 'Send For Approval';
+      case 3:
         return 'Pending';
       default:
         return 'Send For Approval';
@@ -85,8 +87,9 @@ const MerchantRevenueSharingRule = props => {
                 setLoading(false);
               });
             } else {
-              addInfraShare(infraStatus, 'revenue', values).then(r => {
+              addInfraShare('revenue', values).then(r => {
                 setInfraStatus(r.status);
+                setShare(r.share);
                 setLoading(false);
               });
             }

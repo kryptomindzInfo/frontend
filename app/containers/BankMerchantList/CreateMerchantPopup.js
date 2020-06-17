@@ -27,12 +27,12 @@ function CreateMerchantPopup(props) {
           document_hash: props.merchant.document_hash || '',
           email: props.merchant.email || '',
           mobile: props.merchant.mobile || '',
-          merchant_id: props.merchant.username || '',
+          code: props.merchant.username || '',
         }}
         onSubmit={async values => {
           if (props.type === 'update') {
-            values.username = values.merchant_id;
-            values.merchant_id = props.merchant._id;
+            values.username = values.code;
+            values.code = props.merchant._id;
             await editMerchant(props, values, token);
           } else {
             await createMerchant(props, values, token);
@@ -47,7 +47,7 @@ function CreateMerchantPopup(props) {
               'Mobile no must be valid',
             )
             .required('Mobile no is required'),
-          merchant_id: Yup.string()
+          code: Yup.string()
             .min(3, 'Merchant Id should be atleast 3 characters')
             .required('Merchant Id is required'),
           name: Yup.string()
@@ -126,20 +126,18 @@ function CreateMerchantPopup(props) {
                 <FormGroup>
                   <TextField
                     size="small"
-                    name="merchant_id"
+                    name="code"
                     label="Merchant ID"
                     fullWidth
                     variant="outlined"
                     style={{ marginBottom: '14px' }}
                     type="text"
-                    value={values.merchant_id}
+                    value={values.code}
                     onChange={handleChange}
                     onBlur={handleBlur}
                     helperText={
                       <Typography variant="body2" color="error">
-                        {errors.merchant_id && touched.merchant_id
-                          ? errors.merchant_id
-                          : ''}
+                        {errors.code && touched.code ? errors.code : ''}
                       </Typography>
                     }
                   />

@@ -97,7 +97,6 @@ const createMerchantRule = async (props, ruleType, payload) => {
       } else {
         toast.success(res.data.message);
         props.refreshRuleList();
-        props.onClose();
       }
     } else {
       toast.error(res.data.message);
@@ -125,7 +124,6 @@ const editMerchantRule = async (props, ruleType, payload) => {
       } else {
         toast.success(res.data.message);
         props.refreshRuleList();
-        props.onClose();
       }
     } else {
       toast.error(res.data.message);
@@ -139,9 +137,9 @@ const getRules = async (ruleType, merchantId) => {
   try {
     let URL = '';
     if (ruleType === 'revenue') {
-      URL = `${API_URL}/bank/merchantFee/getRule`;
+      URL = `${API_URL}/bank/merchantFee/getRules`;
     } else {
-      URL = `${API_URL}/bank/commission/getRule`;
+      URL = `${API_URL}/bank/commission/getRules`;
     }
     const res = await axios.post(URL, { token, merchant_id: merchantId });
     if (res.status === 200) {
@@ -149,7 +147,7 @@ const getRules = async (ruleType, merchantId) => {
         toast.error(res.data.message);
         return { list: [], loading: false };
       }
-      return { list: res.data.rule, loading: false };
+      return { list: res.data.rules, loading: false };
     }
     toast.error(res.data.message);
     return { list: [], loading: false };
@@ -177,7 +175,7 @@ const addInfraShare = async (ruleType, payload) => {
         return { status: 0, loading: false };
       }
       toast.success(res.data.message);
-      return { status: res.data.status, loading: false };
+      return { status: res.data.status, loading: false, share: payload };
     }
     toast.error(res.data.message);
     return { status: 0, loading: false };
@@ -205,7 +203,7 @@ const editInfraShare = async (ruleType, payload) => {
         return { status: 0, loading: false };
       }
       toast.success(res.data.message);
-      return { status: res.data.status, loading: false };
+      return { status: res.data.infra_approve_status, loading: false };
     }
     toast.error(res.data.message);
     return { status: 0, loading: false };

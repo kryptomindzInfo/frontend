@@ -57,7 +57,7 @@ const MerchantFee = props => {
               {
                 trans_from: '',
                 trans_to: '',
-                fixed_amount: '',
+                fixed: '',
                 percentage: '',
               },
             ],
@@ -70,7 +70,7 @@ const MerchantFee = props => {
               Yup.object().shape({
                 trans_from: Yup.number().required('Trans From is required'),
                 trans_to: Yup.number().required('Trans To is required'),
-                fixed_amount: Yup.number().required('Fixed Amount is required'),
+                fixed: Yup.number().required('Fixed Amount is required'),
                 percentage: Yup.number()
                   .max(100, 'Cannot exceed 100')
                   .required('Percentage is required'),
@@ -147,7 +147,6 @@ const MerchantFee = props => {
                   </Col>
                 </Row>
                 <FormGroup>
-                  <label htmlFor="ranges">Transaction</label>
                   <FieldArray name="ranges">
                     {fieldArrayProps => {
                       const { push, remove, form } = fieldArrayProps;
@@ -213,15 +212,13 @@ const MerchantFee = props => {
                               </Col>
                               <Col>
                                 <FormGroup>
-                                  <label
-                                    htmlFor={`ranges[${index}].fixed_amount`}
-                                  >
+                                  <label htmlFor={`ranges[${index}].fixed`}>
                                     Fixed Amount
                                   </label>
                                   <TextInput
                                     type="number"
-                                    name={`ranges[${index}].fixed_amount`}
-                                    value={transaction.fixed_amount}
+                                    name={`ranges[${index}].fixed`}
+                                    value={transaction.fixed}
                                     onFocus={e => {
                                       inputFocus(e);
                                       handleChange(e);
@@ -233,7 +230,7 @@ const MerchantFee = props => {
                                     onChange={handleChange}
                                   />
                                   <ErrorMessage
-                                    name={`ranges[${index}].fixed_amount`}
+                                    name={`ranges[${index}].fixed`}
                                   />
                                 </FormGroup>
                               </Col>
@@ -266,16 +263,17 @@ const MerchantFee = props => {
                               {index > 0 ? (
                                 <Col
                                   style={{
-                                    display: 'flex',
                                     justifyContent: 'center',
                                     marginBottom: '14px',
                                   }}
                                 >
-                                  <FormGroup>
-                                    <Button onClick={() => remove(index)}>
-                                      <i className="material-icons">delete</i>
-                                    </Button>
-                                  </FormGroup>
+                                  <span
+                                    onClick={() => remove(index)}
+                                    style={{ position: 'initial' }}
+                                    className="material-icons removeBtn pointer"
+                                  >
+                                    cancel
+                                  </span>
                                 </Col>
                               ) : null}
                             </Row>
@@ -289,7 +287,7 @@ const MerchantFee = props => {
                                 trans_from:
                                   ranges[ranges.length - 1].trans_to + 1,
                                 trans_to: '',
-                                fixed_amount: '',
+                                fixed: '',
                                 percentage: '',
                               });
                             }}
@@ -302,7 +300,7 @@ const MerchantFee = props => {
                   </FieldArray>
                 </FormGroup>
                 <Button type="submit" filledBtn marginTop="100px">
-                  {isLoading ? <Loader /> : 'Save'}
+                  {isLoading ? <Loader /> : 'Save and Send for Approval'}
                 </Button>
               </Form>
             );

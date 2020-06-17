@@ -25,63 +25,86 @@ const MerchantFeesPage = props => {
   const { match } = props;
   const { id } = match.params;
 
-  useEffect(() => {
+  const refreshFeeList = () => {
+    setCreateRulePage(false);
+    setEditRulePage(false);
     setLoading(true);
     getRules('revenue', id).then(r => {
       setRules(r.list);
       setLoading(false);
     });
+  };
+
+  useEffect(() => {
+    refreshFeeList();
   }, []);
 
   if (isLoading) {
     return <Loader fullPage />;
   }
-  const rulesMap = rules.map((r, index) => (
-    <tr key={r._id}>
-      <td className="tac">
-        <h3>
-          {r.type === '0' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
-        </h3>
-      </td>
-      <td>
-        {r.ranges.map(range => (
-          <div key={range._id}>
-            Fixed: <span className="green">{`${CURRENCY} ${range.fixed}`}</span>
-            , Percentage:{' '}
-            <span className="green">{`${range.percentage} %`}</span>
-          </div>
-        ))}
-      </td>
+  const rulesMap = () =>
+    rules.map(r => {
+      if (r.edited && r.edited.ranges.length > 0) {
+        r.ranges = r.edited.ranges;
+        r.merchant_approve_status = r.edited.merchant_approve_status;
+      }
+      return (
+        <tr key={r._id}>
+          <td className="tac">
+            <span>{r.name}</span>
+          </td>
+          <td className="tac">
+            <span>
+              {r.type === 0 ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
+            </span>
+          </td>
+          <td>
+            {r.ranges.map(range => (
+              <div key={range._id}>
+                Fixed:{' '}
+                <span className="green">{`${CURRENCY} ${range.fixed}`}</span>,
+                Percentage:{' '}
+                <span className="green">{`${range.percentage} %`}</span>
+              </div>
+            ))}
+          </td>
+          <td
+            className="tac bold"
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+            }}
+          >
+            <Button
+              onClick={() => {
+                setEditingRule(r);
+                setEditRulePage(true);
+              }}
+              className="addBankButton"
+            >
+              <span>Edit</span>
+            </Button>
+            {r.merchant_approve_status === 0 ? (
+              <Button style={{ cursor: 'default' }}>
+                Pending Merchant Approval
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  setEditingRule(r);
+                  setRevenueSharingRulePage(true);
+                }}
+                className="addBankButton"
+              >
+                Revenue Sharing Rule
+              </Button>
+            )}
+          </td>
+        </tr>
+      );
+    });
 
-      <td
-        className="tac bold"
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-        }}
-      >
-        <Button
-          onClick={() => {
-            setEditingRule(rules[index]);
-            setEditRulePage(true);
-          }}
-          className="addBankButton"
-        >
-          <span>Edit</span>
-        </Button>
-        <Button
-          onClick={() => {
-            setEditingRule(rules[index]);
-            setRevenueSharingRulePage(true);
-          }}
-          className="addBankButton"
-        >
-          Revenue Sharing Rule
-        </Button>
-      </td>
-    </tr>
-  ));
   return (
     <Wrapper>
       <Helmet>
@@ -135,7 +158,9 @@ const MerchantFeesPage = props => {
                         <th />
                       </tr>
                     </thead>
-                    <tbody>{rules && rules.length > 0 ? rulesMap : null}</tbody>
+                    <tbody>
+                      {rules && rules.length > 0 ? rulesMap() : null}
+                    </tbody>
                   </Table>
                 </div>
               </Card>
@@ -147,6 +172,7 @@ const MerchantFeesPage = props => {
             <MerchantFee
               merchantId={id}
               rules={editingRule}
+              refreshRuleList={() => refreshFeeList()}
               onBack={() => {
                 setEditRulePage(false);
               }}
@@ -158,6 +184,7 @@ const MerchantFeesPage = props => {
             <MerchantFee
               merchantId={id}
               rules={{}}
+              refreshRuleList={() => refreshFeeList()}
               onBack={() => {
                 setCreateRulePage(false);
               }}
@@ -169,7 +196,7 @@ const MerchantFeesPage = props => {
             <MerchantRevenueSharingRule
               merchantId={id}
               share={editingRule.infra_share}
-              status={editingRule.infra_share_edit_status}
+              status={editingRule.infra_approve_status}
               type={editingRule.type}
               id={editingRule._id}
               onBack={() => {

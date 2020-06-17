@@ -190,7 +190,9 @@ export const FeeListPage = props => {
                     <th />
                   </tr>
                 </thead>
-                <tbody>{rules && rules.length > 0 ? rules() : null}</tbody>
+                <tbody>
+                  {ruleList && ruleList.length > 0 ? rules() : null}
+                </tbody>
               </Table>
             </div>
           </Card>

@@ -81,6 +81,7 @@ import MerchantFeesPage from '../BankMerchantList/fees/MerchantFeesPage';
 import CommissionFeesPage from '../BankMerchantList/commission/CommissionFeesPage';
 import MerchantSettingsPage from '../BankMerchantList/settings/MerchantSettingsPage';
 import { FeeListPage } from '../InfraMerchant/FeeListPage';
+import MerchantListPage from '../CashierPayBills/MerchantListPage';
 // import FeeList from '../FeeList';
 // import { CashierSendMoney } from '../CashierSendMoney';
 
@@ -295,6 +296,11 @@ export default function App(props) {
             exact
             path="/cashier/:bank?/info"
             component={CashierInfo}
+          />
+          <CashierRoute
+            exact
+            path="/cashier/:bank?/pay-bills"
+            component={p => <MerchantListPage {...p} />}
           />
 
           <Route component={NotFoundPage} />
