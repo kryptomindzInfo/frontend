@@ -31,7 +31,7 @@ const CommissionFeesPage = () => {
     setCreateRulePage(false);
     setEditRulePage(false);
     setLoading(true);
-    getRules('revenue', id).then(r => {
+    getRules('commission', id).then(r => {
       setRules(r.list);
       setLoading(false);
     });
