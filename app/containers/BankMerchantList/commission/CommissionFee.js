@@ -159,10 +159,16 @@ const CommissionFee = props => {
                         <div>
                           {ranges.map((transaction, index) => (
                             <Row key={transaction._id}>
-                              <Col>
+                              <Col cW="30%">
                                 <FormGroup>
                                   <label
                                     htmlFor={`ranges[${index}].trans_from`}
+                                    className={
+                                      ranges[index - 1 < 0 ? 0 : index - 1]
+                                        .trans_to > 0
+                                        ? 'focused'
+                                        : ''
+                                    }
                                   >
                                     Transaction From
                                   </label>
@@ -187,7 +193,7 @@ const CommissionFee = props => {
                                   />
                                 </FormGroup>
                               </Col>
-                              <Col>
+                              <Col cW="30%">
                                 <FormGroup>
                                   <label htmlFor={`ranges[${index}].trans_to`}>
                                     Transaction To
@@ -213,7 +219,7 @@ const CommissionFee = props => {
                                   />
                                 </FormGroup>
                               </Col>
-                              <Col>
+                              <Col cW="30%">
                                 <FormGroup>
                                   <label htmlFor={`ranges[${index}].fixed`}>
                                     Fixed Amount
@@ -237,7 +243,7 @@ const CommissionFee = props => {
                                   />
                                 </FormGroup>
                               </Col>
-                              <Col>
+                              <Col cW="30%">
                                 <FormGroup>
                                   <label
                                     htmlFor={`ranges[${index}].percentage`}
@@ -263,13 +269,14 @@ const CommissionFee = props => {
                                   />
                                 </FormGroup>
                               </Col>
-                              {index > 0 ? (
-                                <Col
-                                  style={{
-                                    justifyContent: 'center',
-                                    marginBottom: '14px',
-                                  }}
-                                >
+                              <Col
+                                cW="10%"
+                                style={{
+                                  justifyContent: 'center',
+                                  marginBottom: '14px',
+                                }}
+                              >
+                                {index > 0 ? (
                                   <span
                                     onClick={() => remove(index)}
                                     style={{ position: 'initial' }}
@@ -277,8 +284,8 @@ const CommissionFee = props => {
                                   >
                                     cancel
                                   </span>
-                                </Col>
-                              ) : null}
+                                ) : null}
+                              </Col>
                             </Row>
                           ))}
                           <Button
@@ -286,13 +293,21 @@ const CommissionFee = props => {
                             accentedBtn
                             marginTop="10px"
                             onClick={() => {
-                              push({
+                              const obj = {
                                 trans_from:
                                   ranges[ranges.length - 1].trans_to + 1,
                                 trans_to: '',
                                 fixed: '',
                                 percentage: '',
-                              });
+                              };
+                              if (ranges[ranges.length - 1].trans_to > 0) {
+                                push(obj);
+                              } else {
+                                form.setFieldError(
+                                  `ranges[${ranges.length - 1}].trans_to`,
+                                  'Add value',
+                                );
+                              }
                             }}
                           >
                             <span>Add Another Range</span>
