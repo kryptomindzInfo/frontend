@@ -10,8 +10,9 @@ import { STATIC_URL } from '../App/constants';
 import Loader from '../../components/Loader';
 import CashierHeader from '../../components/Header/CashierHeader';
 import SidebarCashier from '../../components/Sidebar/SidebarCashier';
+import { fetchCashierMerchantList } from './CashierMerchantAPI';
 
-function MerchantListPage(props) {
+function CashierMerchantListPage(props) {
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
   const [merchantList, setMerchantList] = React.useState([]);
   const [popupType, setPopupType] = React.useState('new');
@@ -35,13 +36,17 @@ function MerchantListPage(props) {
     setLoading(data.loading);
   };
 
-  useEffect(() => {
+  const getMerchantList = async () => {
     setLoading(true);
-    const getMerchantList = async () => {
-      const data = {};
-      setMerchantList(data.list);
-      setLoading(data.loading);
-    };
+    fetchCashierMerchantList()
+      .then(data => {
+        setMerchantList(data.list);
+        setLoading(data.loading);
+      })
+      .catch(error => setLoading(false));
+  };
+
+  useEffect(() => {
     getMerchantList();
   }, []); // Or [] if effect doesn't need props or state
 
@@ -57,51 +62,6 @@ function MerchantListPage(props) {
           </td>
           <td className="tac">{merchant.name}</td>
           <td className="tac">Select Merchant</td>
-
-          {/*  <td className="tac bold">
-           <div
-           style={{
-           display: 'flex',
-           justifyContent: 'center',
-           }}
-           >
-           <td className="tac">
-           {merchant.fee_generated}
-           </td>
-           <span className="absoluteMiddleRight primary popMenuTrigger">
-           <i className="material-icons ">more_vert</i>
-           <div className="popMenu">
-           <span
-           onClick={() =>
-           handleMerchantPopupClick(
-           'update',
-           merchant,
-           )
-           }
-           >
-           Edit
-           </span>
-           <span
-           onClick={() =>
-           props.history.push({
-           pathname: `/bank/merchants/info/${
-           merchant._id
-           }`,
-           state: merchant,
-           })
-           }
-           >
-           Info
-           </span>
-           {merchant.status === -1 ? (
-           <span>Unblock</span>
-           ) : (
-           <span>Block</span>
-           )}
-           </div>
-           </span>
-           </div>
-           </td> */}
         </tr>
       );
     });
@@ -165,4 +125,4 @@ function MerchantListPage(props) {
   );
 }
 
-export default MerchantListPage;
+export default CashierMerchantListPage;

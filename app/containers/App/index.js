@@ -81,7 +81,8 @@ import MerchantFeesPage from '../BankMerchantList/fees/MerchantFeesPage';
 import CommissionFeesPage from '../BankMerchantList/commission/CommissionFeesPage';
 import MerchantSettingsPage from '../BankMerchantList/settings/MerchantSettingsPage';
 import { FeeListPage } from '../InfraMerchant/FeeListPage';
-import MerchantListPage from '../CashierPayBills/MerchantListPage';
+import CashierMerchantListPage from '../CashierPayBills/CashierMerchantListPage';
+import InfraMerchantList from '../InfraInfo/Merchants/InfraMerchantList';
 // import FeeList from '../FeeList';
 // import { CashierSendMoney } from '../CashierSendMoney';
 
@@ -148,6 +149,11 @@ export default function App(props) {
             exact
             path="/merchant/commission/:id"
             component={p => <FeeListPage feeType="Commission" {...p} />}
+          />
+          <InfraRoute
+            exact
+            path="/merchants/:id"
+            component={p => <InfraMerchantList {...p} />}
           />
           <Route exact path="/bank" component={BankLoginPage} />
           <Route exact path="/bank/setup" component={BankSetupPage} />
@@ -300,7 +306,7 @@ export default function App(props) {
           <CashierRoute
             exact
             path="/cashier/:bank?/pay-bills"
-            component={p => <MerchantListPage {...p} />}
+            component={p => <CashierMerchantListPage {...p} />}
           />
 
           <Route component={NotFoundPage} />
