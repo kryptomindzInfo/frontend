@@ -11,9 +11,12 @@ import Loader from '../../components/Loader';
 import CashierHeader from '../../components/Header/CashierHeader';
 import SidebarCashier from '../../components/Sidebar/SidebarCashier';
 import { fetchCashierMerchantList } from './CashierMerchantAPI';
+import PayBillPopup from './PayBillPopup';
+import Button from '../../components/Button';
 
 function CashierMerchantListPage(props) {
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
+  const [payBillsPopup, setPayBillsPopup] = React.useState(false);
   const [merchantList, setMerchantList] = React.useState([]);
   const [popupType, setPopupType] = React.useState('new');
   const [editingMerchant, setEditingMerchant] = React.useState({});
@@ -28,6 +31,11 @@ function CashierMerchantListPage(props) {
 
   const onPopupClose = () => {
     setAddMerchantPopup(false);
+  };
+
+  const onPayBillsPopupClose = () => {
+    setPayBillsPopup(false);
+    setEditingMerchant({});
   };
 
   const refreshMerchantList = async () => {
@@ -51,20 +59,29 @@ function CashierMerchantListPage(props) {
   }, []); // Or [] if effect doesn't need props or state
 
   const getMerchants = () =>
-    merchantList.map(function(merchant) {
-      return (
-        <tr key={merchant._id}>
-          <td className="tac">
-            <img
-              style={{ height: '22%' }}
-              src={`${STATIC_URL}/${merchant.logo}`}
-            />
-          </td>
-          <td className="tac">{merchant.name}</td>
-          <td className="tac">Select Merchant</td>
-        </tr>
-      );
-    });
+    merchantList.map(merchant => (
+      <tr key={merchant._id}>
+        <td className="tac">
+          <img
+            style={{ height: '22%' }}
+            src={`${STATIC_URL}/${merchant.logo}`}
+            alt=""
+          />
+        </td>
+        <td className="tac">{merchant.name}</td>
+        <td className="tac" style={{ color: '#417505' }}>
+          <div
+            onClick={() => {
+              console.log('entered');
+              setEditingMerchant(merchant);
+              setPayBillsPopup(true);
+            }}
+          >
+            Select Merchant
+          </div>
+        </td>
+      </tr>
+    ));
   if (isLoading) {
     return <Loader fullPage />;
   }
@@ -121,6 +138,15 @@ function CashierMerchantListPage(props) {
           </Card>
         </Main>
       </Container>
+
+      {payBillsPopup ? (
+        <PayBillPopup
+          close={() => onPayBillsPopupClose()}
+          merchant={editingMerchant}
+        />
+      ) : (
+        ''
+      )}
     </Wrapper>
   );
 }

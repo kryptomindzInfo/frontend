@@ -13,12 +13,13 @@ import Loader from '../../../components/Loader';
 import SettingSideBar from '../SettingSidebar';
 import BankHeader from '../../../components/Header/BankHeader';
 
-const MerchantSettingsPage = (props) => {
+const MerchantSettingsPage = props => {
   const [editMerchantPopup, setEditMerchantPopup] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [merchantInfo, setMerchantInfo] = useState(props.location.state);
   const { match } = props;
   const { id } = match.params;
+  localStorage.setItem('currentMerchantId', id);
   const handlePopupClick = () => {
     setEditMerchantPopup(true);
   };

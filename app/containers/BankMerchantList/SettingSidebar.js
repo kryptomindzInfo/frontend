@@ -58,11 +58,11 @@ const SettingSidebar = props => {
   const info = active === 'info';
   const fee = active === 'fee';
   const commission = active === 'commission';
-  const { type, match } = props;
+  const id = localStorage.getItem('currentMerchantId');
   return (
     <SidebarStyle marginRight>
       <h3>SETTINGS</h3>
-      <A href={`/bank/merchants/info/${props.merchantId}`}>
+      <A href={`/bank/merchants/info/${IDBKeyRange}`}>
         <Card rounded selected={info} className="sideNav">
           <i className="material-icons">
             <PersonIcon />
@@ -70,7 +70,7 @@ const SettingSidebar = props => {
           <h3>Info</h3>
         </Card>
       </A>
-      <A href={`/bank/merchants/fee/${props.merchantId}`}>
+      <A href={`/bank/merchants/fee/${id}`}>
         <Card rounded selected={fee} className="sideNav">
           <i className="material-icons">
             <FolderIcon />
@@ -78,7 +78,7 @@ const SettingSidebar = props => {
           <h3>Fee</h3>
         </Card>
       </A>
-      <A href={`/bank/merchants/commision/${props.merchantId}`}>
+      <A href={`/bank/merchants/commision/${id}`}>
         <Card rounded selected={commission} className="sideNav">
           <i className="material-icons">
             <MobileScreenShareIcon />

@@ -24,6 +24,7 @@ const MerchantFeesPage = props => {
   const [editingRule, setEditingRule] = useState({});
   const { match } = props;
   const { id } = match.params;
+  localStorage.setItem('currentMerchantId', id);
 
   const refreshFeeList = () => {
     setCreateRulePage(false);

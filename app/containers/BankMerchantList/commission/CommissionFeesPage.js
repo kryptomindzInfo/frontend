@@ -17,7 +17,7 @@ import { getRules } from '../api/merchantAPI';
 import MerchantFee from '../fees/MerchantFee';
 import MerchantRevenueSharingRule from '../fees/MerchantRevenueSharingRule';
 
-const CommissionFeesPage = () => {
+const CommissionFeesPage = props => {
   const [isLoading, setLoading] = useState(false);
   const [rules, setRules] = useState([]);
   const [editRulePage, setEditRulePage] = useState(false);
@@ -26,6 +26,7 @@ const CommissionFeesPage = () => {
   const [editingRule, setEditingRule] = useState({});
   const { match } = props;
   const { id } = match.params;
+  localStorage.setItem('currentMerchantId', id);
 
   const refreshFeeList = () => {
     setCreateRulePage(false);
