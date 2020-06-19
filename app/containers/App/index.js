@@ -237,7 +237,7 @@ export default function App(props) {
           />
           <BankRoute
             exact
-            path="/bank/merchants/commision"
+            path="/bank/merchants/commision/:id"
             component={CommissionFeesPage}
           />
 
