@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import Header from 'components/Header/index';
@@ -22,6 +21,7 @@ import Main from 'components/Main';
 import Card from 'components/Card';
 import Loader from 'components/Loader';
 import MasterWallet from 'components/Sidebar/MasterWallet';
+import messages from './messages';
 import { API_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -34,7 +34,7 @@ toast.configure({
   draggable: true,
 });
 
- const token = localStorage.getItem('logged');
+const token = localStorage.getItem('logged');
 // const token = token;
 
 export default class DashboardPage extends Component {
@@ -44,6 +44,7 @@ export default class DashboardPage extends Component {
       loading: true,
       redirect: false,
       totalBanks: 0,
+      totalMerchants: 0,
       notification: '',
       popup: false,
     };
@@ -84,10 +85,14 @@ export default class DashboardPage extends Component {
         .post(`${API_URL}/getDashStats`, { token })
         .then(res => {
           if (res.status == 200) {
-            this.setState({ loading: false, totalBanks: res.data.totalBanks });
+            this.setState({
+              loading: false,
+              totalBanks: res.data.totalBanks,
+              totalMerchants: res.data.totalMerchants,
+            });
           } else {
             this.setState({ loading: false, redirect: true });
-            //this.setState({ loading: false, totalBanks: res.data.totalBanks });
+            // this.setState({ loading: false, totalBanks: res.data.totalBanks });
           }
         })
         .catch(err => {
@@ -102,7 +107,7 @@ export default class DashboardPage extends Component {
       alert('Login to continue');
       this.setState({ loading: false, redirect: true });
     }
-    //this.setState({ loading: false });
+    // this.setState({ loading: false });
   }
 
   render() {
@@ -134,7 +139,9 @@ export default class DashboardPage extends Component {
                   textAlign="center"
                   col
                 >
-                  <h4><FormattedMessage {...messages.box1} /></h4>
+                  <h4>
+                    <FormattedMessage {...messages.box1} />
+                  </h4>
                   <div className="cardValue">{this.state.totalBanks}</div>
                 </Card>
               </A>
@@ -144,7 +151,20 @@ export default class DashboardPage extends Component {
                 textAlign="center"
                 col
               >
-                <h4><FormattedMessage {...messages.box2} /></h4>
+                <h4>
+                  <FormattedMessage {...messages.box2} />
+                </h4>
+                <div className="cardValue">{this.state.totalMerchants}</div>
+              </Card>
+              <Card
+                horizontalMargin="7px"
+                cardWidth="151px"
+                textAlign="center"
+                col
+              >
+                <h4>
+                  <FormattedMessage {...messages.box3} />
+                </h4>
                 <div className="cardValue">0</div>
               </Card>
               <Card
@@ -153,16 +173,9 @@ export default class DashboardPage extends Component {
                 textAlign="center"
                 col
               >
-                <h4><FormattedMessage {...messages.box3} /></h4>
-                <div className="cardValue">0</div>
-              </Card>
-              <Card
-                horizontalMargin="7px"
-                cardWidth="151px"
-                textAlign="center"
-                col
-              >
-                <h4><FormattedMessage {...messages.box4} /></h4>
+                <h4>
+                  <FormattedMessage {...messages.box4} />
+                </h4>
                 <div className="cardValue">0</div>
               </Card>
             </div>
@@ -176,7 +189,7 @@ export default class DashboardPage extends Component {
                 col
               >
                 <h4>
-                <FormattedMessage {...messages.box5} />
+                  <FormattedMessage {...messages.box5} />
                 </h4>
                 <div className="cardValue">0</div>
               </Card>
@@ -188,7 +201,7 @@ export default class DashboardPage extends Component {
                 col
               >
                 <h4>
-                <FormattedMessage {...messages.box6} />
+                  <FormattedMessage {...messages.box6} />
                 </h4>
                 <div className="cardValue">0</div>
               </Card>
@@ -200,7 +213,7 @@ export default class DashboardPage extends Component {
                 col
               >
                 <h4>
-                <FormattedMessage {...messages.box7} />
+                  <FormattedMessage {...messages.box7} />
                 </h4>
                 <div className="cardValue">0</div>
               </Card>
@@ -212,7 +225,7 @@ export default class DashboardPage extends Component {
                 col
               >
                 <h4>
-                <FormattedMessage {...messages.box8} />
+                  <FormattedMessage {...messages.box8} />
                 </h4>
                 <div className="cardValue">0</div>
               </Card>

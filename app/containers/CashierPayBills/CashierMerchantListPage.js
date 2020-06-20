@@ -69,7 +69,7 @@ function CashierMerchantListPage(props) {
           />
         </td>
         <td className="tac">{merchant.name}</td>
-        <td className="tac" style={{ color: '#417505' }}>
+        <td className="tac" style={{ cursor: 'pointer', color: '#417505' }}>
           <div
             onClick={() => {
               console.log('entered');
