@@ -16,6 +16,7 @@ const PayBillsInvoiceList = props => {
           <div
             style={{
               display: 'flex',
+              cursor: 'pointer',
               justifyContent: 'center',
               color: 'green',
             }}

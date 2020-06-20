@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Formik, ErrorMessage } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { ErrorMessage, Form, Formik } from 'formik';
 
 import Button from 'components/Button';
 import FormGroup from 'components/FormGroup';
@@ -11,6 +11,7 @@ import {
   inputBlur,
   inputFocus,
 } from '../../components/handleInputFocus';
+import PayBillOTP from './PayBillOTP';
 
 const PayBillsInvoiceDetails = props => {
   const [isLoading, setLoading] = useState(false);
@@ -30,7 +31,11 @@ const PayBillsInvoiceDetails = props => {
           description: invoice.description || '',
           mobile: invoice.mobile || '',
         }}
-        onSubmit={values => {}}
+        onSubmit={values => {
+          values.invoice_id = invoice._id;
+          setInvoice(values);
+          props.showOTPPopup(values);
+        }}
         validationSchema={Yup.object().shape({
           name: Yup.string().required('Name is required.'),
           amount: Yup.number().required('Number is required.'),
@@ -53,6 +58,7 @@ const PayBillsInvoiceDetails = props => {
                 <TextInput
                   type="text"
                   name="name"
+                  readOnly
                   onFocus={e => {
                     inputFocus(e);
                     handleChange(e);
@@ -71,6 +77,7 @@ const PayBillsInvoiceDetails = props => {
                 <TextInput
                   type="number"
                   name="amount"
+                  readOnly
                   onFocus={e => {
                     inputFocus(e);
                     handleChange(e);
@@ -91,6 +98,7 @@ const PayBillsInvoiceDetails = props => {
                 <TextInput
                   placeholder="dd-mm-yyyy"
                   type="text"
+                  readOnly
                   name="due_date"
                   onFocus={e => {
                     handleChange(e);
@@ -108,6 +116,7 @@ const PayBillsInvoiceDetails = props => {
                 <TextInput
                   rows="3"
                   type="text"
+                  readOnly
                   name="description"
                   onFocus={e => {
                     inputFocus(e);
@@ -126,6 +135,7 @@ const PayBillsInvoiceDetails = props => {
                 <label htmlFor="mobile">Mobile</label>
                 <TextInput
                   type="number"
+                  readOnly
                   name="mobile"
                   onFocus={e => {
                     inputFocus(e);

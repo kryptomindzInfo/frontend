@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { API_URL } from '../App/constants';
+import { API_URL } from '../../App/constants';
 
 const token = localStorage.getItem('cashierLogged');
 const fetchCashierMerchantList = async () => {

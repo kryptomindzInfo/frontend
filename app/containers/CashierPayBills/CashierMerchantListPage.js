@@ -10,7 +10,7 @@ import { STATIC_URL } from '../App/constants';
 import Loader from '../../components/Loader';
 import CashierHeader from '../../components/Header/CashierHeader';
 import SidebarCashier from '../../components/Sidebar/SidebarCashier';
-import { fetchCashierMerchantList } from './CashierMerchantAPI';
+import { fetchCashierMerchantList } from './api/CashierMerchantAPI';
 import PayBillPopup from './PayBillPopup';
 import Button from '../../components/Button';
 
@@ -72,7 +72,6 @@ function CashierMerchantListPage(props) {
         <td className="tac" style={{ cursor: 'pointer', color: '#417505' }}>
           <div
             onClick={() => {
-              console.log('entered');
               setEditingMerchant(merchant);
               setPayBillsPopup(true);
             }}
