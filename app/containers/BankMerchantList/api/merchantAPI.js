@@ -175,7 +175,11 @@ const addInfraShare = async (ruleType, payload) => {
         return { status: 0, loading: false };
       }
       toast.success(res.data.message);
-      return { status: res.data.status, loading: false, share: payload };
+      return {
+        status: res.data.rule.infra_approve_status,
+        loading: false,
+        share: payload,
+      };
     }
     toast.error(res.data.message);
     return { status: 0, loading: false };

@@ -136,7 +136,7 @@ const CommissionFeesPage = props => {
                   onClick={() => setCreateRulePage(true)}
                 >
                   <i className="material-icons">add</i>
-                  <span>Create CommissionFee</span>
+                  <span>Create Commission Fee</span>
                 </Button>
               </ActionBar>
               <Card bigPadding>
@@ -145,8 +145,8 @@ const CommissionFeesPage = props => {
                     <i className="material-icons">supervised_user_circle</i>
                   </div>
                   <div className="cardHeaderRight">
-                    <h3>Commision</h3>
-                    <h5>Commision created by the Merchant</h5>
+                    <h3>Commission</h3>
+                    <h5>Commission created by the Merchant</h5>
                   </div>
                 </div>
                 <div className="cardBody">

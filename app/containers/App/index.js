@@ -142,12 +142,12 @@ export default function App(props) {
           />
           <InfraRoute
             exact
-            path="/merchant/fees/:id"
+            path="infra/merchant/fees/:id"
             component={p => <FeeListPage feeType="Revenue" {...p} />}
           />
           <InfraRoute
             exact
-            path="/merchant/commission/:id"
+            path="infra/merchant/commission/:id"
             component={p => <FeeListPage feeType="Commission" {...p} />}
           />
           <InfraRoute

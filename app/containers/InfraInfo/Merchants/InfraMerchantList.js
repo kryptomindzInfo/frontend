@@ -85,7 +85,7 @@ function InfraMerchantList(props) {
                   <span
                     onClick={() =>
                       props.history.push({
-                        pathname: `/bank/merchants/info/${merchant._id}`,
+                        pathname: `/infra/merchants/info/${merchant._id}`,
                         state: merchant,
                       })
                     }

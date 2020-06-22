@@ -17,6 +17,7 @@ import {
   inputFocus,
 } from '../../../components/handleInputFocus';
 import { addInfraShare, editInfraShare } from '../api/merchantAPI';
+import Grid from '@material-ui/core/Grid';
 
 toast.configure({
   position: 'bottom-right',

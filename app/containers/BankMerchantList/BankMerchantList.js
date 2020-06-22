@@ -143,14 +143,18 @@ function BankMerchantList(props) {
                                       Edit
                                   </span>
                                   <span
-                                    onClick={() =>
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        'bankId',
+                                        merchant.bank_id,
+                                      );
                                       props.history.push({
                                         pathname: `/bank/merchants/info/${
                                           merchant._id
                                         }`,
                                         state: merchant,
-                                      })
-                                    }
+                                      });
+                                    }}
                                   >
                                       Info
                                   </span>

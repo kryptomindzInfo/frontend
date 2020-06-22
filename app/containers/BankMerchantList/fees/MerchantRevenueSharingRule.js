@@ -11,13 +11,16 @@ import * as Yup from 'yup';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { Form, Formik, ErrorMessage } from 'formik';
-import { Grid } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
+import Divider from '@material-ui/core/Divider';
+import MaterialButton from '@material-ui/core/Button/Button';
 import {
   correctFocus,
   inputBlur,
   inputFocus,
 } from '../../../components/handleInputFocus';
 import { addInfraShare, editInfraShare } from '../api/merchantAPI';
+import AddBranchModal from '../../BankFees/AddBranchDialog';
 
 toast.configure({
   position: 'bottom-right',
@@ -34,6 +37,34 @@ const MerchantRevenueSharingRule = props => {
   const [infraStatus, setInfraStatus] = useState(props.status);
   const [type, setType] = useState(props.type);
   const [id, setId] = useState(props.id);
+  const [openBranchModal, setOpenBranchModal] = useState(false);
+  const [branchWithSpecificRevenue, setBranchWithSpecificRevenue] = useState(
+    [],
+  );
+  const [bankId, setBankId] = useState(localStorage.getItem('bankId'));
+
+  const getBranchDetailsFromModal = branchDetails => {
+    if (branchWithSpecificRevenue && branchWithSpecificRevenue.length > 0) {
+      if (
+        branchWithSpecificRevenue
+          .map(d => d.branch_code)
+          .includes(branchDetails[0].bcode)
+      ) {
+        return alert('Branch already saved');
+      }
+    }
+
+    setBranchWithSpecificRevenue([
+      ...branchWithSpecificRevenue,
+      {
+        branch_code: branchDetails[0].bcode,
+        branch_name: branchDetails[0].name,
+        pay_bills: 0,
+      },
+    ]);
+
+    setOpenBranchModal(false);
+  };
 
   useEffect(() => {
     if (Object.keys(share).length > 0) {
@@ -165,19 +196,24 @@ const MerchantRevenueSharingRule = props => {
                       </Col>
                       <Col cW="45%" textAlign="center">
                         <FormGroup>
-                          <Button
-                            noMin
-                            type="submit"
-                            filledBtn
-                            style={{
-                              marginLeft: '15px',
-                              fontSize: '16px',
-                              paddingRight: '10px',
-                              paddingLeft: '10px',
-                            }}
-                          >
-                            {isLoading ? <Loader /> : nameBasedOnStatus()}
-                          </Button>
+                          {isLoading ? (
+                            <Loader />
+                          ) : (
+                            <Button
+                              noMin
+                              type="submit"
+                              disabled={infraStatus === 3}
+                              filledBtn
+                              style={{
+                                marginLeft: '15px',
+                                fontSize: '16px',
+                                paddingRight: '10px',
+                                paddingLeft: '10px',
+                              }}
+                            >
+                              {nameBasedOnStatus()}
+                            </Button>
+                          )}
                         </FormGroup>
                       </Col>
                     </Row>
@@ -269,9 +305,55 @@ const MerchantRevenueSharingRule = props => {
                 </h5>
               </Col>
               <Col cW="100%" textAlign="right">
-                <Button float="right"> Add Branch</Button>
+                <Button float="right" onClick={() => setOpenBranchModal(true)}>
+                  {' '}
+                  Add Branch
+                </Button>
               </Col>
             </Row>
+            {branchWithSpecificRevenue &&
+            branchWithSpecificRevenue.length > 0 ? (
+                <Row
+                  vAlign="left"
+                  justifiy="flex-start"
+                  style={{
+                    padding: '2%',
+                    margin: '2%',
+                    borderBottom: '1px solid #d0d6d1',
+                  }}
+                >
+                  {branchWithSpecificRevenue.map((d, i) => (
+                  <>
+                    <Col>{d.branch_code}</Col>
+                    <Col>{d.branch_name}</Col>
+                    <Col style={{ marginTop: '-10px' }}>
+                      <TextField
+                        type="number"
+                        label="pay bills%"
+                        margin="dense"
+                        variant="outlined"
+                        value={d.pay_bills}
+                      />
+                    </Col>
+                    <Col>
+                      <Button
+                        style={{ marginLeft: '60px' }}
+                        onClick={() => {
+                          setBranchWithSpecificRevenue(
+                            branchWithSpecificRevenue.filter(branch => {
+                              return d.branch_code !== branch.branch_code;
+                            }),
+                          );
+                        }}
+                      >
+                        {' '}
+                        delete
+                      </Button>
+                    </Col>
+                  </>
+                  ))}
+                </Row>
+              ) : null}
             <Row
               vAlign="left"
               height="125px"
@@ -307,6 +389,14 @@ const MerchantRevenueSharingRule = props => {
           </div>
         </div>
       </div>
+      <AddBranchModal
+        open={openBranchModal}
+        bank_id={bankId}
+        handleClose={() => setOpenBranchModal(false)}
+        getBranchDetailsFromModal={details =>
+          getBranchDetailsFromModal(details)
+        }
+      />
     </Card>
   );
 };
