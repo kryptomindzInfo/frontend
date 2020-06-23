@@ -157,7 +157,7 @@ const getRules = async (ruleType, merchantId) => {
   }
 };
 
-const addInfraShare = async (ruleType, payload) => {
+const addInfraShare = async (props, ruleType, payload) => {
   let URL = '';
   if (ruleType === 'revenue') {
     URL = `${API_URL}/bank/merchantFee/addInfraShare`;
@@ -175,6 +175,7 @@ const addInfraShare = async (ruleType, payload) => {
         return { status: 0, loading: false };
       }
       toast.success(res.data.message);
+      props.refreshRuleList();
       return {
         status: res.data.rule.infra_approve_status,
         loading: false,
@@ -189,7 +190,7 @@ const addInfraShare = async (ruleType, payload) => {
   }
 };
 
-const editInfraShare = async (ruleType, payload) => {
+const editInfraShare = async (props, ruleType, payload) => {
   let URL = '';
   if (ruleType === 'revenue') {
     URL = `${API_URL}/bank/merchantFee/editInfraShare`;
@@ -203,11 +204,44 @@ const editInfraShare = async (ruleType, payload) => {
     });
     if (res.status === 200) {
       if (res.data.status === 0) {
+        toast.error(res.data.error);
+        return { status: 0, loading: false };
+      }
+      toast.success(res.data.message);
+      props.refreshRuleList();
+      if (ruleType === 'revenue') {
+        return { status: 1, rule: res.data.fee, loading: false };
+      }
+      return { status: 1, rule: res.data.comm, loading: false };
+    }
+    toast.error(res.data.error);
+    return { status: 0, loading: false };
+  } catch (e) {
+    toast.error('Something went wrong');
+    return { status: 0, loading: false };
+  }
+};
+
+const updatePartnerShare = async (props, ruleType, payload) => {
+  let URL = '';
+  if (ruleType === 'Revenue') {
+    URL = `${API_URL}/bank/merchantFee/updatePartnersShare`;
+  } else {
+    URL = `${API_URL}/bank/commission/updatePartnersShare`;
+  }
+  try {
+    const res = await axios.post(URL, {
+      token,
+      ...payload,
+    });
+    if (res.status === 200) {
+      if (res.data.status === 0) {
         toast.error(res.data.message);
         return { status: 0, loading: false };
       }
       toast.success(res.data.message);
-      return { status: res.data.infra_approve_status, loading: false };
+      props.refreshRuleList();
+      return res.data.rule;
     }
     toast.error(res.data.message);
     return { status: 0, loading: false };
@@ -226,4 +260,5 @@ export {
   editMerchantRule,
   addInfraShare,
   editInfraShare,
+  updatePartnerShare,
 };

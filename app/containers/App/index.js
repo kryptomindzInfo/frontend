@@ -80,7 +80,7 @@ import BankMerchantList from '../BankMerchantList/BankMerchantList';
 import MerchantFeesPage from '../BankMerchantList/fees/MerchantFeesPage';
 import CommissionFeesPage from '../BankMerchantList/commission/CommissionFeesPage';
 import MerchantSettingsPage from '../BankMerchantList/settings/MerchantSettingsPage';
-import { FeeListPage } from '../InfraMerchant/FeeListPage';
+import { InfraMerchantFeeListPage } from '../InfraMerchant/InfraMerchantFeeListPage';
 import CashierMerchantListPage from '../CashierPayBills/CashierMerchantListPage';
 import InfraMerchantList from '../InfraInfo/Merchants/InfraMerchantList';
 // import FeeList from '../FeeList';
@@ -142,13 +142,17 @@ export default function App(props) {
           />
           <InfraRoute
             exact
-            path="infra/merchant/fees/:id"
-            component={p => <FeeListPage feeType="Revenue" {...p} />}
+            path="/infra/merchant/fees/:id"
+            component={p => (
+              <InfraMerchantFeeListPage feeType="Revenue" {...p} />
+            )}
           />
           <InfraRoute
             exact
-            path="infra/merchant/commission/:id"
-            component={p => <FeeListPage feeType="Commission" {...p} />}
+            path="/infra/merchant/commission/:id"
+            component={p => (
+              <InfraMerchantFeeListPage feeType="Commission" {...p} />
+            )}
           />
           <InfraRoute
             exact

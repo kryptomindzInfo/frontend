@@ -232,7 +232,7 @@ class OperationalWallet extends Component {
     let dis = this;
       setInterval(function(){
         dis.getBalance();
-      }, 2000);
+      }, 10000);
   }
 
   render() {

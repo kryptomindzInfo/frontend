@@ -14,6 +14,7 @@ import { CURRENCY } from '../../App/constants';
 import MerchantFee from './MerchantFee';
 import { getRules } from '../api/merchantAPI';
 import MerchantRevenueSharingRule from './MerchantRevenueSharingRule';
+import CommissionRevenueSharingRule from '../commission/CommissionRevenueSharingRule';
 
 const MerchantFeesPage = props => {
   const [isLoading, setLoading] = useState(false);
@@ -49,6 +50,10 @@ const MerchantFeesPage = props => {
         r.ranges = r.edited.ranges;
         r.merchant_approve_status = r.edited.merchant_approve_status;
       }
+      if(r.infra_share_edit_status === 1) {
+        r.infra_approve_status = r.edited.infra_approve_status;
+        r.infra_share = r.edited.infra_share;
+      }
       return (
         <tr key={r._id}>
           <td className="tac">
@@ -77,15 +82,17 @@ const MerchantFeesPage = props => {
               justifyContent: 'space-evenly',
             }}
           >
-            <Button
-              onClick={() => {
-                setEditingRule(r);
-                setEditRulePage(true);
-              }}
-              className="addBankButton"
-            >
-              <span>Edit</span>
-            </Button>
+            {r.merchant_approve_status === 1 ? (
+              <Button
+                onClick={() => {
+                  setEditingRule(r);
+                  setEditRulePage(true);
+                }}
+                className="addBankButton"
+              >
+                <span>Edit</span>
+              </Button>
+            ) : null}
             {r.merchant_approve_status === 0 ? (
               <Button style={{ cursor: 'default' }}>
                 Pending Merchant Approval
@@ -199,7 +206,12 @@ const MerchantFeesPage = props => {
               share={editingRule.infra_share}
               status={editingRule.infra_approve_status}
               type={editingRule.type}
+              partnerShare={editingRule.partner_share_percentage}
+              specificPartnerShare={editingRule.specific_partners_share}
               id={editingRule._id}
+              refreshRuleList={() => {
+                refreshFeeList();
+              }}
               onBack={() => {
                 setRevenueSharingRulePage(false);
               }}

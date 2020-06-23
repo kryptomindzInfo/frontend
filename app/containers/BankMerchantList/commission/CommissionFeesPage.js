@@ -49,6 +49,10 @@ const CommissionFeesPage = props => {
         r.ranges = r.edited.ranges;
         r.merchant_approve_status = r.edited.merchant_approve_status;
       }
+      if(r.infra_share_edit_status === 1) {
+        r.infra_approve_status = r.edited.infra_approve_status;
+        r.infra_share = r.edited.infra_share;
+      }
       return (
         <tr key={r._id}>
           <td className="tac">
@@ -77,15 +81,17 @@ const CommissionFeesPage = props => {
               justifyContent: 'space-evenly',
             }}
           >
-            <Button
-              onClick={() => {
-                setEditingRule(r);
-                setEditRulePage(true);
-              }}
-              className="addBankButton"
-            >
-              <span>Edit</span>
-            </Button>
+            {r.merchant_approve_status === 1 ? (
+              <Button
+                onClick={() => {
+                  setEditingRule(r);
+                  setEditRulePage(true);
+                }}
+                className="addBankButton"
+              >
+                <span>Edit</span>
+              </Button>
+            ) : null}
             {r.merchant_approve_status === 0 ? (
               <Button style={{ cursor: 'default' }}>
                 Pending Merchant Approval
@@ -198,8 +204,13 @@ const CommissionFeesPage = props => {
               merchantId={id}
               share={editingRule.infra_share}
               status={editingRule.infra_approve_status}
+              partnerShare={editingRule.partner_share_percentage}
+              specificPartnerShare={editingRule.specific_partners_share}
               type={editingRule.type}
               id={editingRule._id}
+              refreshRuleList={() => {
+                refreshFeeList();
+              }}
               onBack={() => {
                 setRevenueSharingRulePage(false);
               }}

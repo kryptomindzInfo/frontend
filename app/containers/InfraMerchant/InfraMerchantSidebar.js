@@ -28,13 +28,13 @@ class InfraMerchantSidebar extends Component {
     return (
       <Sidebar marginRight>
         <H3>SETTINGS</H3>
-        <A href={`/merchant/fees/${this.props.merchantId}`}>
+        <A href={`/infra/merchant/fees/${this.props.merchantId}`}>
           <Card selected={revenue} rounded className="sideNav">
             <i className="material-icons">mobile_screen_share</i>
             <h3>Revenue Sharing</h3>
           </Card>
         </A>
-        <A href={`/merchant/commission/${this.props.merchantId}`}>
+        <A href={`/infra/merchant/commission/${this.props.merchantId}`}>
           <Card selected={commission} rounded className="sideNav">
             <i className="material-icons">mobile_screen_share</i>
             <h3>Commission Sharing</h3>

@@ -15,6 +15,7 @@ import Welcome from '../../../components/Header/Welcome';
 import A from '../../../components/A';
 import SidebarTwo from '../../../components/Sidebar/SidebarTwo';
 import { fetchInfraMerchantList } from './Api/InfraMerchantApi';
+import history from '../../../utils/history';
 
 function InfraMerchantList(props) {
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
@@ -83,16 +84,36 @@ function InfraMerchantList(props) {
                     Edit
                   </span>
                   <span
-                    onClick={() =>
-                      props.history.push({
-                        pathname: `/infra/merchants/info/${merchant._id}`,
+                    onClick={() => {
+                      localStorage.setItem('selectedBankId', id);
+                      localStorage.setItem(
+                        'selectedMerchant',
+                        JSON.stringify(merchant),
+                      );
+                      history.push({
+                        pathname: `/infra/merchant/fees/${merchant._id}`,
                         state: merchant,
-                      })
-                    }
+                      });
+                    }}
                   >
-                    Info
+                    Revenue Sharing Rules
                   </span>
-                  {merchant.status === -1 ? (
+                  <span
+                    onClick={() => {
+                      localStorage.setItem('selectedBankId', id);
+                      localStorage.setItem(
+                        'selectedMerchant',
+                        JSON.stringify(merchant),
+                      );
+                      history.push({
+                        pathname: `/infra/merchant/commission/${merchant._id}`,
+                        state: merchant,
+                      });
+                    }}
+                  >
+                    Commission Sharing Rules
+                  </span>
+                  {merchant.status === 2 ? (
                     <span>Unblock</span>
                   ) : (
                     <span>Block</span>
