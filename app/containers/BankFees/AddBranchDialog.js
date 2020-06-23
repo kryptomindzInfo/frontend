@@ -30,8 +30,12 @@ const DialogTitle = withStyles(theme => ({
     <MuiDialogTitle disableTypography className={classes.root}>
       <Typography variant="h6">{children}</Typography>
       {onClose ? (
-        <IconButton aria-label="Close" className={classes.closeButton} onClick={onClose}>
-         <CloseIcon />
+        <IconButton
+          aria-label="Close"
+          className={classes.closeButton}
+          onClick={onClose}
+        >
+          <CloseIcon />
         </IconButton>
       ) : null}
     </MuiDialogTitle>
@@ -56,7 +60,7 @@ const DialogActions = withStyles(theme => ({
 class AddBranchDialog extends React.Component {
   state = {
     open: false,
-    branchId: ""
+    branchId: '',
   };
 
   handleClickOpen = () => {
@@ -70,46 +74,47 @@ class AddBranchDialog extends React.Component {
   };
 
   onFetchClick = () => {
-    const {branchId} =this.state;
-    axios.post(`${API_URL}/get-branch-details-by-id/${branchId}`, {bank_id : this.props.bank_id}).then(d => {
+    const { branchId } = this.state;
+    axios
+      .post(`${API_URL}/get-branch-details-by-id/${branchId}`, {
+        bank_id: this.props.bank_id,
+      })
+      .then(d => {
+        const { data } = d;
+        if (data.code == 0) return alert('Branch not found');
 
-        const {data} = d;
-        if(data.code == 0) return alert("Branch not found");
-        
-        this.props.getBranchDetailsFromModal(data.branch)
-
-
-
-
-
-    }).catch(err => {
+        this.props.getBranchDetailsFromModal(data.branch);
+      })
+      .catch(err => {
         console.log(err);
-    })
-  }
-
+      });
+  };
 
   render() {
     return (
       <div>
-
         <Dialog
           onClose={this.props.handleClose}
           aria-labelledby="customized-dialog-title"
           open={this.props.open}
         >
-          <DialogTitle id="customized-dialog-title" onClose={this.props.handleClose}>
+          <DialogTitle
+            id="customized-dialog-title"
+            onClose={this.props.handleClose}
+          >
             Please enter brach ID
           </DialogTitle>
           <DialogContent>
-            <TextField 
-            variant="outlined" 
-            label="Branch id" 
-            style={{width : 300}} 
-            value={this.state.branchId} 
-            onChange={(e) => {
+            <TextField
+              variant="outlined"
+              label="Branch id"
+              style={{ width: 300 }}
+              value={this.state.branchId}
+              onChange={e => {
                 const val = e.target.value;
-                this.setState({branchId: val})
-            }} />
+                this.setState({ branchId: val });
+              }}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={this.onFetchClick} color="primary">

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import Card from 'components/Card';
 import Table from '../../components/Table';
+import { STATIC_URL } from '../App/constants';
 
 const PayBillsInvoiceList = props => {
   const { merchant } = props;
@@ -31,24 +33,35 @@ const PayBillsInvoiceList = props => {
 
   return (
     <div>
-      <h4 style={{ color: 'green' }}>{merchant.name}</h4>
-      <p>
-        Eius excepturi explicabo deleniti maxime repellat et qui qui et.
-        Distinctio non ipsum dolorem ratione sit.
-      </p>
-      <Table marginTop="34px" smallTd>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>Due Date</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {invoiceList && invoiceList.length > 0 ? getInvoiceList() : null}
-        </tbody>
-      </Table>
+      <Card>
+        <div className="cardHeader">
+          <div className="cardHeaderLeft">
+            <img
+              src={`${STATIC_URL}/${merchant.logo}`}
+              alt=""
+              style={{ height: '100px', width: '100px', paddingRight: '10px' }}
+            />
+          </div>
+          <div className="cardHeaderRight">
+            <h4 style={{ color: 'green' }}>{merchant.name}</h4>
+            <p>{merchant.description}</p>
+          </div>
+        </div>
+        <div />
+        <Table marginTop="34px" smallTd>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Amount</th>
+              <th>Due Date</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {invoiceList && invoiceList.length > 0 ? getInvoiceList() : null}
+          </tbody>
+        </Table>
+      </Card>
     </div>
   );
 };

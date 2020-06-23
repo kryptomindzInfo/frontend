@@ -109,7 +109,7 @@ function BankMerchantList(props) {
                         <tr key={merchant._id}>
                           <td className="tac">
                             <img
-                              style={{ height: '22%' }}
+                              style={{ height: '100px', width: '100px' }}
                               src={`${STATIC_URL}/${merchant.logo}`}
                             />
                           </td>
