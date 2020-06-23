@@ -83,7 +83,9 @@ const PayBillsInvoiceDetails = props => {
                 </Row>
               </Container>
               <FormGroup>
-                <Button filledBtn>{isLoading ? <Loader /> : `Collect ${fee} and Pay Bill`}</Button>
+                <Button filledBtn>
+                  {isLoading ? <Loader /> : `Collect ${fee} and Pay Bill`}
+                </Button>
               </FormGroup>
             </Form>
           );
