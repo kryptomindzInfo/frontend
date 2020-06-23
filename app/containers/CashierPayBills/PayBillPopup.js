@@ -35,7 +35,7 @@ const PayBillPopup = props => {
     <div>
       <Popup accentedH1 close={props.close}>
         {paybillOTP ? (
-          <PayBillOTP close={props.close} invoice={editingInvoice}/>
+          <PayBillOTP close={props.close} invoice={editingInvoice} />
         ) : (
           <div>
             <h1>Pay Bills</h1>
@@ -130,7 +130,7 @@ const PayBillPopup = props => {
             )}
             {displayInvoiceDetailForm ? (
               <PayBillsInvoiceDetails
-                showOTPPopup={(values) => {
+                showOTPPopup={values => {
                   setEditingInvoice(values);
                   setPaybillOTP(true);
                 }}

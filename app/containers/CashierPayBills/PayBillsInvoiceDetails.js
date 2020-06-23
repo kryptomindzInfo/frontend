@@ -5,17 +5,20 @@ import Button from 'components/Button';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import Loader from 'components/Loader';
+import Row from 'components/Row';
+import Col from 'components/Col';
+import Container from 'components/Container';
 import * as Yup from 'yup';
 import {
   correctFocus,
   inputBlur,
   inputFocus,
 } from '../../components/handleInputFocus';
-import PayBillOTP from './PayBillOTP';
 
 const PayBillsInvoiceDetails = props => {
   const [isLoading, setLoading] = useState(false);
   const [invoice, setInvoice] = useState(props.invoice);
+  const [fee, setFee] = useState(0);
 
   useEffect(() => {
     correctFocus('update');
@@ -50,108 +53,39 @@ const PayBillsInvoiceDetails = props => {
         })}
       >
         {formikProps => {
-          const { values, handleChange, handleBlur } = formikProps;
+          const { values } = formikProps;
           return (
             <Form>
+              <Container>
+                <Row>
+                  <Col className="popInfoLeft">Name</Col>
+                  <Col className="popInfoRight">{values.name}</Col>
+                </Row>
+                <Row>
+                  <Col className="popInfoLeft">Amount</Col>
+                  <Col className="popInfoRight">{values.amount}</Col>
+                </Row>
+                <Row>
+                  <Col className="popInfoLeft">Due Date</Col>
+                  <Col className="popInfoRight">{values.due_date}</Col>
+                </Row>
+                <Row>
+                  <Col className="popInfoLeft">Description</Col>
+                  <Col className="popInfoRight">{values.description}</Col>
+                </Row>
+                <Row>
+                  <Col className="popInfoLeft">Mobile</Col>
+                  <Col className="popInfoRight">{values.mobile}</Col>
+                </Row>
+                <Row>
+                  <Col className="popInfoLeft">Fee</Col>
+                  <Col className="popInfoRight">{fee}</Col>
+                </Row>
+              </Container>
               <FormGroup>
-                <label htmlFor="name">Name</label>
-                <TextInput
-                  type="text"
-                  name="name"
-                  readOnly
-                  onFocus={e => {
-                    inputFocus(e);
-                    handleChange(e);
-                  }}
-                  onBlur={e => {
-                    inputBlur(e);
-                    handleBlur(e);
-                  }}
-                  onChange={handleChange}
-                  value={values.name}
-                />
-                <ErrorMessage name="name" />
-              </FormGroup>
-              <FormGroup>
-                <label htmlFor="amount">Amount</label>
-                <TextInput
-                  type="number"
-                  name="amount"
-                  readOnly
-                  onFocus={e => {
-                    inputFocus(e);
-                    handleChange(e);
-                  }}
-                  onBlur={e => {
-                    inputBlur(e);
-                    handleBlur(e);
-                  }}
-                  onChange={handleChange}
-                  value={values.amount}
-                />
-                <ErrorMessage name="amount" />
-              </FormGroup>
-              <FormGroup>
-                <label htmlFor="amoudue_datent" className="focused">
-                  Due Date
-                </label>
-                <TextInput
-                  placeholder="dd-mm-yyyy"
-                  type="text"
-                  readOnly
-                  name="due_date"
-                  onFocus={e => {
-                    handleChange(e);
-                  }}
-                  onBlur={e => {
-                    handleBlur(e);
-                  }}
-                  onChange={handleChange}
-                  value={values.due_date}
-                />
-                <ErrorMessage name="due_date" />
-              </FormGroup>
-              <FormGroup>
-                <label htmlFor="description">Description</label>
-                <TextInput
-                  rows="3"
-                  type="text"
-                  readOnly
-                  name="description"
-                  onFocus={e => {
-                    inputFocus(e);
-                    handleChange(e);
-                  }}
-                  onBlur={e => {
-                    inputBlur(e);
-                    handleBlur(e);
-                  }}
-                  onChange={handleChange}
-                  value={values.description}
-                />
-                <ErrorMessage name="description" />
-              </FormGroup>
-              <FormGroup>
-                <label htmlFor="mobile">Mobile</label>
-                <TextInput
-                  type="number"
-                  readOnly
-                  name="mobile"
-                  onFocus={e => {
-                    inputFocus(e);
-                    handleChange(e);
-                  }}
-                  onBlur={e => {
-                    inputBlur(e);
-                    handleBlur(e);
-                  }}
-                  onChange={handleChange}
-                  value={values.mobile}
-                />
-                <ErrorMessage name="mobile" />
-              </FormGroup>
-              <FormGroup>
-                <Button filledBtn>{isLoading ? <Loader /> : 'Pay Bill'}</Button>
+                <Button filledBtn>
+                  {isLoading ? <Loader /> : `Collect ${fee} and Pay Bill`}
+                </Button>
               </FormGroup>
             </Form>
           );
