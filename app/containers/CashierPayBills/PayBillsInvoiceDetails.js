@@ -14,6 +14,7 @@ import {
   inputBlur,
   inputFocus,
 } from '../../components/handleInputFocus';
+import { CURRENCY } from '../App/constants';
 
 const PayBillsInvoiceDetails = props => {
   const [isLoading, setLoading] = useState(false);
@@ -84,7 +85,11 @@ const PayBillsInvoiceDetails = props => {
               </Container>
               <FormGroup>
                 <Button filledBtn>
-                  {isLoading ? <Loader /> : `Collect ${fee} and Pay Bill`}
+                  {isLoading ? (
+                    <Loader />
+                  ) : (
+                    `Collect ${CURRENCY} ${fee} and Pay Bill`
+                  )}
                 </Button>
               </FormGroup>
             </Form>
