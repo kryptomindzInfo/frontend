@@ -140,6 +140,7 @@ const CommissionRevenueSharingRule = props => {
                       setShare(r.rule.edited.infra_share);
                       values.fixed = r.rule.edited.infra_share.fixed;
                       values.percentage = r.rule.edited.infra_share.percentage;
+                      props.refreshShare(r.rule.edited.infra_share);
                     }
                   }
                   setLoading(false);
@@ -148,6 +149,8 @@ const CommissionRevenueSharingRule = props => {
                 addInfraShare(props, 'commission', values).then(r => {
                   setInfraStatus(r.status);
                   setShare(r.share);
+                  props.refreshInfraStatus(r.status);
+                  props.refreshShare(r.share);
                   setLoading(false);
                 });
               }
@@ -414,6 +417,11 @@ const CommissionRevenueSharingRule = props => {
                         setBranchWithSpecificRevenue(
                           rule.specific_partners_share,
                         );
+                        props.refreshBranchShare({
+                          partner_share_percentage:
+                            rule.partner_share_percentage,
+                          specific_partners_share: rule.specific_partners_share,
+                        });
                       })
                     }
                   >

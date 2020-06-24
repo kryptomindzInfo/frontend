@@ -1,29 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { ErrorMessage, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 
 import Button from 'components/Button';
 import FormGroup from 'components/FormGroup';
-import TextInput from 'components/TextInput';
 import Loader from 'components/Loader';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import Container from 'components/Container';
 import * as Yup from 'yup';
-import {
-  correctFocus,
-  inputBlur,
-  inputFocus,
-} from '../../components/handleInputFocus';
+import { correctFocus } from '../../components/handleInputFocus';
+import { checkCashierFee } from './api/CashierMerchantAPI';
+import { CURRENCY } from '../App/constants';
 
 const PayBillsInvoiceDetails = props => {
   const [isLoading, setLoading] = useState(false);
+  const [isDataLoading, setDataLoading] = useState(false);
   const [invoice, setInvoice] = useState(props.invoice);
   const [fee, setFee] = useState(0);
 
-  useEffect(() => {
-    correctFocus('update');
-  });
+  const checkFee = () => {
+    checkCashierFee({
+      merchant_id: props.merchantId,
+      amount: invoice.amount,
+    }).then(data => {
+      setFee(data.fee);
+    });
+  };
 
+  useEffect(() => {
+    setDataLoading(true);
+    checkFee();
+    correctFocus('update');
+    setDataLoading(false);
+  });
   return (
     <div>
       <Formik
@@ -84,7 +93,12 @@ const PayBillsInvoiceDetails = props => {
               </Container>
               <FormGroup>
                 <Button filledBtn>
-                  {isLoading ? <Loader /> : `Collect ${fee} and Pay Bill`}
+                  {isLoading ? (
+                    <Loader />
+                  ) : (
+                    `Collect ${CURRENCY} ${Number(fee) +
+                      Number(values.amount)} and Pay Bill`
+                  )}
                 </Button>
               </FormGroup>
             </Form>

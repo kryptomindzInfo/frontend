@@ -23,4 +23,25 @@ const fetchCashierMerchantList = async () => {
   }
 };
 
-export { fetchCashierMerchantList };
+const checkCashierFee = async payload => {
+  try {
+    const res = await axios.post(`${API_URL}/cashier/checkMerchantFee`, {
+      token,
+      ...payload,
+    });
+    if (res.status === 200) {
+      if (res.data.status === 0) {
+        toast.error(res.data.message);
+        return { fee: {}, loading: false };
+      }
+      return { fee: res.data.fee, loading: false };
+    }
+    toast.error(res.data.message);
+    return { fee: {}, loading: false };
+  } catch (err) {
+    toast.error('Something went wrong');
+    return { fee: {}, loading: false };
+  }
+};
+
+export { fetchCashierMerchantList, checkCashierFee };

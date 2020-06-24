@@ -49,7 +49,7 @@ const CommissionFeesPage = props => {
         r.ranges = r.edited.ranges;
         r.merchant_approve_status = r.edited.merchant_approve_status;
       }
-      if(r.infra_share_edit_status === 1) {
+      if (r.infra_share_edit_status === 1) {
         r.infra_approve_status = r.edited.infra_approve_status;
         r.infra_share = r.edited.infra_share;
       }
@@ -206,11 +206,25 @@ const CommissionFeesPage = props => {
               status={editingRule.infra_approve_status}
               partnerShare={editingRule.partner_share_percentage}
               specificPartnerShare={editingRule.specific_partners_share}
+              refreshBranchShare={branchShare =>
+                setEditingRule({
+                  ...editingRule,
+                  partner_share_percentage:
+                    branchShare.partner_share_percentage,
+                  specific_partners_share: branchShare.specific_partners_share,
+                })
+              }
               type={editingRule.type}
+              refreshShare={share =>
+                setEditingRule({ ...editingRule, infra_share: share })
+              }
               id={editingRule._id}
               refreshRuleList={() => {
                 refreshFeeList();
               }}
+              refreshInfraStatus={status =>
+                setEditingRule({ ...editingRule, infra_approve_status: status })
+              }
               onBack={() => {
                 setRevenueSharingRulePage(false);
               }}

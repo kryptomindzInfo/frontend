@@ -130,6 +130,7 @@ const PayBillPopup = props => {
             )}
             {displayInvoiceDetailForm ? (
               <PayBillsInvoiceDetails
+                merchantId={merchant._id}
                 showOTPPopup={values => {
                   setEditingInvoice(values);
                   setPaybillOTP(true);

@@ -54,8 +54,9 @@ const payInvoice = async values => {
     if (res.status === 200) {
       if (res.data.status === 0) {
         toast.error(res.data.message);
+      } else {
+        toast.success(res.data.message);
       }
-      toast.success(res.data.message);
     }
     toast.error(res.data.message);
   } catch (err) {

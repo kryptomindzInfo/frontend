@@ -175,9 +175,9 @@ const MerchantRevenueSharingRule = props => {
                     if (r.rule.infra_share_edit_status === 1) {
                       setInfraStatus(r.rule.edited.infra_approve_status);
                       setShare(r.rule.edited.infra_share);
-                      values.fixed = share.fixed;
-                      values.percentage = share.percentage;
-                      props.refreshShare(share);
+                      values.fixed = r.rule.edited.infra_share.fixed;
+                      values.percentage = r.rule.edited.infra_share.percentage;
+                      props.refreshShare(r.rule.edited.infra_share);
                     }
                   }
                   setLoading(false);
@@ -188,6 +188,8 @@ const MerchantRevenueSharingRule = props => {
                 addInfraShare(props, 'revenue', values).then(r => {
                   setInfraStatus(r.status);
                   setShare(r.share);
+                  props.refreshInfraStatus(r.status);
+                  props.refreshShare(r.share);
                   setLoading(false);
                 });
               }
@@ -419,6 +421,11 @@ const MerchantRevenueSharingRule = props => {
                         setBranchWithSpecificRevenue(
                           rule.specific_partners_share,
                         );
+                        props.refreshBranchShare({
+                          partner_share_percentage:
+                          rule.partner_share_percentage,
+                          specific_partners_share: rule.specific_partners_share,
+                        });
                       })
                     }
                     filledBtn
