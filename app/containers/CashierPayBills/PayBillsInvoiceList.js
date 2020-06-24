@@ -39,7 +39,7 @@ const PayBillsInvoiceList = props => {
             <img
               src={`${STATIC_URL}/${merchant.logo}`}
               alt=""
-              style={{ height: '100px', width: '100px', paddingRight: '10px' }}
+              style={{ height: '60px', width: '60px', paddingRight: '10px' }}
             />
           </div>
           <div className="cardHeaderRight">
