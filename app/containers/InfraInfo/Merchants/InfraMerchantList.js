@@ -51,80 +51,77 @@ function InfraMerchantList(props) {
     getMerchantList();
   }, []); // Or [] if effect doesn't need props or state
 
-  const merchants = () =>
-    merchantList.map(function(merchant) {
-      return (
-        <tr key={merchant._id}>
-          <td className="tac">
-            <img
-              style={{ height: '100px', width: '100px' }}
-              src={`${STATIC_URL}/${merchant.logo}`}
-            />
-          </td>
-          <td className="tac">{merchant.name}</td>
-          <td className="tac">{merchant.bills_paid}</td>
-          <td className="tac">{merchant.bills_raised}</td>
-          <td className="tac">{merchant.amount_collected}</td>
-          <td className="tac">{merchant.amount_due}</td>
-
-          <td className="tac bold">
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-              }}
-            >
-              <td className="tac">{merchant.fee_generated}</td>
-              <span className="absoluteMiddleRight primary popMenuTrigger">
-                <i className="material-icons ">more_vert</i>
-                <div className="popMenu">
-                  <span
-                    onClick={() => handleMerchantPopupClick('update', merchant)}
-                  >
-                    Edit
-                  </span>
-                  <span
-                    onClick={() => {
-                      localStorage.setItem('selectedBankId', id);
-                      localStorage.setItem(
-                        'selectedMerchant',
-                        JSON.stringify(merchant),
-                      );
-                      history.push({
-                        pathname: `/infra/merchant/fees/${merchant._id}`,
-                        state: merchant,
-                      });
-                    }}
-                  >
-                    Revenue Sharing Rules
-                  </span>
-                  <span
-                    onClick={() => {
-                      localStorage.setItem('selectedBankId', id);
-                      localStorage.setItem(
-                        'selectedMerchant',
-                        JSON.stringify(merchant),
-                      );
-                      history.push({
-                        pathname: `/infra/merchant/commission/${merchant._id}`,
-                        state: merchant,
-                      });
-                    }}
-                  >
-                    Commission Sharing Rules
-                  </span>
-                  {merchant.status === 2 ? (
-                    <span>Unblock</span>
-                  ) : (
-                    <span>Block</span>
-                  )}
-                </div>
+  const merchants = merchantList.map(merchant => (
+    <tr key={merchant._id}>
+      <td className="tac">
+        <img
+          style={{ height: '100px', width: '100px' }}
+          src={`${STATIC_URL}/${merchant.logo}`}
+        />
+      </td>
+      <td className="tac">{merchant.name}</td>
+      <td className="tac">{merchant.bills_paid}</td>
+      <td className="tac">{merchant.bills_raised}</td>
+      <td className="tac">{merchant.amount_collected}</td>
+      <td className="tac">{merchant.amount_due}</td>
+      <td className="tac">{merchant.fee_generated}</td>
+      <td className="tac">{merchant.creater === 0 ? 'Bank' : 'Infra'}</td>
+      <td className="tac bold">
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <span className="absoluteMiddleRight primary popMenuTrigger">
+            <i className="material-icons ">more_vert</i>
+            <div className="popMenu">
+              <span
+                onClick={() => handleMerchantPopupClick('update', merchant)}
+              >
+                Edit
               </span>
+              <span
+                onClick={() => {
+                  localStorage.setItem('selectedBankId', id);
+                  localStorage.setItem(
+                    'selectedMerchant',
+                    JSON.stringify(merchant),
+                  );
+                  history.push({
+                    pathname: `/infra/merchant/fees/${merchant._id}`,
+                    state: merchant,
+                  });
+                }}
+              >
+                Revenue Sharing Rules
+              </span>
+              <span
+                onClick={() => {
+                  localStorage.setItem('selectedBankId', id);
+                  localStorage.setItem(
+                    'selectedMerchant',
+                    JSON.stringify(merchant),
+                  );
+                  history.push({
+                    pathname: `/infra/merchant/commission/${merchant._id}`,
+                    state: merchant,
+                  });
+                }}
+              >
+                Commission Sharing Rules
+              </span>
+              {merchant.status === 2 ? (
+                <span>Unblock</span>
+              ) : (
+                <span>Block</span>
+              )}
             </div>
-          </td>
-        </tr>
-      );
-    });
+          </span>
+        </div>
+      </td>
+    </tr>
+  ));
   if (isLoading) {
     return <Loader fullPage />;
   }
@@ -215,6 +212,7 @@ function InfraMerchantList(props) {
                     <th>Amount Collected</th>
                     <th>Amount Due</th>
                     <th>Fee Generated</th>
+                    <th>Created By</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Formik, ErrorMessage } from 'formik';
 import Button from 'components/Button';
+import Row from 'components/Row';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
 import Loader from 'components/Loader';
@@ -24,11 +25,18 @@ const PayBillPopup = props => {
   const [displayInvoiceDetailForm, setDisplayInvoiceDetailForm] = useState(
     false,
   );
+  const [isBackButtonEnabled, setBackButtonEnabled] = useState(false);
 
   const handleSetEditingInvoice = invoice => {
     setEditingInvoice(invoice);
     setDisplayInvoiceList(false);
+    setBackButtonEnabled(true);
     setDisplayInvoiceDetailForm(true);
+  };
+  const onBack = () => {
+    setDisplayInvoiceList(true);
+    setBackButtonEnabled(false);
+    setDisplayInvoiceDetailForm(false);
   };
 
   return (
@@ -39,6 +47,14 @@ const PayBillPopup = props => {
         ) : (
           <div>
             <h1>Pay Bills</h1>
+            {isBackButtonEnabled ? (
+              <Row>
+                <i className="material-icons" onClick={() => onBack()}>
+                  arrow_back
+                </i>
+                <h3 style={{ color: 'green' }}>Back</h3>
+              </Row>
+            ) : null}
             {!displayInvoiceList && !displayInvoiceDetailForm ? (
               <Formik
                 initialValues={{

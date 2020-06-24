@@ -50,6 +50,58 @@ function BankMerchantList(props) {
   if (isLoading) {
     return <Loader fullPage />;
   }
+  const merchants = merchantList.map(merchant => (
+    <tr key={merchant._id}>
+      <td className="tac">
+        <img
+          style={{ height: '100px', width: '100px' }}
+          src={`${STATIC_URL}/${merchant.logo}`}
+        />
+      </td>
+      <td className="tac">{merchant.name}</td>
+      <td className="tac">{merchant.bills_paid}</td>
+      <td className="tac">{merchant.bills_raised}</td>
+      <td className="tac">{merchant.amount_collected}</td>
+      <td className="tac">{merchant.amount_due}</td>
+      <td className="tac">{merchant.fee_generated}</td>
+      <td className="tac">{merchant.creater === 0 ? 'Bank' : 'Infra'}</td>
+      <td className="tac bold">
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <span className="absoluteMiddleRight primary popMenuTrigger">
+            <i className="material-icons ">more_vert</i>
+            <div className="popMenu">
+              <span
+                onClick={() => handleMerchantPopupClick('update', merchant)}
+              >
+                Edit
+              </span>
+              <span
+                onClick={() => {
+                  localStorage.setItem('bankId', merchant.bank_id);
+                  props.history.push({
+                    pathname: `/bank/merchants/info/${merchant._id}`,
+                    state: merchant,
+                  });
+                }}
+              >
+                Info
+              </span>
+              {merchant.status === -1 ? (
+                <span>Unblock</span>
+              ) : (
+                <span>Block</span>
+              )}
+            </div>
+          </span>
+        </div>
+      </td>
+    </tr>
+  ));
   return (
     <Wrapper from="bank">
       <Helmet>
@@ -100,77 +152,11 @@ function BankMerchantList(props) {
                     <th>Amount Collected</th>
                     <th>Amount Due</th>
                     <th>Fee Generated</th>
+                    <th>Created By</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {merchantList && merchantList.length > 0
-                    ? merchantList.map(function(merchant) {
-                        return (
-                        <tr key={merchant._id}>
-                          <td className="tac">
-                            <img
-                              style={{ height: '100px', width: '100px' }}
-                              src={`${STATIC_URL}/${merchant.logo}`}
-                            />
-                          </td>
-                            <td className="tac">{merchant.name}</td>
-                          <td className="tac">{merchant.bills_paid}</td>
-                            <td className="tac">{merchant.bills_raised}</td>
-                          <td className="tac">{merchant.amount_collected}</td>
-                          <td className="tac">{merchant.amount_due}</td>
-
-                          <td className="tac bold">
-                            <div
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <td className="tac">
-                                {merchant.fee_generated}
-                              </td>
-                              <span className="absoluteMiddleRight primary popMenuTrigger">
-                                <i className="material-icons ">more_vert</i>
-                                  <div className="popMenu">
-                                  <span
-                                    onClick={() =>
-                                      handleMerchantPopupClick(
-                                        'update',
-                                        merchant,
-                                      )
-                                    }
-                                  >
-                                      Edit
-                                  </span>
-                                  <span
-                                    onClick={() => {
-                                      localStorage.setItem(
-                                        'bankId',
-                                        merchant.bank_id,
-                                      );
-                                      props.history.push({
-                                        pathname: `/bank/merchants/info/${
-                                          merchant._id
-                                        }`,
-                                        state: merchant,
-                                      });
-                                    }}
-                                  >
-                                      Info
-                                  </span>
-                                  {merchant.status === -1 ? (
-                                    <span>Unblock</span>
-                                    ) : (
-                                    <span>Block</span>
-                                    )}
-                                </div>
-                              </span>
-                            </div>
-                            </td>
-                        </tr>
-                        );
-                      })
-                    : null}
+                  {merchantList && merchantList.length > 0 ? merchants() : null}
                 </tbody>
               </Table>
             </div>
