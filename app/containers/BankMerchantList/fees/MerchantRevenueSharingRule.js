@@ -12,8 +12,6 @@ import * as Yup from 'yup';
 import 'react-toastify/dist/ReactToastify.css';
 import { Form, Formik, ErrorMessage } from 'formik';
 import { Grid, TextField } from '@material-ui/core';
-import Divider from '@material-ui/core/Divider';
-import MaterialButton from '@material-ui/core/Button/Button';
 import {
   correctFocus,
   inputBlur,
@@ -92,6 +90,44 @@ const MerchantRevenueSharingRule = props => {
     }
   };
 
+  const branches = () => {
+    branchWithSpecificRevenue.map((d, i) => (
+      <Row>
+        <Col>{d.code}</Col>
+        <Col>{d.name}</Col>
+        <Col style={{ marginTop: '-10px' }}>
+          <TextField
+            type="number"
+            label="pay bills%"
+            margin="dense"
+            variant="outlined"
+            onChange={e => {
+              const val = e.target.value;
+              const tempArr = [...branchWithSpecificRevenue];
+              tempArr[i].percentage = val;
+              setBranchWithSpecificRevenue(tempArr);
+            }}
+            value={d.percentage}
+          />
+        </Col>
+        <Col>
+          <Button
+            style={{ marginLeft: '60px' }}
+            onClick={() => {
+              setBranchWithSpecificRevenue(
+                branchWithSpecificRevenue.filter(
+                  branch => d.branch_code !== branch.code,
+                ),
+              );
+            }}
+          >
+            {' '}
+            delete
+          </Button>
+        </Col>
+      </Row>
+    ));
+  };
   return (
     <Card bigPadding>
       <div className="cardHeader">
@@ -139,12 +175,15 @@ const MerchantRevenueSharingRule = props => {
                     if (r.rule.infra_share_edit_status === 1) {
                       setInfraStatus(r.rule.edited.infra_approve_status);
                       setShare(r.rule.edited.infra_share);
-                      values.fixed = r.rule.edited.infra_share.fixed;
-                      values.percentage = r.rule.edited.infra_share.percentage;
+                      values.fixed = share.fixed;
+                      values.percentage = share.percentage;
+                      props.refreshShare(share);
                     }
                   }
                   setLoading(false);
                 });
+                // setShare(values);
+                // props.refreshShare(share);
               } else {
                 addInfraShare(props, 'revenue', values).then(r => {
                   setInfraStatus(r.status);
@@ -337,55 +376,20 @@ const MerchantRevenueSharingRule = props => {
                   </Button>
                 </Col>
               </Row>
-              {branchWithSpecificRevenue &&
-              branchWithSpecificRevenue.length > 0 ? (
-                  <Row
-                    vAlign="left"
-                    justifiy="flex-start"
-                    style={{
-                      padding: '2%',
-                      margin: '2%',
-                      borderBottom: '1px solid #d0d6d1',
-                    }}
-                  >
-                    {branchWithSpecificRevenue.map((d, i) => (
-                    <>
-                      <Col>{d.code}</Col>
-                      <Col>{d.name}</Col>
-                      <Col style={{ marginTop: '-10px' }}>
-                        <TextField
-                          type="number"
-                          label="pay bills%"
-                          margin="dense"
-                          variant="outlined"
-                          onChange={e => {
-                            const val = e.target.value;
-                            const tempArr = [...branchWithSpecificRevenue];
-                            tempArr[i].percentage = val;
-                            setBranchWithSpecificRevenue(tempArr);
-                          }}
-                          value={d.percentage}
-                        />
-                      </Col>
-                      <Col>
-                        <Button
-                          style={{ marginLeft: '60px' }}
-                          onClick={() => {
-                            setBranchWithSpecificRevenue(
-                              branchWithSpecificRevenue.filter(
-                                branch => d.branch_code !== branch.code,
-                              ),
-                            );
-                          }}
-                        >
-                          {' '}
-                          delete
-                        </Button>
-                      </Col>
-                    </>
-                    ))}
-                  </Row>
-                ) : null}
+              <Row
+                vAlign="left"
+                justifiy="flex-start"
+                style={{
+                  padding: '2%',
+                  margin: '2%',
+                  borderBottom: '1px solid #d0d6d1',
+                }}
+              >
+                {branchWithSpecificRevenue &&
+                branchWithSpecificRevenue.length > 0
+                  ? branches()
+                  : null}
+              </Row>
               <Row
                 vAlign="left"
                 height="125px"
@@ -409,7 +413,7 @@ const MerchantRevenueSharingRule = props => {
                       updatePartnerShare(props, 'Revenue', {
                         percentage: branchPartnerShare,
                         specific_partners_share: branchWithSpecificRevenue,
-                        fee_id: props.id,
+                        fee_id: id,
                       }).then(rule => {
                         setBranchPartnerShare(rule.partner_share_percentage);
                         setBranchWithSpecificRevenue(

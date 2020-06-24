@@ -50,7 +50,7 @@ const MerchantFeesPage = props => {
         r.ranges = r.edited.ranges;
         r.merchant_approve_status = r.edited.merchant_approve_status;
       }
-      if(r.infra_share_edit_status === 1) {
+      if (r.infra_share_edit_status === 1) {
         r.infra_approve_status = r.edited.infra_approve_status;
         r.infra_share = r.edited.infra_share;
       }
@@ -206,6 +206,9 @@ const MerchantFeesPage = props => {
               share={editingRule.infra_share}
               status={editingRule.infra_approve_status}
               type={editingRule.type}
+              refreshShare={share =>
+                setEditingRule({ ...editingRule, infra_share: share })
+              }
               partnerShare={editingRule.partner_share_percentage}
               specificPartnerShare={editingRule.specific_partners_share}
               id={editingRule._id}
