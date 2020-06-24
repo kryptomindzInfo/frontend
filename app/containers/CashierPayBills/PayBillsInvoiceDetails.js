@@ -67,6 +67,10 @@ const PayBillsInvoiceDetails = props => {
             <Form>
               <Container>
                 <Row>
+                  <Col className="popInfoLeft">Invoice No</Col>
+                  <Col className="popInfoRight">{values.number}</Col>
+                </Row>
+                <Row>
                   <Col className="popInfoLeft">Name</Col>
                   <Col className="popInfoRight">{values.name}</Col>
                 </Row>
