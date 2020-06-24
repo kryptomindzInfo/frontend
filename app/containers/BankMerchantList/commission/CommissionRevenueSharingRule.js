@@ -36,16 +36,18 @@ toast.configure({
 
 const CommissionRevenueSharingRule = props => {
   const [isLoading, setLoading] = useState(false);
-  const [share, setShare] = useState(props.share);
-  const [infraStatus, setInfraStatus] = useState(props.status);
+  const [share, setShare] = useState(props.editingRule.infra_share);
+  const [infraStatus, setInfraStatus] = useState(
+    props.editingRule.infra_approve_status,
+  );
   const [type, setType] = useState(props.type);
   const [id, setId] = useState(props.id);
   const [openBranchModal, setOpenBranchModal] = useState(false);
   const [branchPartnerShare, setBranchPartnerShare] = useState(
-    Number(props.partnerShare),
+    Number(props.editingRule.partner_share_percentage),
   );
   const [branchWithSpecificRevenue, setBranchWithSpecificRevenue] = useState(
-    props.specificPartnerShare,
+    props.editingRule.specific_branch_share,
   );
   const [bankId, setBankId] = useState(localStorage.getItem('bankId'));
 
@@ -136,21 +138,17 @@ const CommissionRevenueSharingRule = props => {
                 editInfraShare(props, 'commission', values).then(r => {
                   if (r.status !== 0) {
                     if (r.rule.infra_share_edit_status === 1) {
-                      setInfraStatus(r.rule.edited.infra_approve_status);
-                      setShare(r.rule.edited.infra_share);
-                      values.fixed = r.rule.edited.infra_share.fixed;
-                      values.percentage = r.rule.edited.infra_share.percentage;
-                      props.refreshShare(r.rule.edited.infra_share);
+                      r.rule.infra_share = r.rule.edited.infra_share;
+                      r.rule.infra_approve_status =
+                        r.rule.edited.infra_approve_status;
+                      props.refreshRule(r.rule);
+                      setLoading(false);
                     }
                   }
-                  setLoading(false);
                 });
               } else {
                 addInfraShare(props, 'commission', values).then(r => {
-                  setInfraStatus(r.status);
-                  setShare(r.share);
-                  props.refreshInfraStatus(r.status);
-                  props.refreshShare(r.share);
+                  props.refreshRule(r.rule);
                   setLoading(false);
                 });
               }
@@ -413,15 +411,7 @@ const CommissionRevenueSharingRule = props => {
                         specific_partners_share: branchWithSpecificRevenue,
                         commission_id: id,
                       }).then(rule => {
-                        setBranchPartnerShare(rule.partner_share_percentage);
-                        setBranchWithSpecificRevenue(
-                          rule.specific_partners_share,
-                        );
-                        props.refreshBranchShare({
-                          partner_share_percentage:
-                            rule.partner_share_percentage,
-                          specific_partners_share: rule.specific_partners_share,
-                        });
+                        props.refreshRule(rule);
                       })
                     }
                   >

@@ -203,26 +203,10 @@ const MerchantFeesPage = props => {
           {revenueSharingRulePage ? (
             <MerchantRevenueSharingRule
               merchantId={id}
-              share={editingRule.infra_share}
-              status={editingRule.infra_approve_status}
+              editingRule={editingRule}
+              refreshRule={rule => setEditingRule(rule)}
               type={editingRule.type}
-              refreshBranchShare={branchShare =>
-                setEditingRule({
-                  ...editingRule,
-                  partner_share_percentage:
-                    branchShare.partner_share_percentage,
-                  specific_partners_share: branchShare.specific_partners_share,
-                })
-              }
-              refreshShare={share =>
-                setEditingRule({ ...editingRule, infra_share: share })
-              }
-              partnerShare={editingRule.partner_share_percentage}
-              specificPartnerShare={editingRule.specific_partners_share}
               id={editingRule._id}
-              refreshInfraStatus={status =>
-                setEditingRule({ ...editingRule, infra_approve_status: status })
-              }
               refreshRuleList={() => {
                 refreshFeeList();
               }}

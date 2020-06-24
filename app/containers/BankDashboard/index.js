@@ -69,7 +69,7 @@ export default class BankDashboard extends Component {
         .post(`${API_URL}/getBankDashStats`, { token })
         .then(res => {
             if (res.status == 200) {
-              this.setState({ loading: false, totalBranches: res.data.totalBranches });
+              this.setState({ loading: false, totalBranches: res.data.totalBranches, totalMerchants: res.data.totalMerchants});
             }
 
         })
@@ -123,7 +123,7 @@ export default class BankDashboard extends Component {
                 col
               >
                 <h4><FormattedMessage {...messages.box2} /></h4>
-                <div className="cardValue">0</div>
+                <div className="cardValue">{this.state.totalMerchants}</div>
               </Card>
               <Card
                 horizontalMargin="7px"

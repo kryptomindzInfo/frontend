@@ -165,6 +165,7 @@ function InfraCreateMerchantPopup(props) {
                     name="description"
                     label="Description"
                     fullWidth
+                    multiline
                     rows="3"
                     style={{ marginBottom: '14px' }}
                     variant="outlined"

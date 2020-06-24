@@ -55,7 +55,7 @@ function InfraMerchantList(props) {
     <tr key={merchant._id}>
       <td className="tac">
         <img
-          style={{ height: '100px', width: '100px' }}
+          style={{ height: '60px', width: '60px' }}
           src={`${STATIC_URL}/${merchant.logo}`}
         />
       </td>
@@ -65,15 +65,18 @@ function InfraMerchantList(props) {
       <td className="tac">{merchant.amount_collected}</td>
       <td className="tac">{merchant.amount_due}</td>
       <td className="tac">{merchant.fee_generated}</td>
-      <td className="tac">{merchant.creater === 0 ? 'Bank' : 'Infra'}</td>
-      <td className="tac bold">
+      <td className="tac">
         <div
           style={{
             display: 'flex',
             justifyContent: 'center',
           }}
         >
-          <span className="absoluteMiddleRight primary popMenuTrigger">
+          <td className="tac">{merchant.creator === 0 ? 'Bank' : 'Infra'}</td>
+          <span
+            style={{ top: 'inherit' }}
+            className="absoluteMiddleRight primary popMenuTrigger"
+          >
             <i className="material-icons ">more_vert</i>
             <div className="popMenu">
               <span
@@ -216,7 +219,7 @@ function InfraMerchantList(props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {merchantList && merchantList.length > 0 ? merchants() : null}
+                  {merchantList && merchantList.length > 0 ? merchants : null}
                 </tbody>
               </Table>
             </div>

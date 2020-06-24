@@ -167,6 +167,7 @@ function CreateMerchantPopup(props) {
                     name="description"
                     label="Description"
                     rows="3"
+                    multiline
                     fullWidth
                     style={{ marginBottom: '14px' }}
                     variant="outlined"
