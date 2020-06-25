@@ -62,7 +62,7 @@ const SettingSidebar = props => {
   return (
     <SidebarStyle marginRight>
       <h3>SETTINGS</h3>
-      <A href={`/bank/merchants/info/${IDBKeyRange}`}>
+      <A href={`/bank/merchants/info/${id}`}>
         <Card rounded selected={info} className="sideNav">
           <i className="material-icons">
             <PersonIcon />

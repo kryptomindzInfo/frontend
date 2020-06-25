@@ -14,7 +14,6 @@ import { CURRENCY } from '../../App/constants';
 import MerchantFee from './MerchantFee';
 import { getRules } from '../api/merchantAPI';
 import MerchantRevenueSharingRule from './MerchantRevenueSharingRule';
-import CommissionRevenueSharingRule from '../commission/CommissionRevenueSharingRule';
 
 const MerchantFeesPage = props => {
   const [isLoading, setLoading] = useState(false);

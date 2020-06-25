@@ -16,7 +16,7 @@ import BankHeader from '../../../components/Header/BankHeader';
 const MerchantSettingsPage = props => {
   const [editMerchantPopup, setEditMerchantPopup] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [merchantInfo, setMerchantInfo] = useState(props.location.state);
+  const [merchantInfo, setMerchantInfo] = useState(JSON.parse(localStorage.getItem('currentMerchant')));
   const { match } = props;
   const { id } = match.params;
   localStorage.setItem('currentMerchantId', id);

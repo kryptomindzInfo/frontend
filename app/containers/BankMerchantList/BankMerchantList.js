@@ -86,9 +86,12 @@ function BankMerchantList(props) {
               <span
                 onClick={() => {
                   localStorage.setItem('bankId', merchant.bank_id);
+                  localStorage.setItem(
+                    'currentMerchant',
+                    JSON.stringify(merchant),
+                  );
                   props.history.push({
                     pathname: `/bank/merchants/info/${merchant._id}`,
-                    state: merchant,
                   });
                 }}
               >

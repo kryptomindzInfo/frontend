@@ -48,10 +48,16 @@ const PayBillPopup = props => {
           <div>
             <h1>Pay Bills</h1>
             {isBackButtonEnabled ? (
-              <Row>
-                <i className="material-icons" onClick={() => onBack()}>
-                  arrow_back
-                </i>
+              <Row
+                onClick={() => onBack()}
+                style={{
+                  justifyContent: 'flex-start',
+                  marginLeft: '20px',
+                  marginBottom: '20px',
+                  cursor: 'pointer',
+                }}
+              >
+                <i className="material-icons">arrow_back</i>
                 <h3 style={{ color: 'green' }}>Back</h3>
               </Row>
             ) : null}

@@ -148,7 +148,7 @@ const CommissionRevenueSharingRule = props => {
                 });
               } else {
                 addInfraShare(props, 'commission', values).then(r => {
-                  props.refreshRule(r.rule);
+                  props.refreshRule(r);
                   setLoading(false);
                 });
               }

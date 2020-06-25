@@ -93,7 +93,7 @@ const createMerchantRule = async (props, ruleType, payload) => {
     });
     if (res.status === 200) {
       if (res.data.status === 0) {
-        toast.error(res.data.message);
+        toast.error(res.data.error);
       } else {
         toast.success(res.data.message);
         props.refreshRuleList();
@@ -176,11 +176,7 @@ const addInfraShare = async (props, ruleType, payload) => {
       }
       toast.success(res.data.message);
       props.refreshRuleList();
-      return {
-        status: res.data.rule.infra_approve_status,
-        loading: false,
-        share: payload,
-      };
+      return res.data.rule;
     }
     toast.error(res.data.message);
     return { status: 0, loading: false };
