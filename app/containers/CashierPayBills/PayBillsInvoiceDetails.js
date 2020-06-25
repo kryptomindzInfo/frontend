@@ -10,13 +10,14 @@ import Container from 'components/Container';
 import * as Yup from 'yup';
 import { correctFocus } from '../../components/handleInputFocus';
 import { checkCashierFee } from './api/CashierMerchantAPI';
-import { CURRENCY } from '../App/constants';
+import { CURRENCY, STATIC_URL } from '../App/constants';
 
 const PayBillsInvoiceDetails = props => {
   const [isLoading, setLoading] = useState(false);
   const [isDataLoading, setDataLoading] = useState(false);
   const [invoice, setInvoice] = useState(props.invoice);
   const [fee, setFee] = useState(0);
+  const { merchant } = props;
 
   const checkFee = () => {
     checkCashierFee({
@@ -37,6 +38,7 @@ const PayBillsInvoiceDetails = props => {
     <div>
       <Formik
         initialValues={{
+          number: invoice.number || '',
           name: invoice.name || '',
           amount: invoice.amount || '',
           due_date: invoice.due_date || '',
@@ -66,6 +68,32 @@ const PayBillsInvoiceDetails = props => {
           return (
             <Form>
               <Container>
+                <Row style={{ marginBottom: '20px' }}>
+                  <Col
+                    className="popInfoLeft"
+                    style={{ marginRight: '-110px' }}
+                  >
+                    <div className="cardHeaderLeft">
+                      <img
+                        src={`${STATIC_URL}/${merchant.logo}`}
+                        alt=""
+                        style={{
+                          height: '60px',
+                          width: '60px',
+                          paddingRight: '10px',
+                        }}
+                      />
+                    </div>
+                  </Col>
+                  <Col className="popInfoRight">
+                    <div className="cardHeader">
+                      <div className="cardHeaderRight">
+                        <h4 style={{ color: 'green' }}>{merchant.name}</h4>
+                        <p>{merchant.description}</p>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
                 <Row>
                   <Col className="popInfoLeft">Invoice No</Col>
                   <Col className="popInfoRight">{values.number}</Col>

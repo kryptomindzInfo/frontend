@@ -153,6 +153,7 @@ const PayBillPopup = props => {
                 }}
                 close={props.close}
                 invoice={editingInvoice}
+                merchant={merchant}
               />
             ) : (
               ''
