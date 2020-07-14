@@ -41,7 +41,7 @@ const PayBillPopup = props => {
 
   return (
     <div>
-      <Popup accentedH1 close={props.close}>
+      <Popup accentedH1 bigBody close={props.close}>
         {paybillOTP ? (
           <PayBillOTP close={props.close} invoice={editingInvoice} />
         ) : (

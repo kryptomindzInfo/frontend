@@ -70,6 +70,7 @@ import BankEditFee from 'containers/BankEditFee';
 import FeeList from 'containers/FeeList';
 
 import { ThemeProvider } from 'styled-components';
+import AllRoutes from './AllRoutes';
 import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
 import CashierRoute from './CashierRoute';
 import BranchRoute from './BranchRoute';
@@ -111,7 +112,7 @@ export default function App(props) {
       <div>
         <Switch>
           <BranchRoute exact path="/send-money" component={CashierSendMoney} />
-
+          <Route exact path="/routes" component={AllRoutes} />
           <Route exact path="/" component={HomePage} notify={notify} />
           <Route exact path="/setup" component={SetupPage} notify={notify} />
           <Route exact path="/lang" component={LocaleToggle} />

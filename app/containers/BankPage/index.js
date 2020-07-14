@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import Header from 'components/Header/index';
@@ -31,7 +30,13 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
-import { API_URL, CONTRACT_URL, SERVER_URL, STATIC_URL } from '../App/constants';
+import messages from './messages';
+import {
+  API_URL,
+  CONTRACT_URL,
+  SERVER_URL,
+  STATIC_URL,
+} from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 // import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
@@ -49,7 +54,7 @@ const token = localStorage.getItem('logged');
 // if(permissions != 'all' && permissions != ''){
 // permissions = JSON.parse(permissions);
 // }
-var isAdmin = localStorage.getItem('isAdmin');
+const isAdmin = localStorage.getItem('isAdmin');
 
 export default class BankPage extends Component {
   constructor() {
@@ -111,9 +116,9 @@ export default class BankPage extends Component {
     const query = event.target.value;
 
     this.setState(prevState => {
-      const filteredData = prevState.data.filter(element => {
-        return element.name.toLowerCase().includes(query.toLowerCase());
-      });
+      const filteredData = prevState.data.filter(element =>
+        element.name.toLowerCase().includes(query.toLowerCase()),
+      );
 
       return {
         query,
@@ -127,9 +132,9 @@ export default class BankPage extends Component {
       .then(response => response.json())
       .then(data => {
         const { query } = this.state;
-        const filteredData = data.filter(element => {
-          return element.name.toLowerCase().includes(query.toLowerCase());
-        });
+        const filteredData = data.filter(element =>
+          element.name.toLowerCase().includes(query.toLowerCase()),
+        );
 
         this.setState({
           data,
@@ -140,7 +145,7 @@ export default class BankPage extends Component {
 
   countryChange = event => {
     const { value, name } = event.target;
-    const title = event.target.options[event.target.selectedIndex].title;
+    const { title } = event.target.options[event.target.selectedIndex];
 
     this.setState({
       [name]: value,
@@ -153,13 +158,13 @@ export default class BankPage extends Component {
   };
 
   startTimer = () => {
-    var dis = this;
+    const dis = this;
     var timer = setInterval(function() {
       if (dis.state.timer <= 0) {
         clearInterval(timer);
         dis.setState({ resend: true });
       } else {
-        var time = Number(dis.state.timer) - 1;
+        const time = Number(dis.state.timer) - 1;
         dis.setState({ timer: time });
       }
     }, 1000);
@@ -288,7 +293,7 @@ export default class BankPage extends Component {
 
   blockBank = (e, s) => {
     console.log(e);
-    var dis = this;
+    const dis = this;
     axios
       .post(`${API_URL}/bankStatus`, {
         token,
@@ -300,9 +305,9 @@ export default class BankPage extends Component {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            var n = s == 1 ? 'Unblocked' : 'Blocked';
+            const n = s == 1 ? 'Unblocked' : 'Blocked';
             this.setState({
-              notification: 'Bank ' + n,
+              notification: `Bank ${n}`,
             });
             this.success();
             this.getBanks();
@@ -486,7 +491,7 @@ export default class BankPage extends Component {
         'content-type': 'multipart/form-data',
       },
     };
-    var method = 'fileUpload';
+    let method = 'fileUpload';
 
     if (key == 'contract') {
       method = 'ipfsUpload';
@@ -664,12 +669,17 @@ export default class BankPage extends Component {
 
                           return (
                             <tr key={b._id}>
-                              <td><img style={{height: '22%'}} src={`${STATIC_URL}/${b.logo}`} /></td>
+                              <td>
+                              <img
+                                style={{ height: '22%' }}
+                                src={`${STATIC_URL}/${b.logo}`}
+                              />
+                            </td>
                               {/* <td><img src={b.logo} /></td> */}
                               <td>{b.name}</td>
-                              <td className="tac">0</td>
-                              <td className="tac">0</td>
-                              <td className="tac">0</td>
+                              <td className="tac">{b.total_branches}</td>
+                              <td className="tac">{b.total_partners}</td>
+                              <td className="tac">{b.total_cashiers}</td>
                               <td className="tac bold">
                                 {b.total_trans}
                                 {b.status != 0 ? (
@@ -683,13 +693,13 @@ export default class BankPage extends Component {
                                           Edit
                                         </span>
                                       ) : null}
-                                      <A href={'/info/' + b._id}>
+                                      <A href={`/info/${b._id}`}>
                                         <FormattedMessage {...messages.menu1} />
                                       </A>
-                                      <A href={'/documents/' + b._id}>
+                                      <A href={`/documents/${b._id}`}>
                                         <FormattedMessage {...messages.menu2} />
                                       </A>
-                                      <A href={'/fees/' + b._id}>
+                                      <A href={`/fees/${b._id}`}>
                                         <FormattedMessage {...messages.menu3} />
                                       </A>
                                       {b.status == -1 ? (
@@ -1187,7 +1197,7 @@ export default class BankPage extends Component {
                   </FormGroup>
 
                   <FormGroup>
-                    <UploadArea bgImg={STATIC_URL + 'main/pdf-icon.png'}>
+                    <UploadArea bgImg={`${STATIC_URL}main/pdf-icon.png`}>
                       {this.state.contract ? (
                         <a
                           className="uploadedImg"
@@ -1715,7 +1725,7 @@ export default class BankPage extends Component {
                   </FormGroup>
 
                   <FormGroup>
-                    <UploadArea bgImg={STATIC_URL + 'main/pdf-icon.png'}>
+                    <UploadArea bgImg={`${STATIC_URL}main/pdf-icon.png`}>
                       {this.state.contract ? (
                         <a
                           className="uploadedImg"
