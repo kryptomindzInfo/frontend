@@ -25,7 +25,7 @@ RUN npm run build
 #prepare nginx
 FROM nginx:1.16.0-alpine
 
-COPY --from=react_build /app/dist /usr/share/nginx/html
+COPY --from=react_build /app/build /usr/share/nginx/html
 
 # RUN rm /etc/nginx/conf.d/default.conf
 
