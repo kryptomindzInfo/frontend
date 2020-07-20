@@ -107,9 +107,15 @@ export default class BankPage extends Component {
 
   handleInputChange = event => {
     const { value, name } = event.target;
-    this.setState({
-      [name]: value,
-    });
+    if (name === 'name'){
+      this.setState({
+        [name]:value.trim(),
+      });
+    } else {
+      this.setState({
+        [name]:value,
+      });
+    }
   };
 
   handleSearchInputChange = event => {
@@ -1278,7 +1284,7 @@ export default class BankPage extends Component {
                       <FormattedMessage {...messages.otp} />*
                     </label>
                     <TextInput
-                      type="text"
+                      type="password"
                       name="otp"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
@@ -1325,7 +1331,7 @@ export default class BankPage extends Component {
                       name="name"
                       onFocus={inputFocus}
                       onBlur={inputBlur}
-                      value={this.state.name.slice(' ', -1)}
+                      value={this.state.name}
                       autoFocus
                       onChange={this.handleInputChange}
                       required
@@ -1680,13 +1686,7 @@ export default class BankPage extends Component {
                       </FormGroup>
                     </Col>
                   </Row>
-
                   <FormGroup>
-                    {/* <UploadedFile>
-
-                      <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
-                    </UploadedFile>
-                  : */}
                     <UploadArea bgImg={STATIC_URL + this.state.logo}>
                       {this.state.logo ? (
                         <a
@@ -1723,7 +1723,6 @@ export default class BankPage extends Component {
                       </div>
                     </UploadArea>
                   </FormGroup>
-
                   <FormGroup>
                     <UploadArea bgImg={`${STATIC_URL}main/pdf-icon.png`}>
                       {this.state.contract ? (
@@ -1750,17 +1749,7 @@ export default class BankPage extends Component {
                         ) : (
                           ' '
                         )}
-
                         <label>
-                          {/* <div className="tooltip">
-                            <i
-                              className="fa fa-info-circle"
-                              style={{ margin: '5px' }}
-                            />
-                            <span className="tooltiptext">
-                              This contract will be uploaded on Blockchain.
-                            </span>
-                          </div> */}
                           {this.state.contract == '' ? (
                             <FormattedMessage {...messages.popup10} />
                           ) : (

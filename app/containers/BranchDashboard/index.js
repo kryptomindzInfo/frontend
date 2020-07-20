@@ -895,35 +895,6 @@ export default class BranchDashboard extends Component {
           <SidebarBranch bankName={this.props.match.params.bank} />
           <Main>
             <Row>
-              {/* <Col>
-                <Card
-                  marginBottom="54px"
-                  buttonMarginTop="32px"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Cash Received</h4>
-
-                  <div className="cardValue">
-                    {CURRENCY} {this.state.cashReceived.toFixed(2)}
-                  </div>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                  marginBottom="54px"
-                  buttonMarginTop="32px"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Paid in Cash</h4>
-
-                  <div className="cardValue">
-                    {CURRENCY} {this.state.cashPaid.toFixed(2)}
-                  </div>
-                </Card>
-              </Col> */}
-
               <Col>
                 <Card
                   marginBottom="54px"

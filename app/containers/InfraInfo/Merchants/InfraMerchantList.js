@@ -79,11 +79,13 @@ function InfraMerchantList(props) {
           >
             <i className="material-icons ">more_vert</i>
             <div className="popMenu">
+            {merchant.creator === 1 ? (
               <span
                 onClick={() => handleMerchantPopupClick('update', merchant)}
               >
                 Edit
               </span>
+            ) : null}
               <span
                 onClick={() => {
                   localStorage.setItem('selectedBankId', id);
@@ -201,7 +203,6 @@ function InfraMerchantList(props) {
               </div>
               <div className="cardHeaderRight">
                 <h3>Merchant List</h3>
-                <h5>Your friends and family</h5>
               </div>
             </div>
             <div className="cardBody">

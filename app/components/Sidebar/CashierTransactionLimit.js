@@ -819,6 +819,7 @@ class CashierTransactionLimit extends Component {
                 closingTime: res.data.closingTime,
                 cashInHand: res.data.cashInHand,
                 transactionStarted: res.data.transactionStarted,
+                isClosed: res.data.isClosed,
               },
               () => {
                 const dis = this;

@@ -68,7 +68,7 @@ export default class BranchLogin extends Component {
   handleInputChange = event => {
     const { value, name } = event.target;
     this.setState({
-      [name]: value,
+      [name]: value.trim(),
     });
   };
 
@@ -81,6 +81,7 @@ export default class BranchLogin extends Component {
       .post(`${API_URL}/branchLogin`, this.state)
       .then(res => {
         if (res.status == 200) {
+          console.log(res);
           localStorage.setItem('branchLogged', res.data.token);
           localStorage.setItem('branchName', res.data.name);
           localStorage.setItem('branchUserName', res.data.username);
@@ -88,6 +89,7 @@ export default class BranchLogin extends Component {
           localStorage.setItem('bankLogo', res.data.logo);
           localStorage.setItem('branchEmail', res.data.email);
           localStorage.setItem('branchMobile', res.data.mobile);
+          console.log(res);
           if(res.data.initial_setup){
             window.location.href = '/branch/'+this.props.match.params.bank+'/dashboard';
           }else{

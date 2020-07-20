@@ -99,9 +99,15 @@ export default class BankBranchList extends Component {
 
   handleInputChange = event => {
     const { value, name } = event.target;
-    this.setState({
-      [name]: value,
-    });
+    if (name === 'name'){
+      this.setState({
+        [name]:value.trim(),
+      });
+    } else {
+      this.setState({
+        [name]:value,
+      });
+    }
   };
 
   showPopup = () => {

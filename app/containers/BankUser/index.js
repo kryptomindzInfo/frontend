@@ -115,9 +115,15 @@ export default class BankUser extends Component {
 
   handleInputChange = event => {
     const { value, name } = event.target;
-    this.setState({
-      [name]: value,
-    });
+    if (name === 'name'){
+      this.setState({
+        [name]:value.trim(),
+      });
+    } else {
+      this.setState({
+        [name]:value,
+      });
+    }
   };
 
   showPopup = () => {
@@ -838,7 +844,7 @@ export default class BankUser extends Component {
                     <TextInput
                       type="text"
                       name="name"
-                      pattern=".{8,}"
+                      pattern=".{4,15}"
                       title="Minimum 8 Characters"
                       onFocus={inputFocus}
                       autoFocus
@@ -905,8 +911,8 @@ export default class BankUser extends Component {
                     <label>User Id*</label>
                     <TextInput
                       type="text"
-                      pattern=".{8,}"
-                      title="Minimum 8 Characters"
+                      pattern=".{4,15}"
+                      title="Minimum 4 Characters"
                       name="username"
                       onFocus={inputFocus}
                       autoFocus

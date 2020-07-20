@@ -13,6 +13,9 @@ import SidebarCashier from '../../components/Sidebar/SidebarCashier';
 import { fetchCashierMerchantList } from './api/CashierMerchantAPI';
 import PayBillPopup from './PayBillPopup';
 import Button from '../../components/Button';
+import { isNull } from 'lodash';
+import { API_URL} from '../App/constants';
+import axios from 'axios';
 
 function CashierMerchantListPage(props) {
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
@@ -21,7 +24,9 @@ function CashierMerchantListPage(props) {
   const [popupType, setPopupType] = React.useState('new');
   const [editingMerchant, setEditingMerchant] = React.useState({});
   const [isLoading, setLoading] = React.useState(false);
+  const [isClosed, setIsClosed] = React.useState(false);
   const logo = localStorage.getItem('bankLogo');
+  const token = localStorage.getItem('cashierLogged');
 
   const handleMerchantPopupClick = (type, merchant) => {
     setEditingMerchant(merchant);
@@ -54,8 +59,24 @@ function CashierMerchantListPage(props) {
       .catch(error => setLoading(false));
   };
 
+  const getStats = () => {
+    const getStatus = setInterval(function(){
+      axios
+      .post(`${API_URL}/getCashierDashStats`, {
+        token: token
+      })
+      .then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          setIsClosed(res.data.isClosed);  
+        }
+      })
+    },10000)
+  };
+
   useEffect(() => {
     getMerchantList();
+    getStats();
   }, []); // Or [] if effect doesn't need props or state
 
   const getMerchants = () =>
@@ -70,14 +91,18 @@ function CashierMerchantListPage(props) {
         </td>
         <td className="tac">{merchant.name}</td>
         <td className="tac" style={{ cursor: 'pointer', color: '#417505' }}>
-          <div
-            onClick={() => {
-              setEditingMerchant(merchant);
-              setPayBillsPopup(true);
-            }}
-          >
-            Select Merchant
-          </div>
+          { isClosed ? (
+            <div>Casier Closed</div>
+          ) : (
+            <div
+              onClick={() => {
+                setEditingMerchant(merchant);
+                setPayBillsPopup(true);
+              }}
+            >
+              Select Merchant
+            </div>
+          )}
         </td>
       </tr>
     ));

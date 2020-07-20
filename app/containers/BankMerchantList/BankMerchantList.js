@@ -144,7 +144,6 @@ function BankMerchantList(props) {
               </div>
               <div className="cardHeaderRight">
                 <h3>Merchant List</h3>
-                <h5>Your friends and family</h5>
               </div>
             </div>
             <div className="cardBody">

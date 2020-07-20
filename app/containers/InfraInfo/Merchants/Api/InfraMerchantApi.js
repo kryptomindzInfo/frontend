@@ -37,7 +37,6 @@ const editInfraMerchant = async (props, values) => {
   try {
     const res = await axios.post(`${API_URL}/infra/editMerchant`, {
       token,
-      status: 1,
       ...values,
     });
     if (res.status === 200) {

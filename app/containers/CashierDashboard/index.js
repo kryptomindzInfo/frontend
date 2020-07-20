@@ -111,7 +111,6 @@ export default class CashierDashboard extends Component {
     });
   };
   showHistoryPop = v => {
-    console.log(v);
     this.setState({
       historyPop: true,
       historyLoading: true,
@@ -327,8 +326,6 @@ generateOTP = () => {
             () => {},
           );
           var l = result.length;
-          console.log(result.length);
-          console.log(result[l - 1]);
           const allHistory = result;
           const pendingHistory = res.data.history3.reverse();
           this.setState(
@@ -354,8 +351,8 @@ generateOTP = () => {
         token: token
       })
       .then(res => {
+        console.log(res);
         if (res.status == 200) {
-          console.log(res.data);
           let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
           var closingTime = res.data.closingTime;
@@ -372,7 +369,6 @@ generateOTP = () => {
           }else if(!res.data.transactionStarted){
             closingTime = true;
           }
-          console.log(closingTime);
           this.setState(
             {
               tomorrow: closingTime,
@@ -408,7 +404,6 @@ generateOTP = () => {
   };
 
   handlePageChange = pageNumber => {
-    console.log(`active page is ${pageNumber}`);
     this.setState({ activePage: pageNumber });
     this.showHistory();
   };

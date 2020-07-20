@@ -67,7 +67,7 @@ export default class CashierLogin extends Component {
   handleInputChange = event => {
     const { value, name } = event.target;
     this.setState({
-      [name]: value,
+      [name]: value.trim(),
     });
   };
 
@@ -80,17 +80,21 @@ export default class CashierLogin extends Component {
       .post(`${API_URL}/cashierLogin`, this.state)
       .then(res => {
         if (res.status == 200) {
-          localStorage.setItem('cashierLogged', res.data.token);
-          localStorage.setItem('cashierName', res.data.name);
-          localStorage.setItem('cashierUserName', res.data.username);
-          localStorage.setItem('userId', res.data.id);
-          localStorage.setItem('cashierId', res.data.cashier_id);
-          localStorage.setItem('bankLogo', this.state.bank.logo);
-          localStorage.setItem('cashierEmail', res.data.email);
-          localStorage.setItem('cashierMobile', res.data.mobile);
-
+          if(res.data.status == 0){
+            throw res.data.message;
+          }
+          else{
+            localStorage.setItem('cashierLogged', res.data.token);
+            localStorage.setItem('cashierName', res.data.name);
+            localStorage.setItem('cashierUserName', res.data.username);
+            localStorage.setItem('userId', res.data.id);
+            localStorage.setItem('cashierId', res.data.cashier_id);
+            localStorage.setItem('bankLogo', this.state.bank.logo);
+            localStorage.setItem('cashierEmail', res.data.email);
+            localStorage.setItem('cashierMobile', res.data.mobile);
+            console.log(res);
             window.location.href = '/cashier/'+this.props.match.params.bank+'/dashboard';
-
+          }
         } else {
           throw res.data.error;
         }

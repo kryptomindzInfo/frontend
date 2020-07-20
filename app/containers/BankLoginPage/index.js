@@ -65,7 +65,7 @@ export default class BankLoginPage extends Component {
   handleInputChange = event => {
     const { value, name } = event.target;
     this.setState({
-      [name]: value,
+      [name]: value.trim(),
     });
   };
 

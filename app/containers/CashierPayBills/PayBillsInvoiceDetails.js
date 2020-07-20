@@ -36,6 +36,8 @@ const PayBillsInvoiceDetails = props => {
         <td className="tac">{item.item_desc.denomination}</td>
         <td className="tac">{item.item_desc.unit_of_measure}</td>
         <td className="tac">{item.item_desc.unit_price}</td>
+        <td className="tac">{item.quantity}</td>
+        <td className="tac">{item.total_amount}</td>
       </tr>
     ));
 
@@ -149,6 +151,8 @@ const PayBillsInvoiceDetails = props => {
                           <th>Denomination</th>
                           <th>Unit of measure</th>
                           <th>Unit price</th>
+                          <th>Quantity</th>
+                          <th>Amount</th>
                         </tr>
                       </thead>
                       <tbody>

@@ -237,6 +237,7 @@ const CommissionFee = props => {
                                       handleBlur(e);
                                     }}
                                     onChange={handleChange}
+                                    required
                                   />
                                   <ErrorMessage
                                     name={`ranges[${index}].fixed`}
@@ -263,6 +264,7 @@ const CommissionFee = props => {
                                       handleBlur(e);
                                     }}
                                     onChange={handleChange}
+                                    required
                                   />
                                   <ErrorMessage
                                     name={`ranges[${index}].percentage`}

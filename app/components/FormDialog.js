@@ -551,7 +551,7 @@ export default function FormDialog() {
               };
 
               return (
-                <Form onSubmit={handleSubmit}>
+                <Form style={{ overflow: 'scroll' }}>
                   <Grid container direction="row">
                     <Grid item md={6} xs={12}>
                       <Grid
@@ -1036,7 +1036,6 @@ export default function FormDialog() {
                           variant="contained"
                           color="primary"
                           disableRipple
-                          onClick={handleSubmit}
                           disabled={isSubmitting}
                           style={{
                             width: '90%',

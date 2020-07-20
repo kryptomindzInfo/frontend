@@ -14,12 +14,13 @@ const PayBillOTP = props => {
   const [otp, setOtp] = useState('');
 
   const startTimer = () => {
+    let time = 30;
     const setTime = setInterval(function() {
-      if (setTime <= 0) {
-        clearInterval(timer);
+      if (timer <= 0) {
+        clearInterval(setTime);
         setResend(true);
       } else {
-        const time = Number(timer) - 1;
+        time = time - 1;
         setTimer(time);
       }
     }, 1000);

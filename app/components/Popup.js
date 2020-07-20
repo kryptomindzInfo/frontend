@@ -44,13 +44,13 @@ const PopupBody = styled.div`
     }
   }
   .popInfoLeft{
-    font-size: 12px;
+    font-size: 15px;
     font-weight: bold;
     color: #4a4a4a;
     margin-bottom: 10px;
   }
   .popInfoRight {
-    font-size: 12px;
+    font-size: 15px;
     font-weight: bold;
     color: #000000;
     margin-bottom: 10px;
