@@ -94,15 +94,6 @@ const currencies = [
   },
 ];
 
-// const useStyles = makeStyles(theme => ({
-//   root: {
-//     '& .MuiTextField-root': {
-//       margin: theme.spacing(1),
-//       width: 200,
-//     },
-//   },
-// }));
-
 const styles = theme => ({
   container: {
     display: 'flex',
@@ -394,12 +385,6 @@ class InfraCurrency extends Component {
         <Header active="" />
         <Container verticalMargin>
           <SidebarThree infraID={this.state.infraID} active="currency" />
-          {/* <div>
-            <SelectCurrency
-              value={'USD'}
-              onCurrencySelected={onSelectedCurrency}
-            />
-          </div> */}
           <form className={classes.container} noValidate autoComplete="off">
             <TextField
               id="outlined-select-currency"

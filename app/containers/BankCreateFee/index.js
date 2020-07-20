@@ -662,38 +662,6 @@ export default class BankCreateFee extends Component {
                       </FormGroup>
                     </Col>
                   </Row>
-                  {/* <H4>Transaction Range</H4>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <TextInput
-                          type="text"
-                          name="trans_from"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.trans_from}
-                          onChange={this.handleInputChange}
-                          placeholder="From"
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        <TextInput
-                          type="text"
-                          name="trans_to"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.trans_to}
-                          onChange={this.handleInputChange}
-                          placeholder="To"
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row> */}
-
                   <H4>Transaction Range</H4>
                   {this.state.ranges.map(function(v, i) {
                     return (
@@ -787,37 +755,7 @@ export default class BankCreateFee extends Component {
                             </span>
                           ) : null}
                         </Col>
-                        {/* <Col cW="45%" mR="2%">
-                          <FormGroup>
-                            <label>Revenue Fixed Amount*</label>
-                            <TextInput
-                              required
-                              type="text"
-                              name="revenue_sharing_fixed_amount"
-                              onFocus={inputFocus}
-                              onBlur={inputBlur}
-                              value={v.revenue_sharing_fixed_amount}
-                              onChange={dis.handleInputChange2}
-                              data-key={i}
-                            />
-                          </FormGroup>
-                        </Col> */}
-                        {/* <Col cW="23%" mR="2%">
-                          <FormGroup>
-                            <label>Revenue %*</label>
-                            <TextInput
-                              required
-                              type="text"
-                              name="revenue_sharing_percentage"
-                              onFocus={inputFocus}
-                              onBlur={inputBlur}
-                              value={v.revenue_sharing_percentage}
-                              onChange={dis.handleInputChange2}
-                              data-key={i}
-                            />
-                          </FormGroup> */}
 
-                        {/* </Col> */}
                       </Row>
                     );
                   })}
@@ -829,116 +767,6 @@ export default class BankCreateFee extends Component {
                   >
                     <span>Add Another Range</span>
                   </Button>
-
-                  {/*
-                  <div style={{padding: 12}} />
-                  <H4>Revenue sharing rules tracsaction count</H4>
-                  {this.state.revenueSharingRule.map(function(v, i) {
-                    return (
-                      <Row key={i}>
-                        <Col cW="20%" mR="2%">
-                          <FormGroup>
-                            <label>From*</label>
-                            {i > 0 ? (
-                              <TextInput
-                                type="number"
-                                min="0"
-                                name="trans_from"
-                                onFocus={inputFocus}
-                                onBlur={inputBlur}
-                                value={v.trans_from}
-                                onChange={dis.handleInputChange3}
-                                data-key={i}
-                                autoFocus
-                                readOnly
-                                required
-                              />
-                            ) : (
-                              <TextInput
-                                type="text"
-                                pattern="[0-9]{1,}"
-                                title="Greater than or equal to 0"
-                                name="trans_from"
-                                onFocus={inputFocus}
-                                onBlur={inputBlur}
-                                value={v.trans_from}
-                                onChange={dis.handleInputChange3}
-                                data-key={i}
-                                autoFocus
-                                required
-                              />
-                            )}
-                          </FormGroup>
-                        </Col>
-                        <Col cW="20%" mR="2%">
-                          <FormGroup>
-                            <label>To*</label>
-                            <TextInput
-                              type="text"
-                              pattern="[0-9]{1,}"
-                              title="Greater than or equal to 0"
-                              name="trans_to"
-                              onFocus={inputFocus}
-                              onBlur={inputBlur}
-                              value={v.trans_to}
-                              onChange={dis.handleInputChange3}
-                              data-key={i}
-                              required
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col cW="26%" mR="2%">
-                          <FormGroup>
-                            <label>Fixed Amount*</label>
-                            <TextInput
-                              type="text"
-                              name="fixed_amount"
-                              onFocus={inputFocus}
-                              required
-                              onBlur={inputBlur}
-                              value={v.fixed_amount}
-                              onChange={dis.handleInputChange3}
-                              data-key={i}
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col cW="28%" mR="0">
-                          <FormGroup>
-                            <label>Percentage*</label>
-                            <TextInput
-                              required
-                              type="text"
-                              name="percentage"
-                              onFocus={inputFocus}
-                              onBlur={inputBlur}
-                              value={v.percentage}
-                              onChange={dis.handleInputChange3}
-                              data-key={i}
-                            />
-                          </FormGroup>
-                          {i > 0 ? (
-                            <span
-                              onClick={() => dis.removeRange2(i)}
-                              className="material-icons removeBtn pointer"
-                            >
-                              cancel
-                            </span>
-                          ) : null}
-                        </Col>
-                      </Row>
-                    );
-                  })}
-
-                  <Button
-                    type="button"
-                    accentedBtn
-                    marginTop="10px"
-                    onClick={this.addRange2}
-                  >
-                    <span>Add Another Revenue Range</span>
-                  </Button>
- */}
-
                   {this.createRulesLoading ? (
                     <Button filledBtn marginTop="100px" disabled>
                       <Loader />

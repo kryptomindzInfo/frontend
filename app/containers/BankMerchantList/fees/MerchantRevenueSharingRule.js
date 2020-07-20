@@ -315,7 +315,7 @@ const MerchantRevenueSharingRule = props => {
                         <Form>
                           <Col cW="100%" textAlign="center">
                             <FormGroup>
-                              <label htmlFor="payBill">Pay Bill</label>
+                              <label htmlFor="payBill">Sharing %</label>
                               <TextInput
                                 type="number"
                                 name="payBill"

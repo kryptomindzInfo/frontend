@@ -489,29 +489,6 @@ export default class BankEscrowHistory extends Component {
         <Container verticalMargin>
           <SidebarBank />
           <Main>
-            {/* <ActionBar marginBottom="33px" inputWidth="calc(100% - 344px)" className="clr">
-              <div className="iconedInput fl small">
-                <i className="material-icons">search</i>
-                <input type="text" placeholder="Search"  />
-              </div>
-              <TextInput
-              className="fr dateinput"
-              placeholder="To Date"
-              list="l1"
-              />
-              <datalist id="l1">
-                <option>Select</option>
-              </datalist>
-              <TextInput
-              className="fr dateinput"
-              placeholder="From Date"
-              list="l2"
-              />
-              <datalist id="l2">
-                <option>Select</option>
-              </datalist>
-
-            </ActionBar> */}
             <Card bigPadding>
               <div className="cardHeader">
                 <div className="cardHeaderLeft">

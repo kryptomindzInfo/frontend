@@ -16,7 +16,7 @@ const PayBillsInvoiceDetails = props => {
   const [isLoading, setLoading] = useState(false);
   const [isDataLoading, setDataLoading] = useState(false);
   const [invoice, setInvoice] = useState(props.invoice);
-  const [fee, setFee] = useState(0);
+  const [fee, setFee] = useState();
   const { merchant } = props;
 
   const checkFee = () => {
@@ -165,14 +165,18 @@ const PayBillsInvoiceDetails = props => {
                 </Row>
               </Container>
               <FormGroup>
-                <Button filledBtn>
+                {isNaN(Number(fee) + Number(values.amount)) ? (
+                  <h3 style={{textAlign:'center'}}>Can't process transaction right now</h3>
+
+                ):(<Button filledBtn>
                   {isLoading ? (
                     <Loader />
                   ) : (
                     `Collect ${CURRENCY} ${Number(fee) +
                       Number(values.amount)} and Pay Bill`
                   )}
-                </Button>
+                </Button>)
+                }
               </FormGroup>
             </Form>
           );

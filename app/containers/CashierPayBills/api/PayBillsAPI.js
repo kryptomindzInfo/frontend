@@ -58,7 +58,6 @@ const payInvoice = async values => {
         toast.success(res.data.message);
       }
     }
-    toast.error(res.data.message);
   } catch (err) {
     toast.error('Something went wrong');
   }
