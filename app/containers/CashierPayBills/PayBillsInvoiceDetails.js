@@ -32,11 +32,13 @@ const PayBillsInvoiceDetails = props => {
     invoice.items.map(item => (
       <tr key={item._id}>
         <td className="tac">{item.item_desc.name}</td>
+        <td className="tac">{item.item_desc.description}</td>
         <td className="tac">{item.item_desc.code}</td>
         <td className="tac">{item.item_desc.denomination}</td>
         <td className="tac">{item.item_desc.unit_of_measure}</td>
         <td className="tac">{item.item_desc.unit_price}</td>
         <td className="tac">{item.quantity}</td>
+        <td className="tac">{item.tax_desc.value}</td>
         <td className="tac">{item.total_amount}</td>
       </tr>
     ));
@@ -55,7 +57,8 @@ const PayBillsInvoiceDetails = props => {
           name: invoice.name || '',
           amount: invoice.amount || '',
           due_date: invoice.due_date || '',
-          description: invoice.description || '',
+          bill_date: invoice.bill_date || '',
+          bill_period: invoice.bill_period || '',
           mobile: invoice.mobile || '',
         }}
         onSubmit={values => {
@@ -81,34 +84,37 @@ const PayBillsInvoiceDetails = props => {
           return (
             <Form>
               <Container>
+                <Row style={{ marginBottom: '20px' }}>
+                  <Col
+                    cW="25%"
+                    className="popInfoLeft"
+                    style={{ marginRight: '-110px' }}
+                  >
+                    <div className="cardHeaderLeft">
+                      <img
+                        src={`${STATIC_URL}${merchant.logo}`}
+                        alt=""
+                        style={{
+                        height: '60px',
+                        width: '60px',
+                        paddingRight: '10px',
+                        marginRight: '10px',
+                      }}
+                    />
+                    </div>
+                  </Col>
+                  <Col cW="25%" className="popInfoRight">
+                    <div className="cardHeader">
+                      <div className="cardHeaderRight">
+                        <h4 style={{ color: 'green' }}>{merchant.name}</h4>
+                        <p>{merchant.description}</p>
+                      </div>
+                    </div>
+                  </Col>
+                  <Col cW="50%"></Col>
+                </Row>
                 <Row>
-                  <Col cW="30%">
-                    <Row style={{ marginBottom: '20px' }}>
-                      <Col
-                        className="popInfoLeft"
-                        style={{ marginRight: '-110px' }}
-                      >
-                        <div className="cardHeaderLeft">
-                          <img
-                            src={`${STATIC_URL}/${merchant.logo}`}
-                            alt=""
-                            style={{
-                              height: '60px',
-                              width: '60px',
-                              paddingRight: '10px',
-                            }}
-                          />
-                        </div>
-                      </Col>
-                      <Col className="popInfoRight">
-                        <div className="cardHeader">
-                          <div className="cardHeaderRight">
-                            <h4 style={{ color: 'green' }}>{merchant.name}</h4>
-                            <p>{merchant.description}</p>
-                          </div>
-                        </div>
-                      </Col>
-                    </Row>
+                  <Col cW="33%">
                     <Row>
                       <Col className="popInfoLeft">Invoice No</Col>
                       <Col className="popInfoRight">{values.number}</Col>
@@ -118,40 +124,49 @@ const PayBillsInvoiceDetails = props => {
                       <Col className="popInfoRight">{values.name}</Col>
                     </Row>
                     <Row>
-                      <Col className="popInfoLeft">Amount</Col>
-                      <Col className="popInfoRight">{values.amount}</Col>
+                      <Col className="popInfoLeft">Mobile</Col>
+                      <Col className="popInfoRight">{values.mobile}</Col>
                     </Row>
-                    <Row>
+                  </Col>
+                  <Col cW="33%">
+                  <Row>
                       <Col className="popInfoLeft">Due Date</Col>
                       <Col className="popInfoRight">{values.due_date}</Col>
                     </Row>
                     <Row>
-                      <Col className="popInfoLeft">Description</Col>
-                      <Col className="popInfoRight">{values.description}</Col>
+                      <Col className="popInfoLeft">Bill Date</Col>
+                      <Col className="popInfoRight">{values.bill_date}</Col>
                     </Row>
                     <Row>
-                      <Col className="popInfoLeft">Mobile</Col>
-                      <Col className="popInfoRight">{values.mobile}</Col>
+                      <Col className="popInfoLeft">Bill Period</Col>
+                      <Col className="popInfoRight">{values.bill_period}</Col>
+                    </Row>
+                  </Col>
+                  <Col cW="33%">
+                    <Row>
+                      <Col className="popInfoLeft">Amount</Col>
+                      <Col className="popInfoRight">{values.amount}</Col>
                     </Row>
                     <Row>
                       <Col className="popInfoLeft">Fee</Col>
                       <Col className="popInfoRight">{fee}</Col>
                     </Row>
                   </Col>
-                  <Col cW="70%">
+                </Row>
+                <Row>              
+                  <Col cW="100%">
                     <Row />
-                    <h6>
-                      <b>Item List</b>
-                    </h6>
                     <Table marginTop="34px" smallTd>
                       <thead>
                         <tr>
                           <th>Name</th>
+                          <th>Description</th>
                           <th>Code</th>
                           <th>Denomination</th>
                           <th>Unit of measure</th>
                           <th>Unit price</th>
                           <th>Quantity</th>
+                          <th>Tax</th>
                           <th>Amount</th>
                         </tr>
                       </thead>
@@ -166,7 +181,7 @@ const PayBillsInvoiceDetails = props => {
               </Container>
               <FormGroup>
                 {isNaN(Number(fee) + Number(values.amount)) ? (
-                  <h3 style={{textAlign:'center'}}>Can't process transaction right now</h3>
+                  <h5 style={{marginTop:'10px', textAlign:'center'}}>Can't process transaction right now</h5>
 
                 ):(<Button filledBtn>
                   {isLoading ? (

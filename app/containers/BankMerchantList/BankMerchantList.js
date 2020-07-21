@@ -55,7 +55,7 @@ function BankMerchantList(props) {
       <td className="tac">
         <img
           style={{ height: '60px', width: '60px' }}
-          src={`${STATIC_URL}/${merchant.logo}`}
+          src={`${STATIC_URL}${merchant.logo}`}
         />
       </td>
       <td className="tac">{merchant.name}</td>

@@ -85,7 +85,7 @@ function CashierMerchantListPage(props) {
         <td className="tac">
           <img
             style={{ height: '60px', width: '60px' }}
-            src={`${STATIC_URL}/${merchant.logo}`}
+            src={`${STATIC_URL}${merchant.logo}`}
             alt=""
           />
         </td>

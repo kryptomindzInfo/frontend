@@ -677,8 +677,8 @@ export default class BankPage extends Component {
                             <tr key={b._id}>
                               <td>
                               <img
-                                style={{ height: '22%' }}
-                                src={`${STATIC_URL}/${b.logo}`}
+                                style={{ height: '40px' }}
+                                src={`${STATIC_URL}${b.logo}`}
                               />
                             </td>
                               {/* <td><img src={b.logo} /></td> */}
