@@ -34,7 +34,6 @@ const PayBillsInvoiceDetails = props => {
         <td className="tac">{item.item_desc.name}</td>
         <td className="tac">{item.item_desc.description}</td>
         <td className="tac">{item.item_desc.code}</td>
-        <td className="tac">{item.item_desc.denomination}</td>
         <td className="tac">{item.item_desc.unit_of_measure}</td>
         <td className="tac">{item.item_desc.unit_price}</td>
         <td className="tac">{item.quantity}</td>
@@ -139,7 +138,7 @@ const PayBillsInvoiceDetails = props => {
                     </Row>
                     <Row>
                       <Col className="popInfoLeft">Bill Period</Col>
-                      <Col className="popInfoRight">{values.bill_period}</Col>
+                      <Col className="popInfoRight">{values.bill_period.period_name}</Col>
                     </Row>
                   </Col>
                   <Col cW="33%">
@@ -162,7 +161,6 @@ const PayBillsInvoiceDetails = props => {
                           <th>Name</th>
                           <th>Description</th>
                           <th>Code</th>
-                          <th>Denomination</th>
                           <th>Unit of measure</th>
                           <th>Unit price</th>
                           <th>Quantity</th>
