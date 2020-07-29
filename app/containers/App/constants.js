@@ -27,7 +27,6 @@ export const STATIC_URL =
 // export const API_URL = 'http://91d90ac373dc.sn.mynetname.net:2020/api';
 // export const STATIC_URL = 'http://91d90ac373dc.sn.mynetname.net:2020/api/uploads/';
 // export const CONTRACT_URL = 'http://91d90ac373dc.sn.mynetname.net:2020/ipfs/';
-// end production config
 
 export const CURRENCY = 'XOF';
 export const CHANGE_USERNAME = 'CHANGE_USERNAME';
