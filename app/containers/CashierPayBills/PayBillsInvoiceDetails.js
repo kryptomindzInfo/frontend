@@ -16,6 +16,14 @@ const PayBillsInvoiceDetails = props => {
   const [isLoading, setLoading] = useState(false);
   const [isDataLoading, setDataLoading] = useState(false);
   const [invoice, setInvoice] = useState(props.invoice);
+  const [totalAmount, setTotalAmount] = useState(invoice.items.reduce(
+    function(a, b){
+      return a + (b.quantity*b.item_desc.unit_price);
+    }, 0));
+    const [totalTax, setTotalTax] = useState(invoice.items.reduce(
+      function(a, b){
+        return a + (b.total_amount-(b.quantity*b.item_desc.unit_price));
+      }, 0));
   const [fee, setFee] = useState();
   const { merchant } = props;
 
@@ -29,18 +37,20 @@ const PayBillsInvoiceDetails = props => {
   };
 
   const getItems = () =>
-    invoice.items.map(item => (
-      <tr key={item._id}>
-        <td className="tac">{item.item_desc.name}</td>
-        <td className="tac">{item.item_desc.description}</td>
-        <td className="tac">{item.item_desc.code}</td>
-        <td className="tac">{item.item_desc.unit_of_measure}</td>
-        <td className="tac">{item.item_desc.unit_price}</td>
-        <td className="tac">{item.quantity}</td>
-        <td className="tac">{item.tax_desc.value}</td>
-        <td className="tac">{item.total_amount}</td>
+    invoice.items.map(item => {
+      return(
+        <tr key={item._id}>
+          <td className="tac">{item.item_desc.name}</td>
+          <td className="tac">{item.item_desc.description}</td>
+          <td className="tac">{item.item_desc.code}</td>
+          <td className="tac">{item.item_desc.unit_of_measure}</td>
+          <td className="tac">{item.item_desc.unit_price}</td>
+          <td className="tac">{item.quantity}</td>
+          <td className="tac">{item.tax_desc.value}</td>
+          <td className="tac">{item.quantity*item.item_desc.unit_price}</td>
       </tr>
-    ));
+      );
+      });
 
   useEffect(() => {
     setDataLoading(true);
@@ -62,7 +72,7 @@ const PayBillsInvoiceDetails = props => {
         }}
         onSubmit={values => {
           values.invoice_id = invoice._id;
-          setInvoice(values);
+          //setInvoice(values);
           props.showOTPPopup(values);
         }}
         validationSchema={Yup.object().shape({
@@ -94,12 +104,12 @@ const PayBillsInvoiceDetails = props => {
                         src={`${STATIC_URL}${merchant.logo}`}
                         alt=""
                         style={{
-                        height: '60px',
-                        width: '60px',
-                        paddingRight: '10px',
-                        marginRight: '10px',
-                      }}
-                    />
+                          height: '60px',
+                          width: '60px',
+                          paddingRight: '10px',
+                          marginRight: '10px',
+                        }}
+                      />
                     </div>
                   </Col>
                   <Col cW="25%" className="popInfoRight">
@@ -110,14 +120,10 @@ const PayBillsInvoiceDetails = props => {
                       </div>
                     </div>
                   </Col>
-                  <Col cW="50%"></Col>
+                  <Col cW="50%" />
                 </Row>
                 <Row>
                   <Col cW="33%">
-                    <Row>
-                      <Col className="popInfoLeft">Invoice No</Col>
-                      <Col className="popInfoRight">{values.number}</Col>
-                    </Row>
                     <Row>
                       <Col className="popInfoLeft">Name</Col>
                       <Col className="popInfoRight">{values.name}</Col>
@@ -128,31 +134,29 @@ const PayBillsInvoiceDetails = props => {
                     </Row>
                   </Col>
                   <Col cW="33%">
-                  <Row>
-                      <Col className="popInfoLeft">Due Date</Col>
-                      <Col className="popInfoRight">{values.due_date}</Col>
+                    <Row>
+                      <Col className="popInfoLeft">Invoice No</Col>
+                      <Col className="popInfoRight">{values.number}</Col>
                     </Row>
                     <Row>
                       <Col className="popInfoLeft">Bill Date</Col>
                       <Col className="popInfoRight">{values.bill_date}</Col>
                     </Row>
-                    <Row>
-                      <Col className="popInfoLeft">Bill Period</Col>
-                      <Col className="popInfoRight">{values.bill_period.period_name}</Col>
-                    </Row>
                   </Col>
                   <Col cW="33%">
                     <Row>
-                      <Col className="popInfoLeft">Amount</Col>
-                      <Col className="popInfoRight">{values.amount}</Col>
+                      <Col className="popInfoLeft">Due Date</Col>
+                      <Col className="popInfoRight">{values.due_date}</Col>
                     </Row>
                     <Row>
-                      <Col className="popInfoLeft">Fee</Col>
-                      <Col className="popInfoRight">{fee}</Col>
+                      <Col className="popInfoLeft">Bill Period</Col>
+                      <Col className="popInfoRight">
+                        {values.bill_period.period_name}
+                      </Col>
                     </Row>
                   </Col>
                 </Row>
-                <Row>              
+                <Row>
                   <Col cW="100%">
                     <Row />
                     <Table marginTop="34px" smallTd>
@@ -164,7 +168,7 @@ const PayBillsInvoiceDetails = props => {
                           <th>Unit of measure</th>
                           <th>Unit price</th>
                           <th>Quantity</th>
-                          <th>Tax</th>
+                          <th>Tax %</th>
                           <th>Amount</th>
                         </tr>
                       </thead>
@@ -173,23 +177,68 @@ const PayBillsInvoiceDetails = props => {
                           ? getItems()
                           : null}
                       </tbody>
+                      <hr />
+                      <tbody>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td style={{float: 'left'}}><b>Total Amount</b></td>
+                          <td>{totalAmount}</td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td style={{float: 'left'}}><b>Total Tax</b></td>
+                          <td>{totalTax}</td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td style={{float: 'left'}}><b>Fees</b></td>
+                          <td>{fee}</td>
+                        </tr>
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td style={{float: 'left'}}><b>Sum Total</b></td>
+                          <td >{fee+values.amount}</td>
+                        </tr>
+                      </tbody>
                     </Table>
                   </Col>
                 </Row>
               </Container>
               <FormGroup>
                 {isNaN(Number(fee) + Number(values.amount)) ? (
-                  <h5 style={{marginTop:'10px', textAlign:'center'}}>Can't process transaction right now</h5>
-
-                ):(<Button filledBtn>
-                  {isLoading ? (
-                    <Loader />
-                  ) : (
-                    `Collect ${CURRENCY} ${Number(fee) +
-                      Number(values.amount)} and Pay Bill`
-                  )}
-                </Button>)
-                }
+                  <h5 style={{ marginTop: '10px', textAlign: 'center' }}>
+                    Can't process transaction right now
+                  </h5>
+                ) : (
+                  <Button filledBtn>
+                    {isLoading ? (
+                      <Loader />
+                    ) : (
+                      `Collect ${CURRENCY} ${Number(fee) +
+                        Number(values.amount)} and Pay Bill`
+                    )}
+                  </Button>
+                )}
               </FormGroup>
             </Form>
           );

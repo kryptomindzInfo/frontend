@@ -305,7 +305,7 @@ generateOTP = () => {
 
   getHistory = () => {
     axios
-      .post(`${API_URL}/getCashierHistory`, {
+      .post(`${API_URL}/cashier/getTransactionHistory`, {
         token: token,
         where: { cashier_id: bid },
         from: 'cashier',
