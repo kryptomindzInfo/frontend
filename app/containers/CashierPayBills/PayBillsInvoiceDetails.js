@@ -16,14 +16,14 @@ const PayBillsInvoiceDetails = props => {
   const [isLoading, setLoading] = useState(false);
   const [isDataLoading, setDataLoading] = useState(false);
   const [invoice, setInvoice] = useState(props.invoice);
-  const [totalAmount, setTotalAmount] = useState(invoice.items.reduce(
+  const [totalAmount, setTotalAmount] = useState(
+    invoice.items.reduce(function(a, b) {
+      return a + b.quantity * b.item_desc.unit_price;
+    }, 0),
+  const [totalTax, setTotalTax] = useState(invoice.items.reduce(
     function(a, b){
-      return a + (b.quantity*b.item_desc.unit_price);
+      return a + (b.total_amount-(b.quantity*b.item_desc.unit_price));
     }, 0));
-    const [totalTax, setTotalTax] = useState(invoice.items.reduce(
-      function(a, b){
-        return a + (b.total_amount-(b.quantity*b.item_desc.unit_price));
-      }, 0));
   const [fee, setFee] = useState();
   const { merchant } = props;
 
@@ -37,8 +37,7 @@ const PayBillsInvoiceDetails = props => {
   };
 
   const getItems = () =>
-    invoice.items.map(item => {
-      return(
+    invoice.items.map(item => (
         <tr key={item._id}>
           <td className="tac">{item.item_desc.name}</td>
           <td className="tac">{item.item_desc.description}</td>
@@ -49,8 +48,7 @@ const PayBillsInvoiceDetails = props => {
           <td className="tac">{item.tax_desc.value}</td>
           <td className="tac">{item.quantity*item.item_desc.unit_price}</td>
       </tr>
-      );
-      });
+      ));
 
   useEffect(() => {
     setDataLoading(true);
@@ -72,7 +70,7 @@ const PayBillsInvoiceDetails = props => {
         }}
         onSubmit={values => {
           values.invoice_id = invoice._id;
-          //setInvoice(values);
+          // setInvoice(values);
           props.showOTPPopup(values);
         }}
         validationSchema={Yup.object().shape({
@@ -180,44 +178,52 @@ const PayBillsInvoiceDetails = props => {
                       <hr />
                       <tbody>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td style={{float: 'left'}}><b>Total Amount</b></td>
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td style={{ float: 'left' }}>
+                            <b>Total Amount</b>
+                          </td>
                           <td>{totalAmount}</td>
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td style={{float: 'left'}}><b>Total Tax</b></td>
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td style={{ float: 'left' }}>
+                            <b>Total Tax</b>
+                          </td>
                           <td>{totalTax}</td>
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td style={{float: 'left'}}><b>Fees</b></td>
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td style={{ float: 'left' }}>
+                            <b>Fees</b>
+                          </td>
                           <td>{fee}</td>
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td style={{float: 'left'}}><b>Sum Total</b></td>
-                          <td >{fee+values.amount}</td>
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td />
+                          <td style={{ float: 'left' }}>
+                            <b>Sum Total</b>
+                          </td>
+                          <td>{fee + values.amount}</td>
                         </tr>
                       </tbody>
                     </Table>
