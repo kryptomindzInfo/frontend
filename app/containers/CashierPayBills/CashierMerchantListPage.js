@@ -66,7 +66,6 @@ function CashierMerchantListPage(props) {
         token: token
       })
       .then(res => {
-        console.log(res);
         if (res.status == 200) {
           setIsClosed(res.data.isClosed);  
         }

@@ -71,7 +71,8 @@ const PayBillsInvoiceDetails = props => {
           mobile: invoice.mobile || '',
         }}
         onSubmit={values => {
-          values.invoice_id = invoice._id;
+          values.invoice_ids = [invoice._id];
+          values.merchant_id = props.merchantId;
           //setInvoice(values);
           props.showOTPPopup(values);
         }}
@@ -135,7 +136,7 @@ const PayBillsInvoiceDetails = props => {
                   </Col>
                   <Col cW="33%">
                     <Row>
-                      <Col className="popInfoLeft">Invoice No</Col>
+                      <Col className="popInfoLeft">Bill No</Col>
                       <Col className="popInfoRight">{values.number}</Col>
                     </Row>
                     <Row>
@@ -149,7 +150,7 @@ const PayBillsInvoiceDetails = props => {
                       <Col className="popInfoRight">{values.due_date}</Col>
                     </Row>
                     <Row>
-                      <Col className="popInfoLeft">Bill Period</Col>
+                      <Col className="popInfoLeft">Period</Col>
                       <Col className="popInfoRight">
                         {values.bill_period.period_name}
                       </Col>

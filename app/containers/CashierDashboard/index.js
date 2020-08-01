@@ -351,7 +351,6 @@ generateOTP = () => {
         token: token
       })
       .then(res => {
-        console.log(res);
         if (res.status == 200) {
           let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;

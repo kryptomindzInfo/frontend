@@ -1,18 +1,77 @@
-import React, { useState } from 'react';
+import React, {  useEffect, useState } from 'react';
+import Button from 'components/Button';
+import Row from 'components/Row';
+import Col from 'components/Col'
+import FormGroup from 'components/FormGroup';
+import Loader from 'components/Loader';
 import Card from 'components/Card';
 import Table from '../../components/Table';
 import { STATIC_URL } from '../App/constants';
+import { checkCashierFee } from './api/CashierMerchantAPI';
+import { isEmpty } from 'lodash';
 
 const PayBillsInvoiceList = props => {
   const { merchant } = props;
+  const [isLoading, setLoading] = useState(true);
+  const [selectedInvoiceList, setSelectedInvoiceList] = useState([]);
+  const [totalFee, setTotalFee] = useState(0);
+  const [feeList, setFeeList] = useState([]);
+  const [totalAmount, setTotalAmount] = useState(0);
   const [invoiceList, setInvoiceList] = useState(
     props.invoiceList.filter(i => i.paid === 0),
   );
+  const handleCheckboxClick = (e, invoice, index) => {
+    console.log(index);
+    if(e.target.checked) {
+      setTotalAmount(totalAmount + invoice.amount);
+      setTotalFee(totalFee+feeList[index]);
+      const list = [...selectedInvoiceList,invoice._id];
+      setSelectedInvoiceList(list);
+    } else {
+      const list = selectedInvoiceList.filter((val) => val !== invoice._id);
+      setSelectedInvoiceList(list);
+      setTotalAmount(totalAmount-invoice.amount)
+      setTotalFee(totalFee-feeList[index]);
+    }
+  };
+
+  const handleMultipleInvoiceSubmit = () => {
+    const obj = {
+      invoice_ids : selectedInvoiceList,
+      merchant_id : merchant._id,
+    }
+    props.showOTPPopup(obj);
+  };
+  
   const getInvoiceList = () =>
-    invoiceList.map(invoice => (
+    invoiceList.map((invoice,index) => (
       <tr key={invoice._id}>
-        <td className="tac">{invoice.name}</td>
+        <td
+          className="tac"
+        >
+          <Row>
+            <Col cW="10%">
+              <FormGroup onChange={(e) => handleCheckboxClick(e, invoice, index)}>
+                <input
+                  type="checkbox"
+                  value={invoice._id}>
+                </input>
+                </FormGroup>
+            </Col>
+            <Col 
+              cW="90%"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              {invoice.number}
+            </Col>
+          </Row>
+        </td>
         <td className="tac">{invoice.amount}</td>
+        <td className="tac">{feeList[index]}</td>
+        <td className="tac">{invoice.amount+feeList[index]}</td>
         <td className="tac">{invoice.due_date} </td>
         <td className="tac bold">
           <div
@@ -31,6 +90,31 @@ const PayBillsInvoiceList = props => {
       </tr>
     ));
 
+  const fetchfee = async() => {
+    const feelist = invoiceList.map(async invoice => {
+      const data = await checkCashierFee({
+        merchant_id: merchant._id,
+        amount: invoice.amount,
+      })
+      return (data.fee);
+    })
+    const result= await Promise.all(feelist);
+    return(result);
+  }
+
+  useEffect(() => {
+    setLoading(true);
+    const getFeeList = async () => {
+      const res= await fetchfee();
+      setFeeList(res);
+      setLoading(false);
+    };
+    getFeeList();
+    }, []); // Or [] if effect doesn't need props or state
+  
+  if (isLoading) {
+    return <Loader  />;
+  }
   return (
     <div>
       <Card>
@@ -51,8 +135,10 @@ const PayBillsInvoiceList = props => {
         <Table marginTop="34px" smallTd>
           <thead>
             <tr>
-              <th>Name</th>
+              <th>Number</th>
               <th>Amount</th>
+              <th>Fees</th>
+              <th>Amount With Fees</th>
               <th>Due Date</th>
               <th />
             </tr>
@@ -61,9 +147,23 @@ const PayBillsInvoiceList = props => {
             {invoiceList && invoiceList.length > 0 ? getInvoiceList() : null}
           </tbody>
         </Table>
+        <FormGroup>
+          {totalAmount !== 0 ? (
+            <Button onClick={handleMultipleInvoiceSubmit} filledBtn>
+              {isLoading ? (
+                <Loader />
+              ) : (
+                `Collect ${totalAmount + totalFee} and Pay Bill`
+              )}
+            </Button>
+          ) : (
+            null
+          )}
+        </FormGroup>
       </Card>
     </div>
   );
 };
+
 
 export default PayBillsInvoiceList;

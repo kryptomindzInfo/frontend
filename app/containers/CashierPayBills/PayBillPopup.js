@@ -25,6 +25,7 @@ const PayBillPopup = props => {
   const [displayInvoiceDetailForm, setDisplayInvoiceDetailForm] = useState(
     false,
   );
+  const [invoiceName, setInvoiceName] = useState('');
   const [isBackButtonEnabled, setBackButtonEnabled] = useState(false);
 
   const handleSetEditingInvoice = invoice => {
@@ -46,7 +47,7 @@ const PayBillPopup = props => {
           <PayBillOTP close={props.close} invoice={editingInvoice} />
         ) : (
           <div>
-            <h1>Pay Bills</h1>
+            <h1>Pay {invoiceName} Bills</h1>
             {!displayInvoiceList && !displayInvoiceDetailForm ? (
               <Formik
                 initialValues={{
@@ -57,6 +58,9 @@ const PayBillPopup = props => {
                     getUserInvoices(values.invoiceIdOrMobile).then(data => {
                       setInvoiceList(data.list);
                       setDisplayInvoiceList(true);
+                      if(data.list.length > 0){
+                        setInvoiceName(data.list[0].name);
+                      }
                     });
                   } else if (isInvoiceId) {
                     getInvoiceDetails(values.invoiceIdOrMobile).then(data => {
@@ -132,6 +136,11 @@ const PayBillPopup = props => {
                 merchant={merchant}
                 invoiceList={invoiceList}
                 setEditingInvoice={value => handleSetEditingInvoice(value)}
+                close={props.close}
+                showOTPPopup={values => {
+                  setEditingInvoice(values);
+                  setPaybillOTP(true);
+                }}
               />
             ) : (
               ''
