@@ -46,7 +46,7 @@ const CommissionFee = props => {
           <i className="material-icons" onClick={props.onBack}>
             arrow_back
           </i>
-          <h3>Create Commission Rules</h3>
+          <h3 style={{margin:"auto"}}>Create Commission Rules</h3>
         </div>
       </div>
       <div className="cardBody">

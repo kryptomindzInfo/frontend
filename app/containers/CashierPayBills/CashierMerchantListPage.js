@@ -70,7 +70,7 @@ function CashierMerchantListPage(props) {
           setIsClosed(res.data.isClosed);  
         }
       })
-    },10000)
+    },2000)
   };
 
   useEffect(() => {

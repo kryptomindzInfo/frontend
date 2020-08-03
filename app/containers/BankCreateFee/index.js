@@ -606,7 +606,7 @@ export default class BankCreateFee extends Component {
                   <A href="/bank/fees">
                     <i className="material-icons">arrow_back</i>
                   </A>
-                  <h3>Create Fee Rules</h3>
+                  <h3 style={{margin:"auto"}}>Create Fee Rules</h3>
                 </div>
               </div>
               <div className="cardBody">

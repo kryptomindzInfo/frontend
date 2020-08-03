@@ -43,7 +43,7 @@ const MerchantFee = props => {
           <i className="material-icons" onClick={props.onBack}>
             arrow_back
           </i>
-          <h3>Create Fee Rules</h3>
+          <h3 style={{margin:"auto"}}>Create Fee Rules</h3>
         </div>
       </div>
       <div className="cardBody">

@@ -89,7 +89,7 @@ const CommissionFeesPage = props => {
                 }}
                 className="addBankButton"
               >
-                <span>Edit</span>
+                <span>Edit Commission Rule</span>
               </Button>
             ) : null}
             {r.merchant_approve_status === 0 ? (
