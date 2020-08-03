@@ -79,6 +79,7 @@ export default class BankLoginPage extends Component {
         .then(res => {
           if (res.status == 200) {
             console.log(res.data.token);
+            console.log(res.data.initial_setup);
             localStorage.setItem('bankLogged', res.data.token);
             localStorage.setItem('bankName', res.data.name);
             localStorage.setItem('bankUserName', res.data.username);
@@ -87,9 +88,15 @@ export default class BankLoginPage extends Component {
             localStorage.setItem('bankId', res.data.id);
             localStorage.setItem('bankPhone', res.data.mobile);
             console.log(localStorage.getItem('bankLogged'));
-            if (!res.data.initial_setup) {
+            console.log(res);
+            if(res.data.status == 0 && res.data.message === "Incorrect username or password") {
+              throw res.data.message;
+            }
+            else if (!res.data.initial_setup) {
               window.location.href ='/bank/setup';
-            } else if (
+              console.log(res.data.initial_setup);
+            }
+            else if (
               !res.data.status ||
               res.data.status == 0 ||
               res.data.status == ''
@@ -106,7 +113,7 @@ export default class BankLoginPage extends Component {
         })
         .catch(err => {
           this.setState({
-            notification: err.response ? err.response.data.error : err.toString(),
+            notification: err.res ? err.res.data.error : err.toString(),
             loginLoading: false,
           });
           this.error();

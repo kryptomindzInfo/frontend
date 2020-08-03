@@ -80,11 +80,14 @@ export default class HomePage extends Component {
       .post(`${API_URL}/login`, this.state)
       .then(res => {
         if (res.status == 200) {
-          localStorage.setItem('logged', res.data.token);
-          localStorage.setItem('name', res.data.name);
-          localStorage.setItem('isAdmin', res.data.isAdmin);
-
-          window.location.href = '/dashboard';
+          if(res.data.status == 0 && res.data.message === "Incorrect username or password") {
+            throw res.data.message;
+          } else {
+            localStorage.setItem('logged', res.data.token);
+            localStorage.setItem('name', res.data.name);
+            localStorage.setItem('isAdmin', res.data.isAdmin);
+            window.location.href = '/dashboard';
+          }
         } else {
           throw res.data.error;
         }

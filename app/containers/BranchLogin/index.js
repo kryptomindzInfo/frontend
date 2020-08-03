@@ -90,7 +90,10 @@ export default class BranchLogin extends Component {
           localStorage.setItem('branchEmail', res.data.email);
           localStorage.setItem('branchMobile', res.data.mobile);
           console.log(res);
-          if(res.data.initial_setup){
+          if(res.data.status == 0 && res.data.message === "Incorrect username or password") {
+            throw res.data.message;
+          }
+          else if(res.data.initial_setup){
             window.location.href = '/branch/'+this.props.match.params.bank+'/dashboard';
           }else{
             window.location.href = '/branch/'+this.props.match.params.bank+'/setup';
