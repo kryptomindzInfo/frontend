@@ -42,6 +42,7 @@ import OperationalHistory from 'containers/OperationalHistory/Loadable';
 import MasterHistory from 'containers/MasterHistory/Loadable';
 import InfraProfile from 'containers/InfraProfile/Loadable';
 import InfraCurrency from 'containers/InfraCurrency/Loadable';
+import InfraCountry from 'containers/InfraCountry/InfraCountry';
 import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
 import BankEscrowHistory from 'containers/BankEscrowHistory/Loadable';
 import BankBranchList from 'containers/BankBranchList/Loadable';
@@ -126,6 +127,7 @@ export default function App(props) {
           <InfraRoute exact path="/banks" component={BankPage} />
           <InfraRoute exact path="/profile" component={InfraProfile} />
           <InfraRoute exact path="/currency" component={InfraCurrency} />
+          <InfraRoute exact path="/country" component={InfraCountry} />
           <InfraRoute exact path="/user" component={UserPage} />
           <InfraRoute path="/fees/:bank?" component={FeeList} />
           <InfraRoute path="/info/:bank?" component={InfraInfo} />

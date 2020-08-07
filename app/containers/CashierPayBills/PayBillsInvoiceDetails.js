@@ -20,10 +20,10 @@ const PayBillsInvoiceDetails = props => {
     function(a, b){
       return a + (b.quantity*b.item_desc.unit_price);
     }, 0));
-    const [totalTax, setTotalTax] = useState(invoice.items.reduce(
-      function(a, b){
-        return a + (b.total_amount-(b.quantity*b.item_desc.unit_price));
-      }, 0));
+  const [totalTax, setTotalTax] = useState(invoice.items.reduce(
+    function(a, b){
+      return a + (b.total_amount-(b.quantity*b.item_desc.unit_price));
+    }, 0));
   const [fee, setFee] = useState();
   const { merchant } = props;
 
@@ -50,7 +50,34 @@ const PayBillsInvoiceDetails = props => {
           <td className="tac">{item.quantity*item.item_desc.unit_price}</td>
       </tr>
       );
-      });
+  });
+
+  const getCounterInvoiceItems = () => {
+    return invoice.counter_invoices.map((item) => {
+      return (
+        <tr key={item._id}>
+          <td>{item.number}</td>
+          <td>{item.description}</td>
+          <td>{item.amount}</td>
+        </tr>
+      );
+    });
+  };
+
+  const discount = () => {
+    return invoice.counter_invoices.reduce((a, b) => {
+      return a + b.amount;
+    }, 0);
+  };
+
+  const sumtotal = () => {
+    const totaldiscount = discount();
+    return totalAmount + totalTax - totaldiscount + fee;
+  };
+
+  const sumtotal2 = () => {
+    return totalAmount + totalTax + fee;
+  };
 
   useEffect(() => {
     setDataLoading(true);
@@ -178,50 +205,54 @@ const PayBillsInvoiceDetails = props => {
                           ? getItems()
                           : null}
                       </tbody>
-                      <hr />
-                      <tbody>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td style={{float: 'left'}}><b>Total Amount</b></td>
-                          <td>{totalAmount}</td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td style={{float: 'left'}}><b>Total Tax</b></td>
-                          <td>{totalTax}</td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td style={{float: 'left'}}><b>Fees</b></td>
-                          <td>{fee}</td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td style={{float: 'left'}}><b>Sum Total</b></td>
-                          <td >{fee+values.amount}</td>
-                        </tr>
-                      </tbody>
                     </Table>
+                    <Row style={{ marginTop: '8px' }}>
+                      <Col cW="50%">
+                        {invoice.counter_invoices.length > 0 ? (
+                          <div className="cardBody">
+                            <div className="popInfoLeft">Counter Invoices</div>
+                            <Table marginTop="5px" smallTd>
+                              <thead>
+                                <tr>
+                                  <th>Number</th>
+                                  <th>Description</th>
+                                  <th>Amount</th>
+                                </tr>
+                              </thead>
+                              <tbody>{getCounterInvoiceItems()}</tbody>
+                            </Table>
+                          </div>
+                        ) : null}
+                      </Col>
+                      <Col cW="25%"></Col>
+                      <Col cW="25%">
+                        <Row>
+                          <Col className="popInfoLeft">Total Amount</Col>
+                          <Col className="popInfoRight">{totalAmount}</Col>
+                        </Row>
+                        <Row>
+                          <Col className="popInfoLeft">Total Tax</Col>
+                          <Col className="popInfoRight">{totalTax}</Col>
+                        </Row>
+                        {props.invoice.counter_invoices.length > 0 ? (
+                          <Row>
+                            <Col className="popInfoLeft">Total Discount</Col>
+                            <Col className="popInfoRight">{discount()}</Col>
+                          </Row>
+                        ) : null}
+                        {props.invoice.counter_invoices.length > 0 ? (
+                          <Row>
+                            <Col className="popInfoLeft">Sum Total</Col>
+                            <Col className="popInfoRight">{sumtotal()}</Col>
+                          </Row>
+                        ) : (
+                          <Row>
+                            <Col className="popInfoLeft">Sum Total</Col>
+                            <Col className="popInfoRight">{sumtotal2()}</Col>
+                          </Row>
+                        )}
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
               </Container>
@@ -235,8 +266,13 @@ const PayBillsInvoiceDetails = props => {
                     {isLoading ? (
                       <Loader />
                     ) : (
-                      `Collect ${CURRENCY} ${Number(fee) +
-                        Number(values.amount)} and Pay Bill`
+                      <span>
+                        {props.invoice.counter_invoices.length > 0 ? (
+                          `Collect ${CURRENCY} ${sumtotal()} and Pay Bill`
+                        ):(
+                          `Collect ${CURRENCY} ${sumtotal2()} and Pay Bill`
+                        )}
+                      </span>
                     )}
                   </Button>
                 )}

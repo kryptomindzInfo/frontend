@@ -15,6 +15,7 @@ const PayBillsInvoiceList = props => {
   const [isLoading, setLoading] = useState(true);
   const [selectedInvoiceList, setSelectedInvoiceList] = useState([]);
   const [totalFee, setTotalFee] = useState(0);
+  const [discountList, setDiscountList] = useState([]);
   const [feeList, setFeeList] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [invoiceList, setInvoiceList] = useState(
@@ -23,14 +24,14 @@ const PayBillsInvoiceList = props => {
   const handleCheckboxClick = (e, invoice, index) => {
     console.log(index);
     if(e.target.checked) {
-      setTotalAmount(totalAmount + invoice.amount);
+      setTotalAmount(totalAmount + invoice.amount-discountList[index]);
       setTotalFee(totalFee+feeList[index]);
       const list = [...selectedInvoiceList,invoice._id];
       setSelectedInvoiceList(list);
     } else {
       const list = selectedInvoiceList.filter((val) => val !== invoice._id);
       setSelectedInvoiceList(list);
-      setTotalAmount(totalAmount-invoice.amount)
+      setTotalAmount(totalAmount-invoice.amount+discountList[index]);
       setTotalFee(totalFee-feeList[index]);
     }
   };
@@ -71,6 +72,7 @@ const PayBillsInvoiceList = props => {
         </td>
         <td className="tac">{invoice.amount}</td>
         <td className="tac">{feeList[index]}</td>
+        <td className="tac">{discountList[index]}</td>
         <td className="tac">{invoice.amount+feeList[index]}</td>
         <td className="tac">{invoice.due_date} </td>
         <td className="tac bold">
@@ -102,14 +104,33 @@ const PayBillsInvoiceList = props => {
     return(result);
   }
 
+  const fetchDiscount = async() => {
+    const discountlist = invoiceList.map(async invoice => {
+      if(invoice.counter_invoices.length > 0) {
+        return invoice.counter_invoices.reduce((a, b) => {
+          return a + b.amount;
+        }, 0);
+      } else {
+        return 0;
+      }
+    })
+    const res= await Promise.all(discountlist);
+    return(res);
+  }
+
   useEffect(() => {
     setLoading(true);
     const getFeeList = async () => {
       const res= await fetchfee();
       setFeeList(res);
-      setLoading(false);
     };
+    const getDiscountList = async () => {
+      const res2= await fetchDiscount();
+      setDiscountList(res2);
+      setLoading(false);
+    }
     getFeeList();
+    getDiscountList();
     }, []); // Or [] if effect doesn't need props or state
   
   if (isLoading) {
@@ -138,6 +159,7 @@ const PayBillsInvoiceList = props => {
               <th>Number</th>
               <th>Amount</th>
               <th>Fees</th>
+              <th>Counter Invoice Amount</th>
               <th>Amount With Fees</th>
               <th>Due Date</th>
               <th />
@@ -148,7 +170,7 @@ const PayBillsInvoiceList = props => {
           </tbody>
         </Table>
         <FormGroup>
-          {totalAmount !== 0 ? (
+          {totalAmount + totalFee !== 0 ? (
             <Button onClick={handleMultipleInvoiceSubmit} filledBtn>
               {isLoading ? (
                 <Loader />

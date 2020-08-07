@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import OperationalWallet from './OperationalWallet';
 import MasterWallet from './MasterWallet';
+import SettingsIcon from '@material-ui/icons/Settings';
 import Card from '../Card';
 import styled from 'styled-components';
 import A from 'components/A';
@@ -26,6 +27,7 @@ class SidebarThree extends Component {
     
     const profile = this.props.active == 'profile' ? true : false;
     const currency = this.props.active == 'currency' ? true : false;
+    const country = this.props.active == 'country' ? true : false;
 
         return (
         <Sidebar marginRight>
@@ -41,6 +43,12 @@ class SidebarThree extends Component {
             <i className="material-icons">folder</i>
                 <h3>Currency</h3>
             </Card>
+            </A>
+            <A href={"/country"+this.props.infraID }>
+            <Card rounded  selected={country} className="sideNav">
+                <i className="material-icons"><SettingsIcon /></i>
+                <h3>Country</h3>
+            </Card >
             </A>
            
             {/* <OperationalWallet historyLink={this.props.bankId } />
