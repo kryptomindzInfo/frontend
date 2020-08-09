@@ -46,8 +46,9 @@ const PayBillsInvoiceDetails = props => {
           <td className="tac">{item.item_desc.unit_of_measure}</td>
           <td className="tac">{item.item_desc.unit_price}</td>
           <td className="tac">{item.quantity}</td>
-          <td className="tac">{item.tax_desc.value}</td>
           <td className="tac">{item.quantity*item.item_desc.unit_price}</td>
+          <td className="tac">{item.tax_desc.value}</td>
+          <td className="tac">{item.total_amount}</td>
       </tr>
       );
   });
@@ -96,6 +97,7 @@ const PayBillsInvoiceDetails = props => {
           bill_date: invoice.bill_date || '',
           bill_period: invoice.bill_period || '',
           mobile: invoice.mobile || '',
+          counter_invoices:  invoice.counter_invoices || [],
         }}
         onSubmit={values => {
           values.invoice_ids = [invoice._id];
@@ -153,8 +155,12 @@ const PayBillsInvoiceDetails = props => {
                 <Row>
                   <Col cW="33%">
                     <Row>
-                      <Col className="popInfoLeft">Name</Col>
-                      <Col className="popInfoRight">{values.name}</Col>
+                      <Col className="popInfoLeft">Customer Code</Col>
+                      {values.customer_code ? (
+                        <Col className="popInfoRight">{values.customer_code}</Col>
+                      ) : (
+                        <Col className="popInfoRight">Passing by customer</Col>
+                      )}
                     </Row>
                     <Row>
                       <Col className="popInfoLeft">Mobile</Col>
@@ -196,8 +202,9 @@ const PayBillsInvoiceDetails = props => {
                           <th>Unit of measure</th>
                           <th>Unit price</th>
                           <th>Quantity</th>
-                          <th>Tax %</th>
                           <th>Amount</th>
+                          <th>Tax %</th>
+                          <th>Amount with tax</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -234,7 +241,7 @@ const PayBillsInvoiceDetails = props => {
                           <Col className="popInfoLeft">Total Tax</Col>
                           <Col className="popInfoRight">{totalTax}</Col>
                         </Row>
-                        {props.invoice.counter_invoices.length > 0 ? (
+                        {/* {props.invoice.counter_invoices.length > 0 ? (
                           <Row>
                             <Col className="popInfoLeft">Total Discount</Col>
                             <Col className="popInfoRight">{discount()}</Col>
@@ -250,7 +257,11 @@ const PayBillsInvoiceDetails = props => {
                             <Col className="popInfoLeft">Sum Total</Col>
                             <Col className="popInfoRight">{sumtotal2()}</Col>
                           </Row>
-                        )}
+                        )} */}
+                        <Row>
+                          <Col className="popInfoLeft">Sum Total</Col>
+                          <Col className="popInfoRight">{sumtotal2()}</Col>
+                        </Row>
                       </Col>
                     </Row>
                   </Col>
