@@ -241,6 +241,10 @@ const PayBillsInvoiceDetails = props => {
                           <Col className="popInfoLeft">Total Tax</Col>
                           <Col className="popInfoRight">{totalTax}</Col>
                         </Row>
+                        <Row>
+                          <Col className="popInfoLeft">Total Fees</Col>
+                          <Col className="popInfoRight">{fee}</Col>
+                        </Row>
                         {/* {props.invoice.counter_invoices.length > 0 ? (
                           <Row>
                             <Col className="popInfoLeft">Total Discount</Col>

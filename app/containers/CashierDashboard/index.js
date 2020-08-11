@@ -596,6 +596,19 @@ generateOTP = () => {
                 textAlign="center"
                 col
               >
+                <h4>Commision Generated</h4>
+                <div className="cardValue">
+                  {CURRENCY} 0
+                </div>
+              </Card>
+              <Card
+                horizontalMargin="7px"
+                cardWidth="125px"
+                smallValue
+                h4FontSize="16px"
+                textAlign="center"
+                col
+              >
                 <div className="cardValue">
                   <FormDialog />
                 </div>
