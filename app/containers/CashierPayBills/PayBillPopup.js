@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Formik, ErrorMessage } from 'formik';
 import Button from 'components/Button';
 import Row from 'components/Row';
@@ -40,6 +40,10 @@ const PayBillPopup = props => {
     setDisplayInvoiceDetailForm(false);
   };
 
+  useEffect(() => {
+    console.log(merchant._id);
+  }, []);
+
   return (
     <div>
       <Popup accentedH1 bigBody close={props.close}>
@@ -56,6 +60,7 @@ const PayBillPopup = props => {
                 onSubmit={async values => {
                   if (isMobile) {
                     getUserInvoices(values.invoiceIdOrMobile).then(data => {
+                      console.log(data.list);
                       setInvoiceList(data.list);
                       setDisplayInvoiceList(true);
                       if(data.list.length > 0){
@@ -63,27 +68,30 @@ const PayBillPopup = props => {
                       }
                     });
                   } else if (isInvoiceId) {
-                    getInvoiceDetails(values.invoiceIdOrMobile).then(data => {
-                      setEditingInvoice(data.details);
-                      setDisplayInvoiceDetailForm(true);
+                    getInvoiceDetails(values.invoiceIdOrMobile, merchant._id).then(data => {
+                      console.log(data.list);
+                      setInvoiceList(data.list);
+                      setDisplayInvoiceList(true);
+                      if(data.list.length > 0){
+                        setInvoiceName(data.list[0].name);
+                      }
                     });
                   }
                 }}
                 validationSchema={Yup.object().shape({
                   invoiceIdOrMobile: Yup.string()
-                    .max(10, 'Cannot exceed 10 digits')
                     .test('isMobile', '', value => {
-                      if (value.length === 10) {
-                        setMobile(true);
-                        setInvoiceId(false);
+                      if (isNaN(value)) {
+                        setMobile(false);
+                        setInvoiceId(true);
                         return false;
                       }
-                      setInvoiceId(true);
-                      setMobile(false);
+                      setInvoiceId(false);
+                      setMobile(true);
                       return false;
                     })
                     .test('isInvoice', '', value => {
-                      if (value.length < 10) {
+                      if (isNaN(value)) {
                         setInvoiceId(true);
                         setMobile(false);
                         return false;

@@ -71,6 +71,7 @@ export default class CashierDashboard extends Component {
       closingBalance: 0,
       cashPaid: 0,
       feeGenerated: 0,
+      commissionGenerated: 0,
       closingTime: null,
       perPage: 20,
       totalCount: 100,
@@ -378,6 +379,7 @@ generateOTP = () => {
               cashReceived: received,
               cashPaid: paid,
               feeGenerated: res.data.feeGenerated,
+              commissionGenerated: res.data.commissionGenerated,
               isClosed: res.data.isClosed
             },
             () => {
@@ -515,25 +517,6 @@ generateOTP = () => {
           <Main>
 
             <div className="clr">
-
-            <Card
-                horizontalMargin="7px"
-                cardWidth="125px"
-                h4FontSize="16px"
-                smallValue
-                textAlign="center"
-                height="5.5rem"
-                col
-              >
-                <div className="cardValue">
-                {
-                  this.state.tomorrow ?
-                  <Button onClick={this.openCashier}>Open Cashier</Button>
-                  : <Button disabled> Counter is Opened</Button>
-                }
-                </div>
-              </Card>
-
               <Card
                 horizontalMargin="7px"
                 cardWidth="151px"
@@ -598,10 +581,12 @@ generateOTP = () => {
               >
                 <h4>Commision Generated</h4>
                 <div className="cardValue">
-                  {CURRENCY} 0
+                  {CURRENCY}  {this.state.commissionGenerated.toFixed(2)}
                 </div>
               </Card>
-              <Card
+            </div>
+            <div className="clr">
+            <Card
                 horizontalMargin="7px"
                 cardWidth="125px"
                 smallValue
@@ -613,7 +598,23 @@ generateOTP = () => {
                   <FormDialog />
                 </div>
               </Card>
-
+              <Card
+                horizontalMargin="7px"
+                cardWidth="125px"
+                h4FontSize="16px"
+                smallValue
+                textAlign="center"
+                height="5.5rem"
+                col
+              >
+                <div className="cardValue">
+                {
+                  this.state.tomorrow ?
+                  <Button onClick={this.openCashier}>Open Cashier</Button>
+                  : <Button disabled> Counter is Opened</Button>
+                }
+                </div>
+              </Card>
             </div>
 
             <ActionBar

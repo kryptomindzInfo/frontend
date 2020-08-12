@@ -24,24 +24,25 @@ const getUserInvoices = async mobile => {
   }
 };
 
-const getInvoiceDetails = async number => {
+const getInvoiceDetails = async (number, merchant_id) => {
   try {
     const res = await axios.post(`${API_URL}/cashier/getInvoiceDetails`, {
-      token,
-      number,
+      token: token,
+      number: number,
+      merchant_id: merchant_id,
     });
     if (res.status === 200) {
       if (res.data.status === 0) {
         toast.error(res.data.message);
-        return { details: {}, loading: false };
+        return { list: [], loading: false };
       }
-      return { details: res.data.invoice, loading: false };
+      return { list: res.data.invoice, loading: false };
     }
     toast.error(res.data.message);
-    return { details: {}, loading: false };
+    return { list: [], loading: false };
   } catch (err) {
     toast.error('Something went wrong');
-    return { details: {}, loading: false };
+    return { list: [], loading: false };
   }
 };
 

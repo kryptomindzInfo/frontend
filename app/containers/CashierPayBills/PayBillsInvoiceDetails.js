@@ -215,21 +215,6 @@ const PayBillsInvoiceDetails = props => {
                     </Table>
                     <Row style={{ marginTop: '8px' }}>
                       <Col cW="50%">
-                        {invoice.counter_invoices.length > 0 ? (
-                          <div className="cardBody">
-                            <div className="popInfoLeft">Counter Invoices</div>
-                            <Table marginTop="5px" smallTd>
-                              <thead>
-                                <tr>
-                                  <th>Number</th>
-                                  <th>Description</th>
-                                  <th>Amount</th>
-                                </tr>
-                              </thead>
-                              <tbody>{getCounterInvoiceItems()}</tbody>
-                            </Table>
-                          </div>
-                        ) : null}
                       </Col>
                       <Col cW="25%"></Col>
                       <Col cW="25%">
@@ -282,11 +267,7 @@ const PayBillsInvoiceDetails = props => {
                       <Loader />
                     ) : (
                       <span>
-                        {props.invoice.counter_invoices.length > 0 ? (
-                          `Collect ${CURRENCY} ${sumtotal()} and Pay Bill`
-                        ):(
-                          `Collect ${CURRENCY} ${sumtotal2()} and Pay Bill`
-                        )}
+                          Collect {CURRENCY} {sumtotal2()} and Pay Bill
                       </span>
                     )}
                   </Button>
