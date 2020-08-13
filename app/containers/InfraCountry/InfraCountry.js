@@ -49,7 +49,26 @@ const InfraCountry = (props) => {
       return (
         <tr key={country._id}>
           <td className="tac">{country.name}</td>
-          <td className="tac">{country.ccode}</td>
+          <td className="tac bold">
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                <td className="tac">{country.ccode}</td>
+                <span className="absoluteMiddleRight primary popMenuTrigger">
+                  <i className="material-icons ">more_vert</i>
+                  <div className="popMenu">
+                    <span
+                      // onClick={() => handleDeleteOfferingPopupClick(offering)}
+                    >
+                      Delete
+                    </span>
+                  </div>
+                </span>
+              </div>
+            </td>
         </tr>
       );
     });

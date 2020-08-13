@@ -13,6 +13,7 @@ import { isEmpty } from 'lodash';
 const PayBillsInvoiceList = props => {
   const { merchant } = props;
   const [isLoading, setLoading] = useState(true);
+  const [isButtonLoading, setButtonLoading] = useState(false);
   const [selectedInvoiceList, setSelectedInvoiceList] = useState([]);
   const [totalFee, setTotalFee] = useState(0);
   const [feeList, setFeeList] = useState([]);
@@ -20,22 +21,29 @@ const PayBillsInvoiceList = props => {
   const [invoiceList, setInvoiceList] = useState(
     props.invoiceList.filter(i => i.paid === 0),
   );
-  const handleCheckboxClick = (e, invoice, index) => {
+  const handleCheckboxClick = async (e, invoice, index) => {
+    setButtonLoading(true);
     console.log(index);
     if(e.target.checked) {
       setTotalAmount(totalAmount + invoice.amount);
-      if(feeList[index]) {
-        setTotalFee(totalFee+feeList[index]);
-      }
+      const data = await checkCashierFee({
+        merchant_id: merchant._id,
+        amount: totalAmount + invoice.amount,
+      });
+      setTotalFee(data.fee);
       const list = [...selectedInvoiceList,invoice._id];
       setSelectedInvoiceList(list);
+      setButtonLoading(false);
     } else {
+      const data = await checkCashierFee({
+        merchant_id: merchant._id,
+        amount: totalAmount - invoice.amount,
+      });
+      setTotalFee(data.fee);
       const list = selectedInvoiceList.filter((val) => val !== invoice._id);
       setSelectedInvoiceList(list);
       setTotalAmount(totalAmount-invoice.amount);
-      if(feeList[index]) {
-        setTotalFee(totalFee-feeList[index]);
-      }
+      setButtonLoading(false);
     }
   };
 
@@ -75,10 +83,10 @@ const PayBillsInvoiceList = props => {
         </td>
         <td className="tac">{invoice.amount}</td>
         <td className="tac">
-          {feeList[index] ? feeList[index] : 'NA'}
+          {feeList[index] > 0 ? feeList[index] : 'NA'}
         </td>
         <td className="tac">
-        {feeList[index] ? invoice.amount+feeList[index] : invoice.amount}</td>
+        {feeList[index] > 0 ? invoice.amount+feeList[index] : 'NA'}</td>
         <td className="tac">{invoice.due_date} </td>
         <td className="tac bold">
           <div
@@ -99,11 +107,19 @@ const PayBillsInvoiceList = props => {
 
   const fetchfee = async() => {
     const feelist = invoiceList.map(async invoice => {
-      const data = await checkCashierFee({
-        merchant_id: merchant._id,
-        amount: invoice.amount,
-      })
-      return (data.fee);
+      if (invoice.amount < 0) {
+        const data = await checkCashierFee({
+          merchant_id: merchant._id,
+          amount: invoice.amount * -1,
+        });
+        return (-data.fee);
+      } else {
+        const data = await checkCashierFee({
+          merchant_id: merchant._id,
+          amount: invoice.amount,
+        });
+        return (data.fee);
+      }
     })
     const result= await Promise.all(feelist);
     return(result);
@@ -155,12 +171,12 @@ const PayBillsInvoiceList = props => {
           </tbody>
         </Table>
         <FormGroup>
-          {totalAmount + totalFee !== 0 ? (
+          {totalAmount > 0 ? (
             <Button onClick={handleMultipleInvoiceSubmit} filledBtn>
-              {isLoading ? (
+              {isButtonLoading ? (
                 <Loader />
               ) : (
-                `Collect ${totalAmount + totalFee} and Pay Bill`
+                `Collect Amount ${totalAmount} + Fee ${totalFee} = Total ${totalAmount+totalFee} and Pay Bill`
               )}
             </Button>
           ) : (
