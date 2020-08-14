@@ -46,6 +46,28 @@ const getInvoiceDetails = async (number, merchant_id) => {
   }
 };
 
+const getInvoiceByCustomerCode = async (customerCode, merchant_id) => {
+  try {
+    const res = await axios.post(`${API_URL}/cashier/getInvoicesForCustomerCode`, {
+      token: token,
+      customer_code: customerCode,
+      merchant_id: merchant_id,
+    });
+    if (res.status === 200) {
+      if (res.data.status === 0) {
+        toast.error(res.data.message);
+        return { list: [], loading: false };
+      }
+      return { list: res.data.invoice, loading: false };
+    }
+    toast.error(res.data.message);
+    return { list: [], loading: false };
+  } catch (err) {
+    toast.error('Something went wrong');
+    return { list: [], loading: false };
+  }
+};
+
 const payInvoice = async values => {
   try {
     const res = await axios.post(`${API_URL}/cashier/payInvoice`, {
@@ -64,4 +86,4 @@ const payInvoice = async values => {
   }
 };
 
-export { getUserInvoices, getInvoiceDetails, payInvoice };
+export { getUserInvoices, getInvoiceDetails, payInvoice, getInvoiceByCustomerCode};
