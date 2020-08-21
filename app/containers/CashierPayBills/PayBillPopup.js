@@ -18,8 +18,6 @@ import PayBillOTP from './PayBillOTP';
 const PayBillPopup = props => {
   const { merchant } = props;
   const [isLoading, setLoading] = useState(false);
-  const [isMobile, setMobile] = useState(false);
-  const [isInvoiceId, setInvoiceId] = useState(false);
   const [invoiceList, setInvoiceList] = useState([]);
   const [editingInvoice, setEditingInvoice] = useState({});
   const [displayInvoiceList, setDisplayInvoiceList] = useState(false);

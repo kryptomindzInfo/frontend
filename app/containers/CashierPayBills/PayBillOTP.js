@@ -16,7 +16,7 @@ const PayBillOTP = props => {
   const startTimer = () => {
     let time = 30;
     const setTime = setInterval(function() {
-      if (timer <= 0) {
+      if (time <= 0) {
         clearInterval(setTime);
         setResend(true);
       } else {

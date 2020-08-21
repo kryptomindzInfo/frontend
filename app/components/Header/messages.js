@@ -29,6 +29,10 @@ export default defineMessages({
     id: `${scope}.menu4`,
     defaultMessage: '',
   },
+  menu5: {
+    id: `${scope}.menu5`,
+    defaultMessage: '',
+  },
   bmenu1: {
     id: `${scope2}.menu1`,
     defaultMessage: '',

@@ -24,6 +24,7 @@ class BankNav extends Component {
     const branches = this.props.active == 'branches' ? 'true' : '';
     const cashier = this.props.active == 'cashier' ? 'true' : '';
     const merchants = this.props.active == 'merchants' ? 'true' : '';
+    const partners = this.props.active == 'partner' ? 'true' : '';
     const users = this.props.active == 'users' ? 'true' : '';
     const bankusers = this.props.active == 'bankusers' ? 'true' : '';
     const reports = this.props.active == 'reports' ? 'true' : '';
@@ -51,6 +52,12 @@ class BankNav extends Component {
           <A href="/bank/merchants">
             <Link active={merchants}>
               <FormattedMessage {...messages.menu3} />
+            </Link>
+          </A>
+
+          <A href="/bank/partners">
+            <Link active={partners}>
+              <FormattedMessage {...messages.menu5} />
             </Link>
           </A>
           <A>

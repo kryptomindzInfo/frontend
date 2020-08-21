@@ -25,6 +25,7 @@
   "boilerplate.components.Header.menu1": "Dashboard",
   "boilerplate.components.Header.menu2": "Bank",
   "boilerplate.components.Header.menu3": "Merchant",
+  "boilerplate.components.Header.menu5": "Partners",
   "boilerplate.components.Header.menu4": "Reports",
   "boilerplate.components.Header.welcome": "Welcome",
 

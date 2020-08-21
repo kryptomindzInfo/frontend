@@ -671,7 +671,6 @@ export default class BankPage extends Component {
                   <tbody>
                     {this.state.banks && this.state.banks.length > 0
                       ? this.state.banks.map(function(b) {
-                          console.log(b);
 
                           return (
                             <tr key={b._id}>
