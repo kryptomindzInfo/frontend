@@ -80,6 +80,7 @@ import InfraRoute from './InfraRoute';
 import GlobalStyle from '../../global-styles';
 import BankMerchantList from '../BankMerchantList/BankMerchantList';
 import BankPartnerListPage from '../BankPartners/BankPartnerListPage';
+import PartnerInfoPage from '../BankPartners/PartnerInfoPage';
 import MerchantFeesPage from '../BankMerchantList/fees/MerchantFeesPage';
 import CommissionFeesPage from '../BankMerchantList/commission/CommissionFeesPage';
 import MerchantSettingsPage from '../BankMerchantList/settings/MerchantSettingsPage';
@@ -252,6 +253,11 @@ export default function App(props) {
             exact
             path="/bank/partners"
             component={BankPartnerListPage}
+          />
+          <BankRoute
+            exact
+            path="/bank/partners/info/:id"
+            component={PartnerInfoPage}
           />
 
           <Route exact path="/branch/:bank?" component={BranchLogin} />

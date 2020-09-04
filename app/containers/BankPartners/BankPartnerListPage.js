@@ -15,7 +15,6 @@ import CreatePartnerPopup from './CreatePartnerPopup';
 import EnterOTPPopup from './EnterOTPPopup';
 import { STATIC_URL, API_URL } from '../App/constants';
 import Loader from '../../components/Loader';
-// import { fetchMerchantList } from './api/merchantAPI';
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
   position: 'bottom-right',
@@ -48,25 +47,26 @@ function BankPartnerListPage(props) {
     setOtpPopup(false);
   };
 
-  // const fetchPartnertList = async () => {
-  //   try {
-  //     const res = await axios.post(`${API_URL}/bank/listMerchants`, {
-  //       token,
-  //     });
-  //     if (res.status === 200) {
-  //       if (res.data.status === 0) {
-  //         toast.error(res.data.message);
-  //         return { list: [], loading: false };
-  //       }
-  //       return { list: res.data.list, loading: false };
-  //     }
-  //     toast.error(res.data.message);
-  //     return { list: [], loading: false };
-  //   } catch (err) {
-  //     toast.error('Something went wrong');
-  //     return { list: [], loading: false };
-  //   }
-  // };
+  const fetchPartnerList = async () => {
+    try {
+      const res = await axios.post(`${API_URL}/bank/listPartners`, {
+        token,
+      });
+      if (res.status === 200) {
+        console.log(res);
+        if (res.data.status === 0) {
+          toast.error(res.data.message);
+          return { list: [], loading: false };
+        }
+        return { list: res.data.partners, loading: false };
+      }
+      toast.error(res.data.message);
+      return { list: [], loading: false };
+    } catch (err) {
+      toast.error('Something went wrong');
+      return { list: [], loading: false };
+    }
+  };
 
   const partnerAPI = async (values, apiType) => {
     let API = '';
@@ -145,83 +145,81 @@ function BankPartnerListPage(props) {
     setLoading(false);
   };
 
-  const refreshMerchantList = async () => {
-    const data = await fetchMerchantList();
-    setMerchantList(data.list);
+  const refreshPartnertList = async () => {
+    const data = await fetchPartnerList();
+    setPartnerList(data.list);
     setLoading(data.loading);
   };
 
-//   useEffect(() => {
-//     setLoading(true);
-//     const getMerchantList = async () => {
-//       const data = await fetchMerchantList();
-//       setMerchantList(data.list);
-//       setLoading(data.loading);
-//     };
-//     getMerchantList();
-//   }, []); // Or [] if effect doesn't need props or state
+  useEffect(() => {
+    setLoading(true);
+    const getPartnerList = async () => {
+      const data = await fetchPartnerList();
+      setPartnerList(data.list);
+      setLoading(data.loading);
+    };
+    getPartnerList();
+  }, []); // Or [] if effect doesn't need props or state
 
   if (isLoading) {
     return <Loader fullPage />;
   }
-//   const merchants = merchantList.map(merchant => (
-//     <tr key={merchant._id}>
-//       <td className="tac">
-//         <img
-//           style={{ height: '60px', width: '60px' }}
-//           src={`${STATIC_URL}${merchant.logo}`}
-//         />
-//       </td>
-//       <td className="tac">{merchant.name}</td>
-//       <td className="tac">{merchant.bills_paid}</td>
-//       <td className="tac">{merchant.bills_raised}</td>
-//       <td className="tac">{merchant.amount_collected}</td>
-//       <td className="tac">{merchant.amount_due}</td>
-//       <td className="tac">{merchant.fee_generated}</td>
-//       <td className="tac">
-//         <div
-//           style={{
-//             display: 'flex',
-//             justifyContent: 'center',
-//           }}
-//         >
-//           <td className="tac">{merchant.creator === 0 ? 'Bank' : 'Infra'}</td>
-//           <span
-//             style={{ top: 'inherit' }}
-//             className="absoluteMiddleRight primary popMenuTrigger"
-//           >
-//             <i className="material-icons ">more_vert</i>
-//             <div className="popMenu">
-//               <span
-//                 onClick={() => handleMerchantPopupClick('update', merchant)}
-//               >
-//                 Edit
-//               </span>
-//               <span
-//                 onClick={() => {
-//                   localStorage.setItem('bankId', merchant.bank_id);
-//                   localStorage.setItem(
-//                     'currentMerchant',
-//                     JSON.stringify(merchant),
-//                   );
-//                   props.history.push({
-//                     pathname: `/bank/merchants/info/${merchant._id}`,
-//                   });
-//                 }}
-//               >
-//                 Info
-//               </span>
-//               {merchant.status === -1 ? (
-//                 <span>Unblock</span>
-//               ) : (
-//                 <span>Block</span>
-//               )}
-//             </div>
-//           </span>
-//         </div>
-//       </td>
-//     </tr>
-//   ));
+  const partners = partnerList.map(partner => (
+    <tr key={partner._id}>
+      <td className="tac">
+        <img
+          style={{ height: '60px', width: '60px' }}
+          src={`${STATIC_URL}${partner.logo}`}
+        />
+      </td>
+      <td className="tac">{partner.name}</td>
+      <td className="tac">{partner.code}</td>
+      <td className="tac">{partner.total_branches}</td>
+      <td className="tac">{partner.total_cashiers}</td>
+      <td className="tac">
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <td className="tac">{partner.total_trans}</td>
+          <span
+            style={{ top: 'inherit' }}
+            className="absoluteMiddleRight primary popMenuTrigger"
+          >
+            <i className="material-icons ">more_vert</i>
+            <div className="popMenu">
+              <span
+                onClick={() => handlePartnerPopupClick('update', partner)}
+              >
+                Edit
+              </span>
+              <span
+                onClick={() => {
+                  localStorage.setItem('bankId', partner.bank_id);
+                  localStorage.setItem(
+                    'currentPartner',
+                    JSON.stringify(partner),
+                  );
+                  props.history.push({
+                    pathname: `/bank/partners/info/${partner._id}`,
+                  });
+                }}
+              >
+                Info
+              </span>
+              {partner.status === -1 ? (
+                <span>Unblock</span>
+              ) : (
+                <span>Block</span>
+              )}
+            </div>
+          </span>
+        </div>
+      </td>
+    </tr>
+  ));
   return (
     <Wrapper from="bank">
       <Helmet>
@@ -267,10 +265,13 @@ function BankPartnerListPage(props) {
                     <th>Logo</th>
                     <th>Name</th>
                     <th>Code</th>
+                    <th>Total Branches</th>
+                    <th>Total Cashiers</th>
+                    <th>Total Transactions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {/* {merchantList && merchantList.length > 0 ? merchants : null} */}
+                  {partnerList && partnerList.length > 0 ? partners : null}
                 </tbody>
               </Table>
             </div>

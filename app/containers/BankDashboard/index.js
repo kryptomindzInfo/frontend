@@ -83,9 +83,6 @@ export default class BankDashboard extends Component {
         });
 }
 
-
-
-
   render() {
     const { loading, redirect, popup } = this.state;
     if (loading) {
