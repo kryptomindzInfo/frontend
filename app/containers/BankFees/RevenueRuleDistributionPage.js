@@ -451,7 +451,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                   >
                     Bank Partner
                   </span>
-                  <span
+                  {/* <span
                     className={`${
                       this.state.bankMerchantsTable
                         ? 'ActiveTab'
@@ -460,7 +460,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                     onClick={this.showBankMerchants}
                   >
                     Bank Merchants
-                  </span>
+                  </span> */}
                 </Grid>
                 <MaterialTable
                   style={{

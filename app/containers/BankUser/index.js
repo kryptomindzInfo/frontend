@@ -339,6 +339,7 @@ export default class BankUser extends Component {
         name: this.state.name,
         email: this.state.email,
         mobile: this.state.mobile,
+        ccode: this.state.ccode,
         username: this.state.username,
         password: this.state.password,
         branch_id: this.state.branch_id,
