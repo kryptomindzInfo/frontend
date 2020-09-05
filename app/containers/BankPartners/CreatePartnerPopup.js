@@ -157,7 +157,7 @@ function CreatePartnerPopup(props) {
                   <TextField
                     size="small"
                     name="code"
-                    label="Partner ID"
+                    label="code"
                     fullWidth
                     variant="outlined"
                     style={{ marginBottom: '14px' }}

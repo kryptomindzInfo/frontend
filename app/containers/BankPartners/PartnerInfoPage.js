@@ -74,7 +74,7 @@ const PartnerInfoPage = props => {
                 <Col className="infoRight">{partnerInfo.mobile}</Col>
               </Row>
               <Row>
-                <Col className="infoLeft">Merchant Code</Col>
+                <Col className="infoLeft">Partner Code</Col>
                 <Col className="infoRight">{partnerInfo.code}</Col>
               </Row>
               <Row>
