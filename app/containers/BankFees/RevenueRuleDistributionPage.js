@@ -15,6 +15,8 @@ import { toast } from 'react-toastify';
 import Button from 'components/Button';
 import Divider from '@material-ui/core/Divider';
 import AddBranchModal from './AddBranchDialog';
+import AddPartnerModal from './AddPartnerDialog';
+
 
 import { API_URL } from '../App/constants';
 
@@ -107,7 +109,6 @@ class RevenueRuleDistubutionPage extends React.Component {
 
   componentWillReceiveProps(props) {
     const {state} = this;
-    console.log(props);
     const {selectedBankFeeId, revenueData} = props;
     const {name, trans_type, active, bank_id} = props.bankFeeDetails;
     let fixed_amount = "";
@@ -159,10 +160,9 @@ class RevenueRuleDistubutionPage extends React.Component {
   }
 
   showRevenueRuleDistributionPage = () => {
-    // this.setState({ revenueRuleDistributionPage: 'true', selectedBankFeeId: bankFee._id, bankFeeDetails: bankFee });
-    // console.log(bankFeeId);
     axios.post(`${API_URL}/getRevenueFeeFromBankFeeId/${this.state.selectedBankFeeId}`,{ token: this.state.token })
     .then(d => {
+      console.log(d);
       const {data} = d
       if(data.code == 1) {
         this.setState({
@@ -230,21 +230,11 @@ class RevenueRuleDistubutionPage extends React.Component {
       });
     };
 
-
-
-
-
-
-
-
-      editRrRules = (rrId) => {
-
-          this.setState({
-            editRulesLoading: true
-          });
-
-
-          let { name, trans_type, active, bank_id, token, revenuePercentage, revenueAmount, selectedBankFeeId } = this.state;
+  editRrRules = (rrId) => {
+    this.setState({
+      editRulesLoading: true
+    });
+    let { name, trans_type, active, bank_id, token, revenuePercentage, revenueAmount, selectedBankFeeId } = this.state;
         //   let {name, trans_type, active, ranges, bank_id, token} = this.state;
 
     let rule_id = rrId;
@@ -255,67 +245,69 @@ class RevenueRuleDistubutionPage extends React.Component {
               percentage: revenuePercentage,
         }];
 
-
-        axios
-          .post(`${API_URL  }/editBankBankRule`, {
-            name,
-            trans_type, active, ranges, bank_id, token, rule_id,selectedBankFeeId
-          })
-          .then(res => {
-            if(res.status == 200){
-              if(res.data.error){
-                throw res.data.error;
-              }else{
-                //console.log(res.data);
-                this.setState({
-                  notification: 'Bank Rule Updated'
-                }, () => {
-                  this.success();
-                  let ba = this.state.bank;
-                  let history = this.props.history;
-                  setTimeout(() => {
-                    // history.push('/bank/fees/');
-                    this.props.showRevenueRuleDistributionPage({trans_type,_id: selectedBankFeeId , name })
-                  }, 1000);
-              });
-              }
-            }else{
-              const error = new Error(res.data.error);
-              throw error;
-            }
-            this.setState({
-              editRulesLoading: false
-            });
-          })
-          .catch(err => {
-            this.setState({
-              notification: (err.response) ? err.response.data.error : err.toString(),
-              editRulesLoading: false
-            });
-            this.error();
+    axios.post(`${API_URL  }/editBankBankRule`, {
+      name,
+      trans_type, active, ranges, bank_id, token, rule_id,selectedBankFeeId
+    })
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.error){
+          throw res.data.error;
+        } else {
+          //console.log(res.data);
+          this.setState({
+            notification: 'Bank Rule Updated'
+          }, () => {
+            this.success();
+            let ba = this.state.bank;
+            let history = this.props.history;
+            setTimeout(() => {
+            // history.push('/bank/fees/');
+              this.props.showRevenueRuleDistributionPage({trans_type,_id: selectedBankFeeId , name })
+            }, 1000);
           });
-        //}
-      };
-
-
-
-      getBranchDetailsFromModal = (branchDetails) => {
-
-        console.log(branchDetails);
-        console.log(this.state.branchWithSpecificRevenue);
-        if(this.state.branchWithSpecificRevenue.map(d => d.branch_code).includes(branchDetails[0].bcode)) return alert("Branch already saved")
-
-        this.setState(prevState => ({
-          ...prevState,
-          branchWithSpecificRevenue: [
-            ...prevState.branchWithSpecificRevenue,
-            { branch_code : branchDetails[0].bcode, branch_name: branchDetails[0].name, claim : 0, send : 0 }
-          ]
-        }))
-
-        this.setState({open : false});
-
+        }
+      } else {
+        const error = new Error(res.data.error);
+        throw error;
       }
+      this.setState({
+        editRulesLoading: false
+      });
+    })
+    .catch(err => {
+      this.setState({
+        notification: (err.response) ? err.response.data.error : err.toString(),
+        editRulesLoading: false
+      });
+      this.error();
+    });
+  };
+
+  getBranchDetailsFromModal = (branchDetails) => {
+    if(this.state.branchWithSpecificRevenue.map(d => d.branch_code).includes(branchDetails[0].bcode)) return alert("Branch already saved")
+    this.setState(prevState => ({
+      ...prevState,
+      branchWithSpecificRevenue: [
+        ...prevState.branchWithSpecificRevenue,
+        { branch_code : branchDetails[0].bcode, branch_name: branchDetails[0].name, claim : 0, send : 0 }
+      ]
+    }))
+    this.setState({open : false});
+  }
+
+  getPartnerDetailsFromModal = (partnerDetails) => {
+    if(this.state.partnerWithSpecificRevenue.map(d => d.partner_code).includes(partnerDetails[0].code)) return alert("Partner already saved")
+    this.setState(prevState => ({
+      ...prevState,
+      partnerWithSpecificRevenue: [
+        ...prevState.partnerWithSpecificRevenue,
+        { branch_code : partnerDetails[0].code, branch_name: partnerDetails[0].name, claim : 0, send : 0 }
+      ]
+    }))
+    this.setState({partneropen : false});
+  }
+
     render() {
       const {classes} = this.props;
       return <Grid container style={{ width: '74%', border: '1px solid grey' }}>
@@ -730,7 +722,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                             // let {branchWithSpecificRevenue} = this.state;
                             this.setState(prevState => ({
                               ...prevState,
-                              partnerWithSpecificRevenue: prevState.partnerWithSpecificRevenue.filter(b => b.branch_code !== d.branch_code)
+                              partnerWithSpecificRevenue: prevState.partnerWithSpecificRevenue.filter(b => b.partner_code !== d.partner_code)
                             }))
                           }}
                         >
@@ -764,6 +756,7 @@ class RevenueRuleDistubutionPage extends React.Component {
           ) : null }
         </Grid>
         <AddBranchModal open={this.state.open} bank_id={this.state.bank_id} handleClose={() => this.setState({open : false})} getBranchDetailsFromModal={this.getBranchDetailsFromModal}/>
+        <AddPartnerModal partneropen={this.state.partneropen} bank_id={this.state.bank_id} handleClose={() => this.setState({partneropen : false})} getPartnerDetailsFromModal={this.getPartnerDetailsFromModal}/>
       </Grid>
     }
 }
