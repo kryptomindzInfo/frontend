@@ -102,7 +102,7 @@ class AddPartnerDialog extends React.Component {
             id="customized-dialog-title"
             onClose={this.props.handleClose}
           >
-            Please enter brach ID
+            Please enter Parter Code
           </DialogTitle>
           <DialogContent>
             <TextField

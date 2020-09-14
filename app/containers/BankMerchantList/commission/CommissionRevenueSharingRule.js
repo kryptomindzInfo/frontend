@@ -42,6 +42,7 @@ const CommissionRevenueSharingRule = props => {
   );
   const [type, setType] = useState(props.type);
   const [id, setId] = useState(props.id);
+  const [activeTab, setActiveTab] = useState(props.id);
   const [openBranchModal, setOpenBranchModal] = useState(false);
   const [branchPartnerShare, setBranchPartnerShare] = useState(
     Number(props.editingRule.partner_share_percentage),
@@ -248,10 +249,30 @@ const CommissionRevenueSharingRule = props => {
                   borderBottom: '1px solid #417505',
                 }}
               >
+                <Col cW = "23%">
+                  <span
+                    className={`${
+                      activeTab ===  'branch' ? 'ActiveTab' : 'InactiveTab'
+                    } `}
+                    // className={classes.bankBranches}
+                    onClick={() => setActiveTab('branch')}
+                  >
+                    Bank Branches
+                  </span>
+                </Col>
                 <Col>
-                  <span className="ActiveTab">Bank Branches</span>
+                  <span
+                    className={`${
+                      activeTab ===  'partner' ? 'ActiveTab' : 'InactiveTab'
+                    } `}
+                    // className={classes.bankBranches}
+                    onClick={() => setActiveTab('partner')}
+                  >
+                    Bank Partners
+                  </span>
                 </Col>
               </Row>
+              
               <Row
                 vAlign="left"
                 justifiy="flex-start"

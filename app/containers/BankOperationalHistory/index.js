@@ -404,7 +404,7 @@ export default class BankOperationalHistory extends Component {
                             dis.state.filter == '' ? (
                             <tr key={b.TxId}>
                               <td>
-                                <div className="labelGrey">{fulldate}</div>
+                            <div className="labelGrey">{fulldate}</div>
                               </td>
                               <td>
                                 <div className="labelBlue">

@@ -35,6 +35,7 @@ toast.configure({
 
 const MerchantRevenueSharingRule = props => {
   const [isLoading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('branch');
   const [share, setShare] = useState(props.editingRule.infra_share);
   const [infraStatus, setInfraStatus] = useState(
     props.editingRule.infra_approve_status,
@@ -289,11 +290,31 @@ const MerchantRevenueSharingRule = props => {
                   borderBottom: '1px solid #417505',
                 }}
               >
+                <Col cW = "23%">
+                  <span
+                    className={`${
+                      activeTab ===  'branch' ? 'ActiveTab' : 'InactiveTab'
+                    } `}
+                    // className={classes.bankBranches}
+                    onClick={() => setActiveTab('branch')}
+                  >
+                    Bank Branches
+                  </span>
+                </Col>
                 <Col>
-                  <span className="ActiveTab">Bank Branches</span>
+                  <span
+                    className={`${
+                      activeTab ===  'partner' ? 'ActiveTab' : 'InactiveTab'
+                    } `}
+                    // className={classes.bankBranches}
+                    onClick={() => setActiveTab('partner')}
+                  >
+                    Bank Partners
+                  </span>
                 </Col>
               </Row>
-              <Row
+              {activeTab ===  'branch' ? (
+                <Row
                 vAlign="left"
                 justifiy="flex-start"
                 style={{ padding: '2%' }}
@@ -315,7 +336,7 @@ const MerchantRevenueSharingRule = props => {
                         <Form>
                           <Col cW="100%" textAlign="center">
                             <FormGroup>
-                              <label htmlFor="payBill">Sharing %</label>
+                              <label htmlFor="payBill">Sharing % for branches</label>
                               <TextInput
                                 type="number"
                                 name="payBill"
@@ -342,6 +363,57 @@ const MerchantRevenueSharingRule = props => {
                   }}
                 </Formik>
               </Row>
+              ) : (
+                <Row
+                vAlign="left"
+                justifiy="flex-start"
+                style={{ padding: '2%' }}
+              >
+                <Formik
+                  enableReinitialize
+                  initialValues={{
+                    payBill: branchPartnerShare || '',
+                  }}
+                  onSubmit={values => {}}
+                >
+                  {formikProps => {
+                    const { handleChange, handleBlur, values } = formikProps;
+                    return (
+                      <div>
+                        <h5 style={{ color: 'black' }}>
+                          Standard Revenue Sharing Rule
+                        </h5>
+                        <Form>
+                          <Col cW="100%" textAlign="center">
+                            <FormGroup>
+                              <label htmlFor="payBill">Sharing % for partner</label>
+                              <TextInput
+                                type="number"
+                                name="payBill"
+                                value={values.payBill}
+                                onFocus={e => {
+                                  inputFocus(e);
+                                  handleChange(e);
+                                }}
+                                onBlur={e => {
+                                  inputBlur(e);
+                                  handleBlur(e);
+                                }}
+                                onChange={e => {
+                                  setBranchPartnerShare(e.target.value);
+                                  handleChange(e);
+                                }}
+                              />
+                              <ErrorMessage name="payBill" />
+                            </FormGroup>
+                          </Col>
+                        </Form>
+                      </div>
+                    );
+                  }}
+                </Formik>
+              </Row>
+              )}
             </div>
           ) : null}
           {type !== 0 ? (

@@ -149,7 +149,7 @@ const PayBillsInvoiceList = props => {
         <td className="tac">{invoice.amount}</td>
         <td className="tac">{penaltyList[index]}</td>
         <td className="tac">
-          {feeList[index] > 0 ? feeList[index] : 'NA'}
+          {feeList[index] > 0 ? feeList[index].toFixed(2) : 'NA'}
         </td>
         <td className="tac">
         {feeList[index] > 0 ? invoice.amount+feeList[index]+penaltyList[index] : 'NA'}</td>
@@ -198,25 +198,20 @@ const PayBillsInvoiceList = props => {
       }
       const datesplit = invoice.due_date.split("/");
       const dueDate = new Date(datesplit[0],datesplit[1],datesplit[2]);
-      if (rule.type === 'once') {
-        if( currentDate.getTime() <= dueDate.getTime()){
+      if (currentDate.getDate() <= dueDate.getDate()) {
           return (0);
-        } else {
-          return (rule.fixed_amount + (invoice.amount*rule.percentage)/100);
-        }
       } else {
-        if( currentDate.getTime() <= dueDate.getTime()){
-          return (0);
+        if(rule.type === 'once') {
+            return (rule.fixed_amount + (invoice.amount*rule.percentage)/100);
         } else {
-          const diffTime = Math.abs(currentDate - dueDate);
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          return ((rule.fixed_amount + invoice.amount/rule.percentage)*diffDays);
+            const diffDays = currentDate.getDate() - dueDate.getDate();
+            return ((rule.fixed_amount + (invoice.amount*rule.percentage)/100)*diffDays);
         }
       }
-    })
+    });
     const result= await Promise.all(penaltylist);
     return(result);
-  }
+  };
 
   const fetchPenaltyRule = async() => {
     const data = await getPenaltyRule({

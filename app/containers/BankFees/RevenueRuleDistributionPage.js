@@ -302,7 +302,7 @@ class RevenueRuleDistubutionPage extends React.Component {
       ...prevState,
       partnerWithSpecificRevenue: [
         ...prevState.partnerWithSpecificRevenue,
-        { branch_code : partnerDetails[0].code, branch_name: partnerDetails[0].name, claim : 0, send : 0 }
+        { partner_code : partnerDetails[0].code, partner_name: partnerDetails[0].name, claim : 0, send : 0 }
       ]
     }))
     this.setState({partneropen : false});
@@ -663,10 +663,10 @@ class RevenueRuleDistubutionPage extends React.Component {
                     {this.state.partnerWithSpecificRevenue.map((d,i) => (
                       <>
                       <Grid item xs={2}>
-                        {d.branch_code}
+                        {d.partner_code}
                       </Grid>
                       <Grid item xs={2}>
-                        {d.branch_name}
+                        {d.partner_name}
                       </Grid>
                       <Grid item xs={3}>
                         <TextField
