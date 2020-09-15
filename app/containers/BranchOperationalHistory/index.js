@@ -474,7 +474,7 @@ export default class BranchOperationalHistory extends Component {
                           var isoformat = b.Timestamp;
                           var readable = new Date(isoformat);
                           var m = readable.getMonth(); // returns 6
-                          var d = readable.getDay(); // returns 15
+                          var d = readable.getDate(); // returns 15
                           var y = readable.getFullYear();
                           var h = readable.getHours();
                           var mi = readable.getMinutes();

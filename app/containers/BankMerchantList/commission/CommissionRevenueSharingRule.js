@@ -53,10 +53,10 @@ const CommissionRevenueSharingRule = props => {
     Number(props.editingRule.partner_share_percentage),
   );
   const [branchWithSpecificRevenue, setBranchWithSpecificRevenue] = useState(
-    props.editingRule.specific_partners_share,
+    props.editingRule.specific_partners_share || [],
   );
   const [partnerWithSpecificRevenue, setPartnerWithSpecificRevenue] = useState(
-    props.editingRule.specific_partners_branch_share,
+    props.editingRule.specific_partners_branch_share || [],
   );
   const [bankId, setBankId] = useState(localStorage.getItem('bankId'));
 
