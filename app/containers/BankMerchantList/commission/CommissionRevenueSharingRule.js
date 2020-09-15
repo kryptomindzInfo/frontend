@@ -24,6 +24,7 @@ import {
   updatePartnerShare,
 } from '../api/merchantAPI';
 import AddBranchModal from '../../BankFees/AddBranchDialog';
+import AddPartnerModal from '../../BankFees/AddPartnerDialog';
 
 toast.configure({
   position: 'bottom-right',
@@ -42,13 +43,20 @@ const CommissionRevenueSharingRule = props => {
   );
   const [type, setType] = useState(props.type);
   const [id, setId] = useState(props.id);
-  const [activeTab, setActiveTab] = useState(props.id);
+  const [activeTab, setActiveTab] = useState('branch');
   const [openBranchModal, setOpenBranchModal] = useState(false);
+  const [openPartnerModal, setOpenPartnerModal] = useState(false);
+  const [partnerBranchShare, setPartnerBranchShare] = useState(
+    Number(props.editingRule.partner_branch_share),
+  );
   const [branchPartnerShare, setBranchPartnerShare] = useState(
     Number(props.editingRule.partner_share_percentage),
   );
   const [branchWithSpecificRevenue, setBranchWithSpecificRevenue] = useState(
-    props.editingRule.specific_branch_share,
+    props.editingRule.specific_partners_share,
+  );
+  const [partnerWithSpecificRevenue, setPartnerWithSpecificRevenue] = useState(
+    props.editingRule.specific_partners_branch_share,
   );
   const [bankId, setBankId] = useState(localStorage.getItem('bankId'));
 
@@ -75,10 +83,36 @@ const CommissionRevenueSharingRule = props => {
     setOpenBranchModal(false);
   };
 
+  const getPartnerDetailsFromModal = partnerDetails => {
+    if (partnerWithSpecificRevenue && partnerWithSpecificRevenue.length > 0) {
+      if (
+        partnerWithSpecificRevenue
+          .map(d => d.code)
+          .includes(partnerDetails[0].code)
+      ) {
+        return alert('Partner already saved');
+      }
+    }
+
+    setPartnerWithSpecificRevenue([
+      ...partnerWithSpecificRevenue,
+      {
+        code: partnerDetails[0].code,
+        name: partnerDetails[0].name,
+        percentage: 0,
+      },
+    ]);
+
+    setOpenPartnerModal(false);
+  };
+
   useEffect(() => {
     if (Object.keys(share).length > 0) {
       correctFocus('update');
     }
+    console.log(props.editingRule);
+    console.log(partnerBranchShare);
+    
   });
 
   const nameBasedOnStatus = () => {
@@ -272,18 +306,70 @@ const CommissionRevenueSharingRule = props => {
                   </span>
                 </Col>
               </Row>
-              
-              <Row
+              {activeTab ===  'branch' ? (
+                <Row
+                  vAlign="left"
+                  justifiy="flex-start"
+                  style={{ padding: '2%' }}
+                >
+                  <Formik
+                    initialValues={{
+                      payBill: String(branchPartnerShare) || '',
+                    }}
+                    validationSchema={Yup.object().shape({
+                      payBill: Yup.number().required('Pay Bill required'),
+                    })}
+                    onSubmit={values => {}}
+                  >
+                    {formikProps => {
+                      const { handleChange, handleBlur, values } = formikProps;
+                      return (
+                        <div>
+                          <h5 style={{ color: 'black' }}>
+                            Standard Commission Sharing Rule For Branches
+                          </h5>
+                          <Form>
+                            <Col cW="100%" textAlign="center">
+                              <FormGroup>
+                                <label htmlFor="payBill">Sharing %</label>
+                                <TextInput
+                                  type="number"
+                                  name="payBill"
+                                  value={values.payBill}
+                                  onFocus={e => {
+                                    inputFocus(e);
+                                    handleChange(e);
+                                  }}
+                                  onBlur={e => {
+                                    inputBlur(e);
+                                    handleBlur(e);
+                                  }}
+                                  onChange={e => {
+                                    setBranchPartnerShare(e.target.value);
+                                    handleChange(e);
+                                  }}
+                                />
+                                <ErrorMessage name="payBill" />
+                              </FormGroup>
+                            </Col>
+                          </Form>
+                        </div>
+                      );
+                    }}
+                  </Formik>
+                </Row>
+              ) : (
+                <Row
                 vAlign="left"
                 justifiy="flex-start"
                 style={{ padding: '2%' }}
               >
                 <Formik
                   initialValues={{
-                    payBill: String(branchPartnerShare) || '',
+                    sharing_percentage: String(partnerBranchShare) || '',
                   }}
                   validationSchema={Yup.object().shape({
-                    payBill: Yup.number().required('Pay Bill required'),
+                    payBill: Yup.number().required('Sharing percentage required'),
                   })}
                   onSubmit={values => {}}
                 >
@@ -292,7 +378,7 @@ const CommissionRevenueSharingRule = props => {
                     return (
                       <div>
                         <h5 style={{ color: 'black' }}>
-                          Standard Commission Sharing Rule
+                          Standard Commission Sharing Rule For Partners
                         </h5>
                         <Form>
                           <Col cW="100%" textAlign="center">
@@ -300,8 +386,8 @@ const CommissionRevenueSharingRule = props => {
                               <label htmlFor="payBill">Sharing %</label>
                               <TextInput
                                 type="number"
-                                name="payBill"
-                                value={values.payBill}
+                                name="sharing_percentage"
+                                value={partnerBranchShare}
                                 onFocus={e => {
                                   inputFocus(e);
                                   handleChange(e);
@@ -311,7 +397,7 @@ const CommissionRevenueSharingRule = props => {
                                   handleBlur(e);
                                 }}
                                 onChange={e => {
-                                  setBranchPartnerShare(e.target.value);
+                                  setPartnerBranchShare(e.target.value);
                                   handleChange(e);
                                 }}
                               />
@@ -324,10 +410,13 @@ const CommissionRevenueSharingRule = props => {
                   }}
                 </Formik>
               </Row>
+              )}
             </div>
           ) : null}
           {type !== 0 ? (
-            <div
+            <div>
+            {activeTab ===  'branch' ? (
+              <div
               style={{
                 border: '1px solid #d0d6d1',
               }}
@@ -347,28 +436,26 @@ const CommissionRevenueSharingRule = props => {
                   </h5>
                 </Col>
                 <Col cW="100%" textAlign="right">
-                  <Button float="right"> Add Branch</Button>
+                  <Button float="right" onClick={() => setOpenBranchModal(true)}> Add Branch</Button>
                 </Col>
               </Row>
-              {branchWithSpecificRevenue &&
-              branchWithSpecificRevenue.length > 0 ? (
-                  <Row
-                    vAlign="left"
-                    justifiy="flex-start"
-                    style={{
-                      padding: '2%',
-                      margin: '2%',
-                      borderBottom: '1px solid #d0d6d1',
-                    }}
-                  >
-                    {branchWithSpecificRevenue.map((d, i) => (
-                    <>
+              {branchWithSpecificRevenue.length > 0 ? 
+                  branchWithSpecificRevenue.map((d, i) => (
+                    <Row
+                      vAlign="left"
+                      justifiy="flex-start"
+                      style={{
+                        padding: '2%',
+                        margin: '2%',
+                        borderBottom: '1px solid #d0d6d1',
+                      }}
+                    >
                       <Col>{d.code}</Col>
                       <Col>{d.name}</Col>
                       <Col style={{ marginTop: '-10px' }}>
                         <TextField
                           type="number"
-                          label="pay bills%"
+                          label="Sharing %"
                           margin="dense"
                           variant="outlined"
                           onChange={e => {
@@ -386,7 +473,7 @@ const CommissionRevenueSharingRule = props => {
                           onClick={() => {
                             setBranchWithSpecificRevenue(
                               branchWithSpecificRevenue.filter(
-                                branch => d.branch_code !== branch.code,
+                                branch => d.code !== branch.code,
                               ),
                             );
                           }}
@@ -395,9 +482,124 @@ const CommissionRevenueSharingRule = props => {
                           delete
                         </Button>
                       </Col>
-                    </>
-                    ))}
-                  </Row>
+                    </Row>
+                    ))
+                  
+                 : null}
+              <Row
+                vAlign="left"
+                height="125px"
+                justifiy="flex-start"
+                style={{ padding: '2%' }}
+              >
+                <Col cW="100%" textAlign="center" />
+                <Col
+                  cW="20%"
+                  textAlign="right"
+                  style={{
+                    display: 'flex',
+                    alignItems: 'flex-end',
+                    justifyContent: 'flex-end',
+                  }}
+                >
+                  <Button
+                    noMin
+                    type="submit"
+                    filledBtn
+                    style={{
+                      marginLeft: '15px',
+                      fontSize: '16px',
+                      paddingRight: '10px',
+                      paddingLeft: '10px',
+                      float: 'right',
+                    }}
+                    onClick={() =>
+                      updatePartnerShare(props, 'Commission', {
+                        percentage: branchPartnerShare,
+                        partner_branch_share: partnerBranchShare,
+                        specific_partners_share: branchWithSpecificRevenue,
+                        specific_partners_branch_share:partnerWithSpecificRevenue,
+                        commission_id: id,
+                      }).then(rule => {
+                        props.refreshRule(rule);
+                      })
+                    }
+                  >
+                    Update
+                  </Button>
+                </Col>
+              </Row>
+            </div>
+            ) : (
+              <div
+              style={{
+                border: '1px solid #d0d6d1',
+              }}
+            >
+              <Row
+                vAlign="left"
+                justifiy="flex-start"
+                style={{
+                  padding: '2%',
+                  margin: '2%',
+                  borderBottom: '1px solid #d0d6d1',
+                }}
+              >
+                <Col cW="100%" textAlign="center">
+                  <h5 style={{ color: 'black', textAlign: 'start' }}>
+                    Partners with Specific Commission Sharing
+                  </h5>
+                </Col>
+                <Col cW="100%" textAlign="right">
+                  <Button float="right"  onClick={() => setOpenPartnerModal(true)}> Add Partner</Button>
+                </Col>
+              </Row>
+              {partnerWithSpecificRevenue &&
+                partnerWithSpecificRevenue.length > 0 ? 
+                partnerWithSpecificRevenue.map((d, i) => (
+                    <Row
+                      vAlign="left"
+                      justifiy="flex-start"
+                      style={{
+                        padding: '2%',
+                        margin: '2%',
+                        borderBottom: '1px solid #d0d6d1',
+                      }}
+                    >
+                      <Col>{d.code}</Col>
+                      <Col>{d.name}</Col>
+                      <Col style={{ marginTop: '-10px' }}>
+                        <TextField
+                          type="number"
+                          label="Sharing %"
+                          margin="dense"
+                          variant="outlined"
+                          onChange={e => {
+                            const val = e.target.value;
+                            const tempArr = [...partnerWithSpecificRevenue];
+                            tempArr[i].percentage = val;
+                            setPartnerWithSpecificRevenue(tempArr);
+                          }}
+                          value={d.percentage}
+                        />
+                      </Col>
+                      <Col>
+                        <Button
+                          style={{ marginLeft: '60px' }}
+                          onClick={() => {
+                            setPartnerWithSpecificRevenue(
+                              partnerWithSpecificRevenue.filter(
+                                branch => d.code !== branch.code,
+                              ),
+                            );
+                          }}
+                        >
+                          {' '}
+                          delete
+                        </Button>
+                      </Col>
+                    </Row>
+                    )
                 ) : null}
               <Row
                 vAlign="left"
@@ -429,7 +631,9 @@ const CommissionRevenueSharingRule = props => {
                     onClick={() =>
                       updatePartnerShare(props, 'Commission', {
                         percentage: branchPartnerShare,
+                        partner_branch_share: partnerBranchShare,
                         specific_partners_share: branchWithSpecificRevenue,
+                        specific_partners_branch_share:partnerWithSpecificRevenue,
                         commission_id: id,
                       }).then(rule => {
                         props.refreshRule(rule);
@@ -441,6 +645,8 @@ const CommissionRevenueSharingRule = props => {
                 </Col>
               </Row>
             </div>
+            )}
+            </div>
           ) : null}
         </div>
       </div>
@@ -450,6 +656,14 @@ const CommissionRevenueSharingRule = props => {
         handleClose={() => setOpenBranchModal(false)}
         getBranchDetailsFromModal={details =>
           getBranchDetailsFromModal(details)
+        }
+      />
+      <AddPartnerModal
+        partneropen={openPartnerModal}
+        bank_id={bankId}
+        handleClose={() => setOpenPartnerModal(false)}
+        getPartnerDetailsFromModal={details =>
+          getPartnerDetailsFromModal(details)
         }
       />
     </Card>

@@ -80,6 +80,7 @@ class AddBranchDialog extends React.Component {
         bank_id: this.props.bank_id,
       })
       .then(d => {
+        console.log(d);
         const { data } = d;
         if (data.code == 0) return alert('Branch not found');
 
