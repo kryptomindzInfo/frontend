@@ -79,7 +79,7 @@ const PayBillOTP = props => {
             Resend
           </span>
         ) : (
-          <span>Resend</span>
+          <span style={{color: '#f5a623'}}>Resend</span>
         )}
       </p>
     </div>

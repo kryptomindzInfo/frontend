@@ -129,6 +129,7 @@ const CommissionFee = props => {
                         <option value="">Transaction Type*</option>
                         <option value="0">Wallet to Merchant</option>
                         <option value="1">Non Wallet to Merchant</option>
+                        <option value="2">Merchant cashier to Merchant</option>
                       </SelectInput>
                       <ErrorMessage name="type" />
                     </FormGroup>
