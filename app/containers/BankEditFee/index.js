@@ -68,7 +68,7 @@ export default class BankEditFee extends Component {
       trans_to: '',
       transcount_from: '',
       transcount_to: '',
-      fixed_amount: '',
+      fixed: '',
       percentage: '',
       notification: '',
       popup: false,
@@ -148,7 +148,7 @@ export default class BankEditFee extends Component {
     temp.push({
         trans_from: last,
         trans_to: '999999999',
-        fixed_amount: '',
+        fixed: '',
         percentage: ''
     });
     this.setState({
@@ -251,7 +251,7 @@ export default class BankEditFee extends Component {
 
   createRules = event => {
     event.preventDefault();
-    if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
+    if((this.state.fixed == '' && this.state.percentage == '') || this.state.fixed != '' && this.state.percentage != ''){
       this.setState({
         notification: 'Fill either fixed amount or percentage'
       }, () => {
@@ -294,14 +294,6 @@ export default class BankEditFee extends Component {
 
 
   editRrRules = () => {
-    // event.preventDefault();
-    // if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
-    //   this.setState({
-    //     notification: 'Fill either fixed amount or percentage'
-    //   }, () => {
-    //     this.error();
-    // });
-    // }else{
       this.setState({
         editRulesLoading: true
       });
@@ -314,7 +306,7 @@ export default class BankEditFee extends Component {
     ranges = ranges.map(r => ({
           trans_from: r.trans_from,
           trans_to: r.trans_to,
-          fixed_amount: r.revenue_sharing_fixed_amount,
+          fixed: r.revenue_sharing_fixed,
           percentage: r.revenue_sharing_percentage,
     }));
 
@@ -523,7 +515,7 @@ export default class BankEditFee extends Component {
         let {ranges} = state;
         ranges = ranges.map(r => ({
           ...r,
-          revenue_sharing_fixed_amount: r.fixed_amount,
+          revenue_sharing_fixed: r.fixed,
           revenue_sharing_percentage: r.percentage
         }))
 
@@ -761,11 +753,11 @@ export default class BankEditFee extends Component {
                     <label>Fixed Amount*</label>
                     <TextInput
                       type="text"
-                      name="fixed_amount"
+                      name="fixed"
                       onFocus={inputFocus}
                       required
                       onBlur={inputBlur}
-                      value={v.fixed_amount}
+                      value={v.fixed}
                       autoFocus
                       onChange={dis.handleInputChange2}
                       data-key = {i}
@@ -799,38 +791,6 @@ export default class BankEditFee extends Component {
                             </span>
                           ) : null}
                     </Col>
-
-                    {/* <Col cW="45%" mR="2%">
-                        <FormGroup>
-                            <label>Revenue Fixed Amount*</label>
-                            <TextInput
-                              required
-                              type="text"
-                              name="revenue_sharing_fixed_amount"
-                              onFocus={inputFocus}
-                              onBlur={inputBlur}
-                              value={v.revenue_sharing_fixed_amount}
-                              onChange={dis.handleInputChange2}
-                              data-key={i}
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col cW="23%" mR="2%">
-                        <FormGroup>
-                            <label>Revenue %*</label>
-                            <TextInput
-                              required
-                              type="text"
-                              name="revenue_sharing_percentage"
-                              onFocus={inputFocus}
-                              onBlur={inputBlur}
-                              value={v.revenue_sharing_percentage}
-                              onChange={dis.handleInputChange2}
-                              data-key={i}
-                            />
-                          </FormGroup> */}
-
-                        {/* </Col> */}
                   </Row>
                   })
                 }

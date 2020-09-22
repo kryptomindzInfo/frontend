@@ -37,6 +37,7 @@ import BankDocuments from 'containers/BankDocuments/Loadable';
 import BankTheme from 'containers/BankTheme/Loadable';
 import UserPage from 'containers/UserPage/Loadable';
 import BankFees from 'containers/BankFees/Loadable';
+import InterBankFees from 'containers/InterBankFees/Loadable';
 import Documents from 'containers/Documents/Loadable';
 import OperationalHistory from 'containers/OperationalHistory/Loadable';
 import MasterHistory from 'containers/MasterHistory/Loadable';
@@ -177,6 +178,7 @@ export default function App(props) {
           <BankRoute exact path="/bank/dashboard" component={BankDashboard} />
           <BankRoute path="/bank/info" component={BankInfo} />
           <BankRoute path="/bank/fees" component={BankFees} />
+          <BankRoute path="/bank/interBankFees" component={InterBankFees} />
           <BankRoute path="/bank/documents" component={BankDocuments} />
           <BankRoute path="/bank/branches" component={BankBranchList} />
           <BankRoute path="/bank/branch/:branch?" component={BankBranchInfo} />

@@ -70,30 +70,20 @@ export default class BankCreateFee extends Component {
         {
           trans_from: '',
           trans_to: '999999999',
-          fixed_amount: '',
+          fixed: '',
           percentage: '',
 
-          revenue_sharing_fixed_amount: '',
+          revenue_sharing_fixed: '',
           revenue_sharing_percentage: '',
         },
       ],
-
-      revenueSharingRule: [
-        {
-          trans_from: '',
-          trans_to: '',
-          fixed_amount: '',
-          percentage: '',
-        },
-      ],
-
       trans_type: '',
       active: 'Active',
       trans_from: 0,
       trans_to: 1000,
       transcount_from: '',
       transcount_to: '',
-      fixed_amount: '',
+      fixed: '',
       percentage: '',
       notification: '',
       popup: false,
@@ -138,29 +128,8 @@ export default class BankCreateFee extends Component {
     this.setState({
       ranges: temp,
     });
-
-    // this.setState({
-    //   [name]: value,
-    // });
   };
 
-  handleInputChange3 = event => {
-    // console.log(k);
-
-    const { value, name } = event.target;
-    var temp = this.state.revenueSharingRule;
-    var k = event.target.getAttribute('data-key');
-
-    temp[k][name] = value;
-    console.log(temp[k]);
-    this.setState({
-      revenueSharingRule: temp,
-    });
-
-    // this.setState({
-    //   [name]: value,
-    // });
-  };
   showPopup = () => {
     //this.setState({ popup: true });
     this.props.history.push('/BankCreateFee/' + this.props.match.params.bank);
@@ -185,66 +154,13 @@ export default class BankCreateFee extends Component {
   };
 
   logout = () => {
-    // event.preventDefault();
-    // axios.post(API_URL+'/logout', {token: token})
-    // .then(res => {
-    //    if(res.status == 200){
     localStorage.removeItem('logged');
     localStorage.removeItem('name');
     this.setState({ redirect: true });
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    // })
-    // .catch(err => {
-    //   alert('Login to continue');
-    //   this.setState({ redirect: true });
-    // });
-  };
-
-  addBank = event => {
-    event.preventDefault();
-    axios
-      .post(`${API_URL}/generateOTP`, {
-        name: this.state.name,
-        mobile: this.state.mobile,
-        page: 'addBank',
-        token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              showOtp: true,
-              notification: 'OTP Sent',
-            });
-            this.success();
-          }
-        } else {
-          const error = new Error(res.data.error);
-          throw error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
   };
 
   createRules = event => {
     event.preventDefault();
-    // if((this.state.fixed_amount == '' && this.state.percentage == '') || this.state.fixed_amount != '' && this.state.percentage != ''){
-    //   this.setState({
-    //     notification: 'Fill either fixed amount or percentage'
-    //   }, () => {
-    //     this.error();
-    // });
-    // }else{
     var temp = this.state.ranges;
     var l = temp.length;
     var last = temp[l - 1].trans_to;
@@ -311,7 +227,7 @@ export default class BankCreateFee extends Component {
     ranges = ranges.map(r => ({
       trans_from: r.trans_from,
       trans_to: r.trans_to,
-      fixed_amount: r.revenue_sharing_fixed_amount,
+      fixed: r.revenue_sharing_fixed,
       percentage: r.revenue_sharing_percentage,
     }));
 
@@ -371,7 +287,7 @@ export default class BankCreateFee extends Component {
     var l = temp.length;
     var last = temp[l - 1].trans_to;
 
-    var { revenue_sharing_percentage, revenue_sharing_fixed_amount } = temp[
+    var { revenue_sharing_percentage, revenue_sharing_fixed } = temp[
       l - 1
     ];
 
@@ -399,9 +315,9 @@ export default class BankCreateFee extends Component {
       temp.push({
         trans_from: last,
         trans_to: '999999999',
-        fixed_amount: '',
+        fixed: '',
         percentage: '',
-        revenue_sharing_fixed_amount: '',
+        revenue_sharing_fixed: '',
         revenue_sharing_percentage: '',
       });
       this.setState({
@@ -409,90 +325,15 @@ export default class BankCreateFee extends Component {
       });
     }
   };
-  addRange2 = () => {
-    var temp = this.state.revenueSharingRule;
-    var l = temp.length;
-    var last = temp[l - 1].trans_to;
-    if (last == '') {
-      this.setState(
-        {
-          notification: 'Fill previous range first',
-        },
-        () => {
-          this.error();
-        },
-      );
-    } else if (last <= temp[l - 1].trans_from) {
-      this.setState(
-        {
-          notification:
-            'To value has to be greater than From value in all ranges',
-        },
-        () => {
-          this.error();
-        },
-      );
-    } else {
-      last = Number(last) + 1;
-      temp.push({
-        trans_from: last,
-        trans_to: '999999999',
-        fixed_amount: '',
-        percentage: '',
-      });
-      this.setState({
-        revenueSharingRule: temp,
-      });
-    }
-  };
 
   removeRange = k => {
-    console.log(k);
-    // var dis = this;
     var temp = this.state.ranges;
-    // delete temp[k];
     temp.splice(k, 1);
     this.setState({
       ranges: temp,
     });
-    // console.log(temp);
-    // var out = [];
-
-    // for(var i = 0; i < temp.length; i++){
-    //   if(i != k){
-    //     out.push(temp[i]);
-    //   }
-    //   if(i == (temp.length)-1){
-    //     dis.setState({
-    //       ranges : out
-    //     });
-    //   }
-    // }
   };
 
-  removeRange2 = k => {
-    console.log(k);
-    // var dis = this;
-    var temp = this.state.revenueSharingRule;
-    // delete temp[k];
-    temp.splice(k, 1);
-    this.setState({
-      revenueSharingRule: temp,
-    });
-    // console.log(temp);
-    // var out = [];
-
-    // for(var i = 0; i < temp.length; i++){
-    //   if(i != k){
-    //     out.push(temp[i]);
-    //   }
-    //   if(i == (temp.length)-1){
-    //     dis.setState({
-    //       ranges : out
-    //     });
-    //   }
-    // }
-  };
 
   triggerBrowse = inp => {
     const input = document.getElementById(inp);
@@ -722,11 +563,11 @@ export default class BankCreateFee extends Component {
                             <label>Fixed Amount*</label>
                             <TextInput
                               type="text"
-                              name="fixed_amount"
+                              name="fixed"
                               onFocus={inputFocus}
                               required
                               onBlur={inputBlur}
-                              value={v.fixed_amount}
+                              value={v.fixed}
                               onChange={dis.handleInputChange2}
                               data-key={i}
                             />

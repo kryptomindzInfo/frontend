@@ -174,22 +174,9 @@ export class BankFees extends Component {
   };
 
   logout = () => {
-    // event.preventDefault();
-    // axios.post(API_URL+'/logout', {token: token})
-    // .then(res => {
-    //    if(res.status == 200){
     localStorage.removeItem('logged');
     localStorage.removeItem('name');
     this.setState({ redirect: true });
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    // })
-    // .catch(err => {
-    //   alert('Login to continue');
-    //   this.setState({ redirect: true });
-    // });
   };
 
   addBank = event => {
@@ -411,7 +398,6 @@ export class BankFees extends Component {
     axios
       .post(`${API_URL}/getBankRules`, { bank_id: this.state.bank })
       .then(res => {
-        console.log(res);
         if (res.status == 200) {
           console.log(res.data);
           this.setState({ rules: res.data.rules });
@@ -540,6 +526,7 @@ export class BankFees extends Component {
       }
     }
 
+
     const { loading, redirect } = this.state;
     if (loading) {
       return <Loader fullPage />;
@@ -556,7 +543,7 @@ export class BankFees extends Component {
         </Helmet>
         <BankHeader />
         <Container verticalMargin>
-          <BankSidebarTwo active="fees" />
+          <BankSidebarTwo active="interbankfees" />
           <Main
             style={{
               display: `${
@@ -619,7 +606,7 @@ export class BankFees extends Component {
                                   </span>
                                     , Fixed:{' '}
                                     <span className="green">
-                                    {`${CURRENCY} ${v.fixed}`}
+                                    {`${CURRENCY} ${v.fixed_amount}`}
                                     </span>
                                     , Percentage:{' '}
                                     <span className="green">
@@ -749,7 +736,7 @@ export class BankFees extends Component {
                                       </span>
                                       , Fixed:{' '}
                                       <span className="green">
-                                        {`${CURRENCY} ${v.fixed}`}
+                                        {`${CURRENCY} ${v.fixed_amount}`}
                                     </span>
                                       , Percentage:{' '}
                                       <span className="green">
@@ -863,7 +850,7 @@ export class BankFees extends Component {
                         </span>
                         , Fixed:{' '}
                         <span className="green">
-                          {`${CURRENCY} ${v.fixed}`}
+                          {`${CURRENCY} ${v.fixed_amount}`}
                         </span>
                         , Percentage:{' '}
                         <span className="green">{v.percentage}</span>
