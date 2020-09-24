@@ -101,18 +101,13 @@ class RevenueRuleDistubutionPage extends React.Component {
     }
   }
 
-  // toggler = (type) => {
-  //   this.setState({
-  //     activetab: type,
-  //   });
-  // }
-
   componentWillReceiveProps(props) {
     const {state} = this;
     const {selectedBankFeeId, revenueData} = props;
     const {name, trans_type, active, bank_id} = props.bankFeeDetails;
     let fixed_amount = "";
     let percentage = "";
+    console.log(revenueData);
     if(revenueData) {
       const ranges = revenueData.fee.infra_share;
       fixed_amount = ranges.fixed;

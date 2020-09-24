@@ -414,23 +414,7 @@ export class BankFees extends Component {
         console.log(res);
         if (res.status == 200) {
           console.log(res.data);
-          this.setState({ rules: res.data.rules });
-        }
-      })
-      .catch(err => {});
-  };
-
-  getBankRules = () => {
-    axios
-      .post(`${API_URL}/getAll`, {
-        type: 'bank',
-        token,
-        page: 'bankfee',
-      })
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res.data);
-          this.setState({ loading: false, bankRules: res.data.rows });
+          this.setState({ loading: false, rules: res.data.rules });
         }
       })
       .catch(err => {});
@@ -440,7 +424,6 @@ export class BankFees extends Component {
     // this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
       this.getRules();
-      this.getBankRules();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -638,7 +621,6 @@ export class BankFees extends Component {
                                     className="addBankButton"
                                     onClick={() =>
                                       dis.goBankEdit(
-                                        // this.state.bankRules[i]._id,
                                         b._id,
                                       )
                                     }

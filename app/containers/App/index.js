@@ -49,6 +49,7 @@ import BankEscrowHistory from 'containers/BankEscrowHistory/Loadable';
 import BankBranchList from 'containers/BankBranchList/Loadable';
 import TermsConditions from 'components/TermsConditions';
 import BankCreateFee from 'containers/BankCreateFee/Loadable';
+import BankCreateInterBankFee from 'containers/BankCreateInterBankFee/Loadable';
 import BankCashierList from 'containers/BankCashierList/Loadable';
 import BankUser from 'containers/BankUser';
 import BranchLogin from 'containers/BranchLogin';
@@ -69,7 +70,9 @@ import CashierSetup from 'containers/CashierSetup';
 import CashierDashboard from 'containers/CashierDashboard';
 import CashierInfo from 'containers/CashierInfo';
 import BankEditFee from 'containers/BankEditFee';
+import BankEditInterBankFee from 'containers/BankEditInterBankFee';
 import FeeList from 'containers/FeeList';
+import InterBankFeeList from 'containers/InterBankFeeList';
 
 import { ThemeProvider } from 'styled-components';
 import AllRoutes from './AllRoutes';
@@ -88,8 +91,6 @@ import MerchantSettingsPage from '../BankMerchantList/settings/MerchantSettingsP
 import { InfraMerchantFeeListPage } from '../InfraMerchant/InfraMerchantFeeListPage';
 import CashierMerchantListPage from '../CashierPayBills/CashierMerchantListPage';
 import InfraMerchantList from '../InfraInfo/Merchants/InfraMerchantList';
-// import FeeList from '../FeeList';
-// import { CashierSendMoney } from '../CashierSendMoney';
 
 const appTheme = {
   primary: '#417505',
@@ -133,6 +134,7 @@ export default function App(props) {
           <InfraRoute exact path="/country" component={InfraCountry} />
           <InfraRoute exact path="/user" component={UserPage} />
           <InfraRoute path="/fees/:bank?" component={FeeList} />
+          <InfraRoute path="/inter-bank-fees/:bank?" component={InterBankFeeList} />
           <InfraRoute path="/info/:bank?" component={InfraInfo} />
           <InfraRoute path="/createfee/:bank?" component={CreateFee} />
           <InfraRoute path="/editfee/:bank?" component={EditFee} />
@@ -188,6 +190,7 @@ export default function App(props) {
           />
           <BankRoute path="/bank/users" component={BankUser} />
           <BankRoute path="/bank/create-fee" component={BankCreateFee} />
+          <BankRoute path="/bank/create-inter-bank-fee" component={BankCreateInterBankFee} />
           <BankRoute
             path="/bank/theme"
             component={BankTheme}
@@ -204,6 +207,7 @@ export default function App(props) {
             component={BankCashierInfo}
           />
           <BankRoute exact path="/bank/create-fee" component={BankCreateFee} />
+          <BankRoute exact path="/bank/create-inter-bank-fee" component={BankCreateInterBankFee} />
           <BankRoute
             exact
             path="/bank/theme"
@@ -230,6 +234,11 @@ export default function App(props) {
             exact
             path="/bank/edit-fee/:fee?"
             component={BankEditFee}
+          />
+          <BankRoute
+            exact
+            path="/bank/edit-inter-bank-fee/:fee?"
+            component={BankEditInterBankFee}
           />
           <BankRoute
             exact

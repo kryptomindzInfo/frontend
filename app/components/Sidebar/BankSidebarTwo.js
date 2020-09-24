@@ -52,12 +52,12 @@ class BankSidebarTwo extends Component {
             <h3>Intra Bank Fees</h3>
           </Card>
         </A>
-        {/* <A href="/bank/interBankFees">
+        <A href="/bank/interBankFees">
           <Card rounded selected={interbankfees} className="sideNav">
             <i className="material-icons">mobile_screen_share</i>
             <h3>Inter Bank Fees</h3>
           </Card>
-        </A> */}
+        </A>
         <A href="/bank/theme">
           <Card rounded selected={theme} className="sideNav">
             <i className="material-icons">color_lens</i>

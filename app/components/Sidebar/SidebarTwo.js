@@ -25,6 +25,7 @@ class SidebarTwo extends Component {
     const info = this.props.active == 'info';
     const documents = this.props.active == 'documents';
     const fees = this.props.active == 'fees';
+    const interbankfees = this.props.active == 'interbankfees';
     const merchant = this.props.active == 'merchant';
 
     return (
@@ -45,7 +46,13 @@ class SidebarTwo extends Component {
         <A href={`/fees/${this.props.bankId}`}>
           <Card selected={fees} rounded className="sideNav">
             <i className="material-icons">mobile_screen_share</i>
-            <h3>Fees</h3>
+            <h3>Intra Bank Fees</h3>
+          </Card>
+        </A>
+        <A href={`/inter-bank-fees/${this.props.bankId}`}>
+          <Card selected={interbankfees} rounded className="sideNav">
+            <i className="material-icons">mobile_screen_share</i>
+            <h3>Inter Bank Fees</h3>
           </Card>
         </A>
         <A href={`/merchants/${this.props.bankId}`}>
