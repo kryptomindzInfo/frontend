@@ -2572,7 +2572,7 @@ class CashierTransactionLimit extends Component {
                                   <FormControlLabel
                                     control={
                                       <MuiCheckbox
-                                        checked={this.state.isInclusive}
+                                        checked={!this.state.isInclusive}
                                         onChange={event =>
                                           this.handleFeeTypeChange(event)
                                         }
@@ -2580,7 +2580,7 @@ class CashierTransactionLimit extends Component {
                                         color="primary"
                                       />
                                     }
-                                    label="Receiver pays transaction fees"
+                                    label="Sender pays transaction fees"
                                   />
                                 </div>
                                 <div>
@@ -2595,7 +2595,7 @@ class CashierTransactionLimit extends Component {
                                         color="primary"
                                       />
                                     }
-                                    label="Receiver can recieve from any branch"
+                                    label="Receiver can recieve from any bank"
                                   />
                                 </div>
                                 <Typography

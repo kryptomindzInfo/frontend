@@ -476,7 +476,6 @@ export class BankFees extends Component {
       .post(`${API_URL}/getRevenueFeeFromBankFeeId/${bankFee._id}`, { token })
       .then(d => {
         const { data } = d;
-        console.log(data);
         if (data.status == 1) {
           this.setState({
             revenueData: data,
