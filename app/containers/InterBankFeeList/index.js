@@ -326,13 +326,13 @@ export default class FeeList extends Component {
     }
   }
 
-  showMiniPopUp = (b, r) => {
+  showMiniPopUp = (b) => {
     this.setState({
       popname: b.name,
       poptype: "Non Wallet to Non Wallet",
       sid: b._id,
       popupMini: true,
-      html: r,
+      html: b.status === 0 ? b.infra_share : b.edited.infra_share,
     });
     // this.props.history.push('/createfee/'+this.state.bank_id);
   };
@@ -548,7 +548,12 @@ export default class FeeList extends Component {
                       ? this.state.rules.map(b => {
                           var r = b.infra_share;
                           return (
-                            <tr key={b._id}>
+                            <tr
+                              key={b._id}
+                              style={{
+                              display: `${b.infra_approval_status===0 ? 'none' : ''}`,
+                              }}
+                            >
                               <td>
                                 {b.status === 0 ? (
                                   <span>{b.name}</span>
@@ -591,7 +596,7 @@ export default class FeeList extends Component {
                               <td className="tac bold">
                                 {b.infra_approval_status === 2 ? (
                                   <Button
-                                    onClick={() => this.showMiniPopUp(b, b.edited.infra_share)}
+                                    onClick={() => this.showMiniPopUp(b)}
                                     className="addBankButton"
                                   >
                                     <span>Approve</span>

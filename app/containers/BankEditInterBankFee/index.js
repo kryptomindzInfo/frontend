@@ -191,7 +191,7 @@ export default class BankEditFee extends Component {
         editRulesLoading: true
       });
     axios
-      .post(`${API_URL  }/bank/interBank/editRule`, this.state)
+      .post(`${API_URL}/bank/interBank/editRule`, this.state)
       .then(res => {
         if(res.status == 200){
           if(res.data.error){
@@ -376,17 +376,12 @@ export default class BankEditFee extends Component {
                     required
                     list="ttype"
                   >
-                       <option value="">Transaction Type*</option>
-                    {/* <option >Wallet to Wallet </option> */}
-                    <option value="0">Non Wallet to Non Wallet</option>
-                    {/* <option >Non Wallet to Wallet</option>
-                    <option >Wallet to Non Wallet</option>
-                    <option >Wallet to merchant</option>
-                    <option >Non Wallet to Merchant</option>
-                    <option >Wallet to Bank Account</option>
-                    <option >Bank Account to Wallet Request</option> */}
+                    <option value="">Transaction Type*</option>
+                    <option value="IBWW">Wallet to Wallet</option>
+                    <option value="IBNWNW">Non Wallet to Non Wallet</option>
+                    <option value="IBNWW">Non Wallet to Wallet</option>
+                    <option value="IBWNW">Wallet to Non Wallet</option>
                   </SelectInput>
-
                   </FormGroup>
                   </Col>
                   <Col>

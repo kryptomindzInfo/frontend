@@ -376,7 +376,9 @@ export class InterBankFees extends Component {
                             return (
                               <tr key={b._id}>
                                 <td>{b.name}</td>
-                                <td className="tac">Non Wallet to Non Wallet</td>
+                                <td className="tac">
+                                  {b.type}
+                                </td>
                                 <td>
                                   {r.map(v => (
                                   <div>

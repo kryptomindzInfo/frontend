@@ -93,7 +93,7 @@ class RevenueRuleDistubutionPage extends React.Component {
     console.log(revenueData);
     if(revenueData) {
       console.log(revenueData);
-      const infrashare = revenueData.infra_share;
+      const infrashare = revenueData.status === 0 ? revenueData.infra_share : revenueData.infra_approval_status === 2 ? revenueData.edited.infra_share : revenueData.infra_share;
       fixed_infra = infrashare.fixed;
       percentage_infra = infrashare.percentage;
       const otherbankshare = revenueData.other_bank_share;

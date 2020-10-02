@@ -137,6 +137,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   const [openWalletPopup, setWalletPopup] = React.useState(false);
   const [isUserLoading, setUserLoading] = React.useState(false);
   const [selectedMobile, setSelectedMobile] = React.useState('');
+  const [interbank, setInterBank] =React.useState(false);
   const [ccCode, setCcCode] = React.useState('+000');
   const [country, setCountry] = React.useState('');
   const [
@@ -161,8 +162,14 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   const getLiveFee = amount => {
     const token = localStorage.getItem('cashierLogged');
     if (amount !== '') {
+      let API = "";
+      if(interbank){
+        API = "cashier/interBank/checkFee"
+      } else {
+        API = "cashier/checkNonWalToWalFee"
+      }
       axios
-        .post(`${API_URL}/cashier/checkNonWalToWalFee`, { token, amount })
+        .post(`${API_URL}/${API}`, { token, amount, type:"IBNWW" })
         .then(res => {
           if (res.status === 200) {
             if (res.data.error) {
@@ -278,6 +285,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
           receiverMobile: '',
           receiverIdentificationAmount: '',
           isInclusive: false,
+          interbank: true,
           // termsAndCondition: false,
         }}
         onSubmit={async values => {
@@ -1006,6 +1014,15 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                     <div style={{ marginLeft: '1%' }}>
                       <Checkbox name="isInclusive" />
                       <span>Receiver pays transaction fees</span>
+                    </div>
+                    <div style={{ marginLeft: '1%' }}>
+                      <Checkbox
+                        name="interbank"
+                        onChange={event =>
+                          setInterBank(event.checked, ()=>{getLiveFee(values.receiverIdentificationAmount)})
+                        }
+                      />
+                      <span>Receiver can recieve from any bank</span>
                     </div>
                     <Typography
                       style={{
