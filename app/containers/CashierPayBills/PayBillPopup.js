@@ -41,7 +41,7 @@ const PayBillPopup = props => {
   };
 
   useEffect(() => {
-    console.log(merchant._id);
+    console.log(localStorage);
   }, []);
 
   return (

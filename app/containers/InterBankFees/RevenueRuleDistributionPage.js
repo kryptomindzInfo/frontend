@@ -158,8 +158,8 @@ class RevenueRuleDistubutionPage extends React.Component {
         token: this.state.token,
         rule_id: this.state.ruleId,
         infra_share: {
-            fixed: this.state.revenuePercentage,
-            percentage: this.state.revenueAmount,
+            fixed: this.state.revenueAmount,
+            percentage: this.state.revenuePercentage,
         },
     })
     .then(res => {

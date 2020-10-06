@@ -526,7 +526,7 @@ export default class BankCreateFee extends Component {
                               />
                             ) : (
                               <TextInput
-                                type="text"
+                                type="number"
                                 pattern="[0-9]{1,}"
                                 title="Greater than or equal to 0"
                                 name="trans_from"
@@ -545,7 +545,7 @@ export default class BankCreateFee extends Component {
                           <FormGroup>
                             <label className="focused">To*</label>
                             <TextInput
-                              type="text"
+                              type="number"
                               pattern="[0-9]{1,}"
                               title="Greater than or equal to 0"
                               name="trans_to"
@@ -562,7 +562,7 @@ export default class BankCreateFee extends Component {
                           <FormGroup>
                             <label>Fixed Amount*</label>
                             <TextInput
-                              type="text"
+                              type="number"
                               name="fixed"
                               onFocus={inputFocus}
                               required
@@ -578,7 +578,7 @@ export default class BankCreateFee extends Component {
                             <label>Percentage*</label>
                             <TextInput
                               required
-                              type="text"
+                              type="number"
                               name="percentage"
                               onFocus={inputFocus}
                               onBlur={inputBlur}

@@ -43,6 +43,7 @@ toast.configure({
 const token = localStorage.getItem('cashierLogged');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
+const date = new Date();
 
 class CashierTransactionLimit extends Component {
   constructor() {
@@ -288,6 +289,7 @@ class CashierTransactionLimit extends Component {
       receiverIdentificationAmount: '',
       isWallet: false,
       interbank: true,
+      livefee: 0,
       interbankclaim: true,
       showSendMoneyToWalletOTP: false,
       verifySendMoneyOTPLoading: false,
@@ -397,6 +399,14 @@ class CashierTransactionLimit extends Component {
               function() {},
             );
           } else {
+            if (res.data.message === "The amount is not within any range"){
+              this.setState(
+                {
+                  isValidFee: false,
+                },
+                function() {},
+              );
+            }
               this.setState(
               {
                 livefee: parseFloat(res.data.fee),
@@ -2256,6 +2266,7 @@ class CashierTransactionLimit extends Component {
                                           id="date-picker-dialog"
                                           label="Valid Till"
                                           size="small"
+                                          minDate= {date}
                                           fullWidth
                                           inputVariant="outlined"
                                           format="dd/MM/yyyy"
@@ -2536,6 +2547,7 @@ class CashierTransactionLimit extends Component {
                                               fullWidth
                                               inputVariant="outlined"
                                               format="dd/MM/yyyy"
+                                              minDate= {date}
                                               required
                                               InputLabelProps={{
                                                 shrink: true,
