@@ -405,7 +405,7 @@ export default class BankCreateFee extends Component {
                           <option value="IBWM-C">Wallet to Merchant Commission</option>
                           <option value="IBWM-F">Wallet to Merchant</option>
                           <option value="IBNWM-C">Non Wallet to Merchant Commission</option>
-                          <option value="IBNWM">Non Wallet to Merchant</option>
+                          <option value="IBNWM-F">Non Wallet to Merchant</option>
                         </SelectInput>
                       </FormGroup>
                     </Col>

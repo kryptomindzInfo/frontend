@@ -61,7 +61,7 @@ const PayBillPopup = props => {
                 onSubmit={async values => {
                   console.log(values);
                   if (values.searchBy === 'Mobile') {
-                    getUserInvoices(values.invoiceIdOrMobile).then(data => {
+                    getUserInvoices(values.invoiceIdOrMobile, merchant._id).then(data => {
                       console.log(data.list);
                       setInvoiceList(data.list);
                       setDisplayInvoiceList(true);

@@ -4,11 +4,12 @@ import { API_URL } from '../../App/constants';
 
 const token = localStorage.getItem('cashierLogged');
 const bankID = localStorage.getItem('bankId');
-const getUserInvoices = async mobile => {
+const getUserInvoices = async (mobile, merchant_id) => {
   try {
     const res = await axios.post(`${API_URL}/cashier/getUserInvoices`, {
       token,
       mobile,
+      merchant_id,
     });
     console.log(res);
     if (res.status === 200) {
