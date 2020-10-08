@@ -435,11 +435,12 @@ class CashierTransactionLimit extends Component {
       })
       .then(res => {
         if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
+          if (res.data.status===0) {
+            throw res.data.message;
           } else {
             const o = res.data.row;
             if (o.sender_id) {
+              console.log(o.is_inter_bank);
               const senderid = JSON.parse(o.sender_id);
               this.setState({
                 sender_id: senderid,
@@ -447,7 +448,6 @@ class CashierTransactionLimit extends Component {
                 senderIdentificationType: senderid.type || '',
                 senderIdentificationNumber: senderid.number || '',
                 senderIdentificationValidTill: senderid.valid || '',
-                interbankclaim: o.is_inter_bank === 0 ? false : true,
               });
             }
             const sender = JSON.parse(o.sender_info);
@@ -483,7 +483,7 @@ class CashierTransactionLimit extends Component {
               requireOTP: o.require_otp,
               dateClaimMoney: new Date(o.created_at).toDateString(),
               master_code: o.master_code,
-
+              interbankclaim: o.is_inter_bank === 0 ? false : true,
               showClaimMoneyDetails: true,
             });
           }
@@ -691,6 +691,7 @@ class CashierTransactionLimit extends Component {
     this.setState({
       claimMoneyLoading: true,
     });
+    console.log(this.state.interbankclaim);
     let API = "";
     if (this.state.interbankclaim){
       API = 'cashier/interBank/claimMoney';
@@ -701,8 +702,8 @@ class CashierTransactionLimit extends Component {
       .post(`${API_URL}/${API}`, this.state)
       .then(res => {
         if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
+          if (res.data.status === 0) {
+            throw res.data.message;
           } else {
             this.setState({
               notification: 'Transaction Successfully Done',

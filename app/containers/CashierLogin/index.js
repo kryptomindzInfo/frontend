@@ -79,6 +79,7 @@ export default class CashierLogin extends Component {
     axios
       .post(`${API_URL}/cashierLogin`, this.state)
       .then(res => {
+        console.log(res);
         if (res.status == 200) {
           if(res.data.status == 0){
             throw res.data.message;
@@ -92,7 +93,7 @@ export default class CashierLogin extends Component {
             localStorage.setItem('bankLogo', this.state.bank.logo);
             localStorage.setItem('cashierEmail', res.data.email);
             localStorage.setItem('cashierMobile', res.data.mobile);
-            console.log(res);
+            localStorage.setItem('bankId', res.data.bank_id);
             window.location.href = '/cashier/'+this.props.match.params.bank+'/dashboard';
           }
         } else {

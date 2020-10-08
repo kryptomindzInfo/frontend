@@ -3,12 +3,14 @@ import { toast } from 'react-toastify';
 import { API_URL } from '../../App/constants';
 
 const token = localStorage.getItem('cashierLogged');
+const bankID = localStorage.getItem('bankId');
 const getUserInvoices = async mobile => {
   try {
     const res = await axios.post(`${API_URL}/cashier/getUserInvoices`, {
       token,
       mobile,
     });
+    console.log(res);
     if (res.status === 200) {
       if (res.data.status === 0) {
         toast.error(res.data.message);
@@ -68,9 +70,15 @@ const getInvoiceByCustomerCode = async (customerCode, merchant_id) => {
   }
 };
 
-const payInvoice = async values => {
+const payInvoice = async (values, bankid) => {
+  let API = '';
+  if (bankid === bankID) {
+    API = 'cashier/payInvoice';
+  } else {
+    API = 'cashier/interBank/payInvoice';
+  }
   try {
-    const res = await axios.post(`${API_URL}/cashier/payInvoice`, {
+    const res = await axios.post(`${API_URL}/${API}`, {
       token,
       ...values,
     });
