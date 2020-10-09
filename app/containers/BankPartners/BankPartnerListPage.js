@@ -209,6 +209,15 @@ function BankPartnerListPage(props) {
               >
                 Info
               </span>
+              <span
+                onClick={() => {
+                  props.history.push({
+                    pathname: `/bank/fees`,
+                  });
+                }}
+              >
+                Revenue Sharing
+              </span>
               {partner.status === -1 ? (
                 <span>Unblock</span>
               ) : (

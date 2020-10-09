@@ -147,9 +147,9 @@ const PayBillsInvoiceList = props => {
           </Row>
         </td>
         <td className="tac">{invoice.amount}</td>
-        <td className="tac">{penaltyList[index]}</td>
+        <td className="tac">{`XOF ${penaltyList[index]}`}</td>
         <td className="tac">
-          {feeList[index] > 0 ? feeList[index].toFixed(2) : 'NA'}
+          {feeList[index] > 0 ? `XOF ${feeList[index].toFixed(2)}` : 'NA'}
         </td>
         <td className="tac">
         {feeList[index] > 0 ? invoice.amount+feeList[index]+penaltyList[index] : 'NA'}</td>
@@ -198,7 +198,6 @@ const PayBillsInvoiceList = props => {
       }
       const datesplit = invoice.due_date.split("/");
       const dueDate = new Date(datesplit[2],datesplit[1]-1,datesplit[0]);
-      console.log(currentDate.getTime(),dueDate.getTime());
       if (currentDate <= dueDate) {
           return (0);
       } else {
