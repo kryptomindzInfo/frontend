@@ -112,8 +112,8 @@ function BankPartnerListPage(props) {
       });
       if (res.status == 200) {
         console.log(res);
-        if (res.data.error) {
-          throw res.data.error;
+        if (res.data.status===0) {
+          throw res.data.message;
         } else {
           setOtpId(res.data.id),
           toast.success("OTP Sent");
@@ -128,12 +128,14 @@ function BankPartnerListPage(props) {
   };
 
   const handleFormSubmit = (values) => {
+    console.log("hi");
     setAddPartnerPopup(false);
     setNewPartner(values);
     generateOTP(values);
   };
 
   const VerifyOtp = async(values) => {
+    console.log(otpID);
     setLoading(true);
     const obj = {
       ...newPartner,
