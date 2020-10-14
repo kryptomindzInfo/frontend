@@ -848,8 +848,8 @@ class RevenueRuleDistubutionPage extends React.Component {
           </Grid>
           ) : null }
         </Grid>
-        <AddBranchModal open={this.state.open} bank_id={this.state.bank_id} handleClose={() => this.setState({open : false})} getBranchDetailsFromModal={this.getBranchDetailsFromModal}/>
-        <AddPartnerModal partneropen={this.state.partneropen} bank_id={this.state.bank_id} handleClose={() => this.setState({partneropen : false})} getPartnerDetailsFromModal={this.getPartnerDetailsFromModal}/>
+        <AddBranchModal open={this.state.open} bank_id={this.state.bid} handleClose={() => this.setState({open : false})} getBranchDetailsFromModal={this.getBranchDetailsFromModal}/>
+        <AddPartnerModal partneropen={this.state.partneropen} bank_id={this.state.bid} handleClose={() => this.setState({partneropen : false})} getPartnerDetailsFromModal={this.getPartnerDetailsFromModal}/>
       </Grid>
     }
 }
