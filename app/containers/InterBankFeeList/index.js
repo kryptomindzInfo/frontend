@@ -563,9 +563,9 @@ export default class FeeList extends Component {
                               </td>
                               <td className="tac">
                                 {b.status === 0 ? (
-                                  <span>Non wallet to Non Wallet</span>
+                                  <span>{b.type}</span>
                                 ) : (
-                                  <span>Non wallet to Non Wallet</span>
+                                  <span>{b.type}</span>
                                 )}
                               </td>
                               <td>
