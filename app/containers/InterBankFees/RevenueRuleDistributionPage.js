@@ -45,15 +45,29 @@ class RevenueRuleDistubutionPage extends React.Component {
   error = () => toast.error(this.state.notification);
   warn = () => toast.warn(this.state.notification);
   state = {
+    bid: localStorage.getItem('bankId'),
+    open : false,
+    partneropen: false,
     ruleId: this.props.bankFeeDetails._id,
     name: this.props.bankFeeDetails.name,
     revenuePercentage: this.props.bankFeeDetails.infra_share.percentage || 0,
     revenueAmount : this.props.bankFeeDetails.infra_share.fixed || 0,
     fixed: 0,
     percentage: 0,
+    standardRevenueSharingRule: {
+      claim: 0,
+      send: 0,
+    },
+    branchWithSpecificRevenue : [],
+    standardPartnerRevenueSharingRule: {
+      claim: 0,
+      send: 0,
+    },
+    partnerWithSpecificRevenue : [],
     status: this.props.bankFeeDetails.status,
     token : window.localStorage.getItem("bankLogged"),
-    bankBranchesTable: true
+    bankBranchesTable: true,
+    activetab: 'branch'
   };
 
   saveRevenueSharingRules = () => {
@@ -83,16 +97,45 @@ class RevenueRuleDistubutionPage extends React.Component {
     }
   };
 
+  saveRevenueSharingRulesForBranchAndPartner = () => {
+    if(this.props.revenueData) {
+      // this.editRxrRules(this.props.revenueData.fee._id);
+      axios.post(`${API_URL}/bank/updateRevenueSharingRules`, {
+        type: this.props.bankFeeDetails.type,
+        bank_id: this.state.bid,
+        token: this.state.token,
+        revenue_sharing_rule : { 
+          branch_share: this.state.standardRevenueSharingRule,
+          specific_branch_share: this.state.branchWithSpecificRevenue,
+          partner_share: this.state.standardPartnerRevenueSharingRule,
+          specific_partner_share: this.state.partnerWithSpecificRevenue,
+        },
+      }).then(d => {
+        this.setState({
+          notification: 'Rule updated successfully',
+          editRulesLoading: false
+        });
+        this.success();
+      }).catch(err => {
+        console.log(err);
+      })
+    } else {
+      this.setState({
+        notification: 'Please add revenue rule first',
+        editRulesLoading: false
+      });
+      his.error();
+    }
+  }
+
   componentWillReceiveProps(props) {
     const {state} = this;
-    const {selectedBankFeeId, revenueData} = props;
+    const {selectedBankFeeId, revenueData, share} = props;
     let fixed_infra = "";
     let percentage_infra = "";
     let fixed_other_bank = "";
     let percentage_other_bank = "";
-    console.log(revenueData);
     if(revenueData) {
-      console.log(revenueData);
       const infrashare = revenueData.status === 0 ? revenueData.infra_share : revenueData.infra_approval_status === 2 ? revenueData.edited.infra_share : revenueData.infra_share;
       fixed_infra = infrashare.fixed;
       percentage_infra = infrashare.percentage;
@@ -120,6 +163,18 @@ class RevenueRuleDistubutionPage extends React.Component {
           percentage: percentage_other_bank,
         }
       );
+    }
+    if(share) {
+      const {specific_branch_share ,branch_share, partner_share, specific_partner_share} = share;
+      this.setState( prevState => (
+        {
+          ...state ,
+          standardRevenueSharingRule : branch_share ?  branch_share : prevState.branch_share, 
+          branchWithSpecificRevenue : specific_branch_share ? specific_branch_share : prevState.specific_branch_share,
+          standardPartnerRevenueSharingRule: partner_share ? partner_share : prevState.partner_share,
+          partnerWithSpecificRevenue: specific_partner_share ? specific_partner_share : prevState.specific_partner_share,
+        }
+        ));
     }
   }
 
@@ -253,7 +308,30 @@ class RevenueRuleDistubutionPage extends React.Component {
       this.error();
     });
   };
+  
+  getBranchDetailsFromModal = (branchDetails) => {
+    if(this.state.branchWithSpecificRevenue.map(d => d.branch_code).includes(branchDetails[0].bcode)) return alert("Branch already saved")
+    this.setState(prevState => ({
+      ...prevState,
+      branchWithSpecificRevenue: [
+        ...prevState.branchWithSpecificRevenue,
+        { branch_code : branchDetails[0].bcode, branch_name: branchDetails[0].name, claim : 0, send : 0 }
+      ]
+    }))
+    this.setState({open : false});
+  }
 
+  getPartnerDetailsFromModal = (partnerDetails) => {
+    if(this.state.partnerWithSpecificRevenue.map(d => d.partner_code).includes(partnerDetails[0].code)) return alert("Partner already saved")
+    this.setState(prevState => ({
+      ...prevState,
+      partnerWithSpecificRevenue: [
+        ...prevState.partnerWithSpecificRevenue,
+        { partner_code : partnerDetails[0].code, partner_name: partnerDetails[0].name, claim : 0, send : 0 }
+      ]
+    }))
+    this.setState({partneropen : false});
+  }
 
     render() {
       const {classes} = this.props;
@@ -418,6 +496,360 @@ class RevenueRuleDistubutionPage extends React.Component {
             </Grid>
           </Grid>
         </Grid>
+        <Grid
+          style={{
+            margin: '2%',
+            border: '1px solid #d0d6d1',
+            paddingTop: '3%',
+            display: `${
+              this.state.trans_type === 'Wallet to Wallet' ? 'none' : 'flex'
+            }`,
+          }}
+          container
+          spacing={16}
+        >
+          <Grid item md={12}>
+            <span
+              className={`${
+                this.state.activetab ===  'branch' ? 'ActiveTab' : 'InactiveTab'
+              } `}
+              // className={classes.bankBranches}
+              onClick={() => this.setState({activetab : 'branch'})}
+            >
+              Bank Branches
+            </span>
+            <span
+              className={`${
+                this.state.activetab === 'partner' ? 'ActiveTab' : 'InactiveTab'
+              } `}
+              onClick={() => this.setState({activetab : 'partner'})}
+            >
+              Bank Partner
+            </span>
+          </Grid>
+          {this.state.activetab === 'branch' ? (
+            <Grid container spacing={16}>
+            <Grid item xs={12}>
+              <div className={classes.border}>
+                <Grid container alignItems="center">
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="subtitle"
+                      // style={{ paddingLeft: '3%', color: '#417505' }}
+                    >
+                      Standard Revenue Sharing with Branches
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      type="number"
+                      label="claim%"
+                      className={classNames(classes.textField, classes.dense)}
+                      margin="dense"
+                      variant="outlined"
+                      disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                          this.setState((prevState) => ({
+                              standardRevenueSharingRule: {...prevState.standardRevenueSharingRule, claim: val}
+                            }))
+                          }}
+                      value={this.state.standardRevenueSharingRule.claim}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="caption">and</Typography>
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      type="number"
+                      label="send%"
+                      disabled={this.state.trans_type === 'Wallet to Non Wallet'}
+                      className={classNames(classes.textField, classes.dense)}
+                      margin="dense"
+                      variant="outlined"
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        this.setState((prevState) => ({
+                          standardRevenueSharingRule: {...prevState.standardRevenueSharingRule, send: val}
+                        }))
+                      }}
+                        value={this.state.standardRevenueSharingRule.send}
+                    />
+                  </Grid>
+                  <Grid item></Grid>
+                </Grid>
+              </div>
+            </Grid>
+            <Grid item xs={12}>
+              <div className={classes.border}>
+                <Grid container>
+                  <Grid item xs={12} container justify="space-between" alignItems="center">
+                    <Grid item>
+                      <Typography variant="subtitle">Branches with specific revenue sharing</Typography>
+                    </Grid>
+                    <Grid item>
+                      <Button onClick={() => this.setState({open : true})}>Add branch</Button>
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={4}  style={{paddingTop: 32}} alignItems="center">
+                    {this.state.branchWithSpecificRevenue.map((d,i) => (
+                      <>
+                      <Grid item xs={2}>
+                        {d.branch_code}
+                      </Grid>
+                      <Grid item xs={2}>
+                        {d.branch_name}
+                      </Grid>
+                      <Grid item xs={3}>
+                        <TextField
+                          type="number"
+                          label="claim%"
+                          disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                          className={classNames(classes.textField, classes.dense)}
+                          margin="dense"
+                          variant="outlined"
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            // this.setState({
+                            //     revenueAmount: val
+                            // })
+                            let {branchWithSpecificRevenue} = this.state;
+                            branchWithSpecificRevenue[i].claim = val;
+                            this.setState({branchWithSpecificRevenue})
+                          }}
+                            value={d.claim}
+                        />
+                      </Grid>
+                      <Grid item xs={3}>
+                        <TextField
+                          type="number"
+                          label="send%"
+                          disabled={this.state.trans_type === 'Wallet to Non Wallet'}
+                          className={classNames(classes.textField, classes.dense)}
+                          margin="dense"
+                          variant="outlined"
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            // this.setState({
+                            //     revenueAmount: val
+                            // })
+                            let {branchWithSpecificRevenue} = this.state;
+                            branchWithSpecificRevenue[i].send = val;
+                            this.setState({branchWithSpecificRevenue})
+                          }}
+                            value={d.send}
+                        />
+                      </Grid>
+                      {/* <Grid item xs={2} >
+                        <Button onClick={() => {
+                          let {branchWithSpecificRevenue} = this.state;
+                          branchWithSpecificRevenue[i].claim = 0;
+                          branchWithSpecificRevenue[i].send = 0;
+                          this.setState({branchWithSpecificRevenue})
+                        }}> reset</Button>
+                      </Grid> */}
+                      <Grid item xs={2} >
+                        <Button 
+                          onClick={() => {
+                            // let {branchWithSpecificRevenue} = this.state;
+                            this.setState(prevState => ({
+                              ...prevState,
+                              branchWithSpecificRevenue: prevState.branchWithSpecificRevenue.filter(b => b.branch_code !== d.branch_code)
+                            }))
+                          }}
+                        >
+                          delete
+                        </Button>
+                      </Grid>
+                      </>
+                    ))}
+                    <Grid item xs={12}><Divider /></Grid>
+                    <Grid item xs={12} style={{textAlign: 'right'}}>
+                      <MaterialButton
+                        variant="contained"
+                        color="primary"
+                        style={{
+                          // height: '40%',
+                          marginTop: '13px',
+                          // marginLeft: '13%',
+                        }}
+                        className={classes.button}
+                        onClick={this.saveRevenueSharingRulesForBranchAndPartner}
+                        type="button"
+                      >
+                        Update
+                      </MaterialButton>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+          </Grid>
+          ) : null }
+          {this.state.activetab === 'partner' ? (
+            <Grid container spacing={16}>
+            <Grid item xs={12}>
+              <div className={classes.border}>
+                <Grid container alignItems="center">
+                  <Grid item xs={12}>
+                    <Typography
+                      variant="subtitle"
+                      // style={{ paddingLeft: '3%', color: '#417505' }}
+                    >
+                      Standard Revenue Sharing with Partners
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      type="number"
+                      label="claim%"
+                      className={classNames(classes.textField, classes.dense)}
+                      margin="dense"
+                      variant="outlined"
+                      disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                          this.setState((prevState) => ({
+                            standardPartnerRevenueSharingRule: {...prevState.standardPartnerRevenueSharingRule, claim: val}
+                            }))
+                          }}
+                      value={this.state.standardPartnerRevenueSharingRule.claim}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="caption">and</Typography>
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      type="number"
+                      label="send%"
+                      disabled={this.state.trans_type === 'Wallet to Non Wallet'}
+                      className={classNames(classes.textField, classes.dense)}
+                      margin="dense"
+                      variant="outlined"
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        this.setState((prevState) => ({
+                          standardPartnerRevenueSharingRule: {...prevState.standardPartnerRevenueSharingRule, send: val}
+                        }))
+                      }}
+                        value={this.state.standardPartnerRevenueSharingRule.send}
+                    />
+                  </Grid>
+                  <Grid item></Grid>
+                </Grid>
+              </div>
+            </Grid>
+            <Grid item xs={12}>
+              <div className={classes.border}>
+                <Grid container>
+                  <Grid item xs={12} container justify="space-between" alignItems="center">
+                    <Grid item>
+                      <Typography variant="subtitle">Partners with specific revenue sharing</Typography>
+                    </Grid>
+                    <Grid item>
+                      <Button onClick={() => this.setState({partneropen : true})}>Add Partner</Button>
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={4}  style={{paddingTop: 32}} alignItems="center">
+                    {this.state.partnerWithSpecificRevenue.map((d,i) => (
+                      <>
+                      <Grid item xs={2}>
+                        {d.partner_code}
+                      </Grid>
+                      <Grid item xs={2}>
+                        {d.partner_name}
+                      </Grid>
+                      <Grid item xs={3}>
+                        <TextField
+                          type="number"
+                          label="claim%"
+                          disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                          className={classNames(classes.textField, classes.dense)}
+                          margin="dense"
+                          variant="outlined"
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            // this.setState({
+                            //     revenueAmount: val
+                            // })
+                            let {partnerWithSpecificRevenue} = this.state;
+                            partnerWithSpecificRevenue[i].claim = val;
+                            this.setState({partnerWithSpecificRevenue})
+                          }}
+                            value={d.claim}
+                        />
+                      </Grid>
+                      <Grid item xs={3}>
+                        <TextField
+                          type="number"
+                          label="send%"
+                          disabled={this.state.trans_type === 'Wallet to Non Wallet'}
+                          className={classNames(classes.textField, classes.dense)}
+                          margin="dense"
+                          variant="outlined"
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            // this.setState({
+                            //     revenueAmount: val
+                            // })
+                            let {partnerWithSpecificRevenue} = this.state;
+                            partnerWithSpecificRevenue[i].send = val;
+                            this.setState({partnerWithSpecificRevenue})
+                          }}
+                            value={d.send}
+                        />
+                      </Grid>
+                      {/* <Grid item xs={2} >
+                        <Button onClick={() => {
+                          let {branchWithSpecificRevenue} = this.state;
+                          branchWithSpecificRevenue[i].claim = 0;
+                          branchWithSpecificRevenue[i].send = 0;
+                          this.setState({branchWithSpecificRevenue})
+                        }}> reset</Button>
+                      </Grid> */}
+                      <Grid item xs={2} >
+                        <Button 
+                          onClick={() => {
+                            // let {branchWithSpecificRevenue} = this.state;
+                            this.setState(prevState => ({
+                              ...prevState,
+                              partnerWithSpecificRevenue: prevState.partnerWithSpecificRevenue.filter(b => b.partner_code !== d.partner_code)
+                            }))
+                          }}
+                        >
+                          delete
+                        </Button>
+                      </Grid>
+                      </>
+                    ))}
+                    <Grid item xs={12}><Divider /></Grid>
+                    <Grid item xs={12} style={{textAlign: 'right'}}>
+                      <MaterialButton
+                        variant="contained"
+                        color="primary"
+                        style={{
+                          // height: '40%',
+                          marginTop: '13px',
+                          // marginLeft: '13%',
+                        }}
+                        className={classes.button}
+                        onClick={this.saveRevenueSharingRulesForBranchAndPartner}
+                        type="button"
+                      >
+                        Update
+                      </MaterialButton>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+          </Grid>
+          ) : null }
+        </Grid>
+        <AddBranchModal open={this.state.open} bank_id={this.state.bank_id} handleClose={() => this.setState({open : false})} getBranchDetailsFromModal={this.getBranchDetailsFromModal}/>
+        <AddPartnerModal partneropen={this.state.partneropen} bank_id={this.state.bank_id} handleClose={() => this.setState({partneropen : false})} getPartnerDetailsFromModal={this.getPartnerDetailsFromModal}/>
       </Grid>
     }
 }

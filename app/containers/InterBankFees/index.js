@@ -119,6 +119,7 @@ export class InterBankFees extends Component {
       bankFeeDetails: '',
       selectedBankFeeId: '',
       revenueData: '',
+      shares: '',
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -166,23 +167,24 @@ export class InterBankFees extends Component {
     } 
   }
 
-  showRevenueRuleDistributionPage = bankFee => {
+  showRevenueRuleDistributionPage = async bankFee => {
     console.log("to");
     this.setState({
       revenueRuleDistributionPage: 'true',
       selectedBankFeeId: bankFee._id,
       bankFeeDetails: bankFee,
     });
-    axios.post(`${API_URL}/getOne`, { token:token, page_id: bankFee._id, type: 'bank', page: 'interbankrule' })
-      .then(d => {
-        const { data } = d;
-        this.setState({
-          revenueData: data.row,
-        });
-      })
-      .catch(err => {
-        console.log(err);
+    try {
+      const res1 = await axios.post(`${API_URL}/getOne`, { token:token, page_id: bankFee._id, type: 'bank', page: 'interbankrule' });
+      const res2 = await axios.post(`${API_URL}/bank/getRevenueFeeForInterBank`, { token:token, type: bankFee.type, bank_id: bid});
+      console.log(res2);
+      this.setState({
+        revenueData: res1.data.row,
+        share: res2.data.fee,
       });
+    } catch (e){
+      console.log(e);
+    }
   };
 
 
@@ -441,6 +443,7 @@ export class InterBankFees extends Component {
                 this.setState({ revenueRuleDistributionPage: false })
               }
               revenueData={this.state.revenueData}
+              share={this.state.share}
               selectedBankFeeId={this.state.selectedBankFeeId}
               bankFeeDetails={this.state.bankFeeDetails}
             />
