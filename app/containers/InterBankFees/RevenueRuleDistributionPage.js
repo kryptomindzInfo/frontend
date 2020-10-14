@@ -142,6 +142,7 @@ class RevenueRuleDistubutionPage extends React.Component {
       const otherbankshare = revenueData.other_bank_share;
       fixed_other_bank = otherbankshare.fixed;
       percentage_other_bank = otherbankshare.percentage;
+      console.log(otherbankshare.fixed);
       this.setState( prevState => (
         {
           ...state ,
@@ -168,7 +169,6 @@ class RevenueRuleDistubutionPage extends React.Component {
       const {specific_branch_share ,branch_share, partner_share, specific_partner_share} = share;
       this.setState( prevState => (
         {
-          ...state ,
           standardRevenueSharingRule : branch_share ?  branch_share : prevState.branch_share, 
           branchWithSpecificRevenue : specific_branch_share ? specific_branch_share : prevState.specific_branch_share,
           standardPartnerRevenueSharingRule: partner_share ? partner_share : prevState.partner_share,
