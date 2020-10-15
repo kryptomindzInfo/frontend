@@ -179,7 +179,6 @@ class BranchOperationalWallet extends Component {
   };
   closePopupSendMoney = () => {
     this.setState({
-      popupSendMoney: false,
       showSendMoneyOTP: false,
       showClaimMoneyDetails: false,
       popupClaimMoney: false,
@@ -215,6 +214,7 @@ class BranchOperationalWallet extends Component {
       receiverIdentificationNumber: '',
       receiverIdentificationValidTill: '',
       receiverIdentificationAmount: '',
+      popupSendMoney: false,
     });
   };
 

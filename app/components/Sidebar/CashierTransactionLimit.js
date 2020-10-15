@@ -709,6 +709,7 @@ class CashierTransactionLimit extends Component {
               notification: 'Transaction Successfully Done',
               showVerifyClaimMoney: false,
               popupClaimMoney: false,
+              showClaimMoneyDetails: false,
             });
             this.success();
             this.props.refresh();
