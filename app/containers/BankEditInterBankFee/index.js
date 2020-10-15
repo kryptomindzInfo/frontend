@@ -374,6 +374,7 @@ export default class BankEditFee extends Component {
                     autoFocus
                     onChange={this.handleInputChange.bind(this)}
                     required
+                    disabled
                     list="ttype"
                   >
                     <option value="">Transaction Type*</option>
@@ -381,6 +382,10 @@ export default class BankEditFee extends Component {
                     <option value="IBNWNW">Non Wallet to Non Wallet</option>
                     <option value="IBNWW">Non Wallet to Wallet</option>
                     <option value="IBWNW">Wallet to Non Wallet</option>
+                    <option value="IBWM-C">Wallet to Merchant Commission</option>
+                    <option value="IBWM-F">Wallet to Merchant</option>
+                    <option value="IBNWM-C">Non Wallet to Merchant Commission</option>
+                    <option value="IBNWM-F">Non Wallet to Merchant</option>
                   </SelectInput>
                   </FormGroup>
                   </Col>

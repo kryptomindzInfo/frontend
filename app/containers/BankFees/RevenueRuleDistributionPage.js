@@ -314,7 +314,7 @@ class RevenueRuleDistubutionPage extends React.Component {
         >
           <Grid item>
             <Typography
-              variant="h4"
+              variant="h5"
               style={{ color: 'white' }}
             >
                 { "Revenue Rule Distribution ( " +this.state.name + " )"}
@@ -335,7 +335,7 @@ class RevenueRuleDistubutionPage extends React.Component {
           <Grid item md={12}>
             <Typography
               variant="subtitle1"
-              style={{ paddingLeft: '3%', color: '#417505' }}
+              style={{ paddingLeft: '3%' }}
             >
               Revenue with Infra
             </Typography>

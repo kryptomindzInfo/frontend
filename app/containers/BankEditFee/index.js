@@ -626,6 +626,7 @@ export default class BankEditFee extends Component {
                     autoFocus
                     onChange={this.handleInputChange.bind(this)}
                     required
+                    disabled
                     list="ttype"
                   >
                        <option value="">Transaction Type*</option>

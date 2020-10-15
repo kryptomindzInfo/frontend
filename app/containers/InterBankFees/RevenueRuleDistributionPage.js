@@ -344,7 +344,7 @@ class RevenueRuleDistubutionPage extends React.Component {
         >
           <Grid item>
             <Typography
-              variant="h4"
+              variant="h5"
               style={{ color: 'white' }}
             >
                 { "Revenue Rule Distribution ( " +this.state.name + " )"}
@@ -365,7 +365,7 @@ class RevenueRuleDistubutionPage extends React.Component {
           <Grid item md={12}>
             <Typography
               variant="subtitle1"
-              style={{ paddingLeft: '3%', color: '#417505' }}
+              style={{ paddingLeft: '3%' }}
             >
               Revenue with Infra
             </Typography>
@@ -427,9 +427,9 @@ class RevenueRuleDistubutionPage extends React.Component {
               {this.props.revenueData.infra_approval_status === 1 ? "Update" : this.props.revenueData.infra_approval_status === 2 ? "Pending" : "Send for Approval"}
             </MaterialButton>
           </Grid>
-          <Grid container spacing={16}>
-            <Grid item xs={12}>
-              <div className={classes.border}>
+          <Grid item xs={12}>
+            <div className={classes.border}>
+              <Grid item xs={12}>
                 <Grid container alignItems="center">
                   <Grid item xs={12}>
                     <Typography
@@ -477,23 +477,23 @@ class RevenueRuleDistubutionPage extends React.Component {
                   </Grid>
                   <Grid item></Grid>
                 </Grid>
-              </div>
-            </Grid>
-            <Grid item xs={12}><Divider /></Grid>
-            <Grid item xs={12} style={{textAlign: 'right'}}>
-              <MaterialButton
-                variant="contained"
-                color="primary"
-                style={{
-                  marginTop: '13px',
-                }}
-                className={classes.button}
-                onClick={this.saveRevenueSharingRules}
-                type="button"
-              >
-                Update
-              </MaterialButton>
-            </Grid>
+              </Grid>
+              <Grid item xs={12}><Divider /></Grid>
+              <Grid item xs={12} style={{textAlign: 'right'}}>
+                <MaterialButton
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    marginTop: '13px',
+                  }}
+                  className={classes.button}
+                  onClick={this.saveRevenueSharingRules}
+                  type="button"
+                >
+                  Update
+                </MaterialButton>
+              </Grid>
+            </div>
           </Grid>
         </Grid>
         <Grid
