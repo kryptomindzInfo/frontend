@@ -388,8 +388,8 @@ export default class BankPage extends Component {
       })
       .then(res => {
         if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
+          if (res.data.status===0) {
+            throw res.data.message;
           } else {
             this.setState({
               notification: 'Bank added successfully!',
