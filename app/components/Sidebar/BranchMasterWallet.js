@@ -168,25 +168,28 @@ class BranchMasterWallet extends Component {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            this.setState({
-              balance: res.data.balance,
-            });
+            this.setState(
+              {
+                balance: res.data.balance,
+              },
+              () => {
+                var dis = this;
+                setTimeout(function() {
+                  dis.getBalance();
+                }, 3000);
+              },
+            );
           }
         }
       })
       .catch(err => {
-  
+        console.log(err);
       });
   };
 
   componentDidMount() {
-    this.setState({
-      bank: this.props.historyLink,
-    }, () => {
-      this.getBalance();
-    });
-
-  }
+    this.getBalance();
+  };
 
   render() {
     function inputFocus(e) {

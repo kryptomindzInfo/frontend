@@ -96,39 +96,6 @@ class BankOperationalWallet extends Component {
     });
   };
 
-  addBank = event => {
-    event.preventDefault();
-    // axios
-    //   .post(`${API_URL  }/generateOTP`, {
-    //     name: this.state.name,
-    //     mobile: this.state.mobile,
-    //     page: 'addBank',
-    //     token,
-    //   })
-    //   .then(res => {
-    //     if(res.status == 200){
-    //       if(res.data.error){
-    //         throw res.data.error;
-    //       }else{
-    //         this.setState({
-    //           showOtp: true,
-    //           notification: 'OTP Sent'
-    //         });
-    //         this.success();
-    //       }
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    //   })
-    //   .catch(err => {
-    //     this.setState({
-    //       notification: (err.response) ? err.response.data.error : err.toString()
-    //     });
-    //     this.error();
-    //   });
-  };
-
   submitMoney = e => {
     e.preventDefault();
     if (this.state.amount > this.state.balance) {
@@ -191,10 +158,7 @@ class BankOperationalWallet extends Component {
     }
   };
 
-  componentDidMount() {
-    this.setState({
-      bank: this.props.historyLink,
-    });
+  getBalance = () => {
     axios
       .get(`${API_URL}/getBankOperationalBalance?bank=${this.state.token}`)
       .then(res => {
@@ -202,9 +166,17 @@ class BankOperationalWallet extends Component {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            this.setState({
-              balance: res.data.balance,
-            });
+            this.setState(
+              {
+                balance: res.data.balance,
+              },
+              () => {
+                var dis = this;
+                setTimeout(function() {
+                  dis.getBalance();
+                }, 3000);
+              },
+            );
           }
         }
       })
@@ -214,6 +186,17 @@ class BankOperationalWallet extends Component {
         });
         this.error();
       });
+  }
+
+  componentDidMount() {
+    // this.setState(
+    //   {
+    //     bank: this.props.historyLink,
+    //   },
+    //   () => {
+    //     this.getBalance();
+    //   },
+    // );
   }
 
   render() {

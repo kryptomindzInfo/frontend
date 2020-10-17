@@ -68,6 +68,12 @@ function BankPartnerListPage(props) {
     }
   };
 
+  const refreshPartnertList = async () => {
+    const data = await fetchPartnerList();
+    setPartnerList(data.list);
+    setLoading(data.loading);
+  };
+
   const partnerAPI = async (values, apiType) => {
     let API = '';
     if (apiType === 'update') {
@@ -85,8 +91,10 @@ function BankPartnerListPage(props) {
         } else {
           if (apiType === 'update') {
             toast.success("Partner Edited");
+            refreshPartnertList();
           } else {
             toast.success("Partner Created");
+            refreshPartnertList();
           }
           setOtpPopup(false);
         }
@@ -145,12 +153,6 @@ function BankPartnerListPage(props) {
     };
     await partnerAPI(obj, popupType);
     setLoading(false);
-  };
-
-  const refreshPartnertList = async () => {
-    const data = await fetchPartnerList();
-    setPartnerList(data.list);
-    setLoading(data.loading);
   };
 
   useEffect(() => {

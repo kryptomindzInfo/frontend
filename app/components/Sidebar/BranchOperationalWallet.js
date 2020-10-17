@@ -582,6 +582,7 @@ class BranchOperationalWallet extends Component {
         this.error();
       });
   };
+  
   getBalance = () => {
     axios
       .get(

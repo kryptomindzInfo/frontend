@@ -46,6 +46,7 @@ class RevenueRuleDistubutionPage extends React.Component {
   warn = () => toast.warn(this.state.notification);
   state = {
     bid: localStorage.getItem('bankId'),
+    type: this.props.bankFeeDetails.type,
     open : false,
     partneropen: false,
     ruleId: this.props.bankFeeDetails._id,
@@ -254,60 +255,6 @@ class RevenueRuleDistubutionPage extends React.Component {
       this.error();
       });
     };
-
-  editRrRules = (rrId) => {
-    this.setState({
-      editRulesLoading: true
-    });
-    let { name, trans_type, active, bank_id, token, revenuePercentage, revenueAmount, selectedBankFeeId } = this.state;
-        //   let {name, trans_type, active, ranges, bank_id, token} = this.state;
-
-    let rule_id = rrId;
-       const  ranges = [{
-              trans_from: 0,
-              trans_to: 0,
-              fixed_amount: revenueAmount,
-              percentage: revenuePercentage,
-        }];
-
-    axios.post(`${API_URL  }/editBankBankRule`, {
-      name,
-      trans_type, active, ranges, bank_id, token, rule_id,selectedBankFeeId
-    })
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.error){
-          throw res.data.error;
-        } else {
-          //console.log(res.data);
-          this.setState({
-            notification: 'Bank Rule Updated'
-          }, () => {
-            this.success();
-            let ba = this.state.bank;
-            let history = this.props.history;
-            setTimeout(() => {
-            // history.push('/bank/fees/');
-              this.props.showRevenueRuleDistributionPage({trans_type,_id: selectedBankFeeId , name })
-            }, 1000);
-          });
-        }
-      } else {
-        const error = new Error(res.data.error);
-        throw error;
-      }
-      this.setState({
-        editRulesLoading: false
-      });
-    })
-    .catch(err => {
-      this.setState({
-        notification: (err.response) ? err.response.data.error : err.toString(),
-        editRulesLoading: false
-      });
-      this.error();
-    });
-  };
   
   getBranchDetailsFromModal = (branchDetails) => {
     if(this.state.branchWithSpecificRevenue.map(d => d.branch_code).includes(branchDetails[0].bcode)) return alert("Branch already saved")
@@ -502,7 +449,7 @@ class RevenueRuleDistubutionPage extends React.Component {
             border: '1px solid #d0d6d1',
             paddingTop: '3%',
             display: `${
-              this.state.trans_type === 'Wallet to Wallet' ? 'none' : 'flex'
+              this.state.type === 'IBWW' || this.state.type === 'IBWM-C' || this.state.type === 'IBWM-F' ? 'none' : 'flex'
             }`,
           }}
           container

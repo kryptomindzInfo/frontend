@@ -16,8 +16,7 @@ constructor() {
       balance: 0
     };
   }
-  componentDidMount() {
-
+  getBalance = () => {
     axios
       .get(`${API_URL}/getBalance?wallet_id=escrow@${bname}&token=${token}&type=bank`)
       .then(res => {
@@ -25,9 +24,17 @@ constructor() {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            this.setState({
-              balance: res.data.balance,
-            });
+            this.setState(
+              {
+                balance: res.data.balance,
+              },
+              () => {
+                var dis = this;
+                setTimeout(function() {
+                  dis.getBalance();
+                }, 3000);
+              },
+            );
           }
         }
       })
@@ -35,6 +42,10 @@ constructor() {
         console.log(err);
       });
   }
+
+  componentDidMount() {
+    // this.getBalance();
+  };
 
   render() {
     return (
