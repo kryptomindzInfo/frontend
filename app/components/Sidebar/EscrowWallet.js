@@ -44,7 +44,7 @@ constructor() {
   }
 
   componentDidMount() {
-    // this.getBalance();
+    this.getBalance();
   };
 
   render() {

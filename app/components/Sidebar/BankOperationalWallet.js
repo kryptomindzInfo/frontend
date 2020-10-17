@@ -189,14 +189,14 @@ class BankOperationalWallet extends Component {
   }
 
   componentDidMount() {
-    // this.setState(
-    //   {
-    //     bank: this.props.historyLink,
-    //   },
-    //   () => {
-    //     this.getBalance();
-    //   },
-    // );
+    this.setState(
+      {
+        bank: this.props.historyLink,
+      },
+      () => {
+        this.getBalance();
+      },
+    );
   }
 
   render() {
