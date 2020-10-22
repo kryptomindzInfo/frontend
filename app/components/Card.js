@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 const Card = styled.div`
-  display: block;
+  display:  ${props => (props.display ? props.display : 'block')};
   width: ${props => (props.cardWidth ? props.cardWidth : '100%')};
   margin-left: ${props =>
     props.horizontalMargin ? props.horizontalMargin : '0'};
@@ -55,6 +55,28 @@ const Card = styled.div`
   &.sideNav {
     padding: 15px 10px;
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 10px;
+    border: solid 1px #e9eff4;
+    box-shaddow: none;
+    i {
+      margin-right: 10px;
+      margin-top: 0;
+      color: ${props => (props.selected ? '#fff' : '#417505')};
+    }
+    h3 {
+      font-size: 13px;
+      font-weight: bold;
+      margin: 0;
+      color: ${props => (props.selected ? '#fff' : '#323c47')};
+    
+    }
+  }
+  &.containerNav {
+    padding: 15px 10px;
+    display: block;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;

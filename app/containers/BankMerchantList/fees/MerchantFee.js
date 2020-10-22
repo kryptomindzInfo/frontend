@@ -43,7 +43,11 @@ const MerchantFee = props => {
           <i className="material-icons" onClick={props.onBack}>
             arrow_back
           </i>
-          <h3 style={{margin:"auto"}}>Create Fee Rules</h3>
+          {Object.keys(rule).length > 0 ? (
+            <h3 style={{margin:"auto"}}>Edit Fee Rule</h3>
+          ) : (
+            <h3 style={{margin:"auto"}}>Create Fee Rule</h3>
+          )}
         </div>
       </div>
       <div className="cardBody">
@@ -79,14 +83,15 @@ const MerchantFee = props => {
           })}
           onSubmit={values => {
             setLoading(true);
+            console.log(values);
             if (Object.keys(rule).length > 0) {
-              values.fee_id = rule._id;
-              editMerchantRule(props, 'revenue', values).then(() => {
+              values.rule_id = rule._id;
+              editMerchantRule(props, values).then(() => {
                 setLoading(false);
               });
             } else {
               values.merchant_id = props.merchantId;
-              createMerchantRule(props, 'revenue', values).then(() => {
+              createMerchantRule(props, values).then(() => {
                 setLoading(false);
               });
             }
@@ -122,10 +127,11 @@ const MerchantFee = props => {
                         name="type"
                         value={formikProps.values.type}
                         onChange={handleChange}
+                        disabled={Object.keys(rule).length > 0}
                       >
                         <option value="">Transaction Type*</option>
-                        <option value="0">Wallet to Merchant</option>
-                        <option value="1">Non Wallet to Merchant</option>
+                        <option value="WM-F">Wallet to Merchant</option>
+                        <option value="NWM-F">Non Wallet to Merchant</option>
                       </SelectInput>
                       <ErrorMessage name="type" />
                     </FormGroup>

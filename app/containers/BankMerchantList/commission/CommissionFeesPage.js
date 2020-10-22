@@ -30,7 +30,7 @@ const CommissionFeesPage = props => {
     setCreateRulePage(false);
     setEditRulePage(false);
     setLoading(true);
-    getRules('commission', id).then(r => {
+    getRules(id, 'commission').then(r => {
       setRules(r.list);
       setLoading(false);
     });
@@ -60,7 +60,7 @@ const CommissionFeesPage = props => {
           </td>
           <td className="tac">
             <span>
-              {r.type === 0 ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
+              {r.type === 'WM-C' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
             </span>
           </td>
           <td>
@@ -99,6 +99,7 @@ const CommissionFeesPage = props => {
             ) : (
               <Button
                 onClick={() => {
+                  refreshFeeList();
                   setEditingRule(r);
                   setRevenueSharingRulePage(true);
                 }}
@@ -142,7 +143,7 @@ const CommissionFeesPage = props => {
                   onClick={() => setCreateRulePage(true)}
                 >
                   <i className="material-icons">add</i>
-                  <span>Create Commission Fee</span>
+                  <span>Create Commission</span>
                 </Button>
               </ActionBar>
               <Card bigPadding>

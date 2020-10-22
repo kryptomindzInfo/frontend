@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import Card from 'components/Card';
 import Button from 'components/Button';
@@ -9,16 +9,13 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import Loader from 'components/Loader';
 import * as Yup from 'yup';
-
-import 'react-toastify/dist/ReactToastify.css';
 import { Form, Formik, FieldArray, ErrorMessage } from 'formik';
-import { createMerchantRule, editMerchantRule } from '../api/merchantAPI';
-
 import {
   correctFocus,
   inputBlur,
   inputFocus,
 } from '../../../components/handleInputFocus';
+import { createInterBankMerchantRule, editInterBankMerchantRule } from '../api/merchantAPI';
 
 toast.configure({
   position: 'bottom-right',
@@ -29,7 +26,7 @@ toast.configure({
   draggable: true,
 });
 
-const CommissionFee = props => {
+const MerchantFee = props => {
   const [isLoading, setLoading] = useState(false);
   const [rule, setRule] = useState(props.rules);
 
@@ -47,9 +44,9 @@ const CommissionFee = props => {
             arrow_back
           </i>
           {Object.keys(rule).length > 0 ? (
-            <h3 style={{margin:"auto"}}>Edit Commission Rule</h3>
+            <h3 style={{margin:"auto"}}>Edit Fee Rule</h3>
           ) : (
-            <h3 style={{margin:"auto"}}>Create Commission Rule</h3>
+            <h3 style={{margin:"auto"}}>Create Fee Rule</h3>
           )}
         </div>
       </div>
@@ -88,12 +85,12 @@ const CommissionFee = props => {
             setLoading(true);
             if (Object.keys(rule).length > 0) {
               values.rule_id = rule._id;
-              editMerchantRule(props, values).then(() => {
+              editInterBankMerchantRule(props, values).then(() => {
                 setLoading(false);
               });
             } else {
               values.merchant_id = props.merchantId;
-              createMerchantRule(props, values).then(() => {
+              createInterBankMerchantRule(props, values).then(() => {
                 setLoading(false);
               });
             }
@@ -132,9 +129,8 @@ const CommissionFee = props => {
                         disabled={Object.keys(rule).length > 0}
                       >
                         <option value="">Transaction Type*</option>
-                        <option value="WM-C">Wallet to Merchant </option>
-                        <option value="NWM-C">Non Wallet to Merchant </option>
-                        {/* <option value="2">Merchant cashier to Merchant</option> */}
+                        <option value="IBWM-F">Wallet to Merchant</option>
+                        <option value="IBNWM-F">Non Wallet to Merchant</option>
                       </SelectInput>
                       <ErrorMessage name="type" />
                     </FormGroup>
@@ -243,7 +239,6 @@ const CommissionFee = props => {
                                       handleBlur(e);
                                     }}
                                     onChange={handleChange}
-                                    required
                                   />
                                   <ErrorMessage
                                     name={`ranges[${index}].fixed`}
@@ -270,7 +265,6 @@ const CommissionFee = props => {
                                       handleBlur(e);
                                     }}
                                     onChange={handleChange}
-                                    required
                                   />
                                   <ErrorMessage
                                     name={`ranges[${index}].percentage`}
@@ -337,4 +331,4 @@ const CommissionFee = props => {
   );
 };
 
-export default CommissionFee;
+export default MerchantFee;

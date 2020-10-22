@@ -47,7 +47,7 @@ export const InfraMerchantFeeListPage = props => {
 
   const refreshRuleList = async () => {
     setLoading(true);
-    getInfraMerchantRules(props.feeType, id).then(rules => {
+    getInfraMerchantRules(props.bank, props.feeType, id).then(rules => {
       setRules(rules.list.filter(rule => rule.infra_approve_status !== 0));
       setLoading(rules.loading);
     });
@@ -81,7 +81,7 @@ export const InfraMerchantFeeListPage = props => {
           <td className="tac">
             <span>
               {' '}
-              {rule.type === 0
+              {rule.type === 'WM-F' || rule.type === 'IBWM-F'
                 ? 'Wallet to Merchant'
                 : 'Non-wallet to Merchant'}
             </span>
@@ -159,7 +159,7 @@ export const InfraMerchantFeeListPage = props => {
         <InfraMerchantSidebar
           bankId={bankId}
           merchantId={id}
-          active={props.feeType}
+          active={props.active}
         />
         <Main big>
           <ActionBar
@@ -178,7 +178,7 @@ export const InfraMerchantFeeListPage = props => {
                 <i className="material-icons">supervised_user_circle</i>
               </div>
               <div className="cardHeaderRight">
-                <h3>Merchant {props.feeType} Sharing Rules</h3>
+                <h3>Merchant {props.feeType[0].toUpperCase() + props.feeType.slice(1)} Sharing Rules</h3>
                 <h5>Fees created by the infra</h5>
               </div>
             </div>
@@ -241,12 +241,10 @@ export const InfraMerchantFeeListPage = props => {
                         type="button"
                         onClick={() =>
                           merchantInfraRuleApi(
-                            props,
-                            props.feeType,
+                            props.bank,
                             'decline',
                             {
-                              fee_id: ruleForApproval._id,
-                              commission_id: ruleForApproval._id,
+                              rule_id: ruleForApproval._id,
                             },
                           ).then(() => {
                             setApprovalPopup(false);
@@ -269,12 +267,10 @@ export const InfraMerchantFeeListPage = props => {
                       <Button
                         onClick={() =>
                           merchantInfraRuleApi(
-                            props,
-                            props.feeType,
+                            props.bank,
                             'approve',
                             {
-                              fee_id: ruleForApproval._id,
-                              commission_id: ruleForApproval._id,
+                              rule_id: ruleForApproval._id,
                             },
                           ).then(() => {
                             setApprovalPopup(false);

@@ -4,6 +4,8 @@ import PersonIcon from '@material-ui/icons/PersonAdd';
 import FolderIcon from '@material-ui/icons/Folder';
 import MobileScreenShareIcon from '@material-ui/icons/MobileScreenShare';
 import Card from '../../components/Card';
+import Row from '../../components/Row';
+import Col from '../../components/Col';
 import A from '../../components/A';
 
 const SidebarStyle = styled.aside`
@@ -58,10 +60,11 @@ const SettingSidebar = props => {
   const info = active === 'info';
   const fee = active === 'fee';
   const commission = active === 'commission';
+  const interbankcommission = active === 'interbankcommission';
+  const interbankfee = active === 'interbankfee';
   const id = localStorage.getItem('currentMerchantId');
   return (
     <SidebarStyle marginRight>
-      <h3>SETTINGS</h3>
       <A href={`/bank/merchants/info/${id}`}>
         <Card rounded selected={info} className="sideNav">
           <i className="material-icons">
@@ -70,22 +73,48 @@ const SettingSidebar = props => {
           <h3>Info</h3>
         </Card>
       </A>
-      <A href={`/bank/merchants/fee/${id}`}>
-        <Card rounded selected={fee} className="sideNav">
-          <i className="material-icons">
-            <FolderIcon />
-          </i>
-          <h3>Fee</h3>
+      <Card rounded className="containerNav">
+        <h3>Intra Bank Rules</h3>
+        <Card display="flex">
+          <Row style={{width:'-webkit-fill-available'}}>
+            <Col cW="50%">
+              <A href={`/bank/merchants/fee/${id}`}>
+                <Card rounded selected={fee} className="sideNav">
+                  <h3>Fee</h3>
+                </Card>
+              </A>
+            </Col>
+            <Col cW="50%">
+              <A href={`/bank/merchants/commision/${id}`}>
+                <Card rounded selected={commission} className="sideNav">
+                  <h3>Commission</h3>
+                </Card>
+              </A>
+            </Col>
+          </Row>
         </Card>
-      </A>
-      <A href={`/bank/merchants/commision/${id}`}>
-        <Card rounded selected={commission} className="sideNav">
-          <i className="material-icons">
-            <MobileScreenShareIcon />
-          </i>
-          <h3>Commission</h3>
+      </Card>
+      <Card rounded className="containerNav">
+        <h3>Inter Bank Rules</h3>
+        <Card display="flex">
+         <Row style={{width:'-webkit-fill-available'}}>
+            <Col cW="50%">
+              <A href={`/bank/merchants/interbankfee/${id}`}>
+                <Card rounded selected={interbankfee} className="sideNav">
+                  <h3>Fee</h3>
+                </Card>
+              </A>
+            </Col>
+            <Col cW="50%">
+              <A href={`/bank/merchants/interbankcommision/${id}`}>
+                <Card rounded selected={interbankcommission} className="sideNav">
+                  <h3>Commission</h3>
+                </Card>
+              </A>
+            </Col>
+          </Row>
         </Card>
-      </A>
+      </Card>
     </SidebarStyle>
   );
 };

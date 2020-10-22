@@ -11,11 +11,11 @@ import Loader from '../../../components/Loader';
 import SettingSideBar from '../SettingSidebar';
 import BankHeader from '../../../components/Header/BankHeader';
 import { CURRENCY } from '../../App/constants';
-import MerchantFee from './MerchantFee';
-import { getRules } from '../api/merchantAPI';
-import MerchantRevenueSharingRule from './MerchantRevenueSharingRule';
+import CommissionFee from './CommissionFee';
+import CommissionRevenueSharingRule from './CommissionRevenueSharingRule';
+import { getInterBankRules } from '../api/merchantAPI';
 
-const MerchantFeesPage = props => {
+const CommissionFeesPage = props => {
   const [isLoading, setLoading] = useState(false);
   const [rules, setRules] = useState([]);
   const [editRulePage, setEditRulePage] = useState(false);
@@ -30,7 +30,7 @@ const MerchantFeesPage = props => {
     setCreateRulePage(false);
     setEditRulePage(false);
     setLoading(true);
-    getRules(id, 'fee').then(r => {
+    getInterBankRules(id, 'commission').then(r => {
       setRules(r.list);
       setLoading(false);
     });
@@ -60,7 +60,7 @@ const MerchantFeesPage = props => {
           </td>
           <td className="tac">
             <span>
-              {r.type === 'WM-F' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
+              {r.type === 'IBWM-C' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
             </span>
           </td>
           <td>
@@ -89,7 +89,7 @@ const MerchantFeesPage = props => {
                 }}
                 className="addBankButton"
               >
-                <span>Edit Fee Rule</span>
+                <span>Edit Commission Rule</span>
               </Button>
             ) : null}
             {r.merchant_approve_status === 0 ? (
@@ -121,7 +121,7 @@ const MerchantFeesPage = props => {
       </Helmet>
       <BankHeader active="merchants" />
       <Container verticalMargin>
-        <SettingSideBar active="fee" />
+        <SettingSideBar active="interbankcommission" />
         <Main big>
           {!createRulePage && !editRulePage && !revenueSharingRulePage ? (
             <div>
@@ -143,7 +143,7 @@ const MerchantFeesPage = props => {
                   onClick={() => setCreateRulePage(true)}
                 >
                   <i className="material-icons">add</i>
-                  <span>Create Fee</span>
+                  <span>Create Commission Fee</span>
                 </Button>
               </ActionBar>
               <Card bigPadding>
@@ -152,8 +152,8 @@ const MerchantFeesPage = props => {
                     <i className="material-icons">supervised_user_circle</i>
                   </div>
                   <div className="cardHeaderRight">
-                    <h3>Fees</h3>
-                    <h5>Fees created by the Merchant</h5>
+                    <h3>Commission</h3>
+                    <h5>Commission created by the Merchant</h5>
                   </div>
                 </div>
                 <div className="cardBody">
@@ -177,7 +177,7 @@ const MerchantFeesPage = props => {
             ''
           )}
           {editRulePage ? (
-            <MerchantFee
+            <CommissionFee
               merchantId={id}
               rules={editingRule}
               refreshRuleList={() => refreshFeeList()}
@@ -189,7 +189,7 @@ const MerchantFeesPage = props => {
             ''
           )}
           {createRulePage ? (
-            <MerchantFee
+            <CommissionFee
               merchantId={id}
               rules={{}}
               refreshRuleList={() => refreshFeeList()}
@@ -201,7 +201,7 @@ const MerchantFeesPage = props => {
             ''
           )}
           {revenueSharingRulePage ? (
-            <MerchantRevenueSharingRule
+            <CommissionRevenueSharingRule
               merchantId={id}
               editingRule={editingRule}
               refreshRule={rule => setEditingRule(rule)}
@@ -222,4 +222,4 @@ const MerchantFeesPage = props => {
     </Wrapper>
   );
 };
-export default MerchantFeesPage;
+export default CommissionFeesPage;

@@ -86,7 +86,9 @@ import BankMerchantList from '../BankMerchantList/BankMerchantList';
 import BankPartnerListPage from '../BankPartners/BankPartnerListPage';
 import PartnerInfoPage from '../BankPartners/PartnerInfoPage';
 import MerchantFeesPage from '../BankMerchantList/fees/MerchantFeesPage';
+import MerchantInterBankFeesPage from '../BankMerchantList/interBankFees/MerchantFeesPage';
 import CommissionFeesPage from '../BankMerchantList/commission/CommissionFeesPage';
+import InterBankCommissionFeesPage from '../BankMerchantList/interBankCommission/CommissionFeesPage';
 import MerchantSettingsPage from '../BankMerchantList/settings/MerchantSettingsPage';
 import { InfraMerchantFeeListPage } from '../InfraMerchant/InfraMerchantFeeListPage';
 import CashierMerchantListPage from '../CashierPayBills/CashierMerchantListPage';
@@ -152,14 +154,28 @@ export default function App(props) {
             exact
             path="/infra/merchant/fees/:id"
             component={p => (
-              <InfraMerchantFeeListPage feeType="Revenue" {...p} />
+              <InfraMerchantFeeListPage active='fee' bank= 'intrabank' feeType="fee" {...p} />
             )}
           />
           <InfraRoute
             exact
             path="/infra/merchant/commission/:id"
             component={p => (
-              <InfraMerchantFeeListPage feeType="Commission" {...p} />
+              <InfraMerchantFeeListPage active='commission' bank= 'intrabank' feeType="commission" {...p} />
+            )}
+          />
+          <InfraRoute
+            exact
+            path="/infra/merchant/inter-bank-fees/:id"
+            component={p => (
+              <InfraMerchantFeeListPage active='interbankfees' bank='interbank' feeType="fee" {...p} />
+            )}
+          />
+          <InfraRoute
+            exact
+            path="/infra/merchant/inter-bank-commission/:id"
+            component={p => (
+              <InfraMerchantFeeListPage active='interbankcommission' bank='interbank' feeType="commission" {...p} />
             )}
           />
           <InfraRoute
@@ -250,6 +266,11 @@ export default function App(props) {
             path="/bank/merchants/fee/:id"
             component={MerchantFeesPage}
           />
+           <BankRoute
+            exact
+            path="/bank/merchants/interbankfee/:id"
+            component={MerchantInterBankFeesPage}
+          />
           <BankRoute
             exact
             path="/bank/merchants/info/:id"
@@ -259,6 +280,11 @@ export default function App(props) {
             exact
             path="/bank/merchants/commision/:id"
             component={CommissionFeesPage}
+          />
+          <BankRoute
+            exact
+            path="/bank/merchants/interbankcommision/:id"
+            component={InterBankCommissionFeesPage}
           />
           <BankRoute
             exact

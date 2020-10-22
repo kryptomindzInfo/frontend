@@ -99,7 +99,7 @@ function InfraMerchantList(props) {
                   });
                 }}
               >
-                Revenue Sharing Rules
+                Intra Bank Sharing Rules
               </span>
               <span
                 onClick={() => {
@@ -109,12 +109,12 @@ function InfraMerchantList(props) {
                     JSON.stringify(merchant),
                   );
                   history.push({
-                    pathname: `/infra/merchant/commission/${merchant._id}`,
+                    pathname: `/infra/merchant/inter-bank-fees/${this.props.merchantId}`,
                     state: merchant,
                   });
                 }}
               >
-                Commission Sharing Rules
+                Inter Bank Sharing Rules
               </span>
               {merchant.status === 2 ? (
                 <span>Unblock</span>

@@ -12,7 +12,7 @@ import SettingSideBar from '../SettingSidebar';
 import BankHeader from '../../../components/Header/BankHeader';
 import { CURRENCY } from '../../App/constants';
 import MerchantFee from './MerchantFee';
-import { getRules } from '../api/merchantAPI';
+import { getInterBankRules } from '../api/merchantAPI';
 import MerchantRevenueSharingRule from './MerchantRevenueSharingRule';
 
 const MerchantFeesPage = props => {
@@ -30,7 +30,7 @@ const MerchantFeesPage = props => {
     setCreateRulePage(false);
     setEditRulePage(false);
     setLoading(true);
-    getRules(id, 'fee').then(r => {
+    getInterBankRules(id, 'fee').then(r => {
       setRules(r.list);
       setLoading(false);
     });
@@ -60,7 +60,7 @@ const MerchantFeesPage = props => {
           </td>
           <td className="tac">
             <span>
-              {r.type === 'WM-F' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
+              {r.type === 'IBWM-F' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
             </span>
           </td>
           <td>
@@ -121,7 +121,7 @@ const MerchantFeesPage = props => {
       </Helmet>
       <BankHeader active="merchants" />
       <Container verticalMargin>
-        <SettingSideBar active="fee" />
+        <SettingSideBar active="interbankfee" />
         <Main big>
           {!createRulePage && !editRulePage && !revenueSharingRulePage ? (
             <div>
@@ -143,7 +143,7 @@ const MerchantFeesPage = props => {
                   onClick={() => setCreateRulePage(true)}
                 >
                   <i className="material-icons">add</i>
-                  <span>Create Fee</span>
+                  <span>Create Rules</span>
                 </Button>
               </ActionBar>
               <Card bigPadding>

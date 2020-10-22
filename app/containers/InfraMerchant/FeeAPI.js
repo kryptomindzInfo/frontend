@@ -3,15 +3,15 @@ import { API_URL } from '../App/constants';
 import { toast } from 'react-toastify';
 
 const token = localStorage.getItem('logged');
-const getInfraMerchantRules = async (ruleType, merchantId) => {
+const getInfraMerchantRules = async (bankType, ruleType, merchantId) => {
   try {
     let URL = '';
-    if (ruleType === 'Revenue') {
-      URL = `${API_URL}/infra/merchantFee/getRules`;
+    if (bankType === 'interbank') {
+      URL = `${API_URL}/infra/merchantRule/interBank/getAll`;
     } else {
-      URL = `${API_URL}/infra/commission/getRules`;
+      URL = `${API_URL}/infra/merchantRule/getAll`;
     }
-    const res = await axios.post(URL, { token, merchant_id: merchantId });
+    const res = await axios.post(URL, { token, merchant_id: merchantId, page: ruleType});
     if (res.status === 200) {
       if (res.data.status === 0) {
         toast.error(res.data.message);
@@ -27,12 +27,12 @@ const getInfraMerchantRules = async (ruleType, merchantId) => {
   }
 };
 
-const merchantInfraRuleApi = async (props, ruleType, ruleStatus, payload) => {
+const merchantInfraRuleApi = async (bankType, ruleStatus, payload) => {
   let URL = '';
-  if (ruleType === 'Revenue') {
-    URL = `${API_URL}/infra/merchantFee/${ruleStatus}`;
+  if (bankType === 'interbank') {
+    URL = `${API_URL}/infra/merchantRule/interBank/${ruleStatus}`;
   } else {
-    URL = `${API_URL}/infra/commission/${ruleStatus}`;
+    URL = `${API_URL}/infra/merchantRule/${ruleStatus}`;
   }
   try {
     payload.token = token;

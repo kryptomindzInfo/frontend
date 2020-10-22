@@ -12,7 +12,7 @@ import * as Yup from 'yup';
 
 import 'react-toastify/dist/ReactToastify.css';
 import { Form, Formik, FieldArray, ErrorMessage } from 'formik';
-import { createMerchantRule, editMerchantRule } from '../api/merchantAPI';
+import { createInterBankMerchantRule, editInterBankMerchantRule } from '../api/merchantAPI';
 
 import {
   correctFocus,
@@ -88,12 +88,13 @@ const CommissionFee = props => {
             setLoading(true);
             if (Object.keys(rule).length > 0) {
               values.rule_id = rule._id;
-              editMerchantRule(props, values).then(() => {
+              editInterBankMerchantRule(props, values).then(() => {
                 setLoading(false);
               });
             } else {
               values.merchant_id = props.merchantId;
-              createMerchantRule(props, values).then(() => {
+              console.log(props.merchantId);
+              createInterBankMerchantRule(props, values).then(() => {
                 setLoading(false);
               });
             }
@@ -132,8 +133,8 @@ const CommissionFee = props => {
                         disabled={Object.keys(rule).length > 0}
                       >
                         <option value="">Transaction Type*</option>
-                        <option value="WM-C">Wallet to Merchant </option>
-                        <option value="NWM-C">Non Wallet to Merchant </option>
+                        <option value="IBWM-C">Wallet to Merchant</option>
+                        <option value="IBNWM-C">Non Wallet to Merchant</option>
                         {/* <option value="2">Merchant cashier to Merchant</option> */}
                       </SelectInput>
                       <ErrorMessage name="type" />

@@ -45,17 +45,17 @@ const MerchantRevenueSharingRule = props => {
   const [id, setId] = useState(props.id);
   const [openBranchModal, setOpenBranchModal] = useState(false);
   const [openPartnerModal, setOpenPartnerModal] = useState(false);
-  const [partnerBranchShare, setPartnerBranchShare] = useState(
-    Number(props.editingRule.partner_branch_share),
+  const [partner_share, setPartnerBranchShare] = useState(
+    Number(props.editingRule.partner_share),
   );
-  const [branchPartnerShare, setBranchPartnerShare] = useState(
-    Number(props.editingRule.partner_share_percentage),
+  const [branch_share, setBranchPartnerShare] = useState(
+    Number(props.editingRule.branch_share),
   );
   const [branchWithSpecificRevenue, setBranchWithSpecificRevenue] = useState(
-    props.editingRule.specific_partners_share || [],
+    props.editingRule.specific_branch_share || [],
   );
   const [partnerWithSpecificRevenue, setPartnerWithSpecificRevenue] = useState(
-    props.editingRule.specific_partners_branch_share || [],
+    props.editingRule.specific_partner_share || [],
   );
   const [bankId, setBankId] = useState(localStorage.getItem('bankId'));
 
@@ -135,7 +135,7 @@ const MerchantRevenueSharingRule = props => {
           justify="space-between"
         >
           <h3 style={{ color: '#fff' }}>{`Revenue with Infra(${
-            type === '0' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'
+            type === 'WM-F' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'
           })`}</h3>
           <Grid item>
             <Button onClick={props.onBack}>x</Button>
@@ -162,12 +162,13 @@ const MerchantRevenueSharingRule = props => {
                 .required('Percentage is required'),
             })}
             onSubmit={values => {
+              console.log(values);
               setLoading(true);
-              values.fee_id = id;
+              values.rule_id = id;
               values.fixed = Number(values.fixed);
               values.percentage = Number(values.percentage);
               if (infraStatus === 1) {
-                editInfraShare(props, 'revenue', values).then(r => {
+                editInfraShare(props, values).then(r => {
                   if (r.status !== 0) {
                     if (r.rule.infra_share_edit_status === 1) {
                       r.rule.infra_share = r.rule.edited.infra_share;
@@ -179,7 +180,7 @@ const MerchantRevenueSharingRule = props => {
                   }
                 });
               } else {
-                addInfraShare(props, 'revenue', values).then(r => {
+                addInfraShare(props, values).then(r => {
                   props.refreshRule(r);
                   setLoading(false);
                 });
@@ -270,7 +271,7 @@ const MerchantRevenueSharingRule = props => {
               );
             }}
           </Formik>
-          {type !== 0 ? (
+          {type !== 'WM-F' ? (
             <div
               style={{
                 border: '1px solid #d0d6d1',
@@ -316,7 +317,7 @@ const MerchantRevenueSharingRule = props => {
                 <Formik
                   enableReinitialize
                   initialValues={{
-                    payBill: branchPartnerShare || '',
+                    payBill: branch_share || '',
                   }}
                   onSubmit={values => {}}
                 >
@@ -334,7 +335,7 @@ const MerchantRevenueSharingRule = props => {
                               <TextInput
                                 type="number"
                                 name="payBill"
-                                value={values.payBill}
+                                value={branch_share}
                                 onFocus={e => {
                                   inputFocus(e);
                                   handleChange(e);
@@ -366,7 +367,7 @@ const MerchantRevenueSharingRule = props => {
                 <Formik
                   enableReinitialize
                   initialValues={{
-                    payBill: partnerBranchShare || '',
+                    partner_share: partner_share || '',
                   }}
                   onSubmit={values => {}}
                 >
@@ -380,11 +381,11 @@ const MerchantRevenueSharingRule = props => {
                         <Form>
                           <Col cW="100%" textAlign="center">
                             <FormGroup>
-                              <label htmlFor="payBill">Sharing % for partner</label>
+                              <label htmlFor="partner_share">Sharing % for partner</label>
                               <TextInput
                                 type="number"
-                                name="payBill"
-                                value={partnerBranchShare}
+                                name="partner_share"
+                                value={partner_share}
                                 onFocus={e => {
                                   inputFocus(e);
                                   handleChange(e);
@@ -398,7 +399,7 @@ const MerchantRevenueSharingRule = props => {
                                   handleChange(e);
                                 }}
                               />
-                              <ErrorMessage name="payBill" />
+                              <ErrorMessage name="partner_share" />
                             </FormGroup>
                           </Col>
                         </Form>
@@ -410,7 +411,7 @@ const MerchantRevenueSharingRule = props => {
               )}
             </div>
           ) : null}
-          {type !== 0 ? (
+          {type !== 'WM-F' ? (
             <div>
               {activeTab === 'branch' ? (
               <div
@@ -508,12 +509,12 @@ const MerchantRevenueSharingRule = props => {
                       noMin
                       type="submit"
                       onClick={() =>
-                        updatePartnerShare(props, 'Revenue', {
-                          percentage: branchPartnerShare,
-                          specific_partners_share: branchWithSpecificRevenue,
-                          partner_branch_share: partnerBranchShare,
-                          specific_partners_branch_share: partnerWithSpecificRevenue,
-                          fee_id: id,
+                        updatePartnerShare(props, {
+                          branch_share: branch_share,
+                          specific_branch_share: branchWithSpecificRevenue,
+                          partner_share: partner_share,
+                          specific_partner_share: partnerWithSpecificRevenue,
+                          rule_id: id,
                         }).then(rule => {
                           props.refreshRule(rule);
                         })
@@ -628,12 +629,12 @@ const MerchantRevenueSharingRule = props => {
                       noMin
                       type="submit"
                       onClick={() =>
-                        updatePartnerShare(props, 'Revenue', {
-                          percentage: branchPartnerShare,
-                          specific_partners_share: branchWithSpecificRevenue,
-                          partner_branch_share: partnerBranchShare,
-                          specific_partners_branch_share: partnerWithSpecificRevenue,
-                          fee_id: id,
+                        updatePartnerShare(props, {
+                          branch_share: branch_share,
+                          specific_branch_share: branchWithSpecificRevenue,
+                          partner_share: partner_share,
+                          specific_partner_share: partnerWithSpecificRevenue,
+                          rule_id: id,
                         }).then(rule => {
                           props.refreshRule(rule);
                         })
