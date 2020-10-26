@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../../App/constants';
-
+const bankID = localStorage.getItem('bankId');
 const token = localStorage.getItem('cashierLogged');
 const fetchCashierMerchantList = async () => {
   try {
@@ -44,9 +44,15 @@ const getPenaltyRule = async (value) => {
   }
 };
 
-const checkCashierFee = async payload => {
+const checkCashierFee = async (payload, bankid) => {
+  let API = '';
+  if (bankid === bankID) {
+    API = 'cashier/checkMerchantFee';
+  } else {
+    API = 'cashier/interBank/checkMerchantFee';
+  }
   try {
-    const res = await axios.post(`${API_URL}/cashier/checkMerchantFee`, {
+    const res = await axios.post(`${API_URL}/${API}`, {
       token,
       ...payload,
     });

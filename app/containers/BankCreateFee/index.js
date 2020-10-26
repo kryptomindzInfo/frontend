@@ -65,10 +65,11 @@ export default class BankCreateFee extends Component {
       contract: null,
       loading: true,
       redirect: false,
+      showaddrange: false,
       name: '',
       ranges: [
         {
-          trans_from: '',
+          trans_from: '1',
           trans_to: '999999999',
           fixed: '',
           percentage: '',
@@ -125,9 +126,20 @@ export default class BankCreateFee extends Component {
 
     temp[k][name] = value;
     console.log(temp[k]);
+
     this.setState({
       ranges: temp,
     });
+    console.log(temp[temp.length-1].trans_to);
+    if (temp[temp.length-1].trans_to < 999999999) {
+      this.setState({
+        showaddrange: true,
+      });
+    } else {
+      this.setState({
+        showaddrange: false,
+      });
+    }
   };
 
   showPopup = () => {
@@ -603,6 +615,9 @@ export default class BankCreateFee extends Component {
                     accentedBtn
                     marginTop="10px"
                     onClick={this.addRange}
+                    style={{
+                      display: `${this.state.showaddrange ? 'block': 'none'}`
+                    }}
                   >
                     <span>Add Another Range</span>
                   </Button>

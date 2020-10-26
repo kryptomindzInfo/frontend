@@ -65,10 +65,11 @@ export default class BankCreateFee extends Component {
       contract: null,
       loading: true,
       redirect: false,
+      showaddrange: false,
       name: '',
       ranges: [
         {
-          trans_from: '',
+          trans_from: '1',
           trans_to: '999999999',
           fixed: '',
           percentage: '',
@@ -125,9 +126,20 @@ export default class BankCreateFee extends Component {
 
     temp[k][name] = value;
     console.log(temp[k]);
+
     this.setState({
       ranges: temp,
     });
+    console.log(temp[temp.length-1].trans_to);
+    if (temp[temp.length-1].trans_to < 999999999) {
+      this.setState({
+        showaddrange: true,
+      });
+    } else {
+      this.setState({
+        showaddrange: false,
+      });
+    }
   };
 
   logout = () => {
@@ -402,10 +414,6 @@ export default class BankCreateFee extends Component {
                           <option value="IBNWNW">Non Wallet to Non Wallet</option>
                           <option value="IBNWW">Non Wallet to Wallet</option>
                           <option value="IBWNW">Wallet to Non Wallet</option>
-                          <option value="IBWM-C">Wallet to Merchant Commission</option>
-                          <option value="IBWM-F">Wallet to Merchant</option>
-                          <option value="IBNWM-C">Non Wallet to Merchant Commission</option>
-                          <option value="IBNWM-F">Non Wallet to Merchant</option>
                         </SelectInput>
                       </FormGroup>
                     </Col>
@@ -526,6 +534,9 @@ export default class BankCreateFee extends Component {
                     type="button"
                     accentedBtn
                     marginTop="10px"
+                    style={{
+                      display: `${this.state.showaddrange ? 'block': 'none'}`
+                    }}
                     onClick={this.addRange}
                   >
                     <span>Add Another Range</span>

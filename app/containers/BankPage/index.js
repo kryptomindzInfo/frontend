@@ -234,6 +234,7 @@ export default class BankPage extends Component {
         token,
       })
       .then(res => {
+        console.log(res);
         if (res.status == 200) {
           if (res.data.status===0) {
             throw res.data.message;

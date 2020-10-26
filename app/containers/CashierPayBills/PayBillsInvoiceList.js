@@ -33,7 +33,7 @@ const PayBillsInvoiceList = props => {
         const data = await checkCashierFee({
           merchant_id: merchant._id,
           amount: totalAmount + invoice.amount + counterInvoice[0].amount + penaltyList[index],
-        });
+        },merchant.bank_id);
         setTotalFee(data.fee);
         const obj1 = {
           id: invoice._id,
@@ -53,7 +53,7 @@ const PayBillsInvoiceList = props => {
         const data = await checkCashierFee({
           merchant_id: merchant._id,
           amount: totalAmount + invoice.amount + penaltyList[index],
-        });
+        },merchant.bank_id);
         setTotalFee(data.fee);
         const obj1 = {
           id: invoice._id,
@@ -70,7 +70,7 @@ const PayBillsInvoiceList = props => {
         const data = await checkCashierFee({
           merchant_id: merchant._id,
           amount: totalAmount - invoice.amount - counterInvoice[0].amount - penaltyList[index],
-        });
+        },merchant.bank_id);
         setTotalFee(data.fee);
         const list = selectedInvoiceList.filter((val) => val.id !== invoice._id &&  val.id !== counterInvoice[0]._id);
         setSelectedInvoiceList(list);
@@ -80,7 +80,7 @@ const PayBillsInvoiceList = props => {
         const data = await checkCashierFee({
           merchant_id: merchant._id,
           amount: totalAmount - invoice.amount - penaltyList[index],
-        });
+        },merchant.bank_id);
         setTotalFee(data.fee);
         const list = selectedInvoiceList.filter((val) => val.id !== invoice._id);
         setSelectedInvoiceList(list);
@@ -177,13 +177,13 @@ const PayBillsInvoiceList = props => {
         const data = await checkCashierFee({
           merchant_id: merchant._id,
           amount: invoice.amount * -1,
-        });
+        },merchant.bank_id);
         return (-data.fee);
       } else {
         const data = await checkCashierFee({
           merchant_id: merchant._id,
           amount: invoice.amount + penaltylist[index],
-        });
+        },merchant.bank_id);
         return (data.fee);
       }
     })
