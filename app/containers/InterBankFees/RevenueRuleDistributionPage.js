@@ -494,7 +494,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                       className={classNames(classes.textField, classes.dense)}
                       margin="dense"
                       variant="outlined"
-                      disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                      disabled={this.state.type === 'IBNWW'}
                       onChange={(e) => {
                         const val = e.target.value;
                           this.setState((prevState) => ({
@@ -511,7 +511,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                     <TextField
                       type="number"
                       label="send%"
-                      disabled={this.state.trans_type === 'Wallet to Non Wallet'}
+                      disabled={this.state.type === 'IBWNW'}
                       className={classNames(classes.textField, classes.dense)}
                       margin="dense"
                       variant="outlined"
@@ -552,7 +552,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                         <TextField
                           type="number"
                           label="claim%"
-                          disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                          disabled={this.state.type === 'IBNWW'}
                           className={classNames(classes.textField, classes.dense)}
                           margin="dense"
                           variant="outlined"
@@ -572,7 +572,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                         <TextField
                           type="number"
                           label="send%"
-                          disabled={this.state.trans_type === 'Wallet to Non Wallet'}
+                          disabled={this.state.type === 'IBWNW'}
                           className={classNames(classes.textField, classes.dense)}
                           margin="dense"
                           variant="outlined"
@@ -654,7 +654,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                       className={classNames(classes.textField, classes.dense)}
                       margin="dense"
                       variant="outlined"
-                      disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                      disabled={this.state.type === 'IBNWW'}
                       onChange={(e) => {
                         const val = e.target.value;
                           this.setState((prevState) => ({
@@ -671,7 +671,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                     <TextField
                       type="number"
                       label="send%"
-                      disabled={this.state.trans_type === 'Wallet to Non Wallet'}
+                      disabled={this.state.type === 'IBWNW'}
                       className={classNames(classes.textField, classes.dense)}
                       margin="dense"
                       variant="outlined"
@@ -712,7 +712,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                         <TextField
                           type="number"
                           label="claim%"
-                          disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                          disabled={this.state.type === 'IBNWW'}
                           className={classNames(classes.textField, classes.dense)}
                           margin="dense"
                           variant="outlined"
@@ -732,7 +732,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                         <TextField
                           type="number"
                           label="send%"
-                          disabled={this.state.trans_type === 'Wallet to Non Wallet'}
+                          disabled={this.state.type === 'IBWNW'}
                           className={classNames(classes.textField, classes.dense)}
                           margin="dense"
                           variant="outlined"
