@@ -12,7 +12,7 @@ import SettingSideBar from '../SettingSidebar';
 import BankHeader from '../../../components/Header/BankHeader';
 import { CURRENCY } from '../../App/constants';
 import MerchantFee from './MerchantFee';
-import { getInterBankRules } from '../api/merchantAPI';
+import { getInterBankRules , getInterBankSharing} from '../api/merchantAPI';
 import MerchantRevenueSharingRule from './MerchantRevenueSharingRule';
 
 const MerchantFeesPage = props => {
@@ -22,18 +22,20 @@ const MerchantFeesPage = props => {
   const [createRulePage, setCreateRulePage] = useState(false);
   const [revenueSharingRulePage, setRevenueSharingRulePage] = useState(false);
   const [editingRule, setEditingRule] = useState({});
+  const [share, setShare] = useState({});
   const { match } = props;
   const { id } = match.params;
   localStorage.setItem('currentMerchantId', id);
 
-  const refreshFeeList = () => {
+  const refreshFeeList = async() => {
     setCreateRulePage(false);
     setEditRulePage(false);
     setLoading(true);
-    getInterBankRules(id, 'fee').then(r => {
-      setRules(r.list);
-      setLoading(false);
-    });
+    const res1 = await getInterBankRules(id, 'fee');
+    const res2 = await getInterBankSharing(id, 'IBNWM-F');
+    setRules(res1.list);
+    setShare(res2.share);
+    setLoading(false); 
   };
 
   useEffect(() => {
@@ -205,6 +207,7 @@ const MerchantFeesPage = props => {
               merchantId={id}
               editingRule={editingRule}
               refreshRule={rule => setEditingRule(rule)}
+              share={share}
               type={editingRule.type}
               id={editingRule._id}
               refreshRuleList={() => {

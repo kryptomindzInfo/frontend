@@ -13,27 +13,29 @@ import BankHeader from '../../../components/Header/BankHeader';
 import { CURRENCY } from '../../App/constants';
 import CommissionFee from './CommissionFee';
 import CommissionRevenueSharingRule from './CommissionRevenueSharingRule';
-import { getInterBankRules } from '../api/merchantAPI';
+import { getInterBankRules, getInterBankSharing } from '../api/merchantAPI';
 
 const CommissionFeesPage = props => {
   const [isLoading, setLoading] = useState(false);
   const [rules, setRules] = useState([]);
   const [editRulePage, setEditRulePage] = useState(false);
   const [createRulePage, setCreateRulePage] = useState(false);
+  const [share, setShare] = useState({});
   const [revenueSharingRulePage, setRevenueSharingRulePage] = useState(false);
   const [editingRule, setEditingRule] = useState({});
   const { match } = props;
   const { id } = match.params;
   localStorage.setItem('currentMerchantId', id);
 
-  const refreshFeeList = () => {
+  const refreshFeeList = async() => {
     setCreateRulePage(false);
     setEditRulePage(false);
     setLoading(true);
-    getInterBankRules(id, 'commission').then(r => {
-      setRules(r.list);
-      setLoading(false);
-    });
+    const res1 = await getInterBankRules(id, 'commission');
+    const res2 = await getInterBankSharing(id, 'IBNWM-C');
+    setRules(res1.list);
+    setShare(res2.share);
+    setLoading(false); 
   };
 
   useEffect(() => {
@@ -204,6 +206,7 @@ const CommissionFeesPage = props => {
             <CommissionRevenueSharingRule
               merchantId={id}
               editingRule={editingRule}
+              share={share}
               refreshRule={rule => setEditingRule(rule)}
               type={editingRule.type}
               id={editingRule._id}

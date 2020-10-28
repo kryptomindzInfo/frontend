@@ -199,6 +199,25 @@ const getInterBankRules = async (merchantId, page) => {
   }
 };
 
+const getInterBankSharing = async (merchantId, type) => {
+  try {
+    const res = await axios.post(`${API_URL}/bank/merchantRule/getRevenueShareForInterBank`, { token, merchant_id: merchantId, type: type });
+    if (res.status === 200) {
+      console.log(res);
+      if (res.data.status === 0) {
+        toast.error(res.data.message);
+        return { share: {}, loading: false };
+      }
+      return { share: res.data, loading: false };
+    }
+    toast.error(res.data.message);
+    return { share: {}, loading: false };
+  } catch (err) {
+    toast.error('Something went wrong');
+    return { share: {}, loading: false };
+  }
+};
+
 const addInfraShare = async (props, payload) => {
   try {
     const res = await axios.post(`${API_URL}/bank/merchantRule/addInfraShare`, {
@@ -355,4 +374,5 @@ export {
   editInterBankInfraShare,
   addInterBankInfraShare,
   updateOtherBankShare,
+  getInterBankSharing,
 };

@@ -38,6 +38,7 @@ toast.configure({
 
 const CommissionRevenueSharingRule = props => {
   const [isLoading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('branch');
   const [share, setShare] = useState(props.editingRule.infra_share);
   const [infraStatus, setInfraStatus] = useState(
     props.editingRule.infra_approve_status,
@@ -47,6 +48,18 @@ const CommissionRevenueSharingRule = props => {
   const [otherBankShareFixed, setOtherBankShareFixed] = useState(props.editingRule.other_bank_share.fixed);
   const [otherBankSharePercentage, setOtherBankSharePercentage] = useState(props.editingRule.other_bank_share.percentage);
   const [bankId, setBankId] = useState(localStorage.getItem('bankId'));
+  const [partner_share, setPartnerBranchShare] = useState(
+    Number(props.share.partner_share || 0),
+  );
+  const [branch_share, setBranchPartnerShare] = useState(
+    Number(props.share.branch_share || 0),
+  );
+  const [branchWithSpecificRevenue, setBranchWithSpecificRevenue] = useState(
+    props.share.specific_branch_share || [],
+  );
+  const [partnerWithSpecificRevenue, setPartnerWithSpecificRevenue] = useState(
+    props.share.specific_partner_share || [],
+  );
 
   useEffect(() => {
     if (Object.keys(share).length > 0) {
@@ -295,6 +308,306 @@ const CommissionRevenueSharingRule = props => {
             </div>
       </Grid>
       </div>
+      {type !== 'IBWM-C' ? (
+            <div
+              style={{
+                border: '1px solid #d0d6d1',
+              }}
+            >
+              <Row
+                vAlign="left"
+                justifiy="flex-start"
+                style={{
+                  marginTop: '2%',
+                  borderBottom: '1px solid #417505',
+                }}
+              >
+                <Col cW = "23%">
+                  <span
+                    className={`${
+                      activeTab ===  'branch' ? 'ActiveTab' : 'InactiveTab'
+                    } `}
+                    // className={classes.bankBranches}
+                    onClick={() => setActiveTab('branch')}
+                  >
+                    Bank Branches
+                  </span>
+                </Col>
+                <Col>
+                  <span
+                    className={`${
+                      activeTab ===  'partner' ? 'ActiveTab' : 'InactiveTab'
+                    } `}
+                    // className={classes.bankBranches}
+                    onClick={() => setActiveTab('partner')}
+                  >
+                    Bank Partners
+                  </span>
+                </Col>
+              </Row>
+              {activeTab ===  'branch' ? (
+                <Row
+                vAlign="left"
+                justifiy="flex-start"
+                style={{ padding: '2%' }}
+              >
+                <Formik
+                  enableReinitialize
+                  initialValues={{
+                    payBill: branch_share || '',
+                  }}
+                  onSubmit={values => {}}
+                >
+                  {formikProps => {
+                    const { handleChange, handleBlur, values } = formikProps;
+                    return (
+                      <div>
+                        <h5 style={{ color: 'black' }}>
+                          Standard Revenue Sharing Rule
+                        </h5>
+                        <Form>
+                          <Col cW="100%" textAlign="center">
+                            <FormGroup>
+                              <label htmlFor="payBill">Sharing % for branches</label>
+                              <TextInput
+                                type="number"
+                                name="payBill"
+                                disabled
+                                value={branch_share}
+                                onFocus={e => {
+                                  inputFocus(e);
+                                  handleChange(e);
+                                }}
+                                onBlur={e => {
+                                  inputBlur(e);
+                                  handleBlur(e);
+                                }}
+                                onChange={e => {
+                                  setBranchPartnerShare(e.target.value);
+                                  handleChange(e);
+                                }}
+                              />
+                              <ErrorMessage name="payBill" />
+                            </FormGroup>
+                          </Col>
+                        </Form>
+                      </div>
+                    );
+                  }}
+                </Formik>
+              </Row>
+              ) : (
+                <Row
+                vAlign="left"
+                justifiy="flex-start"
+                style={{ padding: '2%' }}
+              >
+                <Formik
+                  enableReinitialize
+                  initialValues={{
+                    partner_share: partner_share || '',
+                  }}
+                  onSubmit={values => {}}
+                >
+                  {formikProps => {
+                    const { handleChange, handleBlur, values } = formikProps;
+                    return (
+                      <div>
+                        <h5 style={{ color: 'black' }}>
+                          Standard Revenue Sharing Rule
+                        </h5>
+                        <Form>
+                          <Col cW="100%" textAlign="center">
+                            <FormGroup>
+                              <label htmlFor="partner_share">Sharing % for partner</label>
+                              <TextInput
+                                type="number"
+                                name="partner_share"
+                                disabled
+                                value={partner_share}
+                                onFocus={e => {
+                                  inputFocus(e);
+                                  handleChange(e);
+                                }}
+                                onBlur={e => {
+                                  inputBlur(e);
+                                  handleBlur(e);
+                                }}
+                                onChange={e => {
+                                  setPartnerBranchShare(e.target.value);
+                                  handleChange(e);
+                                }}
+                              />
+                              <ErrorMessage name="partner_share" />
+                            </FormGroup>
+                          </Col>
+                        </Form>
+                      </div>
+                    );
+                  }}
+                </Formik>
+              </Row>
+              )}
+            </div>
+          ) : null}
+
+          {type !== 'IBWM-C' ? (
+            <div>
+              {activeTab === 'branch' ? (
+              <div
+                style={{
+                  border: '1px solid #d0d6d1',
+                }}
+              >
+                <Row
+                  vAlign="left"
+                  justifiy="flex-start"
+                  style={{
+                    padding: '2%',
+                    margin: '2%',
+                    borderBottom: '1px solid #d0d6d1',
+                  }}
+                >
+                  <Col cW="100%" textAlign="center">
+                    <h5 style={{ color: 'black', textAlign: 'start' }}>
+                      Branches with Specific Revenue Sharing
+                    </h5>
+                  </Col>
+                </Row>
+                  {branchWithSpecificRevenue.length > 0
+                    ? branchWithSpecificRevenue.map((d, i) => (
+                      <Row
+                        vAlign="left"
+                        justifiy="flex-start"
+                        style={{
+                          padding: '2%',
+                          margin: '2%',
+                          borderBottom: '1px solid #d0d6d1',
+                        }}
+                      >
+                        <Col cW="20%">{d.code}</Col>
+                        <Col cW="20%">{d.name}</Col>
+                        <Col cW="30%"  style={{ marginTop: '-10px' }}>
+                          <TextField
+                            type="number"
+                            label="Sharing%"
+                            margin="dense"
+                            variant="outlined"
+                            onChange={e => {
+                              const val = e.target.value;
+                              const tempArr = [...branchWithSpecificRevenue];
+                              tempArr[i].percentage = val;
+                              setBranchWithSpecificRevenue(tempArr);
+                            }}
+                            value={d.percentage}
+                          />
+                        </Col>
+                        <Col cW="30%">
+                          <Button
+                            style={{ marginLeft: '60px' }}
+                            onClick={() => {
+                              setBranchWithSpecificRevenue(
+                                branchWithSpecificRevenue.filter(
+                                  branch => d.code !== branch.code,
+                                ),
+                              );
+                            }}
+                          >
+                            {' '}
+                            delete
+                          </Button>
+                        </Col>
+                      </Row>
+                    ))
+                    : null}
+                <Row
+                  vAlign="left"
+                  height="125px"
+                  justifiy="flex-start"
+                  style={{ padding: '2%' }}
+                >
+                  <Col cW="100%" textAlign="center" />
+                </Row>
+              </div>
+              ) : (
+              <div
+                style={{
+                  border: '1px solid #d0d6d1',
+                }}
+              >
+                <Row
+                  vAlign="left"
+                  justifiy="flex-start"
+                  style={{
+                    padding: '2%',
+                    margin: '2%',
+                    borderBottom: '1px solid #d0d6d1',
+                  }}
+                >
+                  <Col cW="100%" textAlign="center">
+                    <h5 style={{ color: 'black', textAlign: 'start' }}>
+                      Partners with Specific Revenue Sharing
+                    </h5>
+                  </Col>
+                </Row>
+                  {partnerWithSpecificRevenue.length > 0
+                    ? partnerWithSpecificRevenue.map((d, i) => (
+                      <Row
+                        vAlign="left"
+                        justifiy="flex-start"
+                        style={{
+                          padding: '2%',
+                          margin: '2%',
+                          borderBottom: '1px solid #d0d6d1',
+                        }}
+                      >
+                        <Col cW="20%">{d.code}</Col>
+                        <Col cW="20%">{d.name}</Col>
+                        <Col cW="30%"  style={{ marginTop: '-10px' }}>
+                          <TextField
+                            type="number"
+                            label="Sharing%"
+                            margin="dense"
+                            variant="outlined"
+                            onChange={e => {
+                              const val = e.target.value;
+                              const tempArr = [...partnerWithSpecificRevenue];
+                              tempArr[i].percentage = val;
+                              setPartnerWithSpecificRevenue(tempArr);
+                            }}
+                            value={d.percentage}
+                          />
+                        </Col>
+                        <Col cW="30%">
+                          <Button
+                            style={{ marginLeft: '60px' }}
+                            onClick={() => {
+                              setPartnerWithSpecificRevenue(
+                                partnerWithSpecificRevenue.filter(
+                                  branch => d.code !== branch.code,
+                                ),
+                              );
+                            }}
+                          >
+                            {' '}
+                            delete
+                          </Button>
+                        </Col>
+                      </Row>
+                  ))
+                  : null}
+                <Row
+                  vAlign="left"
+                  height="125px"
+                  justifiy="flex-start"
+                  style={{ padding: '2%' }}
+                >
+                  <Col cW="100%" textAlign="center" />
+                </Row>
+            </div>
+            )}
+            </div>
+          ) : null}
     </Card>
   );
 };
