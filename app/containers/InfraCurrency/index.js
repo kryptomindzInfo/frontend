@@ -308,11 +308,11 @@ class InfraCurrency extends Component {
       .get(`${API_URL}/get-currency`)
       .then(d => {
         console.log(d);
-        if (d.data.length != 0) {
+        if (d.data.data.length != 0) {
           this.setState(prevState => ({
             ...prevState,
-            denomination: d.data[0].denomination,
-            currency: d.data[0].value,
+            denomination: d.data.data[0].denomination,
+            currency: d.data.data[0].value,
           }));
         }
       })

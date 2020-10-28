@@ -385,10 +385,10 @@ class CashierClosingBalance extends Component {
     axios
       .get(`${API_URL}/get-currency`)
       .then(d => {
-        if (d.data.length != 0) {
+        if (d.data.data.length != 0) {
           this.setState(prevState => ({
             ...prevState,
-            denomination: d.data[0].denomination.map(d => ({
+            denomination: d.data.data[0].denomination.map(d => ({
               val: d,
               num: '',
             })),
