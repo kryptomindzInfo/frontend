@@ -492,6 +492,7 @@ export default class BankCreateFee extends Component {
                           <option>Non Wallet to Non Wallet</option>
                           <option>Non Wallet to Wallet</option>
                           <option>Wallet to Non Wallet</option>
+                          <option>Non Wallet to Operational</option>
                           <option>Wallet to Bank Account</option>
                           <option>Bank Account to Wallet Request</option>
                         </SelectInput>

@@ -26,6 +26,7 @@ import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 import Blur from '../Blur';
 import CashierToWalletForm from './CashierToWalletForm';
+import CashierToOperationalForm from './CashiertoOperationalForm';
 import CashierPopupToggle from './CashierPopupToggle';
 import messages from './messages';
 import TypeSelectBox from '../Form/TypeSelectBox';
@@ -50,6 +51,7 @@ class CashierTransactionLimit extends Component {
     super();
     this.state = {
       balance: 0,
+      sendtooperationalpopup: false,
       closingTime: null,
       withoutID: false,
       requireOTP: false,
@@ -82,6 +84,18 @@ class CashierTransactionLimit extends Component {
   error = () => toast.error(this.state.notification);
 
   warn = () => toast.warn(this.state.notification);
+
+  openOperationalPopup = () => {
+    this.setState({
+      sendtooperationalpopup: true,
+    });
+  };
+
+  closeOperationalPopup = () => {
+    this.setState({
+      sendtooperationalpopup: false,
+    });
+  };
 
   handleInputChange = event => {
     const { value, name } = event.target;
@@ -1039,7 +1053,30 @@ class CashierTransactionLimit extends Component {
             )}
           </Col>
         </Row>
-
+        <Row>
+          <Col style={{width:'100%', marginTop:'5px'}} cw="100%">
+            {this.state.transactionStarted && !this.state.isClosed ? (
+              <Button
+                className="sendMoneybutton"
+                noMin
+                onClick={this.openOperationalPopup}
+              >
+                <i className="material-icons">send</i> {/* Send Money */}
+                Send Money to Operational
+              </Button>
+            ) : (
+              <Button className="sendMoneybutton" noMin disabled>
+                <i className="material-icons">send</i> {/* Send Money */}
+                Send Money to Operational
+              </Button>
+            )}
+          </Col>
+        </Row>
+        {this.state.sendtooperationalpopup ? (
+          <CashierToOperationalForm
+          close={() => this.closeOperationalPopup()}
+        />
+        ): null}
         {this.state.popupClaimMoney ? (
           <Popup bigBody close={this.closePopupSendMoney.bind(this)} accentedH1>
             {this.state.showClaimMoneyDetails ? (

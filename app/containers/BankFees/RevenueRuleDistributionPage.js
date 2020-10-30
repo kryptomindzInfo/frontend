@@ -449,7 +449,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                       className={classNames(classes.textField, classes.dense)}
                       margin="dense"
                       variant="outlined"
-                      disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                      disabled={this.state.trans_type === 'Non Wallet to Wallet' || this.state.trans_type === 'Non Wallet to Operational' }
                       onChange={(e) => {
                         const val = e.target.value;
                           this.setState((prevState) => ({
@@ -507,7 +507,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                         <TextField
                           type="number"
                           label="claim%"
-                          disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                          disabled={this.state.trans_type === 'Non Wallet to Wallet' || this.state.trans_type === 'Non Wallet to Operational'}
                           className={classNames(classes.textField, classes.dense)}
                           margin="dense"
                           variant="outlined"
@@ -609,7 +609,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                       className={classNames(classes.textField, classes.dense)}
                       margin="dense"
                       variant="outlined"
-                      disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                      disabled={this.state.trans_type === 'Non Wallet to Wallet' || this.state.trans_type === 'Non Wallet to Operational'}
                       onChange={(e) => {
                         const val = e.target.value;
                           this.setState((prevState) => ({
@@ -667,7 +667,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                         <TextField
                           type="number"
                           label="claim%"
-                          disabled={this.state.trans_type === 'Non Wallet to Wallet'}
+                          disabled={this.state.trans_type === 'Non Wallet to Wallet' || this.state.trans_type === 'Non Wallet to Operational'}
                           className={classNames(classes.textField, classes.dense)}
                           margin="dense"
                           variant="outlined"

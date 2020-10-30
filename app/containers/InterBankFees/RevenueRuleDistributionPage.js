@@ -494,7 +494,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                       className={classNames(classes.textField, classes.dense)}
                       margin="dense"
                       variant="outlined"
-                      disabled={this.state.type === 'IBNWW'}
+                      disabled={this.state.type === 'IBNWW' || this.state.type === 'IBNWO' }
                       onChange={(e) => {
                         const val = e.target.value;
                           this.setState((prevState) => ({
@@ -552,7 +552,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                         <TextField
                           type="number"
                           label="claim%"
-                          disabled={this.state.type === 'IBNWW'}
+                          disabled={this.state.type === 'IBNWW' || this.state.type === 'IBNWO'}
                           className={classNames(classes.textField, classes.dense)}
                           margin="dense"
                           variant="outlined"
@@ -654,7 +654,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                       className={classNames(classes.textField, classes.dense)}
                       margin="dense"
                       variant="outlined"
-                      disabled={this.state.type === 'IBNWW'}
+                      disabled={this.state.type === 'IBNWW' || this.state.type === 'IBNWO'}
                       onChange={(e) => {
                         const val = e.target.value;
                           this.setState((prevState) => ({
@@ -712,7 +712,7 @@ class RevenueRuleDistubutionPage extends React.Component {
                         <TextField
                           type="number"
                           label="claim%"
-                          disabled={this.state.type === 'IBNWW'}
+                          disabled={this.state.type === 'IBNWW' || this.state.type === 'IBNWO'}
                           className={classNames(classes.textField, classes.dense)}
                           margin="dense"
                           variant="outlined"

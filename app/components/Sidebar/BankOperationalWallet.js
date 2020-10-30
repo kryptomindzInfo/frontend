@@ -222,17 +222,6 @@ class BankOperationalWallet extends Component {
         <div className="cardValue">
           {CURRENCY} {this.state.balance.toFixed(2)}
         </div>
-        {
-          //   this.props.activateNeeded ?
-          //   <button className="fullWidth">
-          // <FormattedMessage {...messages.activate} />
-          // </button>
-          //   :
-          <button className="sendMoneyButton">
-            <i className="material-icons">send</i>{' '}
-            <FormattedMessage {...messages.sendmoney} />
-          </button>
-        }
         <A href={'/bank/operationalHistory'}>
           <span className="history">History</span>
         </A>
