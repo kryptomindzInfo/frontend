@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Popup from 'components/Popup';
 import Loader from 'components/Loader';
+import Row from 'components/Row';
+import Col from 'components/Col';
 import Button from 'components/Button';
 import axios from 'axios';
 import FormGroup from 'components/FormGroup';
@@ -70,17 +72,25 @@ function SendMoneyToOperationalPopup(props) {
         onSubmit={sendMoney}
       >
         <p>&nbsp;</p>
-        <FormGroup>
-          <label>Amount*</label>
-          <TextInput
-          type="text"
-          name="amount"
-          onFocus={inputFocus}
-          onBlur={inputBlur}
-          onChange={handleInputChange}
-          required
-          />
-        </FormGroup>
+        <Row>
+          <Col cW="10%">
+            <h4>XOF</h4>
+          </Col>
+          <Col cW="90%">
+            <FormGroup>
+              <label>Amount*</label>
+              <TextInput
+              type="text"
+              name="amount"
+              onFocus={inputFocus}
+              onBlur={inputBlur}
+              onChange={handleInputChange}
+              required
+              />
+              </FormGroup>
+          </Col>
+        </Row>
+            
         {loading ? (
           <Button
             filledBtn
