@@ -126,10 +126,10 @@ export default class DashboardPage extends Component {
         </Helmet>
         <Header active="dashboard" />
         <Container verticalMargin>
-          {/* <Sidebar marginRight>
-            <OperationalWallet />
-            <MasterWallet />
-          </Sidebar> */}
+          <Sidebar marginRight>
+            {/* <OperationalWallet /> */}
+            {/* <MasterWallet /> */}
+          </Sidebar>
           <Main fullWidth>
             <div className="clr">
               <A href="/banks" float="left">

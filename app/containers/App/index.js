@@ -45,6 +45,7 @@ import InfraProfile from 'containers/InfraProfile/Loadable';
 import InfraCurrency from 'containers/InfraCurrency/Loadable';
 import InfraCountry from 'containers/InfraCountry/InfraCountry';
 import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
+import BankMasterHistory from 'containers/BankMasterHistory/Loadable';
 import BankEscrowHistory from 'containers/BankEscrowHistory/Loadable';
 import BankBranchList from 'containers/BankBranchList/Loadable';
 import TermsConditions from 'components/TermsConditions';
@@ -62,6 +63,7 @@ import BankCashierInfo from 'containers/BankCashierInfo';
 import BranchCashierList from 'containers/BranchCashierList';
 import BranchCashierInfo from 'containers/BranchCashierInfo';
 import BranchOperationalHistory from 'containers/BranchOperationalHistory';
+import BranchMasterHistory from 'containers/BranchMasterHistory';
 import CashierSendMoney from 'containers/CashierSendMoney';
 import CashierLogin from 'containers/CashierLogin';
 import CashierForgotPassword from 'containers/CashierForgotPassword';
@@ -243,6 +245,11 @@ export default function App(props) {
           />
           <BankRoute
             exact
+            path="/bank/masterHistory"
+            component={BankMasterHistory}
+          />
+          <BankRoute
+            exact
             path="/bank/cashier/:branch?/:cashier?"
             component={BankCashierInfo}
           />
@@ -319,6 +326,11 @@ export default function App(props) {
             exact
             path="/branch/:bank?/operationalHistory"
             component={BranchOperationalHistory}
+          />
+          <BranchRoute
+            exact
+            path="/branch/:bank?/masterHistory"
+            component={BranchMasterHistory}
           />
           <BranchRoute
             exact

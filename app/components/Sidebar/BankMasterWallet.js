@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { toast } from 'react-toastify';
 import messages from './messages';
 import axios from 'axios';
+import A from 'components/A';
 import SendToOperationalPopup from './SendToOperationalPopup';
 
 import Card from 'components/Card';
@@ -94,6 +95,9 @@ class BankMasterWallet extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">{CURRENCY} {this.state.balance.toFixed(2)}</div>
+        <A href={'/bank/masterHistory'}>
+          <span className="history">History</span>
+        </A>
         <button
           onClick={this.handlePopupOpen}
           className="sendMoneyButton"
