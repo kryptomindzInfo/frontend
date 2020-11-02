@@ -984,7 +984,7 @@ export default class BranchDashboard extends Component {
                               {b.cash_paid}
                               </td>
                               <td>
-                              {b.fee_generated}
+                              {b.fee_generated.toFixed(2)}
                               </td>
 
                               <td style = {{color: b.is_closed ? 'red' : 'green' }}>

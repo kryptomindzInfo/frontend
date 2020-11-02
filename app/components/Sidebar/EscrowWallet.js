@@ -18,7 +18,7 @@ constructor() {
   }
   getBalance = () => {
     axios
-      .get(`${API_URL}/getBalance?wallet_id=escrow@${bname}&token=${token}&type=bank`)
+      .get(`${API_URL}/getWalletBalance?token=${token}&type=bank&page=escrow`)
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {
