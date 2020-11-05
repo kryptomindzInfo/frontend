@@ -60,7 +60,7 @@ const CommissionFeesPage = props => {
           </td>
           <td className="tac">
             <span>
-              {r.type === 'WM-C' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'}
+              {r.type === 'WM-C' ? 'Wallet to Merchant' : r.type === 'M-C' ? 'Merchant Cashier to Merchant' : 'Non-wallet to Merchant'}
             </span>
           </td>
           <td>
