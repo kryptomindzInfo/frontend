@@ -38,7 +38,7 @@ export const InfraMerchantFeeListPage = props => {
   const [approvalLoading, setApprovalLoading] = useState(false);
   const [approvalPopup, setApprovalPopup] = useState(false);
   const [ruleForApproval, setRuleForApproval] = useState({});
-  const [bankId, setBankId] = useState(localStorage.getItem('selectBankId'));
+  const [bankId, setBankId] = useState(localStorage.getItem('selectedBankId'));
   const [merchantInfo, setMerchantInfo] = useState(
     JSON.parse(localStorage.getItem('selectedMerchant')),
   );
@@ -55,6 +55,7 @@ export const InfraMerchantFeeListPage = props => {
 
   useEffect(() => {
     refreshRuleList();
+    console.log(bankId);
   }, []);
 
   const onApprovalPopupClick = rule => {

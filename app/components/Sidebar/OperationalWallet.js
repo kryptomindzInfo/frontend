@@ -257,7 +257,7 @@ class OperationalWallet extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} {this.state.balance.toFixed(2)}
+          {CURRENCY} {this.state.balance.toFixed(2) || '-'}
         </div>
         {this.props.activateNeeded ? (
           <button className="fullWidth">
@@ -321,7 +321,7 @@ class OperationalWallet extends Component {
               </FormGroup>
               <p className="note">
                 <span style={{ color: 'red', paddingRight: '3px' }}>*</span>
-                Total available {CURRENCY} {this.state.balance.toFixed(2)}
+                Total available {CURRENCY} {this.state.balance.toFixed(2) || '-'}
               </p>
               <FormGroup>
                 <label>Note*</label>

@@ -51,8 +51,8 @@ class SidebarThree extends Component {
             </Card >
             </A>
            
-            {/* <OperationalWallet historyLink={this.props.bankId } />
-            <MasterWallet historyLink={this.props.bankId }  /> */}
+            <OperationalWallet historyLink={this.props.bankId } />
+            <MasterWallet historyLink={this.props.bankId }  />
         </Sidebar>
     );
   }

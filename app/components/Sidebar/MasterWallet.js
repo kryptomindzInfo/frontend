@@ -251,7 +251,7 @@ class MasterWallet extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} {this.state.balance.toFixed(2)}
+          {CURRENCY} {this.state.balance.toFixed(2) || '-'}
         </div>
         {this.props.activateNeeded ? (
           <button className="fullWidth">
