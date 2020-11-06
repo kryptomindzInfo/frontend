@@ -320,6 +320,7 @@ class CashierTransactionLimit extends Component {
     const { value, name } = event.target;
     const { title } = event.target.options[event.target.selectedIndex];
     const ccode = event.target.getAttribute('data-change');
+    console.log(name, value);
     this.setState({
       [name]: value,
       [ccode]: title,
