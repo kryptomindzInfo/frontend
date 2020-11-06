@@ -143,6 +143,7 @@ const CashierToWalletForm = ({ close }) => {
   const [openWalletPopup, setWalletPopup] = React.useState(false);
   const [interbank, setInterBank] =React.useState(true);
   const [amount, setAmount] =React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   
 
@@ -205,12 +206,13 @@ const CashierToWalletForm = ({ close }) => {
           toast.error(res.data.message);
         } else {
           toast.success(res.data.message);
-          props.close();
+          close();
         }
       } else {
         toast.error(res.data.message);
       }
     } catch (err) {
+      console.log(err);
       toast.error('Something went wrong');
     }
   };

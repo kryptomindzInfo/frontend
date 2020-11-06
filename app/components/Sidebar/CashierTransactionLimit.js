@@ -1074,7 +1074,7 @@ class CashierTransactionLimit extends Component {
         </Row>
         {this.state.sendtooperationalpopup ? (
           <CashierToOperationalForm
-          close={() => this.closeOperationalPopup()}
+            close={this.closeOperationalPopup}
         />
         ): null}
         {this.state.popupClaimMoney ? (
