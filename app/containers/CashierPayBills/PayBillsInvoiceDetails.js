@@ -77,7 +77,7 @@ const PayBillsInvoiceDetails = props => {
   };
 
   const sumtotal2 = () => {
-    return totalAmount + totalTax + fee;
+    return totalAmount + totalTax + fee + props.penalty;
   };
 
   useEffect(() => {
@@ -100,10 +100,14 @@ const PayBillsInvoiceDetails = props => {
           counter_invoices:  invoice.counter_invoices || [],
         }}
         onSubmit={values => {
-          values.invoice_ids = [invoice._id];
-          values.merchant_id = props.merchantId;
-          //setInvoice(values);
-          props.showOTPPopup(values);
+          const obj = {
+            merchant_id : props.merchantId,
+            invoices : [{
+              id: invoice._id,
+              penalty: props.penalty,
+            }]
+          }
+          props.showOTPPopup(obj);
         }}
         validationSchema={Yup.object().shape({
           name: Yup.string().required('Name is required.'),
@@ -230,23 +234,10 @@ const PayBillsInvoiceDetails = props => {
                           <Col className="popInfoLeft">Total Fees</Col>
                           <Col className="popInfoRight">{fee}</Col>
                         </Row>
-                        {/* {props.invoice.counter_invoices.length > 0 ? (
-                          <Row>
-                            <Col className="popInfoLeft">Total Discount</Col>
-                            <Col className="popInfoRight">{discount()}</Col>
-                          </Row>
-                        ) : null}
-                        {props.invoice.counter_invoices.length > 0 ? (
-                          <Row>
-                            <Col className="popInfoLeft">Sum Total</Col>
-                            <Col className="popInfoRight">{sumtotal()}</Col>
-                          </Row>
-                        ) : (
-                          <Row>
-                            <Col className="popInfoLeft">Sum Total</Col>
-                            <Col className="popInfoRight">{sumtotal2()}</Col>
-                          </Row>
-                        )} */}
+                        <Row>
+                          <Col className="popInfoLeft">Penalty</Col>
+                          <Col className="popInfoRight">{props.penalty}</Col>
+                        </Row>
                         <Row>
                           <Col className="popInfoLeft">Sum Total</Col>
                           <Col className="popInfoRight">{sumtotal2()}</Col>
@@ -257,10 +248,8 @@ const PayBillsInvoiceDetails = props => {
                 </Row>
               </Container>
               <FormGroup>
-                {isNaN(Number(fee) + Number(values.amount)) ? (
-                  <h5 style={{ marginTop: '10px', textAlign: 'center' }}>
-                    Can't process transaction right now
-                  </h5>
+                {isNaN(Number(fee) + Number(values.amount)) || Number(values.amount) < 0 || invoice.has_counter_invoice === true ? (
+                  null
                 ) : (
                   <Button filledBtn>
                     {isLoading ? (
