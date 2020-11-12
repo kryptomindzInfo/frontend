@@ -455,6 +455,7 @@ class CashierCashInHand extends Component {
   };
 
   getCashiers = () => {
+    console.log(this.state.branch_id);
     axios
       .post(`${API_URL}/getAll`, {
         token: token,

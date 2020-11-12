@@ -6,6 +6,9 @@ import axios from 'axios';
 import Card from 'components/Card';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import BranchOperationalWallet from './BranchOperationalWallet';
+import BranchMasterWallet from './BranchMasterWallet';
+import BranchCreditLimit from './BranchCreditLimit';
 import Popup from 'components/Popup';
 import TextInput from 'components/TextInput';
 import TextArea from 'components/TextArea';
@@ -28,136 +31,27 @@ class BranchWallets extends Component {
 
   }
 
-getBalance = () => {
-  // console.log(this.props.match.params.branch);
-  //   axios
-  //   .post(`${API_URL  }/getOne`, { page: 'branch', type: 'bank', token: token, page_id : this.props.match.params.branch})
-  //   .then(res => {
-  //     if(res.status == 200){
-  //       console.log(res.data);
-        
-  //     }
-  //   })
-  //   .catch(err => {
-
-  //   });
-console.log(this.props);
-      axios
-      .get(
-        `${API_URL}/getWalletBalance?wallet_id=${this.props.bCode}_operational@${this.props.bankName}`,
-      )
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              balance: res.data.balance,
-            }, () => {
-              var dis =this;
-              setTimeout(function(){
-                dis.getBalance();
-              }, 3000);
-            });
-
-          }
-        }
-      })
-      .catch(err => {});
-    // axios
-    //   .get(
-    //     `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${
-    //       this.state.token
-    //     }&type=branch&page=operational`,
-    //   )
-    //   .then(res => {
-    //     if (res.status == 200) {
-    //       if (res.data.error) {
-    //         throw res.data.error;
-    //       } else {
-    //         this.setState({
-    //           balance: res.data.balance,
-    //         }, () => {
-    //           var dis =this;
-    //           setTimeout(function(){
-    //             dis.getBalance();
-    //           }, 3000);
-    //         });
-
-    //       }
-    //     }
-    //   })
-    //   .catch(err => {});
-  };
-
   componentDidMount() {
-        this.getBalance();
   };
 
   render() {
 
     return (
       <Row>
+        <Col>
+          <Card marginBottom="54px" buttonMarginTop="32px" bigPadding bordered>
+            <BranchOperationalWallet bankName={this.props.bankName}/>
+          </Card>
+        </Col>
       <Col>
-      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding bordered>
-        <h3>
-          <FormattedMessage {...messages.operational} />
-        </h3>
-        <h5>
-          <FormattedMessage {...messages.available} />
-        </h5>
-        <div className="cardValue">
-          {CURRENCY} {this.state.balance.toFixed(2)}
-        </div>
-        {
-          this.props.historyLink ?
-          <A href={this.props.historyLink} float="right">
-          <span className="history">History</span>
-        </A>
-          :
-          null
-        }
-        
-      </Card>
+        <Card marginBottom="54px" buttonMarginTop="32px" bigPadding bordered>
+          <BranchMasterWallet bankName={this.props.bankName}/>
+        </Card>
       </Col>
       <Col>
-      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding bordered>
-        <h3>
-          Master Wallet
-        </h3>
-        <h5>
-          <FormattedMessage {...messages.available} />
-        </h5>
-        <div className="cardValue">
-          {CURRENCY} 0
-        </div>
-        {/*<A href={'/operationalHistory/' + this.props.historyLink} float="right">
-          <span className="history">History</span>
-        </A>*/}
-      </Card>
-      </Col>
-      <Col>
-      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding  bordered>
-        <h3>
-          Credit Limit
-        </h3>
-        <Row>
-        <Col><h5>
-          <FormattedMessage {...messages.available} />
-        </h5>
-        <div className="cardValue">
-          {CURRENCY} 0
-        </div></Col>
-        <Col><h5>
-          Total
-        </h5>
-        <div className="cardValue">
-          {CURRENCY} 0
-        </div></Col>
-        </Row>
-
-        <A href={'/operationalHistory/' + this.props.historyLink} float="right">&nbsp;</A>
-      </Card>
+        <Card marginBottom="54px" buttonMarginTop="32px" bigPadding  bordered>
+          <BranchCreditLimit bankName={this.props.bankName}/>
+        </Card>
       </Col>
       </Row>
 

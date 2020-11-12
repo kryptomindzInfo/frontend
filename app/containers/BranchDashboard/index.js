@@ -856,6 +856,7 @@ export default class BranchDashboard extends Component {
     this.getUsers();
     this.getBranches();
     this.getBranchByName();
+    console.log(this.props.match.params.bank);
   }
 
   render() {

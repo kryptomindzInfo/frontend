@@ -622,6 +622,42 @@ export default class BranchCashierList extends Component {
       .catch(err => {});
   };
 
+  blockBranch = (e, s) =>{
+    var dis = this;
+    axios
+    .post(`${API_URL  }/updateStatus`, {
+      token,
+      type_id: e,
+      status : s,
+      page: 'cashier',
+      type: 'branch'
+    })
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.error){
+          throw res.data.error;
+        }else{
+          var n = (s == 1) ? 'Unblocked' : 'Blocked';
+          this.setState({
+            notification: 'Cashier ' + n
+          });
+          this.success();
+          this.getBranches();
+        }
+      }else{
+        const error = new Error(res.data.error);
+        throw error;
+      }
+    })
+    .catch(err => {
+      this.setState({
+        notification: (err.response) ? err.response.data.error : err.toString()
+      });
+      this.error();
+    });
+
+  };
+
   getBranches = () => {
     axios
       .post(`${API_URL}/getAll`, {
