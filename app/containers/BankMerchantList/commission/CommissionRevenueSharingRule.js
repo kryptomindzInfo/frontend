@@ -136,7 +136,7 @@ const CommissionRevenueSharingRule = props => {
           justify="space-between"
         >
           <h3 style={{ color: '#fff' }}>{`Commission with Infra(${
-           type === 'WM-C' ? 'Wallet to Merchant' : 'Non-wallet to Merchant'
+           type === 'WM-C' ? 'Wallet to Merchant' : type==='NWM-C' ? 'Non-wallet to Merchant' : 'Merchant cashier to Merchant'
           })`}</h3>
           <Grid item>
             <Button onClick={props.onBack}>x</Button>
@@ -267,7 +267,7 @@ const CommissionRevenueSharingRule = props => {
               );
             }}
           </Formik>
-          {type !== 'WM-C' ? (
+          {type === 'NWM-C' ? (
             <div
               style={{
                 border: '1px solid #d0d6d1',
@@ -411,7 +411,7 @@ const CommissionRevenueSharingRule = props => {
               )}
             </div>
           ) : null}
-          {type !== 'WM-C' ? (
+          {type === 'NWM-C' ? (
             <div>
             {activeTab ===  'branch' ? (
               <div
