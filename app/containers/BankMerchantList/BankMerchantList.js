@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import axios from 'axios';
 import { Helmet } from 'react-helmet';
 import BankHeader from '../../components/Header/BankHeader';
 import Wrapper from '../../components/Wrapper';
@@ -13,6 +14,17 @@ import CreateMerchantPopup from './CreateMerchantPopup';
 import { STATIC_URL } from '../App/constants';
 import Loader from '../../components/Loader';
 import { fetchMerchantList } from './api/merchantAPI';
+import { toast } from 'react-toastify';
+import { API_URL } from '../App/constants';
+
+toast.configure({
+  position: 'bottom-right',
+  autoClose: 4000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+});
 
 function BankMerchantList(props) {
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
@@ -36,6 +48,34 @@ function BankMerchantList(props) {
     setMerchantList(data.list);
     setLoading(data.loading);
   };
+
+  const block = (id, type) =>{
+    const token = localStorage.getItem('bankLogged');
+    axios
+    .post(`${API_URL}/bank/${type}Merchant`, {
+      token,
+      merchant_id : id,
+    })
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.status === 0){
+          throw res.data.message;
+        }else{
+          var n = (type == 'unblock') ? 'Unblocked' : 'Blocked';
+          toast.success('Merchant ' + n);
+          refreshMerchantList();
+        }
+      }else{
+        toast.error(res.data.message);
+      }
+    })
+    .catch(err => {
+      toast.error('Something went wrong');
+    });
+
+  };
+
+  
 
   useEffect(() => {
     setLoading(true);
@@ -63,7 +103,6 @@ function BankMerchantList(props) {
       <td className="tac">{merchant.bills_raised}</td>
       <td className="tac">{merchant.amount_collected}</td>
       <td className="tac">{merchant.amount_due}</td>
-      <td className="tac">{merchant.fee_generated}</td>
       <td className="tac">
         <div
           style={{
@@ -97,10 +136,22 @@ function BankMerchantList(props) {
               >
                 Info
               </span>
-              {merchant.status === -1 ? (
-                <span>Unblock</span>
+              {merchant.status == -1 ? (
+                <span
+                  onClick={() =>
+                    block(merchant._id, 'unblock')
+                  }
+                >
+                  Unblock
+                </span>
               ) : (
-                <span>Block</span>
+                <span
+                  onClick={() =>
+                    block(merchant._id, 'block')
+                  }
+                >
+                  Block
+                </span>
               )}
             </div>
           </span>
@@ -156,7 +207,6 @@ function BankMerchantList(props) {
                     <th>Bills Raised </th>
                     <th>Amount Collected</th>
                     <th>Amount Due</th>
-                    <th>Fee Generated</th>
                     <th>Created By</th>
                   </tr>
                 </thead>

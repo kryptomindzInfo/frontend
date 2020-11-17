@@ -30,6 +30,7 @@ const token = localStorage.getItem('cashierLogged');
 const cid = localStorage.getItem('cashierId');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
+const branchID = localStorage.getItem('cashierBranch');
 const cashierName = localStorage.getItem('cashierName');
 
 class CashierCashInHand extends Component {
@@ -462,7 +463,7 @@ class CashierCashInHand extends Component {
         page: "cashier",
         type: "cashier",
         where: {
-          branch_id: this.state.branch_id,
+          branch_id: branchID,
           _id: { $ne: cid },
           is_closed: false
         }

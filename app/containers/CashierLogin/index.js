@@ -92,6 +92,7 @@ export default class CashierLogin extends Component {
             localStorage.setItem('cashierId', res.data.cashier_id);
             localStorage.setItem('bankLogo', this.state.bank.logo);
             localStorage.setItem('cashierEmail', res.data.email);
+            localStorage.setItem('cashierBranch', res.data.branch_id);
             localStorage.setItem('cashierMobile', res.data.mobile);
             localStorage.setItem('bankId', res.data.bank_id);
             window.location.href = '/cashier/'+this.props.match.params.bank+'/dashboard';

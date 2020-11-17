@@ -55,6 +55,7 @@ const PopupBody = styled.div`
     color: #000000;
     margin-bottom: 10px;
     color: green;
+    word-break: keep-all;
   }
 
   h1 {
