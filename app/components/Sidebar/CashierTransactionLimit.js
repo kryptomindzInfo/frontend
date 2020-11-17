@@ -1204,7 +1204,8 @@ class CashierTransactionLimit extends Component {
                           sm="12"
                           md="4"
                           style={{
-                            display: this.state.sender_id ? 'block' : 'none',
+                            // display: this.state.sender_id ? 'block' : 'none',
+                            display: 'block',
                           }}
                         >
                           <div
