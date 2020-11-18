@@ -227,7 +227,7 @@ export default class BankBranchList extends Component {
             throw res.data.message;
           } else {
             this.setState({
-              notification: res.data.status + ' ' + res.data.walletStatus,
+              notification: 'Branch added successfully!',
             });
             this.success();
             this.closePopup();
