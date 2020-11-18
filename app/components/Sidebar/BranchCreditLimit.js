@@ -56,10 +56,13 @@ class BranchCreditLimit extends Component {
 
   getBalance = () => {
     axios
-      .get(
+      .get(this.props.bCode ?
         `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${
+           this.state.token
+        }&type=branch&page=operational&wallet_id=BRO@${this.props.bCode}@${this.props.bankName}`
+        : `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${
           this.state.token
-        }&type=branch&page=operational`,
+       }&type=branch&page=operational`
       )
       .then(res => {
         if (res.status == 200) {
@@ -114,10 +117,12 @@ class BranchCreditLimit extends Component {
         </h3>
         <Row>
         <Col><h3 className="miniTitle">Maximum</h3><div className="cardValue">
-          {CURRENCY} {limit}
+          {CURRENCY} {this.props.credit_limit ? this.props.credit_limit: limit}
         </div></Col>
         <Col><h3 className="miniTitle">Remaining</h3><div className="cardValue">
-          {CURRENCY} {this.state.balance > 0 ? limit : limit+this.state.balance  }
+          {CURRENCY} {this.props.credit_limit ? 
+            this.state.balance > 0 ? this.props.credit_limit : this.props.credit_limit+this.state.balance :
+            this.state.balance > 0 ? limit : limit+this.state.balance}
         </div></Col>
         </Row>
 

@@ -708,10 +708,10 @@ export default class BankBranchInfo extends Component {
         </Helmet>
         <BankHeader page="branch" middleTitle={this.state.name} goto="/bank/branches/"  />
         <Container verticalMargin>
-          <BankSidebarThree active="info" branchId={this.props.match.params.branch}  blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.state.name}/>
+          <BankSidebarThree active="info" credit_limit={this.state.credit_limit} branchId={this.props.match.params.branch}  blockTxt={this.state.status} edit={this.showEditPopup.bind(this)} block={this.blockBranch.bind(this)} bankName={this.state.name}/>
           <Main>
 
-            {/* <BranchWallets branchId={this.props.match.params.branch} bCode={this.state.dbcode} bankName={this.state.bname} /> */}
+            <BranchWallets branchId={this.props.match.params.branch} bCode={this.state.dbcode} bankName={this.state.bname} />
 
           <Card bigPadding bordered>
 
