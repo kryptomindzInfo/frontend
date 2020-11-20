@@ -75,6 +75,32 @@ function BankMerchantList(props) {
 
   };
 
+  const visiblity = (id, value) =>{
+    const token = localStorage.getItem('bankLogged');
+    axios
+    .post(`${API_URL}/bank/changeMerchantAcces`, {
+      token,
+      merchant_id : id,
+      is_private: value,
+    })
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.status === 0){
+          throw res.data.message;
+        }else{
+          toast.success(res.data.message);
+          refreshMerchantList();
+        }
+      }else{
+        toast.error(res.data.message);
+      }
+    })
+    .catch(err => {
+      toast.error('Something went wrong');
+    });
+
+  };
+
   
 
   useEffect(() => {
@@ -136,7 +162,7 @@ function BankMerchantList(props) {
               >
                 Info
               </span>
-              {merchant.status == -1 ? (
+              {merchant.status === 0 ? (
                 <span
                   onClick={() =>
                     block(merchant._id, 'unblock')
@@ -151,6 +177,23 @@ function BankMerchantList(props) {
                   }
                 >
                   Block
+                </span>
+              )}
+              {merchant.is_private === false ? (
+                <span
+                  onClick={() =>
+                    visiblity(merchant._id, true)
+                  }
+                >
+                  Make Private
+                </span>
+              ) : (
+                <span
+                  onClick={() =>
+                    visiblity(merchant._id, false)
+                  }
+                >
+                  Make Public
                 </span>
               )}
             </div>
