@@ -192,8 +192,11 @@ const PayBillsInvoiceList = props => {
   }
 
   const calculatePenalty = async(rule) => {
+    console.log(rule);
     const penaltylist = invoiceList.map(async invoice => {
       if (invoice.amount < 0) {
+        return (0);
+      }else if(!rule.type){
         return (0);
       }
       const datesplit = invoice.due_date.split("/");
