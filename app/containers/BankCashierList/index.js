@@ -600,7 +600,7 @@ addBranch = event => {
                       this.state.cashiers && this.state.cashiers.length > 0
                         ? this.state.cashiers.map(function(b) {
 
-                          return <tr key={b._id} ><td>{b.central ? <span style={{color:"red"}}>*</span> : null}{b.name}</td><td className="tac">{b.cash_in_hand}</td><td className="tac">{b.max_trans_amt}</td>
+                          return <tr key={b._id} ><td>{b.central ? <span style={{color:"red"}}>*</span> : null}{b.name}</td><td className="tac">{b.cash_in_hand.toFixed(2)}</td><td className="tac">{b.max_trans_amt}</td>
 
                           <td className="tac bold green" >
                             {b.total_trans}
