@@ -20,6 +20,16 @@ import AddPartnerModal from './AddPartnerDialog';
 
 import { API_URL } from '../App/constants';
 
+import 'react-toastify/dist/ReactToastify.css';
+toast.configure({
+  position: 'bottom-right',
+  autoClose: 4000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+});
+
 const styles = theme => ({
     textField: {
       marginLeft: theme.spacing.unit,
@@ -94,7 +104,7 @@ class RevenueRuleDistubutionPage extends React.Component {
         notification: 'Please add revenue rule first',
         editRulesLoading: false
       });
-      his.error();
+      this.error();
     }
   };
 
@@ -125,7 +135,7 @@ class RevenueRuleDistubutionPage extends React.Component {
         notification: 'Please add revenue rule first',
         editRulesLoading: false
       });
-      his.error();
+      this.error();
     }
   }
 
@@ -137,6 +147,7 @@ class RevenueRuleDistubutionPage extends React.Component {
     let fixed_other_bank = "";
     let percentage_other_bank = "";
     if(revenueData) {
+      console.log(revenueData);
       const infrashare = revenueData.status === 0 ? revenueData.infra_share : revenueData.infra_approval_status === 2 ? revenueData.edited.infra_share : revenueData.infra_share;
       fixed_infra = infrashare.fixed;
       percentage_infra = infrashare.percentage;
