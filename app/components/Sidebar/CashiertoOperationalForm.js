@@ -21,6 +21,7 @@ import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/picker
 import { API_URL, CURRENCY } from '../../containers/App/constants';
 import CountrySelectBox from '../Form/CountrySelectBox';
 import TypeSelectBox from '../Form/TypeSelectBox';
+import OtpPopup from './OtpPopup';
 
 toast.configure({
   position: 'bottom-right',
@@ -143,9 +144,14 @@ const CashierToWalletForm = ({ close }) => {
   const [openWalletPopup, setWalletPopup] = React.useState(false);
   const [interbank, setInterBank] =React.useState(true);
   const [amount, setAmount] =React.useState('');
+  const [showOtp, setShowOtp] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [values, setvalues] = React.useState({});
 
-  
+  const haldleOtpClick = (values) => {
+    setvalues(values);
+    setShowOtp(true);
+  };
 
   const getLiveFee = amount => {
     const token = localStorage.getItem('cashierLogged');
@@ -222,409 +228,338 @@ const CashierToWalletForm = ({ close }) => {
   }, [interbank]);
   return (
     <Popup bigBody close={close}>
-      <h1>Send Money to Operational</h1>
-      <Formik
-        initialValues={{
-          ccode: '+221',
-          givenname: '',
-          familyname: '',
-          note: '',
-          senderIdentificationCountry: 'Senegal',
-          senderIdentificationType: '',
-          senderIdentificationNumber: '',
-          senderIdentificationValidTill: '',
-          address1: '',
-          state: '',
-          zip: '',
-          country: 'Senegal',
-          email: '',
-          mobile: '',
-          livefee: '',
-          requireOTP: '',
-          wallet_id: '',
-          amount: '',
-          is_inclusive: false,
-          interbank: true,
-          // termsAndCondition: false,
-        }}
-        onSubmit={async values => {
-          values.livefee = liveFee;
-          values.requireOTP = '111111';
-          handleOnProceedClick(values);
-        }}
-        validationSchema={Yup.object().shape({
-          mobile: Yup.string()
-            .min(10, 'number should be atleast 10 digits')
-            .max(10, 'number cannot exceed 10 digits')
-            .matches(
-              /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
-              'Mobile no must be valid',
-            )
-            .required('Mobile no is required'),
-          wallet_id: Yup.string().required('Wallet Id is required'),
-          givenname: Yup.string().required('Given Name is required'),
-          familyname: Yup.string().required('Family Name is required'),
-          country: Yup.string().required('Country is required'),
-          email: Yup.string()
-            .email('Email is invalid')
-            .required('Email is required'),
-          senderIdentificationType: Yup.string().required('Type is required'),
-          senderIdentificationNumber: Yup.number().required(
-            'Number no is required',
-          ),
-          senderIdentificationValidTill: Yup.string().required(
-            'Date is required',
-          ),
-          amount: Yup.number().required(
-            'Amount is required',
-          ),
-          senderIdentificationCountry: Yup.string().required(
-            'Country is required',
-          ),
-          // termsAndCondition: Yup.boolean().oneOf(
-          //   [true],
-          //   'You must accept the terms and conditions.',
-          // ),
-        })}
-      >
-        {formikProps => {
-          const {
-            values,
-            touched,
-            errors,
-            isSubmitting,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-            setFieldValue,
-          } = formikProps;
-          const senderIdentificationTypeChange = event => {
-            const { value } = event.target;
-            setFieldValue('senderIdentificationType', value, true);
-          };
-          const senderIdentificationCountryChange = event => {
-            const { value } = event.target;
-            setFieldValue('senderIdentificationCountry', value, true);
-          };
-          const countryChange = event => {
-            const { value } = event.target;
-            const { title } = event.target.options[event.target.selectedIndex];
-            setFieldValue('ccode', title, true);
-            setFieldValue('country', value, true);
-          };
-          const handleDateChange = (date, field) => {
-            const formattedDate = new Date(date).toLocaleDateString();
-            setFieldValue(field, formattedDate, true);
-          };
+      {showOtp ? (
+        <OtpPopup
+          values={values}
+          execute={handleOnProceedClick}
+          close={close}
+        />
+      ) : (
+      <div>
+        <h1>Send Money to Operational</h1>
+        <Formik
+          initialValues={{
+            ccode: '+221',
+            givenname: '',
+            familyname: '',
+            note: '',
+            senderIdentificationCountry: 'Senegal',
+            senderIdentificationType: '',
+            senderIdentificationNumber: '',
+            senderIdentificationValidTill: '',
+            address1: '',
+            state: '',
+            zip: '',
+            country: 'Senegal',
+            email: '',
+            mobile: '',
+            livefee: '',
+            requireOTP: '',
+            wallet_id: '',
+            amount: '',
+            is_inclusive: false,
+            interbank: true,
+            // termsAndCondition: false,
+          }}
+          onSubmit={async values => {
+            values.livefee = liveFee;
+            values.requireOTP = '111111';
+            haldleOtpClick(values);
+          }}
+          validationSchema={Yup.object().shape({
+            mobile: Yup.string()
+              .min(10, 'number should be atleast 10 digits')
+              .max(10, 'number cannot exceed 10 digits')
+              .matches(
+                /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/,
+                'Mobile no must be valid',
+              )
+              .required('Mobile no is required'),
+            wallet_id: Yup.string().required('Wallet Id is required'),
+            givenname: Yup.string().required('Given Name is required'),
+            familyname: Yup.string().required('Family Name is required'),
+            country: Yup.string().required('Country is required'),
+            email: Yup.string()
+              .email('Email is invalid')
+              .required('Email is required'),
+            senderIdentificationType: Yup.string().required('Type is required'),
+            senderIdentificationNumber: Yup.number().required(
+              'Number no is required',
+            ),
+            senderIdentificationValidTill: Yup.string().required(
+              'Date is required',
+            ),
+            amount: Yup.number().required(
+              'Amount is required',
+            ),
+            senderIdentificationCountry: Yup.string().required(
+              'Country is required',
+            ),
+            // termsAndCondition: Yup.boolean().oneOf(
+            //   [true],
+            //   'You must accept the terms and conditions.',
+            // ),
+          })}
+        >
+          {formikProps => {
+            const {
+              values,
+              touched,
+              errors,
+              isSubmitting,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              setFieldValue,
+            } = formikProps;
+            const senderIdentificationTypeChange = event => {
+              const { value } = event.target;
+              setFieldValue('senderIdentificationType', value, true);
+            };
+            const senderIdentificationCountryChange = event => {
+              const { value } = event.target;
+              setFieldValue('senderIdentificationCountry', value, true);
+            };
+            const countryChange = event => {
+              const { value } = event.target;
+              const { title } = event.target.options[event.target.selectedIndex];
+              setFieldValue('ccode', title, true);
+              setFieldValue('country', value, true);
+            };
+            const handleDateChange = (date, field) => {
+              const formattedDate = new Date(date).toLocaleDateString();
+              setFieldValue(field, formattedDate, true);
+            };
 
-          return (
-            <Form>
-              <Grid
-                container
-                direction="row"
-                alignItems="center"
-                justify="center"
-              >
-                <Grid item md={6} xs={12}>
-                  <Grid
-                    container
-                    direction="column"
-                    className={classes.dialogGridLeft}
-                  >
-                    <Typography
-                      variant="h6"
-                      className={classes.dialogSubHeader}
+            return (
+              <Form>
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="center"
+                  justify="center"
+                >
+                  <Grid item md={6} xs={12}>
+                    <Grid
+                      container
+                      direction="column"
+                      className={classes.dialogGridLeft}
                     >
-                      Sender's Info
-                    </Typography>
-                    <Grid container direction="row" alignItems="flex-start">
-                      <Grid
-                        item
-                        xs={2}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
+                      <Typography
+                        variant="h6"
+                        className={classes.dialogSubHeader}
                       >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          autoFocus
-                          id="form-phone-pre"
-                          value={values.ccode}
-                          variant="outlined"
-                          type="text"
-                          name="ccode"
-                          disabled
-                        />
-                      </Grid>
-                      <Grid
-                        item
-                        xs={10}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          autoFocus
-                          error={errors.mobile && touched.mobile}
-                          name="mobile"
-                          id="form-phone"
-                          label="Phone No"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
-                          type="text"
-                          value={values.mobile}
-                          onChange={handleChange}
-                          // onBlur={() => getSenderUser(values.mobile)}
+                        Sender's Info
+                      </Typography>
+                      <Grid container direction="row" alignItems="flex-start">
+                        <Grid
+                          item
+                          xs={2}
+                          alignItems="center"
                           className={classes.dialogTextFieldGrid}
-                          helperText={
-                            errors.mobile && touched.mobile ? errors.mobile : ''
-                          }
-                        />
-                      </Grid>
-                    </Grid>
-                    <Grid container direction="row" alignItems="flex-start">
-                      <Grid
-                        item
-                        xs={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          name="givenname"
-                          id="form-given-name"
-                          label="Given Name"
-                          error={errors.givenname && touched.givenname}
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
-                          type="text"
-                          value={values.givenname}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={classes.dialogTextFieldGrid}
-                          helperText={
-                            errors.givenname && touched.givenname
-                              ? errors.givenname
-                              : ''
-                          }
-                        />
-                      </Grid>
-                      <Grid
-                        item
-                        xs={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          name="familyname"
-                          id="form-family-name"
-                          label="Family Name"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
-                          type="text"
-                          value={values.familyname}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={classes.dialogTextFieldGrid}
-                          error={errors.familyname && touched.familyname}
-                          helperText={
-                            errors.familyname && touched.familyname
-                              ? errors.familyname
-                              : ''
-                          }
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container direction="row" alignItems="flex-start">
-                      <Grid
-                        item
-                        xs={12}
-                        md={12}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          name="address1"
-                          id="form-address"
-                          label="Address"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
-                          type="text"
-                          value={values.address1}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={classes.dialogTextFieldFullRow}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container direction="row" alignItems="flex-start">
-                      <Grid
-                        item
-                        xs={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          name="state"
-                          id="form-state"
-                          label="State"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
-                          type="text"
-                          value={values.state}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={classes.dialogTextField}
-                        />
-                      </Grid>
-                      <Grid
-                        item
-                        xs={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          name="zip"
-                          id="form-zip"
-                          label="Zip Code"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
-                          type="text"
-                          value={values.zip}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={classes.dialogTextField}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container direction="row" alignItems="flex-start">
-                      <Grid
-                        item
-                        xs={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <CountrySelectBox
-                          type="text"
-                          name="country"
-                          value={values.country}
-                          onChange={countryChange}
-                          data-change="ccode"
-                          required
-                        />
-                        {errors.country && touched.country ? (
-                          <div
-                            style={{
-                              fontSize: '10px',
-                              color: 'red',
-                              paddingLeft: '5px',
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
                             }}
-                          >
-                            {errors.country}
-                          </div>
-                        ) : (
-                          ''
-                        )}
-                      </Grid>
-                      <Grid
-                        item
-                        xs={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          name="email"
-                          id="form-email"
-                          label="Email"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
-                          type="email"
-                          value={values.email}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                            size="small"
+                            autoFocus
+                            id="form-phone-pre"
+                            value={values.ccode}
+                            variant="outlined"
+                            type="text"
+                            name="ccode"
+                            disabled
+                          />
+                        </Grid>
+                        <Grid
+                          item
+                          xs={10}
+                          alignItems="center"
                           className={classes.dialogTextFieldGrid}
-                          error={errors.email && touched.email}
-                          helperText={
-                            errors.email && touched.email ? errors.email : ''
-                          }
-                        />
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            size="small"
+                            autoFocus
+                            error={errors.mobile && touched.mobile}
+                            name="mobile"
+                            id="form-phone"
+                            label="Phone No"
+                            fullWidth
+                            placeholder=""
+                            variant="outlined"
+                            type="text"
+                            value={values.mobile}
+                            onChange={handleChange}
+                            // onBlur={() => getSenderUser(values.mobile)}
+                            className={classes.dialogTextFieldGrid}
+                            helperText={
+                              errors.mobile && touched.mobile ? errors.mobile : ''
+                            }
+                          />
+                        </Grid>
                       </Grid>
-                    </Grid>
-
-                    <Typography
-                      variant="h6"
-                      className={classes.dialogSubHeader}
-                    >
-                      Sender's Identification
-                    </Typography>
-
-                    <Grid container direction="row" alignItems="flex-start">
-                      <Grid
-                        item
-                        xs={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <CountrySelectBox
-                          type="text"
-                          name="country"
-                          value={values.senderIdentificationCountry}
-                          onChange={senderIdentificationCountryChange}
-                        />
+                      <Grid container direction="row" alignItems="flex-start">
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            size="small"
+                            name="givenname"
+                            id="form-given-name"
+                            label="Given Name"
+                            error={errors.givenname && touched.givenname}
+                            fullWidth
+                            placeholder=""
+                            variant="outlined"
+                            type="text"
+                            value={values.givenname}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={classes.dialogTextFieldGrid}
+                            helperText={
+                              errors.givenname && touched.givenname
+                                ? errors.givenname
+                                : ''
+                            }
+                          />
+                        </Grid>
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            size="small"
+                            name="familyname"
+                            id="form-family-name"
+                            label="Family Name"
+                            fullWidth
+                            placeholder=""
+                            variant="outlined"
+                            type="text"
+                            value={values.familyname}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={classes.dialogTextFieldGrid}
+                            error={errors.familyname && touched.familyname}
+                            helperText={
+                              errors.familyname && touched.familyname
+                                ? errors.familyname
+                                : ''
+                            }
+                          />
+                        </Grid>
                       </Grid>
-                      <Grid
-                        item
-                        xs={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TypeSelectBox
-                          type="text"
-                          name="senderIdentificationType"
-                          value={values.senderIdentificationType}
-                          onChange={senderIdentificationTypeChange}
-                          required
-                        />
-                        {errors.senderIdentificationType &&
-                        touched.senderIdentificationType ? (
+
+                      <Grid container direction="row" alignItems="flex-start">
+                        <Grid
+                          item
+                          xs={12}
+                          md={12}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            size="small"
+                            name="address1"
+                            id="form-address"
+                            label="Address"
+                            fullWidth
+                            placeholder=""
+                            variant="outlined"
+                            type="text"
+                            value={values.address1}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={classes.dialogTextFieldFullRow}
+                          />
+                        </Grid>
+                      </Grid>
+
+                      <Grid container direction="row" alignItems="flex-start">
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            size="small"
+                            name="state"
+                            id="form-state"
+                            label="State"
+                            fullWidth
+                            placeholder=""
+                            variant="outlined"
+                            type="text"
+                            value={values.state}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={classes.dialogTextField}
+                          />
+                        </Grid>
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            size="small"
+                            name="zip"
+                            id="form-zip"
+                            label="Zip Code"
+                            fullWidth
+                            placeholder=""
+                            variant="outlined"
+                            type="text"
+                            value={values.zip}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={classes.dialogTextField}
+                          />
+                        </Grid>
+                      </Grid>
+
+                      <Grid container direction="row" alignItems="flex-start">
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <CountrySelectBox
+                            type="text"
+                            name="country"
+                            value={values.country}
+                            onChange={countryChange}
+                            data-change="ccode"
+                            required
+                          />
+                          {errors.country && touched.country ? (
                             <div
                               style={{
                                 fontSize: '10px',
@@ -632,351 +567,432 @@ const CashierToWalletForm = ({ close }) => {
                                 paddingLeft: '5px',
                               }}
                             >
-                              {errors.senderIdentificationType}
+                              {errors.country}
                             </div>
                           ) : (
                             ''
                           )}
-                      </Grid>
-                    </Grid>
-
-                    <Grid container direction="row" alignItems="flex-start">
-                      <Grid
-                        item
-                        xs={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          name="senderIdentificationNumber"
-                          id="form-identification-number"
-                          label="Number"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
-                          type="number"
-                          value={values.senderIdentificationNumber}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="center"
                           className={classes.dialogTextFieldGrid}
-                          error={
-                            errors.senderIdentificationNumber &&
-                            touched.senderIdentificationNumber
-                          }
-                          helperText={
-                            errors.senderIdentificationNumber &&
-                            touched.senderIdentificationNumber
-                              ? errors.senderIdentificationNumber
-                              : ''
-                          }
-                        />
-                      </Grid>
-                      <Grid
-                        item
-                        xs={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                          <KeyboardDatePicker
-                            id="date-picker-dialog"
-                            label="Valid Till"
-                            size="small"
-                            minDate= {date}
-                            fullWidth
-                            inputVariant="outlined"
-                            format="dd/MM/yyyy"
+                        >
+                          <TextField
                             InputLabelProps={{
                               shrink: true,
                             }}
-                            value={values.senderIdentificationValidTill}
-                            onChange={date =>
-                              handleDateChange(
-                                date,
-                                'senderIdentificationValidTill',
-                              )
+                            size="small"
+                            name="email"
+                            id="form-email"
+                            label="Email"
+                            fullWidth
+                            placeholder=""
+                            variant="outlined"
+                            type="email"
+                            value={values.email}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={classes.dialogTextFieldGrid}
+                            error={errors.email && touched.email}
+                            helperText={
+                              errors.email && touched.email ? errors.email : ''
                             }
-                            KeyboardButtonProps={{
-                              'aria-label': 'change date',
+                          />
+                        </Grid>
+                      </Grid>
+
+                      <Typography
+                        variant="h6"
+                        className={classes.dialogSubHeader}
+                      >
+                        Sender's Identification
+                      </Typography>
+
+                      <Grid container direction="row" alignItems="flex-start">
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <CountrySelectBox
+                            type="text"
+                            name="country"
+                            value={values.senderIdentificationCountry}
+                            onChange={senderIdentificationCountryChange}
+                          />
+                        </Grid>
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TypeSelectBox
+                            type="text"
+                            name="senderIdentificationType"
+                            value={values.senderIdentificationType}
+                            onChange={senderIdentificationTypeChange}
+                            required
+                          />
+                          {errors.senderIdentificationType &&
+                          touched.senderIdentificationType ? (
+                              <div
+                                style={{
+                                  fontSize: '10px',
+                                  color: 'red',
+                                  paddingLeft: '5px',
+                                }}
+                              >
+                                {errors.senderIdentificationType}
+                              </div>
+                            ) : (
+                              ''
+                            )}
+                        </Grid>
+                      </Grid>
+
+                      <Grid container direction="row" alignItems="flex-start">
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
                             }}
+                            size="small"
+                            name="senderIdentificationNumber"
+                            id="form-identification-number"
+                            label="Number"
+                            fullWidth
+                            placeholder=""
+                            variant="outlined"
+                            type="number"
+                            value={values.senderIdentificationNumber}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            className={classes.dialogTextFieldGrid}
                             error={
-                              errors.senderIdentificationValidTill &&
-                              touched.senderIdentificationValidTill
+                              errors.senderIdentificationNumber &&
+                              touched.senderIdentificationNumber
                             }
                             helperText={
-                              errors.senderIdentificationValidTill &&
-                              touched.senderIdentificationValidTill
-                                ? errors.senderIdentificationValidTill
+                              errors.senderIdentificationNumber &&
+                              touched.senderIdentificationNumber
+                                ? errors.senderIdentificationNumber
                                 : ''
                             }
                           />
-                        </MuiPickersUtilsProvider>
-                      </Grid>
-                    </Grid>
-                    {/*  <Grid container direction="column" alignItems="flex-start">
-                      <Grid item className={classes.dialogTextFieldGrid}>
-                        <Checkbox name="requireOTP"/>
-                        <span>require OTP</span>
-                      </Grid>
-                    </Grid> */}
-                  </Grid>
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <Grid
-                    container
-                    direction="column"
-                    className={classes.dialogGridRight}
-                  >
-                    <Typography
-                      variant="h6"
-                      className={classes.dialogSubHeader}
-                    >
-                      Receivers's Info
-                    </Typography>
-                    <Grid container direction="row" alignItems="flex-start">
-                      <Grid
-                        item
-                        xs={6}
-                        md={6}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          error={
-                            errors.wallet_id && touched.wallet_id
-                          }
-                          name="wallet_id"
-                          id="form-phone"
-                          label="Wallet Id"
-                          placeholder=""
-                          variant="outlined"
-                          type="text"
-                          fullWidth
-                          value={values.wallet_id}
-                          ref={anchorRef}
-                          aria-controls={
-                            openWalletPopup ? 'menu-list-grow' : undefined
-                          }
-                          aria-haspopup="true"
-                          onChange={e => {
-                            handleChange(e);
-                          }}
-                          onBlur={handleBlur}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={6}
+                          alignItems="center"
                           className={classes.dialogTextFieldGrid}
-                          helperText={
-                            errors.wallet_id && touched.wallet_id
-                              ? errors.wallet_id
-                              : ''
-                          }
-                        />
+                        >
+                          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                            <KeyboardDatePicker
+                              id="date-picker-dialog"
+                              label="Valid Till"
+                              size="small"
+                              minDate= {date}
+                              fullWidth
+                              inputVariant="outlined"
+                              format="dd/MM/yyyy"
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                              value={values.senderIdentificationValidTill}
+                              onChange={date =>
+                                handleDateChange(
+                                  date,
+                                  'senderIdentificationValidTill',
+                                )
+                              }
+                              KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                              }}
+                              error={
+                                errors.senderIdentificationValidTill &&
+                                touched.senderIdentificationValidTill
+                              }
+                              helperText={
+                                errors.senderIdentificationValidTill &&
+                                touched.senderIdentificationValidTill
+                                  ? errors.senderIdentificationValidTill
+                                  : ''
+                              }
+                            />
+                          </MuiPickersUtilsProvider>
+                        </Grid>
                       </Grid>
-                      <Popper
-                        open={openWalletPopup}
-                        anchorEl={anchorRef.current}
-                        role={undefined}
-                        transition
-                        style={{ width: '300px', zIndex: '3' }}
-                        disablePortal
-                      >
-                        {({ TransitionProps, placement }) => (
-                          <Grow
-                            {...TransitionProps}
-                            style={{
-                              transformOrigin:
-                                placement === 'bottom'
-                                  ? 'center top'
-                                  : 'center bottom',
-                            }}
-                          >
-                            <Paper>
-                              <MenuList
-                                autoFocusItem={openWalletPopup}
-                                id="menu-list-grow"
-                              >
-                                {isUserLoading ? (
-                                  <CircularProgress />
-                                ) : (
-                                  <MenuItem
-                                    style={{
-                                      fontWeight: '600',
-                                      background: '#f5d18f',
-                                      color: 'green',
-                                    }}
-                                    onClick={() =>
-                                      handleWalletSelection(
-                                        values.receiverMobile,
-                                        availableWallet,
-                                      )
-                                    }
-                                  >
-                                    {availableWallet}
-                                  </MenuItem>
-                                )}
-                              </MenuList>
-                            </Paper>
-                          </Grow>
-                        )}
-                      </Popper>
+                      {/*  <Grid container direction="column" alignItems="flex-start">
+                        <Grid item className={classes.dialogTextFieldGrid}>
+                          <Checkbox name="requireOTP"/>
+                          <span>require OTP</span>
+                        </Grid>
+                      </Grid> */}
                     </Grid>
-
-                    <Grid container direction="row" alignItems="flex-start">
-                      <Grid
-                        item
-                        xs={2}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          size="small"
-                          id="form-amount-pre"
-                          label="XOF"
-                          variant="outlined"
-                          type="text"
-                          disabled
-                        />
-                      </Grid>
-                      <Grid
-                        item
-                        xs={10}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          name="amount"
-                          id="form-sending-amount"
-                          label="Amount"
-                          fullWidth
-                          placeholder=""
-                          variant="outlined"
-                          type="number"
-                          value={values.amount}
-                          onChange={handleChange}
-                          onBlur={e =>
-                            getLiveFee(values.amount)
-                          }
-                          className={classes.dialogTextFieldGridFullRow}
-                          error={
-                            errors.amount &&
-                            touched.amount
-                          }
-                          helperText={
-                            errors.amount &&
-                            touched.amount
-                              ? errors.amount
-                              : ''
-                          }
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container direction="row" alignItems="flex-start">
-                      <Grid
-                        item
-                        xs={12}
-                        alignItems="center"
-                        className={classes.dialogTextFieldGrid}
-                      >
-                        <TextField
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          size="small"
-                          name="note"
-                          id="form-note"
-                          fullWidth
-                          placeholder="Note"
-                          variant="outlined"
-                          multiline
-                          rows="4"
-                          type="text"
-                          value={values.note}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                        />
-                      </Grid>
-                    </Grid>
-                    <div style={{ marginLeft: '1%' }}>
-                      <Checkbox name="is_inclusive" />
-                      <span>Receiver pays transaction fees</span>
-                    </div>
-                    <div style={{ marginLeft: '1%' }}>
-                      <Checkbox
-                        name="interbank"
-                        onChange={handleFeeTypeChange(values.interbank, values.amount)
-                        }
-                      />
-                      <span>Receiver can recieve from any bank</span>
-                    </div>
-                    <Typography
-                      style={{
-                        color: 'rgb(53, 153, 51)',
-                        fontSize: '14px',
-                        marginBottom: '2%',
-                      }}
-                    >
-                      {CURRENCY} {liveFee} will be charged as fee and {CURRENCY}{' '}
-                      {!values.is_inclusive
-                        ? values.amount
-                          ? values.amount
-                          : '0'
-                        : values.amount
-                          ? values.amount - liveFee
-                          : '0'}{' '}
-                      will be sent to the receiver
-                    </Typography>
+                  </Grid>
+                  <Grid item md={6} xs={12}>
                     <Grid
                       container
-                      direction="row"
-                      justify="space-between"
-                      alignItems="center"
-                      className={classes.dialogTextFieldGrid}
+                      direction="column"
+                      className={classes.dialogGridRight}
                     >
-                      <Button
-                        type="submit"
-                        fullWidth
-                        onClick={handleSubmit}
-                        className={classes.proceedButton}
-                        variant="contained"
-                        color="primary"
-                        disableElevation
-                        disabled={
-                          isSubmitting &&
-                          values.amount
-                        }
+                      <Typography
+                        variant="h6"
+                        className={classes.dialogSubHeader}
                       >
-                        <Typography variant="h6">
-                          {values.amount
-                            ? 'Collect '
-                            : ''}
-                          {values.amount
-                            ? values.is_inclusive
-                              ? `${values.amount} and `
-                              : `${values.amount +
-                                  liveFee} and `
-                            : ''}
-                          Proceed
-                        </Typography>
-                      </Button>
+                        Receivers's Info
+                      </Typography>
+                      <Grid container direction="row" alignItems="flex-start">
+                        <Grid
+                          item
+                          xs={6}
+                          md={6}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            size="small"
+                            error={
+                              errors.wallet_id && touched.wallet_id
+                            }
+                            name="wallet_id"
+                            id="form-phone"
+                            label="Wallet Id"
+                            placeholder=""
+                            variant="outlined"
+                            type="text"
+                            fullWidth
+                            value={values.wallet_id}
+                            ref={anchorRef}
+                            aria-controls={
+                              openWalletPopup ? 'menu-list-grow' : undefined
+                            }
+                            aria-haspopup="true"
+                            onChange={e => {
+                              handleChange(e);
+                            }}
+                            onBlur={handleBlur}
+                            className={classes.dialogTextFieldGrid}
+                            helperText={
+                              errors.wallet_id && touched.wallet_id
+                                ? errors.wallet_id
+                                : ''
+                            }
+                          />
+                        </Grid>
+                        <Popper
+                          open={openWalletPopup}
+                          anchorEl={anchorRef.current}
+                          role={undefined}
+                          transition
+                          style={{ width: '300px', zIndex: '3' }}
+                          disablePortal
+                        >
+                          {({ TransitionProps, placement }) => (
+                            <Grow
+                              {...TransitionProps}
+                              style={{
+                                transformOrigin:
+                                  placement === 'bottom'
+                                    ? 'center top'
+                                    : 'center bottom',
+                              }}
+                            >
+                              <Paper>
+                                <MenuList
+                                  autoFocusItem={openWalletPopup}
+                                  id="menu-list-grow"
+                                >
+                                  {isUserLoading ? (
+                                    <CircularProgress />
+                                  ) : (
+                                    <MenuItem
+                                      style={{
+                                        fontWeight: '600',
+                                        background: '#f5d18f',
+                                        color: 'green',
+                                      }}
+                                      onClick={() =>
+                                        handleWalletSelection(
+                                          values.receiverMobile,
+                                          availableWallet,
+                                        )
+                                      }
+                                    >
+                                      {availableWallet}
+                                    </MenuItem>
+                                  )}
+                                </MenuList>
+                              </Paper>
+                            </Grow>
+                          )}
+                        </Popper>
+                      </Grid>
+
+                      <Grid container direction="row" alignItems="flex-start">
+                        <Grid
+                          item
+                          xs={2}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TextField
+                            size="small"
+                            id="form-amount-pre"
+                            label="XOF"
+                            variant="outlined"
+                            type="text"
+                            disabled
+                          />
+                        </Grid>
+                        <Grid
+                          item
+                          xs={10}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            size="small"
+                            name="amount"
+                            id="form-sending-amount"
+                            label="Amount"
+                            fullWidth
+                            placeholder=""
+                            variant="outlined"
+                            type="number"
+                            value={values.amount}
+                            onChange={handleChange}
+                            onBlur={e =>
+                              getLiveFee(values.amount)
+                            }
+                            className={classes.dialogTextFieldGridFullRow}
+                            error={
+                              errors.amount &&
+                              touched.amount
+                            }
+                            helperText={
+                              errors.amount &&
+                              touched.amount
+                                ? errors.amount
+                                : ''
+                            }
+                          />
+                        </Grid>
+                      </Grid>
+
+                      <Grid container direction="row" alignItems="flex-start">
+                        <Grid
+                          item
+                          xs={12}
+                          alignItems="center"
+                          className={classes.dialogTextFieldGrid}
+                        >
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            size="small"
+                            name="note"
+                            id="form-note"
+                            fullWidth
+                            placeholder="Note"
+                            variant="outlined"
+                            multiline
+                            rows="4"
+                            type="text"
+                            value={values.note}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                          />
+                        </Grid>
+                      </Grid>
+                      <div style={{ marginLeft: '1%' }}>
+                        <Checkbox name="is_inclusive" />
+                        <span>Receiver pays transaction fees</span>
+                      </div>
+                      <div style={{ marginLeft: '1%' }}>
+                        <Checkbox
+                          name="interbank"
+                          onChange={handleFeeTypeChange(values.interbank, values.amount)
+                          }
+                        />
+                        <span>Receiver can recieve from any bank</span>
+                      </div>
+                      <Typography
+                        style={{
+                          color: 'rgb(53, 153, 51)',
+                          fontSize: '14px',
+                          marginBottom: '2%',
+                        }}
+                      >
+                        {CURRENCY} {liveFee} will be charged as fee and {CURRENCY}{' '}
+                        {!values.is_inclusive
+                          ? values.amount
+                            ? values.amount
+                            : '0'
+                          : values.amount
+                            ? values.amount - liveFee
+                            : '0'}{' '}
+                        will be sent to the receiver
+                      </Typography>
+                      <Grid
+                        container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="center"
+                        className={classes.dialogTextFieldGrid}
+                      >
+                        <Button
+                          type="submit"
+                          fullWidth
+                          onClick={handleSubmit}
+                          className={classes.proceedButton}
+                          variant="contained"
+                          color="primary"
+                          disableElevation
+                          disabled={
+                            isSubmitting &&
+                            values.amount
+                          }
+                        >
+                          <Typography variant="h6">
+                            {values.amount
+                              ? 'Collect '
+                              : ''}
+                            {values.amount
+                              ? values.is_inclusive
+                                ? `${values.amount} and `
+                                : `${values.amount +
+                                    liveFee} and `
+                              : ''}
+                            Proceed
+                          </Typography>
+                        </Button>
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
-              </Grid>
-            </Form>
-          );
-        }}
-      </Formik>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
+      )}
     </Popup>
   );
 };

@@ -5,7 +5,7 @@ import Loader from 'components/Loader';
 import TextInput from 'components/TextInput';
 import { inputBlur, inputFocus } from 'components/handleInputFocus';
 import { toast } from 'react-toastify';
-import { payInvoice } from './api/PayBillsAPI';
+
 
 const OtpPopup = props => {
   const [resendOtp, setResend] = useState(false);
@@ -35,7 +35,7 @@ const OtpPopup = props => {
     setVerifyOtpLoading(true);
     if (otp === '111111') {
       toast.success('OTP verified successfully');
-      await payInvoice(props.invoice, props.merchant.bank_id);
+      await props.execute(props.values);
       props.close();
     } else {
       toast.error('OTP Mismatch');
