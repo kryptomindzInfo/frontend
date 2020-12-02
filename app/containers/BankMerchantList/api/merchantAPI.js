@@ -77,6 +77,53 @@ const fetchMerchantList = async () => {
   }
 };
 
+const merchantVisiblity = (id, value, fun) =>{
+  axios
+  .post(`${API_URL}/bank/changeMerchantAcces`, {
+    token,
+    merchant_id : id,
+    is_private: value,
+  })
+  .then(res => {
+    if(res.status == 200){
+      if(res.data.status === 0){
+        throw res.data.message;
+      }else{
+        toast.success(res.data.message);
+        fun();
+      }
+    }else{
+      toast.error(res.data.message);
+    }
+  })
+  .catch(err => {
+    toast.error('Something went wrong');
+  });
+
+};
+
+const fetchMerchantdetails = async (id) => {
+  try {
+    const res = await axios.post(`${API_URL}/bank/getMerchantById`, {
+      token,
+      merchant_id: id,
+    });
+    if (res.status === 200) {
+      console.log(res);
+      if (res.data.status === 0) {
+        toast.error(res.data.message);
+        return { merchant: {}, loading: false };
+      }
+      return { merchant: res.data.merchant, loading: false };
+    }
+    toast.error(res.data.message);
+    return { merchant: {}, loading: false };
+  } catch (err) {
+    toast.error('Something went wrong');
+    return { merchant: {}, loading: false };
+  }
+};
+
 // Revenue Rule APIs
 
 const createMerchantRule = async (props, payload) => {
@@ -375,4 +422,6 @@ export {
   addInterBankInfraShare,
   updateOtherBankShare,
   getInterBankSharing,
+  fetchMerchantdetails,
+  merchantVisiblity,
 };

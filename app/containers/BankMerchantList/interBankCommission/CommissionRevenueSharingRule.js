@@ -23,6 +23,8 @@ import {
   editInterBankInfraShare,
   addInterBankInfraShare,
   updateOtherBankShare,
+  fetchMerchantdetails,
+  merchantVisiblity,
 } from '../api/merchantAPI';
 import AddBranchModal from '../../BankFees/AddBranchDialog';
 import AddPartnerModal from '../../BankFees/AddPartnerDialog';
@@ -44,6 +46,7 @@ const CommissionRevenueSharingRule = props => {
     props.editingRule.infra_approve_status,
   );
   const [type, setType] = useState(props.type);
+  const [merchantStatus, setMerchantStatus] = useState(false);
   const [id, setId] = useState(props.id);
   const [otherBankShareFixed, setOtherBankShareFixed] = useState(props.editingRule.other_bank_share.fixed);
   const [otherBankSharePercentage, setOtherBankSharePercentage] = useState(props.editingRule.other_bank_share.percentage);
@@ -61,11 +64,31 @@ const CommissionRevenueSharingRule = props => {
     props.share.specific_partner_share || [],
   );
 
-  useEffect(() => {
-    if (Object.keys(share).length > 0) {
-      correctFocus('update');
+  const refreshMerchantDetails = async() => {
+    setLoading(true);
+    const data = await fetchMerchantdetails(props.merchantId);
+    console.log(data);
+    setMerchantStatus(data.merchant.is_private);
+    setLoading(false); 
+  };
+  const visiblity = async(value) => {
+    const merchant = await merchantVisiblity(props.merchantId,value,refreshMerchantDetails);
+    if (value === true){
+      updateOtherBankShare(props, {
+        other_bank_share: {
+          fixed: 0,
+          percentage:0,
+        },
+        rule_id: id,
+      }).then(rule => {
+        props.refreshRule(rule);
+      })
     }
-  });
+  };
+
+  useEffect(() => {
+    refreshMerchantDetails();
+  },[]);
 
   const nameBasedOnStatus = () => {
     switch (infraStatus) {
@@ -156,7 +179,7 @@ const CommissionRevenueSharingRule = props => {
                     <Row marginTop>
                       <Col cW="25%" textAlign="center">
                         <FormGroup>
-                          <label htmlFor="fixed">Fixed Amount</label>
+                          <label htmlFor="fixed" className="focused">Fixed Amount</label>
                           <TextInput
                             type="text"
                             name="fixed"
@@ -179,7 +202,7 @@ const CommissionRevenueSharingRule = props => {
                       </Col>
                       <Col cW="25%" textAlign="center">
                         <FormGroup>
-                          <label htmlFor="percentage">Percentage</label>
+                          <label htmlFor="percentage" className="focused">Percentage</label>
                           <TextInput
                             type="text"
                             name="percentage"
@@ -247,6 +270,7 @@ const CommissionRevenueSharingRule = props => {
                           label="Percentage%"
                           margin="dense"
                           variant="outlined"
+                          disabled={merchantStatus === true}
                           onChange={(e) => {
                             const val = e.target.value;
                             setOtherBankSharePercentage(val);
@@ -265,8 +289,7 @@ const CommissionRevenueSharingRule = props => {
                         <TextField
                           type="number"
                           label="Fixed"
-                          // disabled={this.state.trans_type === 'Wallet to Non Wallet'}
-                          // className={classNames(classes.textField, classes.dense)}
+                          disabled={merchantStatus === true}
                           margin="dense"
                           variant="outlined"
                           onChange={(e) => {
@@ -283,11 +306,44 @@ const CommissionRevenueSharingRule = props => {
               </Grid>
               <Grid item xs={12}></Grid>
               <Grid item xs={12} style={{textAlign: 'right'}}>
+              {merchantStatus === false ? (
+                <MaterialButton
+                variant="contained"
+                color="primary"
+                style={{
+                  marginTop: '13px',
+                  marginRight: '10px',
+                }}
+                onClick={() =>
+                  visiblity(true)
+                }
+                type="button"
+              >
+                 Make Private
+              </MaterialButton>
+
+              ) : (
+                <MaterialButton
+                variant="contained"
+                color="primary"
+                style={{
+                  marginTop: '13px',
+                }}
+                onClick={() =>
+                  visiblity(false)
+                }
+                type="button"
+              >
+                 Make Public
+              </MaterialButton>
+              )}
+
                 <MaterialButton
                   variant="contained"
                   color="primary"
                   style={{
                     marginTop: '13px',
+                    marginLeft: '10px',
                   }}
                   onClick={() =>
                     updateOtherBankShare(props, {
@@ -368,7 +424,7 @@ const CommissionRevenueSharingRule = props => {
                         <Form>
                           <Col cW="100%" textAlign="center">
                             <FormGroup>
-                              <label htmlFor="payBill">Sharing % for branches</label>
+                              <label htmlFor="payBill" className="focused">Sharing % for branches</label>
                               <TextInput
                                 type="number"
                                 name="payBill"
@@ -419,7 +475,7 @@ const CommissionRevenueSharingRule = props => {
                         <Form>
                           <Col cW="100%" textAlign="center">
                             <FormGroup>
-                              <label htmlFor="partner_share">Sharing % for partner</label>
+                              <label htmlFor="partner_share" className="focused">Sharing % for partner</label>
                               <TextInput
                                 type="number"
                                 name="partner_share"
