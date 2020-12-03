@@ -331,7 +331,6 @@ const CommissionRevenueSharingRule = props => {
                 </Grid>
               </Grid>
               <Grid item xs={12}></Grid>
-<<<<<<< Updated upstream
               <Grid item xs={12} style={{textAlign: 'right'}}>
               {merchantStatus === false ? (
                 <MaterialButton
@@ -388,57 +387,6 @@ const CommissionRevenueSharingRule = props => {
                   Update
                 </MaterialButton>
               </Grid>
-=======
-                <Grid item xs={12} style={{textAlign: 'right'}}>
-                    <MaterialButton
-                      variant="contained"
-                      color="primary"
-                      style={{
-                        marginTop: '13px',
-                        marginRight: '13px',
-                      }}
-                      onClick={() =>
-                        updateOtherBankShare(props, {
-                          other_bank_share: {
-                            fixed: otherBankShareFixed,
-                            percentage:otherBankSharePercentage,
-                          },
-                          rule_id: id,
-                        }).then(rule => {
-                          props.refreshRule(rule);
-                        })
-                      }
-                      type="button"
-                    >
-                      Update
-                    </MaterialButton>
-                    <MaterialButton
-                      variant="contained"
-                      color="primary"
-                      style={{
-                        marginTop: '13px',
-                      }}
-                      onClick={() =>
-                        updateOtherBankShare(props, {
-                          other_bank_share: {
-                            fixed: otherBankShareFixed,
-                            percentage:otherBankSharePercentage,
-                          },
-                          rule_id: id,
-                        }).then(rule => {
-                          props.refreshRule(rule);
-                        })
-                      }
-                      type="button"
-                    >
-                      Update
-                    </MaterialButton>
-                    
-                  </Grid>
-                
-              
-              
->>>>>>> Stashed changes
             </div>
       </Grid>
       </div>
