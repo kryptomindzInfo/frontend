@@ -14,9 +14,9 @@ class SidebarBank extends Component {
   render() {
     return (
         <Sidebar marginRight>
-            <BankOperationalWallet activateNeeded />
+            {/* <BankOperationalWallet activateNeeded />
             <EscrowWallet activateNeeded />
-            <BankMasterWallet />
+            <BankMasterWallet /> */}
         </Sidebar>
     );
   }

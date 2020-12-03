@@ -600,8 +600,6 @@ Edit Revenue sharing Rule</h3>
                     <option >Wallet to Non Wallet</option>
                     <option >Wallet to merchant</option>
                     <option >Non Wallet to Merchant</option>
-                    <option >Wallet to Bank Account</option>
-                    <option >Bank Account to Wallet Request</option>
                   </SelectInput>
                  
                   </FormGroup>

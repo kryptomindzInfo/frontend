@@ -66,13 +66,11 @@ class BranchMasterWallet extends Component {
 
   getBalance = () => {
     axios
-    .get(this.props.bCode ?
-      `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${
-         this.state.token
-      }&type=branch&page=master&wallet_id=BRM@${this.props.bCode}@${this.props.bankName}`
-      : `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${
-        this.state.token
-     }&type=branch&page=master`
+    .post(
+      `${API_URL}/branch/getWalletBalance?page=master`,
+      {
+        token : localStorage.getItem('branchLogged'),
+      }
     )
       .then(res => {
         if (res.status == 200) {

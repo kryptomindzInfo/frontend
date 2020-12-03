@@ -99,7 +99,7 @@ export default class BankDashboard extends Component {
         </Helmet>
         <BankHeader active="dashboard"/>
         <Container verticalMargin>
-          <SidebarBank />
+          {/* <SidebarBank /> */}
           <Main>
             <div className="clr">
               <A href="/bank/branches" float="left">

@@ -56,14 +56,12 @@ class BranchCreditLimit extends Component {
 
   getBalance = () => {
     axios
-      .get(this.props.bCode ?
-        `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${
-           this.state.token
-        }&type=branch&page=operational&wallet_id=BRO@${this.props.bCode}@${this.props.bankName}`
-        : `${API_URL}/getWalletBalance?bank=${this.props.bankName}&token=${
-          this.state.token
-       }&type=branch&page=operational`
-      )
+    .post(
+      `${API_URL}/branch/getWalletBalance?page=operational`,
+      {
+        token : localStorage.getItem('branchLogged'),
+      }
+    )
       .then(res => {
         if (res.status == 200) {
           console.log(res);

@@ -48,7 +48,7 @@ function SendMoneyToOperationalPopup(props) {
   const sendMoney = async(values) => {
     setLoading(true);
     try{
-      const res = await axios.post(`${API_URL}/transferMasterToOp?user=${props.type}`, {
+      const res = await axios.post(`${API_URL}/${props.type}/transferMasterToOp`, {
         amount: values,
         token: props.token,
       });

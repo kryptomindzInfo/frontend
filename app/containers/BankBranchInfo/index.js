@@ -573,7 +573,7 @@ export default class BankBranchInfo extends Component {
 
   getBranches = () => {
     axios
-      .post(`${API_URL  }/getBranch`, { token:token, branch_id: this.state.branch_id})
+      .post(`${API_URL}/getBranch`, { token:token, branch_id: this.state.branch_id})
       .then(res => {
         if(res.status == 200){
           this.setState({ loading: false, banks: res.data.branches, name: res.data.branches.name, bcode: res.data.branches.bcode, credit_limit: res.data.branches.credit_limit, username: res.data.branches.username, address1: res.data.branches.address1, state: res.data.branches.state, zip: res.data.branches.zip, country: res.data.branches.country, ccode: res.data.branches.ccode, mobile: res.data.branches.mobile, email: res.data.branches.email, branch_id: res.data.branches._id, status: res.data.branches.status});

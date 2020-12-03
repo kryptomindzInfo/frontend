@@ -18,7 +18,11 @@ constructor() {
   }
   getBalance = () => {
     axios
-      .get(`${API_URL}/getWalletBalance?token=${token}&type=bank&page=escrow`)
+      .post(`${API_URL}/bank/getWalletBalance?page=escrow`,
+        { 
+          page: 'escrow',
+          token,
+      })
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {

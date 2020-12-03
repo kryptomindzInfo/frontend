@@ -90,6 +90,32 @@ const CommissionRevenueSharingRule = props => {
     refreshMerchantDetails();
   },[]);
 
+  const visiblity = (id, value) =>{
+    const token = localStorage.getItem('bankLogged');
+    axios
+    .post(`${API_URL}/bank/changeMerchantAcces`, {
+      token,
+      merchant_id : id,
+      is_private: value,
+    })
+    .then(res => {
+      if(res.status == 200){
+        if(res.data.status === 0){
+          throw res.data.message;
+        }else{
+          toast.success(res.data.message);
+          refreshMerchantList();
+        }
+      }else{
+        toast.error(res.data.message);
+      }
+    })
+    .catch(err => {
+      toast.error('Something went wrong');
+    });
+
+  };
+
   const nameBasedOnStatus = () => {
     switch (infraStatus) {
       case 1:
@@ -305,6 +331,7 @@ const CommissionRevenueSharingRule = props => {
                 </Grid>
               </Grid>
               <Grid item xs={12}></Grid>
+<<<<<<< Updated upstream
               <Grid item xs={12} style={{textAlign: 'right'}}>
               {merchantStatus === false ? (
                 <MaterialButton
@@ -361,6 +388,57 @@ const CommissionRevenueSharingRule = props => {
                   Update
                 </MaterialButton>
               </Grid>
+=======
+                <Grid item xs={12} style={{textAlign: 'right'}}>
+                    <MaterialButton
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        marginTop: '13px',
+                        marginRight: '13px',
+                      }}
+                      onClick={() =>
+                        updateOtherBankShare(props, {
+                          other_bank_share: {
+                            fixed: otherBankShareFixed,
+                            percentage:otherBankSharePercentage,
+                          },
+                          rule_id: id,
+                        }).then(rule => {
+                          props.refreshRule(rule);
+                        })
+                      }
+                      type="button"
+                    >
+                      Update
+                    </MaterialButton>
+                    <MaterialButton
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        marginTop: '13px',
+                      }}
+                      onClick={() =>
+                        updateOtherBankShare(props, {
+                          other_bank_share: {
+                            fixed: otherBankShareFixed,
+                            percentage:otherBankSharePercentage,
+                          },
+                          rule_id: id,
+                        }).then(rule => {
+                          props.refreshRule(rule);
+                        })
+                      }
+                      type="button"
+                    >
+                      Update
+                    </MaterialButton>
+                    
+                  </Grid>
+                
+              
+              
+>>>>>>> Stashed changes
             </div>
       </Grid>
       </div>

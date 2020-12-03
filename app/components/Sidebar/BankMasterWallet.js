@@ -53,8 +53,12 @@ class BankMasterWallet extends Component {
 
   getBalance = () => {
     axios
-      .get(
-        `${API_URL}/getWalletBalance?token=${token}&type=bank&page=master`,
+      .post(
+        `${API_URL}/bank/getWalletBalance?page=master`,
+        { 
+          page: 'master',
+          token,
+        }
       )
       .then(res => {
         console.log(res);
