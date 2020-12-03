@@ -90,32 +90,6 @@ const CommissionRevenueSharingRule = props => {
     refreshMerchantDetails();
   },[]);
 
-  const visiblity = (id, value) =>{
-    const token = localStorage.getItem('bankLogged');
-    axios
-    .post(`${API_URL}/bank/changeMerchantAcces`, {
-      token,
-      merchant_id : id,
-      is_private: value,
-    })
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.status === 0){
-          throw res.data.message;
-        }else{
-          toast.success(res.data.message);
-          refreshMerchantList();
-        }
-      }else{
-        toast.error(res.data.message);
-      }
-    })
-    .catch(err => {
-      toast.error('Something went wrong');
-    });
-
-  };
-
   const nameBasedOnStatus = () => {
     switch (infraStatus) {
       case 1:
