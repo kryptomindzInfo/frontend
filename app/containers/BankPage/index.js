@@ -90,6 +90,7 @@ export default class BankPage extends Component {
       query: '',
       data: [],
       filteredData: [],
+      banksforfilter: [],
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -107,30 +108,40 @@ export default class BankPage extends Component {
 
   handleInputChange = event => {
     const { value, name } = event.target;
-    if (name === 'name'){
+    if (name === 'name') {
       this.setState({
-        [name]:value.trim(),
+        [name]: value.trim(),
       });
     } else {
       this.setState({
-        [name]:value,
+        [name]: value,
       });
     }
   };
 
   handleSearchInputChange = event => {
     const query = event.target.value;
+    console.log(this.state.banks);
+    // const newdata = this.state.banksforfilter
+    const newfilterdata = this.state.banksforfilter.filter(element =>
+      element.bcode.toLowerCase().includes(query.toLowerCase()),
+    );
+    console.log(newfilterdata);
+    this.setState({ banks: newfilterdata, query });
 
-    this.setState(prevState => {
-      const filteredData = prevState.data.filter(element =>
-        element.name.toLowerCase().includes(query.toLowerCase()),
-      );
+    // this.setState(prevState => {
+    //   const filteredData = prevState.data.filter(element =>
+    //     element.name.toLowerCase().includes(query.toLowerCase()),
+    //   );
 
-      return {
-        query,
-        filteredData,
-      };
-    });
+    //   console.log(query)
+    //   console.log(filteredData)
+
+    //   return {
+    //     query,
+    //     filteredData,
+    //   };
+    // });
   };
 
   getData = () => {
@@ -236,7 +247,7 @@ export default class BankPage extends Component {
       .then(res => {
         console.log(res);
         if (res.status == 200) {
-          if (res.data.status===0) {
+          if (res.data.status === 0) {
             throw res.data.message;
           } else {
             this.setState({
@@ -536,7 +547,11 @@ export default class BankPage extends Component {
       .post(`${API_URL}/getBanks`, { token })
       .then(res => {
         if (res.status == 200) {
-          this.setState({ loading: false, banks: res.data.banks });
+          this.setState({
+            loading: false,
+            banks: res.data.banks,
+            banksforfilter: res.data.banks,
+          });
         }
       })
       .catch(err => {
@@ -622,13 +637,13 @@ export default class BankPage extends Component {
 
               {this.state.permissions == 'all' ||
               this.state.permissions.create_bank ? (
-                <Button className="addBankButton" flex onClick={this.showPopup}>
-                  <i className="material-icons">add</i>
-                  <span>
-                    <FormattedMessage {...messages.addbank} />
-                  </span>
-                </Button>
-              ) : null}
+                  <Button className="addBankButton" flex onClick={this.showPopup}>
+                    <i className="material-icons">add</i>
+                    <span>
+                      <FormattedMessage {...messages.addbank} />
+                    </span>
+                  </Button>
+                ) : null}
             </ActionBar>
             <Card bigPadding>
               <div className="cardHeader">
@@ -672,49 +687,48 @@ export default class BankPage extends Component {
                   <tbody>
                     {this.state.banks && this.state.banks.length > 0
                       ? this.state.banks.map(function(b) {
-
-                          return (
-                            <tr key={b._id}>
-                              <td>
+                        return (
+                          <tr key={b._id}>
+                            <td>
                               <img
                                 style={{ height: '40px' }}
                                 src={`${STATIC_URL}${b.logo}`}
                               />
                             </td>
-                              {/* <td><img src={b.logo} /></td> */}
-                              <td>{b.name}</td>
-                              <td className="tac">{b.total_branches}</td>
-                              <td className="tac">{b.total_partners}</td>
-                              <td className="tac">{b.total_cashiers}</td>
-                              <td className="tac bold">
-                                {b.total_trans}
-                                {b.status != 0 ? (
-                                  <span className="absoluteRight primary popMenuTrigger">
-                                    <i className="material-icons ">more_vert</i>
-                                    <div className="popMenu">
-                                      {perms == 'all' || perms.edit_bank ? (
-                                        <span
-                                          onClick={() => ep.showEditPopup(b)}
-                                        >
+                            {/* <td><img src={b.logo} /></td> */}
+                            <td>{b.name}</td>
+                            <td className="tac">{b.total_branches}</td>
+                            <td className="tac">{b.total_partners}</td>
+                            <td className="tac">{b.total_cashiers}</td>
+                            <td className="tac bold">
+                              {b.total_trans}
+                              {b.status != 0 ? (
+                                <span className="absoluteRight primary popMenuTrigger">
+                                  <i className="material-icons ">more_vert</i>
+                                  <div className="popMenu">
+                                    {perms == 'all' || perms.edit_bank ? (
+                                      <span
+                                        onClick={() => ep.showEditPopup(b)}
+                                      >
                                           Edit
-                                        </span>
-                                      ) : null}
-                                      <A href={`/info/${b._id}`}>
-                                        <FormattedMessage {...messages.menu1} />
-                                      </A>
-                                      <A href={`/documents/${b._id}`}>
-                                        <FormattedMessage {...messages.menu2} />
-                                      </A>
-                                      <A href={`/fees/${b._id}`}>
-                                        <FormattedMessage {...messages.menu3} />
-                                      </A>
-                                      {b.status == -1 ? (
-                                        <span
-                                          onClick={() => ep.blockBank(b._id, 1)}
-                                        >
+                                      </span>
+                                    ) : null}
+                                    <A href={`/info/${b._id}`}>
+                                      <FormattedMessage {...messages.menu1} />
+                                    </A>
+                                    <A href={`/documents/${b._id}`}>
+                                      <FormattedMessage {...messages.menu2} />
+                                    </A>
+                                    <A href={`/fees/${b._id}`}>
+                                      <FormattedMessage {...messages.menu3} />
+                                    </A>
+                                    {b.status == -1 ? (
+                                      <span
+                                        onClick={() => ep.blockBank(b._id, 1)}
+                                      >
                                           Unblock
-                                        </span>
-                                      ) : (
+                                      </span>
+                                    ) : (
                                         <span
                                           onClick={() =>
                                             ep.blockBank(b._id, -1)
@@ -723,17 +737,17 @@ export default class BankPage extends Component {
                                           Block
                                         </span>
                                       )}
-                                    </div>
-                                  </span>
-                                ) : (
+                                  </div>
+                                </span>
+                              ) : (
                                   <span className="absoluteRight primary popMenuTrigger">
                                     <i className="material-icons ">block</i>
                                   </span>
                                 )}
-                              </td>
-                            </tr>
-                          );
-                        })
+                            </td>
+                          </tr>
+                        );
+                      })
                       : null}
                   </tbody>
                 </Table>

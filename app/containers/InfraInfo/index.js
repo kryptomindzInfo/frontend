@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import TopBar from 'components/Header/TopBar';
@@ -33,6 +32,7 @@ import SelectInput from 'components/SelectInput';
 import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import messages from './messages';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
@@ -48,7 +48,7 @@ toast.configure({
 
 const token = localStorage.getItem('logged');
 
-var isAdmin = localStorage.getItem('isAdmin');
+const isAdmin = localStorage.getItem('isAdmin');
 
 export default class InfraInfo extends Component {
   constructor() {
@@ -100,7 +100,7 @@ export default class InfraInfo extends Component {
   };
 
   showPopup = () => {
-    //, name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id
+    // , name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id
     this.setState({ popup: true });
   };
 
@@ -197,7 +197,7 @@ export default class InfraInfo extends Component {
 
   countryChange = event => {
     const { value, name } = event.target;
-    const title = event.target.options[event.target.selectedIndex].title;
+    const { title } = event.target.options[event.target.selectedIndex];
 
     this.setState({
       [name]: value,
@@ -206,13 +206,13 @@ export default class InfraInfo extends Component {
   };
 
   startTimer = () => {
-    var dis = this;
+    const dis = this;
     var timer = setInterval(function() {
       if (dis.state.timer <= 0) {
         clearInterval(timer);
         dis.setState({ resend: true });
       } else {
-        var time = Number(dis.state.timer) - 1;
+        const time = Number(dis.state.timer) - 1;
         dis.setState({ timer: time });
       }
     }, 1000);
@@ -388,7 +388,7 @@ export default class InfraInfo extends Component {
         'content-type': 'multipart/form-data',
       },
     };
-    var method = 'fileUpload';
+    let method = 'fileUpload';
     if (key == 'contract') {
       method = 'ipfsUpload';
     }
@@ -419,7 +419,7 @@ export default class InfraInfo extends Component {
   getBanks = () => {
     axios
       .post(`${API_URL}/getBank`, {
-        token: token,
+        token,
         bank_id: this.props.match.params.bank,
       })
       .then(res => {
@@ -504,8 +504,8 @@ export default class InfraInfo extends Component {
         <TopBar>
           <Welcome infraNav />
           <Container>
-            <A href="/dashboard" float="left">
-              <div className="headerNavDash">Main Dashboard</div>
+            <A href="/banks" float="left">
+              <div className="headerNavDash">Back</div>
             </A>
             {/* <div className="bankLogo">
             <img src={STATIC_URL+this.state.logo}/>
@@ -548,18 +548,18 @@ export default class InfraInfo extends Component {
           <Main big>
             {this.state.permissions == 'all' ||
             this.state.permissions.create_fee ? (
-              <ActionBar
-                marginBottom="20px"
-                marginTop="33px"
-                paddingTop="20px"
-                inputWidth="calc(100% - 241px)"
-                className="clr"
-              >
-                <Button className="addBankButton" flex onClick={this.showPopup}>
-                  <span>Edit</span>
-                </Button>
-              </ActionBar>
-            ) : null}
+                <ActionBar
+                  marginBottom="20px"
+                  marginTop="33px"
+                  paddingTop="20px"
+                  inputWidth="calc(100% - 241px)"
+                  className="clr"
+                >
+                  <Button className="addBankButton" flex onClick={this.showPopup}>
+                    <span>Edit</span>
+                  </Button>
+                </ActionBar>
+              ) : null}
 
             <Card bigPadding bordered>
               <div className="cardBody">

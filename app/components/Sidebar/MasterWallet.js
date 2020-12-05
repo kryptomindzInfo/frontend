@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 import axios from 'axios';
 import Card from 'components/Card';
 import Popup from 'components/Popup';
@@ -12,6 +11,7 @@ import Button from 'components/Button';
 import A from 'components/A';
 
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
+import messages from './messages';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -57,6 +57,7 @@ class MasterWallet extends Component {
       [name]: value,
     });
   };
+
   sendMoney = e => {
     e.preventDefault();
 
@@ -129,12 +130,13 @@ class MasterWallet extends Component {
               this.setState(
                 {
                   balance: 900,
-                  notification:
-                    'Successfully Transfered' + res.data.walletStatus,
+                  notification: `Successfully Transfered${
+                    res.data.walletStatus
+                  }`,
                 },
                 function() {
                   this.success();
-                  //this.closePopup();
+                  // this.closePopup();
                 },
               );
             }
@@ -204,8 +206,21 @@ class MasterWallet extends Component {
 
   getBalance = () => {
     axios
-      .get(`${API_URL}/getInfraMasterBalance?bank=${this.props.historyLink}&token=${this.state.token}`)
+      // .get(`${API_URL}/getInfraMasterBalance?bank=${this.props.historyLink}&token=${this.state.token}`)
+      // .post(`${API_URL}/infra/getMyWalletBalance`, {
+      //   from: "master",
+      //   bank: `${this.props.historyLink}`,
+
+      // }, { Authorization: this.state.token }
+      // )
+      .get(
+        `${API_URL}/infra/getMyWalletBalance?bank=${
+          this.props.historyLink
+        }&from=master`,
+        { headers: { Authorization: this.state.token } },
+      )
       .then(res => {
+        console.log(res.data.balance);
         if (res.status == 200) {
           if (res.data.error) {
             throw res.data.error;
@@ -216,15 +231,14 @@ class MasterWallet extends Component {
           }
         }
       })
-      .catch(err => {
-   
-      });
+      .catch(err => {});
   };
+
   componentDidMount() {
     this.setState({
       bank: this.props.historyLink,
     });
-    let dis = this;
+    const dis = this;
     setInterval(function() {
       dis.getBalance();
     }, 10000);
@@ -250,9 +264,11 @@ class MasterWallet extends Component {
         <h5>
           <FormattedMessage {...messages.available} />
         </h5>
+        {/* {this.state.balance != undefined && */}
         <div className="cardValue">
           {CURRENCY} {this.state.balance.toFixed(2) || '-'}
         </div>
+        {/* } */}
         {this.props.activateNeeded ? (
           <button className="fullWidth">
             <FormattedMessage {...messages.activate} />
@@ -263,7 +279,7 @@ class MasterWallet extends Component {
             <FormattedMessage {...messages.sendmoney} />
           </button>
         )}
-        <A href={'/masterHistory/' + this.props.historyLink}>
+        <A href={`/masterHistory/${this.props.historyLink}`}>
           <span className="history">History</span>
         </A>
         {this.state.popup ? (

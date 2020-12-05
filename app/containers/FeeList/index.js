@@ -458,8 +458,8 @@ export default class FeeList extends Component {
         <TopBar>
           <Welcome infraNav />
           <Container>
-            <A href="/dashboard" float="left">
-              <div className="headerNavDash">Main Dashboard</div>
+            <A href="/banks" float="left">
+              <div className="headerNavDash">Back</div>
             </A>
             {/*   <div className="bankLogo">
             <img src={STATIC_URL+this.state.logo}/>
@@ -511,16 +511,16 @@ export default class FeeList extends Component {
               </div>
               {this.state.permissions == 'all' ||
               this.state.permissions.create_fee ? (
-                <Button
-                  style={{ display: 'none' }}
-                  className="addBankButton"
-                  flex
-                  onClick={this.showPopup}
-                >
-                  <i className="material-icons">add</i>
-                  <span>Create Rules</span>
-                </Button>
-              ) : null}
+                  <Button
+                    style={{ display: 'none' }}
+                    className="addBankButton"
+                    flex
+                    onClick={this.showPopup}
+                  >
+                    <i className="material-icons">add</i>
+                    <span>Create Rules</span>
+                  </Button>
+                ) : null}
             </ActionBar>
             <Card bigPadding>
               <div className="cardHeader">
@@ -545,26 +545,26 @@ export default class FeeList extends Component {
                   <tbody>
                     {this.state.rules && this.state.rules.length > 0
                       ? this.state.rules.map(b => {
-                          var r = b.revenue_sharing_rule.infra_share;
-                          return (
-                            <tr key={b._id}>
-                              <td>
-                                {b.status === 0 ? (
-                                  <span>{b.name}</span>
-                                ) : (
+                        var r = b.revenue_sharing_rule.infra_share;
+                        return (
+                          <tr key={b._id}>
+                            <td>
+                              {b.status === 0 ? (
+                                <span>{b.name}</span>
+                              ) : (
                                   <span>{b.name}</span>
                                 )}
-                              </td>
-                              <td className="tac">
-                                {b.status === 0 ? (
-                                  <span>{b.trans_type}</span>
-                                ) : (
+                            </td>
+                            <td className="tac">
+                              {b.status === 0 ? (
+                                <span>{b.trans_type}</span>
+                              ) : (
                                   <span>{b.trans_type}</span>
                                 )}
-                              </td>
-                              <td>
-                                <div>
-                                  {/* Count:{' '}
+                            </td>
+                            <td>
+                              <div>
+                                {/* Count:{' '}
                                       <span className="green">
                                         {v.trans_from} - {v.trans_to}
                                       </span>
@@ -572,12 +572,12 @@ export default class FeeList extends Component {
                                   Fixed:{' '}
                                 <span className="green">
                                   {`${CURRENCY} ${r.fixed}`}
-                                  </span>
+                                </span>
                                   , Percentage:{' '}
-                                  <span className="green">{r.percentage}</span>
-                                </div>
-                              </td>
-                              {/* <td className="tac bold">
+                                <span className="green">{r.percentage}</span>
+                              </div>
+                            </td>
+                            {/* <td className="tac bold">
                             {
                               b.status == 0 ?
                               <span className="material-icons">block</span>
@@ -587,25 +587,25 @@ export default class FeeList extends Component {
 
                             </td> */}
 
-                              <td className="tac bold">
-                                {b.status === 2 ? (
-                                  <Button
-                                    onClick={() => this.showMiniPopUp(b, r)}
-                                    className="addBankButton"
-                                  >
-                                    <span>Approve</span>
-                                  </Button>
-                                ) : b.status === 1 ? (
-                                  <span>Approved</span>
-                                ) : (
+                            <td className="tac bold">
+                              {b.status === 2 ? (
+                                <Button
+                                  onClick={() => this.showMiniPopUp(b, r)}
+                                  className="addBankButton"
+                                >
+                                  <span>Approve</span>
+                                </Button>
+                              ) : b.status === 1 ? (
+                                <span>Approved</span>
+                              ) : (
                                   <span>Declined</span>
-                                )
+                              )
                                 // <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
-                                }
-                              </td>
-                            </tr>
-                          );
-                        })
+                              }
+                            </td>
+                          </tr>
+                        );
+                      })
                       : null}
                   </tbody>
                 </Table>

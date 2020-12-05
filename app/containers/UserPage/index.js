@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import Header from 'components/Header';
@@ -33,6 +32,7 @@ import SelectInput from 'components/SelectInput';
 import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import messages from './messages';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
@@ -47,7 +47,7 @@ toast.configure({
   draggable: true,
 });
 
-var options = {
+const options = {
   First: false,
   Second: false,
   Third: true,
@@ -113,6 +113,11 @@ export default class UserPage extends Component {
 
   handleInputChange = event => {
     const { value, name } = event.target;
+    console.log(this.state.pro_description.length);
+    // if (event.target.name == "pro_description" && this.state.pro_description.length > 6) {
+    //   alert("only 250 character allowed")
+    // }
+
     this.setState({
       [name]: value,
     });
@@ -121,6 +126,7 @@ export default class UserPage extends Component {
   showPopup = () => {
     this.setState({ popup: true });
   };
+
   showEditPopup = v => {
     this.setState({
       editPopup: true,
@@ -137,7 +143,7 @@ export default class UserPage extends Component {
 
   showEditProfilePopup = v => {
     if (v.permissions && v.permissions != '') {
-      var p = JSON.parse(v.permissions);
+      const p = JSON.parse(v.permissions);
       console.log(p.edit_bank);
       if (p.create_bank) {
         this.setState({ create_bank: true });
@@ -163,6 +169,7 @@ export default class UserPage extends Component {
       profile_id: v._id,
     });
   };
+
   showProfilePopup = () => {
     this.setState({ profile_popup: true });
   };
@@ -344,7 +351,7 @@ export default class UserPage extends Component {
                 {
                   notification: 'Infra User updated successfully!',
                 },
-                function() {
+                function () {
                   this.success();
                   this.closePopup();
                   this.getUsers();
@@ -620,7 +627,7 @@ export default class UserPage extends Component {
   };
 
   checkBtn = event => {
-    const target = event.target;
+    const { target } = event;
     const tid = target.getAttribute('data-id');
     if (target.classList.contains('active')) {
       target.classList.remove('active');
@@ -697,14 +704,14 @@ export default class UserPage extends Component {
                           Create Your User Profile First
                         </h2>
                       ) : (
-                        <h2 className="fl m0">Create Your First Infra User</h2>
-                      )
+                          <h2 className="fl m0">Create Your First Infra User</h2>
+                        )
                     ) : (
-                      <div className="iconedInput fl">
-                        <i className="material-icons">search</i>
-                        <input type="text" placeholder="Search Infra User" />
-                      </div>
-                    )}
+                        <div className="iconedInput fl">
+                          <i className="material-icons">search</i>
+                          <input type="text" placeholder="Search Infra User" />
+                        </div>
+                      )}
 
                     <Button
                       className="addBankButton"
@@ -717,40 +724,40 @@ export default class UserPage extends Component {
                   </ActionBar>
                   <div className="cardBody clr">
                     {this.state.users && this.state.users.length > 0
-                      ? this.state.users.map(function(b) {
-                          if (!b.isAdmin) {
-                            var pic =
-                              b.logo && b.logo != '' && b.logo != undefined
-                                ? STATIC_URL + b.logo
-                                : CONTRACT_URL + 'main/default-profile.png';
-                            return (
-                              <Card
-                                key={b._id}
-                                col
-                                horizontalMargin="10px"
-                                cardWidth="192px"
-                              >
-                                <div className="profile">
-                                  <img src={pic} />
-                                </div>
-                                <Row>
-                                  <Col cW="80%">
-                                    <h4 className="hh">{b.name}</h4>
-                                  </Col>
-                                  <Col cW="20%">
-                                    <Button
-                                      noMin
-                                      className="fr"
-                                      onClick={() => ep.showEditPopup(b)}
-                                    >
-                                      Edit
+                      ? this.state.users.map(function (b) {
+                        if (!b.isAdmin) {
+                          const pic =
+                            b.logo && b.logo != '' && b.logo != undefined
+                              ? STATIC_URL + b.logo
+                              : `${CONTRACT_URL}main/default-profile.png`;
+                          return (
+                            <Card
+                              key={b._id}
+                              col
+                              horizontalMargin="10px"
+                              cardWidth="192px"
+                            >
+                              <div className="profile">
+                                <img src={pic} />
+                              </div>
+                              <Row>
+                                <Col cW="80%">
+                                  <h4 className="hh">{b.name}</h4>
+                                </Col>
+                                <Col cW="20%">
+                                  <Button
+                                    noMin
+                                    className="fr"
+                                    onClick={() => ep.showEditPopup(b)}
+                                  >
+                                    Edit
                                     </Button>
-                                  </Col>
-                                </Row>
-                              </Card>
-                            );
-                          }
-                        })
+                                </Col>
+                              </Row>
+                            </Card>
+                          );
+                        }
+                      })
                       : null}
                   </div>
                 </div>
@@ -781,47 +788,48 @@ export default class UserPage extends Component {
                             <th>Name</th>
                             <th>Description</th>
                             <th>Roles</th>
+                            <th>Action</th>
                             <th />
                           </tr>
                         </thead>
                         <tbody>
                           {this.state.roles && this.state.roles.length > 0
-                            ? this.state.roles.map(function(b) {
-                                var perms = [];
-                                if (b.permissions && b.permissions != '') {
-                                  var p = JSON.parse(b.permissions);
-                                  console.log(p);
-                                  if (p.create_bank) {
-                                    perms.push('Create Bank');
-                                  }
-                                  if (p.edit_bank) {
-                                    perms.push('Edit Bank');
-                                  }
-                                  if (p.create_fee) {
-                                    perms.push('Create Fee');
-                                  }
+                            ? this.state.roles.map(function (b) {
+                              let perms = [];
+                              if (b.permissions && b.permissions != '') {
+                                var p = JSON.parse(b.permissions);
+                                console.log(p);
+                                if (p.create_bank) {
+                                  perms.push('Create Bank');
                                 }
-                                return (
-                                  <tr key={b._id}>
-                                    <td>{b.name}</td>
-                                    <td className="tac">{b.description}</td>
-                                    <td className="tac green">
-                                      {perms.toString()}
-                                    </td>
-                                    <td className="tac bold">
-                                      <span className="absoluteRight primary popMenuTrigger">
-                                        <a
-                                          onClick={() =>
-                                            ep.showEditProfilePopup(b)
-                                          }
-                                        >
-                                          Edit
+                                if (p.edit_bank) {
+                                  perms.push('Edit Bank');
+                                }
+                                if (p.create_fee) {
+                                  perms.push('Create Fee');
+                                }
+                              }
+                              return (
+                                <tr key={b._id}>
+                                  <td>{b.name}</td>
+                                  <td className="tac">{b.description}</td>
+                                  <td className="tac green">
+                                    {perms.toString()}
+                                  </td>
+                                  <td className="tac bold">
+                                    <span className="">
+                                      <a
+                                        onClick={() =>
+                                          ep.showEditProfilePopup(b)
+                                        }
+                                      >
+                                        Edit
                                         </a>
-                                      </span>
-                                    </td>
-                                  </tr>
-                                );
-                              })
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })
                             : null}
                         </tbody>
                       </Table>
@@ -862,166 +870,166 @@ export default class UserPage extends Component {
                 </form>
               </div>
             ) : (
-              <div>
-                <h1>Create Infra User</h1>
-                <form action="" method="post" onSubmit={this.addBank}>
-                  <FormGroup>
-                    <label>
-                      <FormattedMessage {...messages.popup1} />*
+                <div>
+                  <h1>Create Infra User</h1>
+                  <form action="" method="post" onSubmit={this.addBank}>
+                    <FormGroup>
+                      <label>
+                        <FormattedMessage {...messages.popup1} />*
                     </label>
-                    <TextInput
-                      type="text"
-                      name="name"
-                      pattern=".{4,12}"
-                      title="Minimum 4 characters"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.name}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <label>Email*</label>
-                    <TextInput
-                      type="email"
-                      name="email"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.email}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                      <TextInput
+                        type="text"
+                        name="name"
+                        pattern=".{4,12}"
+                        title="Minimum 4 characters"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.name}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <label>Email*</label>
+                      <TextInput
+                        type="email"
+                        name="email"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.email}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <FormGroup>
-                    <label>Mobile Number*</label>
-                    <TextInput
-                      type="text"
-                      pattern="[0-9]{10}"
-                      title="10 Digit numeric value"
-                      name="mobile"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.mobile}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                    <FormGroup>
+                      <label>Mobile Number*</label>
+                      <TextInput
+                        type="text"
+                        pattern="[0-9]{10}"
+                        title="10 Digit numeric value"
+                        name="mobile"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.mobile}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <FormGroup>
-                    <label>User Id*</label>
-                    <TextInput
-                      id="username"
-                      type="text"
-                      name="username"
-                      pattern="(^[a-z][a-z0-9._-]{3,19}$)"
-                      // pattern=".{4,8}"
-                      // title="Minimum 4 Characters"
-                      onInput={e => e.target.setCustomValidity('')}
-                      onInvalid={e =>
-                        e.target.setCustomValidity(
-                          'Username must be minimum 4 characters, should start with an alphabet, can contain number and special character(-_.)',
-                        )
-                      }
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.username.trim().toLowerCase()}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                    <FormGroup>
+                      <label>User Id*</label>
+                      <TextInput
+                        id="username"
+                        type="text"
+                        name="username"
+                        pattern="(^[a-z][a-z0-9._-]{3,19}$)"
+                        // pattern=".{4,8}"
+                        // title="Minimum 4 Characters"
+                        onInput={e => e.target.setCustomValidity('')}
+                        onInvalid={e =>
+                          e.target.setCustomValidity(
+                            'Username must be minimum 4 characters, should start with an alphabet, can contain number and special character(-_.)',
+                          )
+                        }
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.username.trim().toLowerCase()}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <FormGroup>
-                    <label>Temporary Password*</label>
-                    <TextInput
-                      type="password"
-                      pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{8,16})"
-                      title="Minimum 8 Alphanumeric Characters"
-                      name="password"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.password}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                    <FormGroup>
+                      <label>Temporary Password*</label>
+                      <TextInput
+                        type="password"
+                        pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{8,16})"
+                        title="Minimum 8 Alphanumeric Characters"
+                        name="password"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.password}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <FormGroup>
-                    <SelectInput
-                      type="text"
-                      name="profile_id"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.profile_id}
-                      onChange={this.handleInputChange}
-                      required
-                    >
-                      <option value="">Select Profile*</option>
-                      {this.state.roles && this.state.roles.length > 0
-                        ? this.state.roles.map(function(b) {
+                    <FormGroup>
+                      <SelectInput
+                        type="text"
+                        name="profile_id"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.profile_id}
+                        onChange={this.handleInputChange}
+                        required
+                      >
+                        <option value="">Select Profile*</option>
+                        {this.state.roles && this.state.roles.length > 0
+                          ? this.state.roles.map(function (b) {
                             return <option value={b._id}>{b.name}</option>;
                           })
-                        : null}
-                    </SelectInput>
-                  </FormGroup>
+                          : null}
+                      </SelectInput>
+                    </FormGroup>
 
-                  <FormGroup>
-                    {/* <UploadedFile>
+                    <FormGroup>
+                      {/* <UploadedFile>
 
                       <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
                     </UploadedFile>
                   : */}
-                    <UploadArea bgImg={STATIC_URL + this.state.logo}>
-                      {this.state.logo ? (
-                        <a
-                          className="uploadedImg"
-                          href={STATIC_URL + this.state.logo}
-                          target="_BLANK"
-                        />
-                      ) : (
-                        ' '
-                      )}
-                      <div
-                        className="uploadTrigger"
-                        onClick={() => this.triggerBrowse('logo')}
-                      >
-                        <input
-                          type="file"
-                          id="logo"
-                          onChange={this.onChange}
-                          data-key="logo"
-                          accept="image/jpeg, image/png, image/jpg"
-                        />
-                        {!this.state.logo ? (
-                          <i className="material-icons">cloud_upload</i>
+                      <UploadArea bgImg={STATIC_URL + this.state.logo}>
+                        {this.state.logo ? (
+                          <a
+                            className="uploadedImg"
+                            href={STATIC_URL + this.state.logo}
+                            target="_BLANK"
+                          />
                         ) : (
-                          ' '
-                        )}
-                        <label>
-                          {!this.state.logo ? (
-                            <FormattedMessage {...messages.popup9} />
-                          ) : (
-                            <span>Change Logo</span>
+                            ' '
                           )}
+                        <div
+                          className="uploadTrigger"
+                          onClick={() => this.triggerBrowse('logo')}
+                        >
+                          <input
+                            type="file"
+                            id="logo"
+                            onChange={this.onChange}
+                            data-key="logo"
+                            accept="image/jpeg, image/png, image/jpg"
+                          />
+                          {!this.state.logo ? (
+                            <i className="material-icons">cloud_upload</i>
+                          ) : (
+                              ' '
+                            )}
+                          <label>
+                            {!this.state.logo ? (
+                              <FormattedMessage {...messages.popup9} />
+                            ) : (
+                                <span>Change Logo</span>
+                              )}
                           *
                         </label>
-                      </div>
-                    </UploadArea>
-                  </FormGroup>
+                        </div>
+                      </UploadArea>
+                    </FormGroup>
 
-                  {this.state.addUserLoading ? (
-                    <Button filledBtn marginTop="50px" disabled>
-                      <Loader />
-                    </Button>
-                  ) : (
-                    <Button filledBtn marginTop="50px">
-                      <span>Add User</span>
-                    </Button>
-                  )}
-                </form>
-              </div>
-            )}
+                    {this.state.addUserLoading ? (
+                      <Button filledBtn marginTop="50px" disabled>
+                        <Loader />
+                      </Button>
+                    ) : (
+                        <Button filledBtn marginTop="50px">
+                          <span>Add User</span>
+                        </Button>
+                      )}
+                  </form>
+                </div>
+              )}
           </Popup>
         ) : null}
 
@@ -1055,163 +1063,163 @@ export default class UserPage extends Component {
                 </form>
               </div>
             ) : (
-              <div>
-                <h1>Edit Infra User</h1>
-                <form action="" method="post" onSubmit={this.editUser}>
-                  <FormGroup>
-                    <label>
-                      <FormattedMessage {...messages.popup1} />*
+                <div>
+                  <h1>Edit Infra User</h1>
+                  <form action="" method="post" onSubmit={this.editUser}>
+                    <FormGroup>
+                      <label>
+                        <FormattedMessage {...messages.popup1} />*
                     </label>
-                    <TextInput
-                      type="text"
-                      name="name"
-                      pattern=".{8,}"
-                      title="Minimum 8 Characters"
-                      onFocus={inputFocus}
-                      autoFocus
-                      onBlur={inputBlur}
-                      value={this.state.name}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <label>Email*</label>
-                    <TextInput
-                      type="email"
-                      name="email"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      autoFocus
-                      value={this.state.email}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                      <TextInput
+                        type="text"
+                        name="name"
+                        pattern=".{8,}"
+                        title="Minimum 8 Characters"
+                        onFocus={inputFocus}
+                        autoFocus
+                        onBlur={inputBlur}
+                        value={this.state.name}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <label>Email*</label>
+                      <TextInput
+                        type="email"
+                        name="email"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        autoFocus
+                        value={this.state.email}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <FormGroup>
-                    <label>Mobile Number*</label>
-                    <TextInput
-                      type="text"
-                      pattern="[0-9]{10}"
-                      title="10 Digit numeric value"
-                      name="mobile"
-                      autoFocus
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.mobile}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                    <FormGroup>
+                      <label>Mobile Number*</label>
+                      <TextInput
+                        type="text"
+                        pattern="[0-9]{10}"
+                        title="10 Digit numeric value"
+                        name="mobile"
+                        autoFocus
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.mobile}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <FormGroup>
-                    <label>User Id*</label>
-                    <TextInput
-                      type="text"
-                      pattern=".{8,}"
-                      title="Minimum 8 Characters"
-                      name="username"
-                      onFocus={inputFocus}
-                      autoFocus
-                      onBlur={inputBlur}
-                      value={this.state.username}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                    <FormGroup>
+                      <label>User Id*</label>
+                      <TextInput
+                        type="text"
+                        pattern=".{8,}"
+                        title="Minimum 8 Characters"
+                        name="username"
+                        onFocus={inputFocus}
+                        autoFocus
+                        onBlur={inputBlur}
+                        value={this.state.username}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <FormGroup>
-                    <label>Temporary Password*</label>
-                    <TextInput
-                      type="password"
-                      pattern=".{8,}"
-                      title="Minimum 8 Characters"
-                      name="password"
-                      onFocus={inputFocus}
-                      autoFocus
-                      onBlur={inputBlur}
-                      value={this.state.password}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                    <FormGroup>
+                      <label>Temporary Password*</label>
+                      <TextInput
+                        type="password"
+                        pattern=".{8,}"
+                        title="Minimum 8 Characters"
+                        name="password"
+                        onFocus={inputFocus}
+                        autoFocus
+                        onBlur={inputBlur}
+                        value={this.state.password}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <FormGroup>
-                    <SelectInput
-                      type="text"
-                      name="profile_id"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.profile_id}
-                      onChange={this.handleInputChange}
-                      required
-                    >
-                      <option value="">Select Profile*</option>
-                      {this.state.roles && this.state.roles.length > 0
-                        ? this.state.roles.map(function(b) {
+                    <FormGroup>
+                      <SelectInput
+                        type="text"
+                        name="profile_id"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.profile_id}
+                        onChange={this.handleInputChange}
+                        required
+                      >
+                        <option value="">Select Profile*</option>
+                        {this.state.roles && this.state.roles.length > 0
+                          ? this.state.roles.map(function (b) {
                             return <option value={b._id}>{b.name}</option>;
                           })
-                        : null}
-                    </SelectInput>
-                  </FormGroup>
+                          : null}
+                      </SelectInput>
+                    </FormGroup>
 
-                  <FormGroup>
-                    {/* <UploadedFile>
+                    <FormGroup>
+                      {/* <UploadedFile>
 
                       <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
                     </UploadedFile>
                   : */}
-                    <UploadArea bgImg={STATIC_URL + this.state.logo}>
-                      {this.state.logo ? (
-                        <a
-                          className="uploadedImg"
-                          href={STATIC_URL + this.state.logo}
-                          target="_BLANK"
-                        />
-                      ) : (
-                        ' '
-                      )}
-                      <div
-                        className="uploadTrigger"
-                        onClick={() => this.triggerBrowse('logo')}
-                      >
-                        <input
-                          type="file"
-                          id="logo"
-                          onChange={this.onChange}
-                          data-key="logo"
-                          accept="image/jpeg, image/png, image/jpg"
-                        />
-                        {!this.state.logo ? (
-                          <i className="material-icons">cloud_upload</i>
+                      <UploadArea bgImg={STATIC_URL + this.state.logo}>
+                        {this.state.logo ? (
+                          <a
+                            className="uploadedImg"
+                            href={STATIC_URL + this.state.logo}
+                            target="_BLANK"
+                          />
                         ) : (
-                          ' '
-                        )}
-                        <label>
-                          {this.state.logo == '' ? (
-                            <FormattedMessage {...messages.popup9} />
-                          ) : (
-                            <span>Change Logo</span>
+                            ' '
                           )}
+                        <div
+                          className="uploadTrigger"
+                          onClick={() => this.triggerBrowse('logo')}
+                        >
+                          <input
+                            type="file"
+                            id="logo"
+                            onChange={this.onChange}
+                            data-key="logo"
+                            accept="image/jpeg, image/png, image/jpg"
+                          />
+                          {!this.state.logo ? (
+                            <i className="material-icons">cloud_upload</i>
+                          ) : (
+                              ' '
+                            )}
+                          <label>
+                            {this.state.logo == '' ? (
+                              <FormattedMessage {...messages.popup9} />
+                            ) : (
+                                <span>Change Logo</span>
+                              )}
                           *
                         </label>
-                      </div>
-                    </UploadArea>
-                  </FormGroup>
+                        </div>
+                      </UploadArea>
+                    </FormGroup>
 
-                  {this.state.editUserLoading ? (
-                    <Button filledBtn marginTop="50px" disabled>
-                      <Loader />
-                    </Button>
-                  ) : (
-                    <Button filledBtn marginTop="50px">
-                      <span>Update User</span>
-                    </Button>
-                  )}
-                </form>
-              </div>
-            )}
+                    {this.state.editUserLoading ? (
+                      <Button filledBtn marginTop="50px" disabled>
+                        <Loader />
+                      </Button>
+                    ) : (
+                        <Button filledBtn marginTop="50px">
+                          <span>Update User</span>
+                        </Button>
+                      )}
+                  </form>
+                </div>
+              )}
           </Popup>
         ) : null}
 
@@ -1240,6 +1248,7 @@ export default class UserPage extends Component {
                   onBlur={inputBlur}
                   value={this.state.pro_description}
                   onChange={this.handleInputChange}
+                  maxLength="250"
                   required
                 />
               </FormGroup>
@@ -1265,7 +1274,7 @@ export default class UserPage extends Component {
                     Edit Bank
                   </Button>
                 </Col>
-                <Col cW="33%">
+                {/* <Col cW="33%">
                   <Button
                     type="button"
                     className="toggle"
@@ -1274,7 +1283,7 @@ export default class UserPage extends Component {
                   >
                     Create Fee
                   </Button>
-                </Col>
+                </Col> */}
               </Row>
 
               {this.state.addProfileLoading ? (
@@ -1282,10 +1291,10 @@ export default class UserPage extends Component {
                   <Loader />
                 </Button>
               ) : (
-                <Button filledBtn marginTop="50px">
-                  <span>Add Profile</span>
-                </Button>
-              )}
+                  <Button filledBtn marginTop="50px">
+                    <span>Add Profile</span>
+                  </Button>
+                )}
             </form>
           </Popup>
         ) : null}
@@ -1325,9 +1334,8 @@ export default class UserPage extends Component {
                 <Col cW="33%">
                   <Button
                     type="button"
-                    className={
-                      'toggle ' + (this.state.create_bank ? 'active' : '')
-                    }
+                    className={`toggle ${this.state.create_bank ? 'active' : ''
+                      }`}
                     onClick={this.checkBtn}
                     data-id="create_bank"
                     id="edit_create_bank"
@@ -1338,9 +1346,7 @@ export default class UserPage extends Component {
                 <Col cW="33%">
                   <Button
                     type="button"
-                    className={
-                      'toggle ' + (this.state.edit_bank ? 'active' : '')
-                    }
+                    className={`toggle ${this.state.edit_bank ? 'active' : ''}`}
                     onClick={this.checkBtn}
                     data-id="edit_bank"
                     id="edit_edit_bank"
@@ -1348,7 +1354,7 @@ export default class UserPage extends Component {
                     Edit Bank
                   </Button>
                 </Col>
-                <Col cW="33%">
+                {/* <Col cW="33%">
                   <Button
                     type="button"
                     className={
@@ -1360,17 +1366,17 @@ export default class UserPage extends Component {
                   >
                     Create Fee
                   </Button>
-                </Col>
+                </Col> */}
               </Row>
               {this.editProfileLoading ? (
                 <Button filledBtn marginTop="50px" disabled>
                   <Loader />
                 </Button>
               ) : (
-                <Button filledBtn marginTop="50px">
-                  <span>Update Profile</span>
-                </Button>
-              )}
+                  <Button filledBtn marginTop="50px">
+                    <span>Update Profile</span>
+                  </Button>
+                )}
             </form>
           </Popup>
         ) : null}

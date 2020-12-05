@@ -8,7 +8,7 @@ import Button from 'components/Button';
 import Card from 'components/Card';
 import Table from 'components/Table';
 import Loader from '../../../components/Loader';
-import { STATIC_URL } from '../../App/constants';
+import { STATIC_URL, CONTRACT_URL } from '../../App/constants';
 import InfraCreateMerchantPopup from './InfraCreateMerchantPopup';
 import TopBar from '../../../components/Header/TopBar';
 import Welcome from '../../../components/Header/Welcome';
@@ -50,6 +50,7 @@ function InfraMerchantList(props) {
   useEffect(() => {
     getMerchantList();
   }, []); // Or [] if effect doesn't need props or state
+  console.log(merchantList);
 
   const merchants = merchantList.map(merchant => (
     <tr key={merchant._id}>
@@ -66,6 +67,15 @@ function InfraMerchantList(props) {
       <td className="tac">{merchant.amount_due}</td>
       <td className="tac">{merchant.fee_generated}</td>
       <td className="tac">
+        <a
+          href={`${CONTRACT_URL}${merchant.document_hash}`}
+          target="_blank"
+          style={{ fontSize: '15px' }}
+        >
+          View
+        </a>
+      </td>
+      <td className="tac">
         <div
           style={{
             display: 'flex',
@@ -79,13 +89,13 @@ function InfraMerchantList(props) {
           >
             <i className="material-icons ">more_vert</i>
             <div className="popMenu">
-            {merchant.creator === 1 ? (
-              <span
-                onClick={() => handleMerchantPopupClick('update', merchant)}
-              >
-                Edit
-              </span>
-            ) : null}
+              {merchant.creator === 1 ? (
+                <span
+                  onClick={() => handleMerchantPopupClick('update', merchant)}
+                >
+                  Edit
+                </span>
+              ) : null}
               <span
                 onClick={() => {
                   localStorage.setItem('selectedBankId', id);
@@ -103,24 +113,28 @@ function InfraMerchantList(props) {
               </span>
               <span
                 onClick={() => {
+                  console.log('click');
                   localStorage.setItem('selectedBankId', id);
                   localStorage.setItem(
                     'selectedMerchant',
                     JSON.stringify(merchant),
                   );
                   history.push({
-                    pathname: `/infra/merchant/inter-bank-fees/${this.props.merchantId}`,
+                    pathname: `/infra/merchant/inter-bank-fees/${
+                      this.props.merchantId
+                    }`,
                     state: merchant,
                   });
                 }}
               >
                 Inter Bank Sharing Rules
               </span>
-              {merchant.status === 2 ? (
+              {/* {merchant.status === 2 ? (
                 <span>Unblock</span>
               ) : (
-                <span>Block</span>
-              )}
+                  <span>Block</span>
+                )} */}
+              {merchant.status == 1 ? <span>Unblock</span> : <span>Block</span>}
             </div>
           </span>
         </div>
@@ -216,6 +230,7 @@ function InfraMerchantList(props) {
                     <th>Amount Collected</th>
                     <th>Amount Due</th>
                     <th>Fee Generated</th>
+                    <th>Document</th>
                     <th>Created By</th>
                   </tr>
                 </thead>
