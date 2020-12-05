@@ -220,7 +220,7 @@ export default class MasterHistory extends Component {
                   this.success();
                   let ba = this.state.bank;
                   let history = this.props.history;
-                  setTimeout(function() {
+                  setTimeout(function () {
                     history.push('/fees/' + ba);
                   }, 1000);
                 },
@@ -349,7 +349,7 @@ export default class MasterHistory extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   showHistory = () => {
@@ -392,7 +392,7 @@ export default class MasterHistory extends Component {
           );
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getHistoryTotal = () => {
@@ -410,7 +410,7 @@ export default class MasterHistory extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   filterData = e => {
@@ -428,7 +428,7 @@ export default class MasterHistory extends Component {
     if (token !== undefined && token !== null) {
       this.getBanks();
       let dis = this;
-      setInterval(function() {
+      setInterval(function () {
         dis.getHistory();
       }, 2000);
     } else {
@@ -584,20 +584,20 @@ export default class MasterHistory extends Component {
                 <Table marginTop="34px" smallTd>
                   <tbody>
                     {this.state.history && this.state.history.length > 0
-                      ? this.state.history.map(function(b) {
-                          var isoformat = b.Timestamp;
-                          var readable = new Date(isoformat);
-                          var m = readable.getMonth(); // returns 6
-                          var d = readable.getDay(); // returns 15
-                          var y = readable.getFullYear();
-                          var h = readable.getHours();
-                          var mi = readable.getMinutes();
-                          var mlong = months[m];
-                          var fulldate =
-                            d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+                      ? this.state.history.map(function (b) {
+                        var isoformat = b.Timestamp;
+                        var readable = new Date(isoformat);
+                        var m = readable.getMonth(); // returns 6
+                        var d = readable.getDay(); // returns 15
+                        var y = readable.getFullYear();
+                        var h = readable.getHours();
+                        var mi = readable.getMinutes();
+                        var mlong = months[m];
+                        var fulldate =
+                          d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
 
-                          return dis.state.filter == b.Value.tx_data.tx_type ||
-                            dis.state.filter == '' ? (
+                        return dis.state.filter == b.Value.tx_data.tx_type ||
+                          dis.state.filter == '' ? (
                             <tr key={b.TxId}>
                               <td>
                                 <div className="labelGrey">{fulldate}</div>
@@ -615,7 +615,7 @@ export default class MasterHistory extends Component {
                               </td>
                             </tr>
                           ) : null;
-                        })
+                      })
                       : null}
                   </tbody>
                 </Table>

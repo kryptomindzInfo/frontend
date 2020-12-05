@@ -35,6 +35,7 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
+import { postRequest, getRequest } from '../App/ApiCall';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -177,58 +178,39 @@ export default class BankUser extends Component {
     });
   };
 
-  verifyOTP = event => {
+  verifyOTP = async(event) => {
     event.preventDefault();
       this.setState({
         addUserLoading: true,
       });
-      axios
-        .post(`${API_URL}/addBankUser`, {
-          name: this.state.name,
-          email: this.state.email,
-          mobile: this.state.mobile,
-          username: this.state.username,
-          password: this.state.password,
-          ccode: this.state.ccode,
-          branch_id: this.state.branch_id,
-          logo: this.state.logo,
-          token,
-        })
-        .then(res => {
-          if (res.status == 200) {
-            if (res.data.error) {
-              throw res.data.error;
-            } else {
-              this.setState(
-                {
-                  notification: 'Bank User added successfully!',
-                },
-                () => {
-                  this.success();
-                  this.closePopup();
-                  this.getUsers();
-                },
-              );
-            }
-          } else {
-            const error = new Error(res.data.error);
-            throw error;
-          }
-          this.setState({
-            addUserLoading: false,
-          });
-        })
-        .catch(err => {
-          this.setState({
-            notification: err.response
-              ? err.response.data.error
-              : err.toString(),
-            addUserLoading: false,
-          });
-          this.error();
-        });
-    
-  };
+      const values = {
+        name: this.state.name,
+        email: this.state.email,
+        mobile: this.state.mobile,
+        username: this.state.username,
+        password: this.state.password,
+        ccode: this.state.ccode,
+        branch_id: this.state.branch_id,
+        logo: this.state.logo,
+      }
+      const res = await postRequest("addBankUser", token, values)
+      if(res.data.data.status === 0) {
+        toast.error(res.data.data.message);
+      } else {
+        
+        this.setState(
+          {
+            notification: 'Bank User added successfully!',
+          },
+          () => {
+            this.success();
+            this.closePopup();
+            this.getUsers();
+          },
+          );
+        }
+      };
+
 
   editUser = event => {
     event.preventDefault();
@@ -434,30 +416,22 @@ export default class BankUser extends Component {
       });
   }
 
-  getUsers = () => {
-    axios
-      .post(`${API_URL}/getBankUsers`, { token })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({ loading: false, users: res.data.users });
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  getUsers = async() => {
+    const res = await postRequest("getBankUsers", token, {})
+    if(res.data.data.status === 0) {
+      toast.error(res.data.data.message);
+    } else {
+      this.setState({ loading: false, users: res.data.data.users });
+    }
   };
 
-  getBranches = () => {
-    axios
-      .post(`${API_URL}/getBranches`, { token })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({ branches: res.data.branches });
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+  getBranches = async() => {
+    const res = await postRequest("getBranches", token, {})
+    if(res.data.data.status === 0) {
+      toast.error(res.data.data.message);
+    } else {
+      this.setState({ loading: false, branches: res.data.data.branches });
+    }
   };
 
   checkBtn = event => {

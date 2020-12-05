@@ -277,7 +277,7 @@ export default class Documents extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getRules = () => {
@@ -291,7 +291,7 @@ export default class Documents extends Component {
           this.setState({ rules: res.data.rules });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getDocs = () => {
@@ -305,7 +305,7 @@ export default class Documents extends Component {
           this.setState({ loading: false, docs: res.data.docs });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   componentDidMount() {
@@ -410,13 +410,13 @@ export default class Documents extends Component {
                 <h3>FILES</h3>
 
                 {this.state.docs && this.state.docs.length > 0
-                  ? this.state.docs.map(function(b) {
+                  ? this.state.docs.map(function (b) {
                     let filename = b.contract.replace(/^.*[\\\/]/, '');
                     const ext = b.contract.split('.').pop();
                     const icon =
-                        ext == 'pdf'
-                          ? `${STATIC_URL}main/pdf-icon.png`
-                          : `${STATIC_URL}main/pdf-icon.png`;
+                      ext == 'pdf'
+                        ? `${STATIC_URL}main/pdf-icon.png`
+                        : `${STATIC_URL}main/pdf-icon.png`;
                     let isoformat = b.created_at;
                     const readable = new Date(isoformat);
                     console.log(readable.getDate());
@@ -439,7 +439,7 @@ export default class Documents extends Component {
                         <a href={CONTRACT_URL + b.contract} target="_blank">
                           <div className="profile">
                             {/* <img src={icon} /> */}
-                            <i className="material-icons">file_copy</i>
+                            <i className="material-icons" style={{ fontSize: "40px", color: "black" }}>file_copy</i>
                           </div>
                           <h4 className="hhh">{filename}</h4>
                           <h4 className="hhhh">{fulldate}</h4>
@@ -482,223 +482,223 @@ export default class Documents extends Component {
                 </form>
               </div>
             ) : (
-              <div>
-                <h1>
-                  <FormattedMessage {...messages.addbank} />
-                </h1>
-                <form action="" method="post" onSubmit={this.addBank}>
-                  <FormGroup>
-                    <label>
-                      <FormattedMessage {...messages.popup1} />*
+                <div>
+                  <h1>
+                    <FormattedMessage {...messages.addbank} />
+                  </h1>
+                  <form action="" method="post" onSubmit={this.addBank}>
+                    <FormGroup>
+                      <label>
+                        <FormattedMessage {...messages.popup1} />*
                     </label>
-                    <TextInput
-                      type="text"
-                      name="name"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.name}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <label>
-                      <FormattedMessage {...messages.popup2} />*
+                      <TextInput
+                        type="text"
+                        name="name"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.name}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <label>
+                        <FormattedMessage {...messages.popup2} />*
                     </label>
-                    <TextInput
-                      type="text"
-                      name="address1"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.address1}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                      <TextInput
+                        type="text"
+                        name="address1"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.address1}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup3} />*
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup3} />*
                         </label>
-                        <TextInput
-                          type="text"
-                          name="state"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.state}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup4} />*
+                          <TextInput
+                            type="text"
+                            name="state"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.state}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup4} />*
                         </label>
-                        <TextInput
-                          type="text"
-                          name="zip"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.zip}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup5} />*
+                          <TextInput
+                            type="text"
+                            name="zip"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.zip}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup5} />*
                         </label>
-                        <TextInput
-                          type="text"
-                          name="country"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.country}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup6} />*
+                          <TextInput
+                            type="text"
+                            name="country"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.country}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup6} />*
                         </label>
-                        <TextInput
-                          type="text"
-                          name="ccode"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.ccode}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup7} />*
+                          <TextInput
+                            type="text"
+                            name="ccode"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.ccode}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup7} />*
                         </label>
-                        <TextInput
-                          type="text"
-                          name="mobile"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.mobile}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup8} />*
+                          <TextInput
+                            type="text"
+                            name="mobile"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.mobile}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup8} />*
                         </label>
-                        <TextInput
-                          type="text"
-                          name="email"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.email}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
+                          <TextInput
+                            type="text"
+                            name="email"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.email}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
 
-                  <FormGroup>
-                    {/* <UploadedFile>
+                    <FormGroup>
+                      {/* <UploadedFile>
                     
                       <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
                     </UploadedFile>
                   : */}
-                    <UploadArea bgImg={STATIC_URL + this.state.logo}>
-                      {this.state.logo ? (
-                        <a
-                          className="uploadedImg"
-                          href={STATIC_URL + this.state.logo}
-                          target="_BLANK"
-                        />
-                      ) : (
-                        ' '
-                      )}
-                      <div
-                        className="uploadTrigger"
-                        onClick={() => this.triggerBrowse('logo')}
-                      >
-                        <input
-                          type="file"
-                          id="logo"
-                          onChange={this.onChange}
-                          data-key="logo"
-                        />
-                        {!this.state.logo ? (
-                          <i className="material-icons">cloud_upload</i>
+                      <UploadArea bgImg={STATIC_URL + this.state.logo}>
+                        {this.state.logo ? (
+                          <a
+                            className="uploadedImg"
+                            href={STATIC_URL + this.state.logo}
+                            target="_BLANK"
+                          />
                         ) : (
-                          ' '
-                        )}
-                        <label>
-                          <FormattedMessage {...messages.popup9} /> *
+                            ' '
+                          )}
+                        <div
+                          className="uploadTrigger"
+                          onClick={() => this.triggerBrowse('logo')}
+                        >
+                          <input
+                            type="file"
+                            id="logo"
+                            onChange={this.onChange}
+                            data-key="logo"
+                          />
+                          {!this.state.logo ? (
+                            <i className="material-icons">cloud_upload</i>
+                          ) : (
+                              ' '
+                            )}
+                          <label>
+                            <FormattedMessage {...messages.popup9} /> *
                         </label>
-                      </div>
-                    </UploadArea>
-                  </FormGroup>
+                        </div>
+                      </UploadArea>
+                    </FormGroup>
 
-                  <FormGroup>
-                    <UploadArea bgImg={`${STATIC_URL}main/pdf-icon.png`}>
-                      {this.state.contract ? (
-                        <a
-                          className="uploadedImg"
-                          href={CONTRACT_URL + this.state.contract}
-                          target="_BLANK"
-                        />
-                      ) : (
-                        ' '
-                      )}
-                      <div
-                        className="uploadTrigger"
-                        onClick={() => this.triggerBrowse('contract')}
-                      >
-                        <input
-                          type="file"
-                          id="contract"
-                          onChange={this.onChange}
-                          data-key="contract"
-                        />
-                        {!this.state.contract ? (
-                          <i className="material-icons">cloud_upload</i>
+                    <FormGroup>
+                      <UploadArea bgImg={`${STATIC_URL}main/pdf-icon.png`}>
+                        {this.state.contract ? (
+                          <a
+                            className="uploadedImg"
+                            href={CONTRACT_URL + this.state.contract}
+                            target="_BLANK"
+                          />
                         ) : (
-                          ' '
-                        )}
+                            ' '
+                          )}
+                        <div
+                          className="uploadTrigger"
+                          onClick={() => this.triggerBrowse('contract')}
+                        >
+                          <input
+                            type="file"
+                            id="contract"
+                            onChange={this.onChange}
+                            data-key="contract"
+                          />
+                          {!this.state.contract ? (
+                            <i className="material-icons">cloud_upload</i>
+                          ) : (
+                              ' '
+                            )}
 
-                        <label>
-                          <FormattedMessage {...messages.popup10} /> *
+                          <label>
+                            <FormattedMessage {...messages.popup10} /> *
                         </label>
-                      </div>
-                    </UploadArea>
-                  </FormGroup>
+                        </div>
+                      </UploadArea>
+                    </FormGroup>
 
-                  <Button filledBtn marginTop="50px">
-                    <span>
-                      <FormattedMessage {...messages.addbank} />
-                    </span>
-                  </Button>
-                </form>
-              </div>
-            )}
+                    <Button filledBtn marginTop="50px">
+                      <span>
+                        <FormattedMessage {...messages.addbank} />
+                      </span>
+                    </Button>
+                  </form>
+                </div>
+              )}
           </Popup>
         ) : null}
       </Wrapper>

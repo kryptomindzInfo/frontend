@@ -29,6 +29,7 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
 import Loader from 'components/Loader';
+import { postRequest, getRequest } from '../App/ApiCall';
 
 
 import { API_URL } from '../App/constants';
@@ -42,7 +43,7 @@ toast.configure({
   pauseOnHover: true,
   draggable: true,
 });
-
+const token = localStorage.getItem('bankLogged');
 export default class BankLoginPage extends Component {
   constructor() {
     super();
@@ -69,55 +70,41 @@ export default class BankLoginPage extends Component {
     });
   };
 
-  loginRequest = event => {
+  loginRequest = async(event) => {
     event.preventDefault();
     this.setState({
       loginLoading: true,
-    }, () => {
-      axios
-        .post(`${API_URL}/bankLogin`, this.state)
-        .then(res => {
-          if (res.status == 200) {
-            console.log(res.data.token);
-            console.log(res.data.initial_setup);
-            localStorage.setItem('bankLogged', res.data.token);
-            localStorage.setItem('bankName', res.data.name);
-            localStorage.setItem('bankUserName', res.data.username);
-            localStorage.setItem('bankContract', res.data.contract);
-            localStorage.setItem('bankLogo', res.data.logo);
-            localStorage.setItem('bankId', res.data.id);
-            localStorage.setItem('bankPhone', res.data.mobile);
+    }, async() => {
+      const res = await postRequest("bankLogin", token, this.state)
+      if(res.data.data.status === 0) {
+        toast.error(res.data.data.message);
+      } else {
+            localStorage.setItem('bankLogged', res.data.data.token);
+            localStorage.setItem('bankName', res.data.data.name);
+            localStorage.setItem('bankUserName', res.data.data.username);
+            localStorage.setItem('bankContract', res.data.data.contract);
+            localStorage.setItem('bankLogo', res.data.data.logo);
+            localStorage.setItem('bankId', res.data.data.id);
+            localStorage.setItem('bankPhone', res.data.data.mobile);
             console.log(localStorage.getItem('bankLogged'));
             console.log(res);
-            if(res.data.status == 0 && res.data.message === "Incorrect username or password") {
-              throw res.data.message;
+            if(res.data.data.status == 0 && res.data.data.message === "Incorrect username or password") {
+              throw res.data.data.message;
             }
-            else if (!res.data.initial_setup) {
+            else if (!res.data.data.initial_setup) {
               window.location.href ='/bank/setup';
-              console.log(res.data.initial_setup);
             }
             else if (
-              !res.data.status ||
-              res.data.status == 0 ||
-              res.data.status == ''
+              !res.data.data.status ||
+              res.data.data.status == 0 ||
+              res.data.data.status == ''
             ) {
               window.location.href ='/bank/activate';
             } else {
               window.location.href ='/bank/dashboard';
             }
-          } else {
-            throw res.data.error;
 
-          }
-
-        })
-        .catch(err => {
-          this.setState({
-            notification: err.res ? err.res.data.error : err.toString(),
-            loginLoading: false,
-          });
-          this.error();
-        });
+        }
     });
 
   };

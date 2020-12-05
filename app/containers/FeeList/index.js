@@ -35,6 +35,7 @@ import MiniPopUp from 'components/MiniPopUp';
 import messages from './messages';
 
 import { API_URL, CURRENCY, STATIC_URL } from '../App/constants';
+import { postRequest, getRequest } from '../App/ApiCall';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -80,9 +81,6 @@ export default class FeeList extends Component {
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
-
-    this.onChange = this.onChange.bind(this);
-    this.fileUpload = this.fileUpload.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -99,12 +97,10 @@ export default class FeeList extends Component {
   };
 
   showPopup = () => {
-    // this.setState({ popup: true });
     this.props.history.push(`/createfee/${this.props.match.params.bank}`);
   };
 
   goEdit = (a, b) => {
-    // this.setState({ popup: true });
     localStorage.setItem('feeid', b);
     this.props.history.push(`/editfee/${a}`);
   };
@@ -146,158 +142,22 @@ export default class FeeList extends Component {
     // });
   };
 
-  addBank = event => {
-    event.preventDefault();
-    axios
-      .post(`${API_URL}/generateOTP`, {
-        name: this.state.name,
-        mobile: this.state.mobile,
-        page: 'addBank',
-        token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              showOtp: true,
-              notification: 'OTP Sent',
-            });
-            this.success();
-          }
-        } else {
-          const error = new Error(res.data.error);
-          throw error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
-  };
-
-  verifyOTP = event => {
-    event.preventDefault();
-    axios
-      .post(`${API_URL}/addBank`, {
-        name: this.state.name,
-        address1: this.state.address1,
-        state: this.state.state,
-        zip: this.state.zip,
-        country: this.state.country,
-        ccode: this.state.ccode,
-        email: this.state.email,
-        mobile: this.state.mobile,
-        logo: this.state.logo,
-        contract: this.state.contract,
-        otp: this.state.otp,
-        token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              notification: 'Bank added successfully!',
-            });
-            this.success();
-            this.closePopup();
-            this.getBanks();
-          }
-        } else {
-          const error = new Error(res.data.error);
-          throw error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
-  };
-
-  removeFile = key => {
-    this.setState({
-      [key]: null,
-    });
-  };
-
-  triggerBrowse = inp => {
-    const input = document.getElementById(inp);
-    input.click();
-  };
-
-  onChange(e) {
-    if (e.target.files && e.target.files[0] != null) {
-      this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
+  getBanks = async () => {
+    const res = await postRequest("getBank", token, { bank_id: this.props.match.params.bank })
+    if (res.data.data.status === 0) {
+      toast.error(res.data.data.message);
+    } else {
+      this.setState({ banks: res.data.data.banks, logo: res.data.data.banks.logo });
     }
-  }
-
-  fileUpload(file, key) {
-    const formData = new FormData();
-    //  formData.append('token',token);
-    formData.append('file', file);
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data',
-      },
-    };
-
-    axios
-      .post(`${API_URL}/fileUpload?token=${token}`, formData, config)
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              [key]: res.data.name,
-            });
-          }
-        } else {
-          throw res.data.error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
-  }
-
-  getBanks = () => {
-    axios
-      .post(`${API_URL}/getBank`, {
-        token,
-        bank_id: this.props.match.params.bank,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res.data);
-          this.setState({ banks: res.data.banks, logo: res.data.banks.logo });
-        }
-      })
-      .catch(err => {});
   };
 
-  getRules = () => {
-    axios
-      .post(`${API_URL}/getRules`, {
-        token,
-        bank_id: this.props.match.params.bank,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({ loading: false, rules: res.data.rules });
-        }
-      })
-      .catch(err => {});
+  getRules = async () => {
+    const res = await postRequest("getRules", token, { bank_id: this.props.match.params.bank })
+    if (res.data.data.status === 0) {
+      toast.error(res.data.data.message);
+    } else {
+      this.setState({ loading: false, rules: res.data.data.rules });
+    }
   };
 
   componentDidMount() {
@@ -310,7 +170,7 @@ export default class FeeList extends Component {
           .post(`${API_URL}/getPermission`, { token })
           .then(res => {
             if (res.status == 200) {
-              this.setState({ permissions: res.data.permissions }, () => {});
+              this.setState({ permissions: res.data.permissions }, () => { });
             }
           })
           .catch(err => {
@@ -461,11 +321,6 @@ export default class FeeList extends Component {
             <A href="/banks" float="left">
               <div className="headerNavDash">Back</div>
             </A>
-            {/*   <div className="bankLogo">
-            <img src={STATIC_URL+this.state.logo}/>
-              </div>
-
-    <h2>{this.state.banks.name}</h2> */}
           </Container>
         </TopBar>
         <Container verticalMargin>
@@ -510,7 +365,7 @@ export default class FeeList extends Component {
                 <input type="text" placeholder="Search Revenue Sharing Rule" />
               </div>
               {this.state.permissions == 'all' ||
-              this.state.permissions.create_fee ? (
+                this.state.permissions.create_fee ? (
                   <Button
                     style={{ display: 'none' }}
                     className="addBankButton"
@@ -564,12 +419,7 @@ export default class FeeList extends Component {
                             </td>
                             <td>
                               <div>
-                                {/* Count:{' '}
-                                      <span className="green">
-                                        {v.trans_from} - {v.trans_to}
-                                      </span>
-                                      ,  */}
-                                  Fixed:{' '}
+                                Fixed:{' '}
                                 <span className="green">
                                   {`${CURRENCY} ${r.fixed}`}
                                 </span>
@@ -577,16 +427,6 @@ export default class FeeList extends Component {
                                 <span className="green">{r.percentage}</span>
                               </div>
                             </td>
-                            {/* <td className="tac bold">
-                            {
-                              b.status == 0 ?
-                              <span className="material-icons">block</span>
-                              :
-                              <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
-                            }
-
-                            </td> */}
-
                             <td className="tac bold">
                               {b.status === 2 ? (
                                 <Button
@@ -598,9 +438,8 @@ export default class FeeList extends Component {
                               ) : b.status === 1 ? (
                                 <span>Approved</span>
                               ) : (
-                                  <span>Declined</span>
-                              )
-                                // <span onClick={ () => ep.goEdit(ep.state.bank, b._id)} className="pointer">Edit</span>
+                                    <span>Declined</span>
+                                  )
                               }
                             </td>
                           </tr>
@@ -644,330 +483,80 @@ export default class FeeList extends Component {
                 </form>
               </div>
             ) : (
-              <div>
-                <form>
-                  <p>
-                    <span id="popname">{this.state.popname}</span>
-                  </p>
-                  <p>
-                    {' '}
+                <div>
+                  <form>
+                    <p>
+                      <span id="popname">{this.state.popname}</span>
+                    </p>
+                    <p>
+                      {' '}
                     Sending from <span id="poptype">{this.state.poptype}</span>
-                  </p>
-                  <div>
-                    Fixed:{' '}
-                    <span className="green">
-                      {`${CURRENCY} ${this.state.html.fixed}`}
-                    </span>
+                    </p>
+                    <div>
+                      Fixed:{' '}
+                      <span className="green">
+                        {`${CURRENCY} ${this.state.html.fixed}`}
+                      </span>
                     , Percentage:{' '}
-                    <span className="green">{this.state.html.percentage}</span>
-                  </div>
+                      <span className="green">{this.state.html.percentage}</span>
+                    </div>
 
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        {this.state.declineLoading ? (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            accentedBtn
-                            onClick={this.decline}
-                            disabled
-                            type="button"
-                          >
-                            <Loader />
-                          </Button>
-                        ) : (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            accentedBtn
-                            onClick={this.decline}
-                            type="button"
-                          >
-                            <span>Decline</span>
-                          </Button>
-                        )}
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        {this.state.approveLoading ? (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            onClick={this.approve}
-                            disabled
-                            type="button"
-                          >
-                            <Loader />
-                          </Button>
-                        ) : (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            onClick={this.approve}
-                            type="button"
-                          >
-                            <span>Approve</span>
-                          </Button>
-                        )}
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </form>
-              </div>
-            )}
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          {this.state.declineLoading ? (
+                            <Button
+                              filledBtn
+                              marginTop="50px"
+                              accentedBtn
+                              onClick={this.decline}
+                              disabled
+                              type="button"
+                            >
+                              <Loader />
+                            </Button>
+                          ) : (
+                              <Button
+                                filledBtn
+                                marginTop="50px"
+                                accentedBtn
+                                onClick={this.decline}
+                                type="button"
+                              >
+                                <span>Decline</span>
+                              </Button>
+                            )}
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          {this.state.approveLoading ? (
+                            <Button
+                              filledBtn
+                              marginTop="50px"
+                              onClick={this.approve}
+                              disabled
+                              type="button"
+                            >
+                              <Loader />
+                            </Button>
+                          ) : (
+                              <Button
+                                filledBtn
+                                marginTop="50px"
+                                onClick={this.approve}
+                                type="button"
+                              >
+                                <span>Approve</span>
+                              </Button>
+                            )}
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </form>
+                </div>
+              )}
           </MiniPopUp>
-        ) : null}
-
-        {this.state.popup ? (
-          <Popup close={this.closePopup.bind(this)}>
-            {this.state.showOtp ? (
-              <div>
-                <h1>
-                  <FormattedMessage {...messages.verify} />
-                </h1>
-                <form action="" method="post" onSubmit={this.verifyOTP}>
-                  <FormGroup>
-                    <label>
-                      <FormattedMessage {...messages.otp} />*
-                    </label>
-                    <TextInput
-                      type="text"
-                      name="otp"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.otp}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  <Button filledBtn marginTop="50px">
-                    <span>
-                      <FormattedMessage {...messages.verify} />
-                    </span>
-                  </Button>
-                </form>
-              </div>
-            ) : (
-              <div>
-                <h1>
-                  <FormattedMessage {...messages.addbank} />
-                </h1>
-                <form action="" method="post" onSubmit={this.addBank}>
-                  <FormGroup>
-                    <label>
-                      <FormattedMessage {...messages.popup1} />*
-                    </label>
-                    <TextInput
-                      type="text"
-                      name="name"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.name}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <label>
-                      <FormattedMessage {...messages.popup2} />*
-                    </label>
-                    <TextInput
-                      type="text"
-                      name="address1"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.address1}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup3} />*
-                        </label>
-                        <TextInput
-                          type="text"
-                          name="state"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.state}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup4} />*
-                        </label>
-                        <TextInput
-                          type="text"
-                          name="zip"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.zip}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup5} />*
-                        </label>
-                        <TextInput
-                          type="text"
-                          name="country"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.country}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup6} />*
-                        </label>
-                        <TextInput
-                          type="text"
-                          name="ccode"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.ccode}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup7} />*
-                        </label>
-                        <TextInput
-                          type="text"
-                          name="mobile"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.mobile}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup8} />*
-                        </label>
-                        <TextInput
-                          type="text"
-                          name="email"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.email}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-
-                  <FormGroup>
-                    {/* <UploadedFile>
-
-                      <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
-                    </UploadedFile>
-                  : */}
-                    <UploadArea bgImg={STATIC_URL + this.state.logo}>
-                      {this.state.logo ? (
-                        <a
-                          className="uploadedImg"
-                          href={STATIC_URL + this.state.logo}
-                          target="_BLANK"
-                        />
-                      ) : (
-                        ' '
-                      )}
-                      <div
-                        className="uploadTrigger"
-                        onClick={() => this.triggerBrowse('logo')}
-                      >
-                        <input
-                          type="file"
-                          id="logo"
-                          onChange={this.onChange}
-                          data-key="logo"
-                        />
-                        {!this.state.logo ? (
-                          <i className="material-icons">cloud_upload</i>
-                        ) : (
-                          ' '
-                        )}
-                        <label>
-                          <FormattedMessage {...messages.popup9} /> *
-                        </label>
-                      </div>
-                    </UploadArea>
-                  </FormGroup>
-
-                  <FormGroup>
-                    <UploadArea bgImg={`${STATIC_URL}main/pdf-icon.png`}>
-                      {this.state.contract ? (
-                        <a
-                          className="uploadedImg"
-                          href={STATIC_URL + this.state.contract}
-                          target="_BLANK"
-                        />
-                      ) : (
-                        ' '
-                      )}
-                      <div
-                        className="uploadTrigger"
-                        onClick={() => this.triggerBrowse('contract')}
-                      >
-                        <input
-                          type="file"
-                          id="contract"
-                          onChange={this.onChange}
-                          data-key="contract"
-                        />
-                        {!this.state.contract ? (
-                          <i className="material-icons">cloud_upload</i>
-                        ) : (
-                          ' '
-                        )}
-
-                        <label>
-                          <FormattedMessage {...messages.popup10} /> *
-                        </label>
-                      </div>
-                    </UploadArea>
-                  </FormGroup>
-
-                  <Button filledBtn marginTop="50px">
-                    <span>
-                      <FormattedMessage {...messages.addbank} />
-                    </span>
-                  </Button>
-                </form>
-              </div>
-            )}
-          </Popup>
         ) : null}
       </Wrapper>
     );

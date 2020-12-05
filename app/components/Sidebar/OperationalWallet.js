@@ -12,6 +12,7 @@ import A from 'components/A';
 
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 import messages from './messages';
+import { postRequest, getRequest } from '../../containers/App/ApiCall';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -84,7 +85,7 @@ class OperationalWallet extends Component {
                     {
                       livefee: res.data.fee,
                     },
-                    function() {},
+                    function () { },
                   );
                 }
               }
@@ -137,31 +138,19 @@ class OperationalWallet extends Component {
     });
   };
 
-  getBalance = () => {
-    console.log(token);
-    axios
-      // .get(
-      //   `${API_URL}/getInfraOperationalBalance?bank=${this.props.historyLink}&token=${this.state.token}`,
-      // )
-      .get(
-        `${API_URL}/infra/getMyWalletBalance?bank=${
-          this.props.historyLink
-        }&from=operational`,
-        { headers: { Authorization: this.state.token } },
-      )
-      .then(res => {
-        console.log(res.data.balance);
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              balance: res.data.balance,
-            });
-          }
-        }
-      })
-      .catch(err => {});
+  getBalance = async () => {
+    const res = await getRequest(`infra/getWalletBalance?from=operational&bank=${this.props.historyLink}`, token, {})
+    console.log(res);
+    if (res.status == 200) {
+      if (res.data.error) {
+        throw res.data.error;
+      } else {
+        this.setState({
+          balance: res.data.balance,
+        });
+      }
+    }
+
   };
 
   submitMoney = e => {
@@ -172,7 +161,7 @@ class OperationalWallet extends Component {
         {
           notification: 'Insufficient Balance',
         },
-        function() {
+        function () {
           this.error();
         },
       );
@@ -181,7 +170,7 @@ class OperationalWallet extends Component {
         {
           notification: 'Invalid Amount',
         },
-        function() {
+        function () {
           this.error();
         },
       );
@@ -206,9 +195,9 @@ class OperationalWallet extends Component {
                   notification:
                     'Transfer Initiated, You will be notified once done',
                 },
-                function() {
+                function () {
                   this.success();
-                  setTimeout(function() {
+                  setTimeout(function () {
                     tis.closePopup();
                     // tis.getBalance();
                     // tis.props.reload();
@@ -238,7 +227,7 @@ class OperationalWallet extends Component {
     });
 
     const dis = this;
-    setInterval(function() {
+    setInterval(function () {
       dis.getBalance();
     }, 10000);
   }
@@ -274,11 +263,11 @@ class OperationalWallet extends Component {
             <FormattedMessage {...messages.activate} />
           </button>
         ) : (
-          <button className="sendMoneyButton" onClick={this.sendMoney}>
-            <i className="material-icons">send</i>{' '}
-            <FormattedMessage {...messages.sendmoney} />
-          </button>
-        )}
+            <button className="sendMoneyButton" onClick={this.sendMoney}>
+              <i className="material-icons">send</i>{' '}
+              <FormattedMessage {...messages.sendmoney} />
+            </button>
+          )}
         <A href={`/operationalHistory/${this.props.historyLink}`}>
           <span className="history">History</span>
         </A>

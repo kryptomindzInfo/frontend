@@ -298,7 +298,7 @@ export default class EditFee extends Component {
                   this.success();
                   const ba = this.state.bank;
                   const { history } = this.props;
-                  setTimeout(function() {
+                  setTimeout(function () {
                     history.push(`/fees/${ba}`);
                   }, 1000);
                 },
@@ -348,7 +348,7 @@ export default class EditFee extends Component {
                 this.success();
                 const ba = this.state.bank;
                 const { history } = this.props;
-                setTimeout(function() {
+                setTimeout(function () {
                   history.push(`/fees/${ba}`);
                 }, 1000);
               },
@@ -480,7 +480,7 @@ export default class EditFee extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getFees = () => {
@@ -504,7 +504,7 @@ export default class EditFee extends Component {
           );
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   componentDidMount() {
@@ -650,7 +650,7 @@ export default class EditFee extends Component {
                   </Row>
 
                   <H4>Transaction Count</H4>
-                  {this.state.ranges.map(function(v, i) {
+                  {this.state.ranges.map(function (v, i) {
                     return (
                       <Row key={i}>
                         <Col cW="20%" mR="2%">
@@ -670,20 +670,20 @@ export default class EditFee extends Component {
                                 required
                               />
                             ) : (
-                              <TextInput
-                                type="text"
-                                pattern="[0-9]{1,}"
-                                title="Greater than or equal to 0"
-                                name="trans_from"
-                                onFocus={inputFocus}
-                                onBlur={inputBlur}
-                                value={v.trans_from}
-                                onChange={dis.handleInputChange2}
-                                data-key={i}
-                                autoFocus
-                                required
-                              />
-                            )}
+                                <TextInput
+                                  type="text"
+                                  pattern="[0-9]{1,}"
+                                  title="Greater than or equal to 0"
+                                  name="trans_from"
+                                  onFocus={inputFocus}
+                                  onBlur={inputBlur}
+                                  value={v.trans_from}
+                                  onChange={dis.handleInputChange2}
+                                  data-key={i}
+                                  autoFocus
+                                  required
+                                />
+                              )}
                           </FormGroup>
                         </Col>
                         <Col cW="20%" mR="2%">
@@ -760,10 +760,10 @@ export default class EditFee extends Component {
                       <Loader />
                     </Button>
                   ) : (
-                    <Button filledBtn marginTop="50px">
-                      <span>Update Rule</span>
-                    </Button>
-                  )}
+                      <Button filledBtn marginTop="50px">
+                        <span>Update Rule</span>
+                      </Button>
+                    )}
                 </form>
               </div>
             </Card>

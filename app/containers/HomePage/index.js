@@ -30,7 +30,7 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
 import messages from './messages';
-import { API_URL } from '../App/constants';
+import { postRequest, getRequest } from '../App/ApiCall';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -71,65 +71,37 @@ export default class HomePage extends Component {
     });
   };
 
-  loginRequest = event => {
+  loginRequest = async (event) => {
     event.preventDefault();
     this.setState({
       loginLoading: true,
     });
-    axios
-      .post(`${API_URL}/login`, this.state)
-      .then(res => {
-        if (res.status == 200) {
-          if(res.data.status == 0 && res.data.message === "Incorrect username or password") {
-            throw res.data.message;
+    const res = await postRequest("login", token, this.state)
+          if(res.data.data.status === 0 && res.data.data.message === "Incorrect username or password") {
+            toast.error(res.data.data.message);
           } else {
-            localStorage.setItem('logged', res.data.token);
-            localStorage.setItem('name', res.data.name);
-            localStorage.setItem('isAdmin', res.data.isAdmin);
+            localStorage.setItem('logged', res.data.data.token);
+            localStorage.setItem('name', res.data.data.name);
+            localStorage.setItem('isAdmin', res.data.data.isAdmin);
             window.location.href = '/dashboard';
           }
-        } else {
-          throw res.data.error;
-        }
         this.setState({
           loginLoading: false,
         });
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-          loginLoading: false,
-        });
-        this.error();
-      });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     if (token !== undefined && token !== null) {
       this.setState({ loading: false, redirect: true });
     } else {
-      axios
-        .get(`${API_URL}/checkInfra`, {})
-        .then(res => {
-          if (res.status == 200) {
-            if (res.data.infras <= 0) {
-              this.props.history.push('/setup');
-            }
-          } else {
-            throw res.data.error;
-          }
-        })
-        .catch(err => {
-          this.setState({
-            notification: err.response
-              ? err.response.data.error
-              : err.toString(),
-          });
-          this.error();
-        });
+      const res = await getRequest("checkInfra",token,{})
+      console.log(res);
+        if (res.data.infras <= 0) {
+          this.props.history.push('/setup');
+        }
       this.setState({ loading: false });
     }
-  }
+  };
 
   render() {
     function inputFocus(e) {

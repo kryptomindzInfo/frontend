@@ -22,7 +22,7 @@ import Card from 'components/Card';
 import Loader from 'components/Loader';
 import MasterWallet from 'components/Sidebar/MasterWallet';
 import messages from './messages';
-import { API_URL } from '../App/constants';
+import { postRequest, getRequest } from '../App/ApiCall';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -61,54 +61,28 @@ export default class DashboardPage extends Component {
   warn = () => toast.warn(this.state.notification);
 
   logout = () => {
-    // event.preventDefault();
-    // axios.post(API_URL+'/logout', {token: token})
-    // .then(res => {
-    //    if(res.status == 200){
     localStorage.removeItem('logged');
     localStorage.removeItem('name');
     this.setState({ redirect: true });
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    // })
-    // .catch(err => {
-    //   alert('Login to continue');
-    //   this.setState({ redirect: true });
-    // });
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     if (token !== undefined && token !== null) {
-      axios
-        .post(`${API_URL}/getDashStats`, { token })
-        .then(res => {
-          if (res.status == 200) {
-            this.setState({
-              loading: false,
-              totalBanks: res.data.totalBanks,
-              totalMerchants: res.data.totalMerchants,
-            });
-          } else {
-            this.setState({ loading: false, redirect: true });
-            // this.setState({ loading: false, totalBanks: res.data.totalBanks });
-          }
-        })
-        .catch(err => {
-          this.setState({
-            notification: err.response
-              ? err.response.data.error
-              : err.toString(),
-          });
-          this.error();
+      const res = await postRequest("getDashStats", token, {})
+      if(res.data.data.status === 0) {
+        toast.error(res.data.data.message);
+      } else {
+        this.setState({
+          loading: false,
+          totalBanks: res.data.data.totalBanks,
+          totalMerchants: res.data.data.totalMerchants,
         });
+      }
     } else {
       alert('Login to continue');
       this.setState({ loading: false, redirect: true });
     }
-    // this.setState({ loading: false });
-  }
+  };
 
   render() {
     const { loading, redirect, popup } = this.state;

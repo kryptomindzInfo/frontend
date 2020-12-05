@@ -74,20 +74,8 @@ class InfraMerchantSidebar extends Component {
             </Row>
           </Card>
         </Card>
-        {/* <A href={`/infra/merchant/fees/${this.props.merchantId}`}>
-          <Card selected={revenue} rounded className="sideNav">
-            <i className="material-icons">mobile_screen_share</i>
-            <h3>Revenue Sharing</h3>
-          </Card>
-        </A>
-        <A href={`/infra/merchant/commission/${this.props.merchantId}`}>
-          <Card selected={commission} rounded className="sideNav">
-            <i className="material-icons">mobile_screen_share</i>
-            <h3>Commission Sharing</h3>
-          </Card>
-        </A> */}
-        <OperationalWallet historyLink={this.props.bankId} />
-        <MasterWallet historyLink={this.props.bankId} />
+        {/* <OperationalWallet historyLink={this.props.bankId} />
+        <MasterWallet historyLink={this.props.bankId} /> */}
       </Sidebar>
     );
   }

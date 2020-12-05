@@ -15,6 +15,7 @@ import CreatePartnerPopup from './CreatePartnerPopup';
 import EnterOTPPopup from './EnterOTPPopup';
 import { STATIC_URL, API_URL } from '../App/constants';
 import Loader from '../../components/Loader';
+import { postRequest, getRequest } from '../App/ApiCall';
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
   position: 'bottom-right',
@@ -47,24 +48,13 @@ function BankPartnerListPage(props) {
     setOtpPopup(false);
   };
 
-  const fetchPartnerList = async () => {
-    try {
-      const res = await axios.post(`${API_URL}/bank/listPartners`, {
-        token,
-      });
-      if (res.status === 200) {
-        console.log(res);
-        if (res.data.status === 0) {
-          toast.error(res.data.message);
-          return { list: [], loading: false };
-        }
-        return { list: res.data.partners, loading: false };
-      }
-      toast.error(res.data.message);
+  const fetchPartnerList = async() => {
+    const res = await postRequest("bank/listPartners", token, {})
+    if(res.data.data.status === 0) {
+      toast.error(res.data.data.message);
       return { list: [], loading: false };
-    } catch (err) {
-      toast.error('Something went wrong');
-      return { list: [], loading: false };
+    } else {
+      return { list: res.data.data.partners, loading: false };
     }
   };
 

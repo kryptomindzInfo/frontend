@@ -22,7 +22,7 @@ import Loader from 'components/Loader';
 import Main from 'components/Main';
 import Card from 'components/Card';
 import SidebarBank from 'components/Sidebar/SidebarBank';
-import { API_URL } from '../App/constants';
+import { postRequest, getRequest } from '../App/ApiCall';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -62,26 +62,14 @@ export default class BankDashboard extends Component {
   warn = () => toast.warn(this.state.notification);
 
 
-  componentDidMount() {
-    console.log(token);
-
-      axios
-        .post(`${API_URL}/getBankDashStats`, { token })
-        .then(res => {
-            if (res.status == 200) {
-              this.setState({ loading: false, totalBranches: res.data.totalBranches, totalMerchants: res.data.totalMerchants});
-            }
-
-        })
-        .catch(err => {
-          this.setState({
-            notification: err.response
-              ? err.response.data.error.toString()
-              : err.toString(),
-          });
-          this.error();
-        });
-}
+  async componentDidMount() {
+    const res = await postRequest("getBankDashStats", token, {})
+      if(res.data.data.status === 0) {
+        toast.error(res.data.data.message);
+      } else {
+        this.setState({ loading: false, totalBranches: res.data.data.totalBranches, totalMerchants: res.data.data.totalMerchants});
+      }
+  };
 
   render() {
     const { loading, redirect, popup } = this.state;
@@ -99,7 +87,7 @@ export default class BankDashboard extends Component {
         </Helmet>
         <BankHeader active="dashboard"/>
         <Container verticalMargin>
-          {/* <SidebarBank /> */}
+          <SidebarBank/>
           <Main>
             <div className="clr">
               <A href="/bank/branches" float="left">
