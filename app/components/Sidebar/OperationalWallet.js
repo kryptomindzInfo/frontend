@@ -12,6 +12,7 @@ import Button from 'components/Button';
 import A from 'components/A';
 
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
+import { postRequest, getRequest } from '../../containers/App/ApiCall';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -135,12 +136,9 @@ class OperationalWallet extends Component {
     });
   };
 
-  getBalance = () => {
-    axios
-      .get(
-        `${API_URL}/getInfraOperationalBalance?bank=${this.props.historyLink}&token=${this.state.token}`,
-      )
-      .then(res => {
+  getBalance = async() => {
+    const res = await getRequest(`infra/getWalletBalance?from=operational&bank=${this.props.historyLink}`, token, {})
+    console.log(res);
         if (res.status == 200) {
           if (res.data.error) {
             throw res.data.error;
@@ -150,10 +148,7 @@ class OperationalWallet extends Component {
             });
           }
         }
-      })
-      .catch(err => {
-
-      });
+      
   };
 
   submitMoney = e => {

@@ -31,6 +31,7 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
 import messages from './messages';
+import { postRequest, getRequest } from '../App/ApiCall';
 import {
   API_URL,
   CONTRACT_URL,
@@ -39,7 +40,6 @@ import {
 } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
-// import { FontAwesomeIcon } from '@fontawesome/react-fontawesome';
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -50,10 +50,6 @@ toast.configure({
 });
 
 const token = localStorage.getItem('logged');
-// var permissions = localStorage.getItem('permissions');
-// if(permissions != 'all' && permissions != ''){
-// permissions = JSON.parse(permissions);
-// }
 const isAdmin = localStorage.getItem('isAdmin');
 
 export default class BankPage extends Component {
@@ -133,21 +129,6 @@ export default class BankPage extends Component {
     });
   };
 
-  getData = () => {
-    fetch(`http://${SERVER_URL}/restaurants`)
-      .then(response => response.json())
-      .then(data => {
-        const { query } = this.state;
-        const filteredData = data.filter(element =>
-          element.name.toLowerCase().includes(query.toLowerCase()),
-        );
-
-        this.setState({
-          data,
-          filteredData,
-        });
-      });
-  };
 
   countryChange = event => {
     const { value, name } = event.target;
@@ -298,38 +279,20 @@ export default class BankPage extends Component {
     }
   };
 
-  blockBank = (e, s) => {
-    console.log(e);
-    const dis = this;
-    axios
-      .post(`${API_URL}/bankStatus`, {
-        token,
-        bank_id: e,
-        status: s,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            const n = s == 1 ? 'Unblocked' : 'Blocked';
-            this.setState({
-              notification: `Bank ${n}`,
-            });
-            this.success();
-            this.getBanks();
-          }
-        } else {
-          const error = new Error(res.data.error);
-          throw error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
+  blockBank = async(e, s) => {
+    const values = {
+      bank_id: e,
+      status: s,
+    }
+    const res = await postRequest("bankStatus", token, values)
+    if (res.data.status === 200) {
+        const n = s == 1 ? 'Unblocked' : 'Blocked';
+      this.setState({
+        notification: `Bank ${n}`,
       });
+      this.success();
+      this.getBanks();
+    }
   };
 
   editBank = event => {
@@ -365,111 +328,71 @@ export default class BankPage extends Component {
     }
   };
 
-  verifyOTP = event => {
+  verifyOTP = async(event) => {
     this.setState({
       verifyOTPLoading: true,
     });
+    const values = {
+      name: this.state.name,
+      address1: this.state.address1,
+      state: this.state.state,
+      zip: this.state.zip,
+      country: this.state.country,
+      ccode: this.state.ccode,
+      bcode: this.state.bcode,
+      email: this.state.email,
+      mobile: this.state.mobile,
+      logo: this.state.logo,
+      contract: this.state.contract,
+      otp: this.state.otp,
+      otp_id: this.state.otpId,
+    }
     event.preventDefault();
-    axios
-      .post(`${API_URL}/addBank`, {
-        name: this.state.name,
-        address1: this.state.address1,
-        state: this.state.state,
-        zip: this.state.zip,
-        country: this.state.country,
-        ccode: this.state.ccode,
-        bcode: this.state.bcode,
-        email: this.state.email,
-        mobile: this.state.mobile,
-        logo: this.state.logo,
-        contract: this.state.contract,
-        otp: this.state.otp,
-        otp_id: this.state.otpId,
-        token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.status === 0) {
-            throw res.data.message;
-          } else {
-            this.setState({
-              notification: 'Bank added successfully!',
-            });
-            this.success();
-            this.closePopup();
-            this.getBanks();
-          }
-        } else {
-          const error = new Error(res.data.error);
-          throw error;
-        }
-        this.setState({
-          verifyOTPLoading: false,
-        });
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-          verifyOTPLoading: false,
-        });
-        this.error();
+    const res = await postRequest("addBank", token, values)
+    if(res.data.data.status === 0) {
+      toast.error(res.data.data.message);
+    } else {
+      this.setState({
+        notification: 'Bank added successfully!',
       });
+      this.success();
+      this.closePopup();
+      this.getBanks();
+    }
   };
 
-  verifyEditOTP = event => {
+  verifyEditOTP = async(event) => {
     this.setState({
       verifyEditOTPLoading: true,
     });
+    const values = {
+      name: this.state.name,
+      address1: this.state.address1,
+      state: this.state.state,
+      zip: this.state.zip,
+      country: this.state.country,
+      ccode: this.state.ccode,
+      bcode: this.state.bcode,
+      email: this.state.email,
+      mobile: this.state.mobile,
+      logo: this.state.logo,
+      contract: this.state.contract,
+      otp: this.state.otp,
+      otp_id: this.state.otpId,
+    }
     event.preventDefault();
-    axios
-      .post(`${API_URL}/editBank`, {
-        name: this.state.name,
-        address1: this.state.address1,
-        state: this.state.state,
-        zip: this.state.zip,
-        bank_id: this.state.bank_id,
-        country: this.state.country,
-        ccode: this.state.ccode,
-        bcode: this.state.bcode,
-        email: this.state.email,
-        mobile: this.state.mobile,
-        logo: this.state.logo,
-        contract: this.state.contract,
-        otp: this.state.otp,
-        otp_id: this.state.otpId,
-        token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState(
-              {
-                notification: 'Bank updated successfully!',
-              },
-              function() {
-                this.success();
-                this.closePopup();
-                this.getBanks();
-              },
-            );
-          }
-        } else {
-          const error = new Error(res.data.error);
-          throw error;
-        }
-        this.setState({
-          verifyEditOTPLoading: false,
-        });
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-          verifyEditOTPLoading: false,
-        });
-        this.error();
+    const res = await postRequest("editBank", token, values)
+    console.log(res);
+    if(res.data.data.status === 0) {
+      toast.error(res.data.data.message);
+    } else {
+      this.setState({
+        notification: 'Bank edited successfully!',
       });
+      this.success();
+      this.closePopup();
+      this.getBanks();
+    }
   };
 
   removeFile = key => {
@@ -531,28 +454,17 @@ export default class BankPage extends Component {
       });
   }
 
-  getBanks = () => {
-    axios
-      .post(`${API_URL}/getBanks`, { token })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({ loading: false, banks: res.data.banks });
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+   getBanks = async() => {
+    const res = await postRequest("getBanks", token, {})
+    this.setState({ loading: false, banks: res.data.data.banks });
   };
 
-  componentDidMount() {
-    this.getData();
+  async componentDidMount() {
     if (token !== undefined && token !== null) {
       if (isAdmin == 'true') {
         this.setState({ permissions: 'all', loading: false });
       } else {
-        axios
-          .post(`${API_URL}/getPermission`, { token })
-          .then(res => {
+        const res = await postRequest("getPermission", token, this.state)
             if (res.status == 200) {
               this.setState(
                 { permissions: res.data.permissions, loading: false },
@@ -560,19 +472,11 @@ export default class BankPage extends Component {
                   console.log(this.state.permissions);
                 },
               );
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          });
+            } 
       }
-      this.getBanks();
-    } else {
-      // alert('Login to continue');
-      // this.setState({loading: false, redirect: true });
     }
-    console.log(this.state.permissions);
-  }
+    this.getBanks();
+  };
 
   render() {
     function inputFocus(e) {

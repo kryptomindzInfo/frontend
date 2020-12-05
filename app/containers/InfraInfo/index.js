@@ -33,6 +33,7 @@ import SelectInput from 'components/SelectInput';
 import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import { postRequest, getRequest } from '../App/ApiCall';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
@@ -266,22 +267,9 @@ export default class InfraInfo extends Component {
   };
 
   logout = () => {
-    // event.preventDefault();
-    // axios.post(API_URL+'/logout', {token: token})
-    // .then(res => {
-    //    if(res.status == 200){
     localStorage.removeItem('logged');
     localStorage.removeItem('name');
     this.setState({ redirect: true });
-    //     }else{
-    //       const error = new Error(res.data.error);
-    //       throw error;
-    //     }
-    // })
-    // .catch(err => {
-    //   alert('Login to continue');
-    //   this.setState({ redirect: true });
-    // });
   };
 
   addBank = event => {
@@ -416,37 +404,33 @@ export default class InfraInfo extends Component {
       });
   }
 
-  getBanks = () => {
-    axios
-      .post(`${API_URL}/getBank`, {
-        token: token,
-        bank_id: this.props.match.params.bank,
-      })
-      .then(res => {
-        if (res.status == 200) {
+  getBanks = async() => {
+    const res = await postRequest("getBank", token, {bank_id: this.props.match.params.bank })
+        if (res.data.status == 200) {
+          console.log(res);
           this.setState({
             loading: false,
-            banks: res.data.banks,
-            logo: res.data.banks.logo,
-            bcode: res.data.banks.bcode,
-            name: res.data.banks.name,
-            address1: res.data.banks.address1,
-            state: res.data.banks.state,
-            zip: res.data.banks.zip,
-            country: res.data.banks.country,
-            ccode: res.data.banks.ccode,
-            mobile: res.data.banks.mobile,
-            email: res.data.banks.email,
-            logo: res.data.banks.logo,
-            contract: res.data.banks.contract,
-            username: res.data.banks.contract,
-            bank_id: res.data.banks._id,
-            username: res.data.banks.username,
+            banks: res.data.data.banks,
+            logo: res.data.data.banks.logo,
+            bcode: res.data.data.banks.bcode,
+            name: res.data.data.banks.name,
+            address1: res.data.data.banks.address1,
+            state: res.data.data.banks.state,
+            zip: res.data.data.banks.zip,
+            country: res.data.data.banks.country,
+            ccode: res.data.data.banks.ccode,
+            mobile: res.data.data.banks.mobile,
+            email: res.data.data.banks.email,
+            logo: res.data.data.banks.logo,
+            contract: res.data.data.banks.contract,
+            username: res.data.data.banks.contract,
+            bank_id: res.data.data.banks._id,
+            username: res.data.data.banks.username,
+
           });
         }
-      })
-      .catch(err => {});
   };
+
 
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
@@ -468,10 +452,7 @@ export default class InfraInfo extends Component {
           });
       }
       this.getBanks();
-    } else {
-      // alert('Login to continue');
-      // this.setState({loading: false, redirect: true });
-    }
+    } 
   }
 
   render() {
@@ -507,11 +488,6 @@ export default class InfraInfo extends Component {
             <A href="/dashboard" float="left">
               <div className="headerNavDash">Main Dashboard</div>
             </A>
-            {/* <div className="bankLogo">
-            <img src={STATIC_URL+this.state.logo}/>
-              </div> */}
-
-            {/* <h2>{this.state.banks.name}</h2> */}
           </Container>
         </TopBar>
         <Container verticalMargin>
@@ -543,7 +519,7 @@ export default class InfraInfo extends Component {
               <h2>{this.state.banks && this.state.banks.name}</h2>
             </div>
           </div>
-          <SidebarTwo bankId={this.state.bank} active="info" />
+          <SidebarTwo bankId={this.props.match.params.bank} active="info" />
 
           <Main big>
             {this.state.permissions == 'all' ||

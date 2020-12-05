@@ -90,7 +90,6 @@ export default class BankInfo extends Component {
       popup: false,
       user_id: token,
       banks: [],
-      rules: [],
       otp: '',
       showOtp: false,
     };
@@ -462,11 +461,9 @@ export default class BankInfo extends Component {
       });
   }
 
-  getBanks = () => {
-    axios
-      .post(`${API_URL}/getOne`, { token: token, type: 'bank', page: 'bank' })
-      .then(res => {
-        if (res.status == 200) {
+  getBanks = async() => {
+    const res = await postRequest("getOne", token, {type: 'bank', page: 'bank' })
+        if (res.data.status == 200) {
           this.setState({
             loading: false,
             banks: res.data.row,
@@ -489,20 +486,8 @@ export default class BankInfo extends Component {
             username: res.data.row.username,
           });
         }
-      })
-      .catch(err => {});
   };
 
-  getRules = () => {
-    axios
-      .post(`${API_URL}/getBankRules`, { bank_id: this.state.bank })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({ loading: false, rules: res.data.rules });
-        }
-      })
-      .catch(err => {});
-  };
   showPopup = () => {
     //, name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id
     this.setState({ popup: true });
@@ -566,10 +551,6 @@ export default class BankInfo extends Component {
     this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
       this.getBanks();
-      this.getRules();
-    } else {
-      // alert('Login to continue');
-      // this.setState({loading: false, redirect: true });
     }
   }
 
@@ -632,7 +613,7 @@ export default class BankInfo extends Component {
                 </Row>
 
                 <Row>
-                  <Col className="infoLeft">State</Col>
+                  <Col className="infoLeft">Statee</Col>
                   <Col className="infoRight">{this.state.banks.state}</Col>
                 </Row>
 

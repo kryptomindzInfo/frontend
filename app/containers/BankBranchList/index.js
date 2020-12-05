@@ -478,7 +478,6 @@ export default class BankBranchList extends Component {
       });
   }
 
-  getBanks = () => {};
 
   getBank = () => {
        axios

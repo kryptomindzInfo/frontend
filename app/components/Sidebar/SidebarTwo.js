@@ -61,8 +61,8 @@ class SidebarTwo extends Component {
             <h3>Merchants</h3>
           </Card>
         </A>
-        <OperationalWallet historyLink={this.props.bankId} />
-        <MasterWallet historyLink={this.props.bankId} />
+        {/* <OperationalWallet historyLink={this.props.bankId} /> */}
+        {/* <MasterWallet historyLink={this.props.bankId} /> */}
       </Sidebar>
     );
   }

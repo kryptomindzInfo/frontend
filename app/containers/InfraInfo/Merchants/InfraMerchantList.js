@@ -14,7 +14,7 @@ import TopBar from '../../../components/Header/TopBar';
 import Welcome from '../../../components/Header/Welcome';
 import A from '../../../components/A';
 import SidebarTwo from '../../../components/Sidebar/SidebarTwo';
-import { fetchInfraMerchantList } from './Api/InfraMerchantApi';
+import { postRequest, getRequest } from '../../App/ApiCall';
 import history from '../../../utils/history';
 
 function InfraMerchantList(props) {
@@ -24,6 +24,7 @@ function InfraMerchantList(props) {
   const [editingMerchant, setEditingMerchant] = React.useState({});
   const [isLoading, setLoading] = React.useState(false);
   const { match } = props;
+  const token = localStorage.getItem('logged');
   const { id } = match.params;
 
   const handleMerchantPopupClick = (type, merchant) => {
@@ -38,14 +39,13 @@ function InfraMerchantList(props) {
 
   const getMerchantList = async () => {
     setLoading(true);
-    fetchInfraMerchantList(id)
-      .then(data => {
-        setMerchantList(data.list);
-        setLoading(data.loading);
-      })
-      .catch(error => {
+    const res = await postRequest("infra/bank/listMerchants", token, {bank_id: id})
+    if(res.data.data.status === 0) {
+      toast.error(res.data.data.message);
+    } else {
+        setMerchantList(res.data.data.list);
         setLoading(false);
-      });
+    }
   };
   useEffect(() => {
     getMerchantList();
