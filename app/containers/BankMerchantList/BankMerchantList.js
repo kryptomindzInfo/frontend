@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+import { toast } from 'react-toastify';
 import BankHeader from '../../components/Header/BankHeader';
 import Wrapper from '../../components/Wrapper';
 import Container from '../../components/Container';
@@ -11,11 +12,9 @@ import Button from '../../components/Button';
 import Card from '../../components/Card';
 import Table from '../../components/Table';
 import CreateMerchantPopup from './CreateMerchantPopup';
-import { STATIC_URL } from '../App/constants';
+import { STATIC_URL, API_URL } from '../App/constants';
 import Loader from '../../components/Loader';
 import { fetchMerchantList } from './api/merchantAPI';
-import { toast } from 'react-toastify';
-import { API_URL } from '../App/constants';
 
 toast.configure({
   position: 'bottom-right',
@@ -49,59 +48,55 @@ function BankMerchantList(props) {
     setLoading(data.loading);
   };
 
-  const block = (id, type) =>{
+  const block = (id, type) => {
     const token = localStorage.getItem('bankLogged');
     axios
-    .post(`${API_URL}/bank/${type}Merchant`, {
-      token,
-      merchant_id : id,
-    })
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.status === 0){
-          throw res.data.message;
-        }else{
-          var n = (type == 'unblock') ? 'Unblocked' : 'Blocked';
-          toast.success('Merchant ' + n);
-          refreshMerchantList();
+      .post(`${API_URL}/bank/${type}Merchant`, {
+        token,
+        merchant_id: id,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.status === 0) {
+            throw res.data.message;
+          } else {
+            const n = type == 'unblock' ? 'Unblocked' : 'Blocked';
+            toast.success(`Merchant ${n}`);
+            refreshMerchantList();
+          }
+        } else {
+          toast.error(res.data.message);
         }
-      }else{
-        toast.error(res.data.message);
-      }
-    })
-    .catch(err => {
-      toast.error('Something went wrong');
-    });
-
+      })
+      .catch(err => {
+        toast.error('Something went wrong');
+      });
   };
 
-  const visiblity = (id, value) =>{
+  const visiblity = (id, value) => {
     const token = localStorage.getItem('bankLogged');
     axios
-    .post(`${API_URL}/bank/changeMerchantAcces`, {
-      token,
-      merchant_id : id,
-      is_private: value,
-    })
-    .then(res => {
-      if(res.status == 200){
-        if(res.data.status === 0){
-          throw res.data.message;
-        }else{
-          toast.success(res.data.message);
-          refreshMerchantList();
+      .post(`${API_URL}/bank/changeMerchantAcces`, {
+        token,
+        merchant_id: id,
+        is_private: value,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.status === 0) {
+            throw res.data.message;
+          } else {
+            toast.success(res.data.message);
+            refreshMerchantList();
+          }
+        } else {
+          toast.error(res.data.message);
         }
-      }else{
-        toast.error(res.data.message);
-      }
-    })
-    .catch(err => {
-      toast.error('Something went wrong');
-    });
-
+      })
+      .catch(err => {
+        toast.error('Something went wrong');
+      });
   };
-
-  
 
   useEffect(() => {
     setLoading(true);
@@ -163,36 +158,18 @@ function BankMerchantList(props) {
                 Info
               </span>
               {merchant.status === 0 ? (
-                <span
-                  onClick={() =>
-                    block(merchant._id, 'unblock')
-                  }
-                >
+                <span onClick={() => block(merchant._id, 'unblock')}>
                   Unblock
                 </span>
               ) : (
-                <span
-                  onClick={() =>
-                    block(merchant._id, 'block')
-                  }
-                >
-                  Block
-                </span>
+                <span onClick={() => block(merchant._id, 'block')}>Block</span>
               )}
               {merchant.is_private === false ? (
-                <span
-                  onClick={() =>
-                    visiblity(merchant._id, true)
-                  }
-                >
+                <span onClick={() => visiblity(merchant._id, true)}>
                   Make Private
                 </span>
               ) : (
-                <span
-                  onClick={() =>
-                    visiblity(merchant._id, false)
-                  }
-                >
+                <span onClick={() => visiblity(merchant._id, false)}>
                   Make Public
                 </span>
               )}

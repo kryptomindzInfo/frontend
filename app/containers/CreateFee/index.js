@@ -245,7 +245,7 @@ export default class CreateFee extends Component {
                   this.success();
                   let ba = this.state.bank;
                   let history = this.props.history;
-                  setTimeout(function() {
+                  setTimeout(function () {
                     history.push('/fees/' + ba);
                   }, 1000);
                 },
@@ -440,7 +440,7 @@ export default class CreateFee extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   componentDidMount() {
@@ -611,7 +611,7 @@ export default class CreateFee extends Component {
                   </Row>
 
                   <H4>Transaction Count</H4>
-                  {this.state.ranges.map(function(v, i) {
+                  {this.state.ranges.map(function (v, i) {
                     return (
                       <Row key={i}>
                         <Col cW="20%" mR="2%">
@@ -632,20 +632,20 @@ export default class CreateFee extends Component {
                                 required
                               />
                             ) : (
-                              <TextInput
-                                type="number"
-                                pattern="[0-9]{1,}"
-                                title="Greater than or equal to 0"
-                                name="trans_from"
-                                onFocus={inputFocus}
-                                onBlur={inputBlur}
-                                value={v.trans_from}
-                                onChange={dis.handleInputChange2}
-                                data-key={i}
-                                autoFocus
-                                required
-                              />
-                            )}
+                                <TextInput
+                                  type="number"
+                                  pattern="[0-9]{1,}"
+                                  title="Greater than or equal to 0"
+                                  name="trans_from"
+                                  onFocus={inputFocus}
+                                  onBlur={inputBlur}
+                                  value={v.trans_from}
+                                  onChange={dis.handleInputChange2}
+                                  data-key={i}
+                                  autoFocus
+                                  required
+                                />
+                              )}
                           </FormGroup>
                         </Col>
                         <Col cW="20%" mR="2%">
@@ -719,10 +719,10 @@ export default class CreateFee extends Component {
                       <Loader />
                     </Button>
                   ) : (
-                    <Button filledBtn marginTop="100px">
-                      <span>Create Rules</span>
-                    </Button>
-                  )}
+                      <Button filledBtn marginTop="100px">
+                        <span>Create Rules</span>
+                      </Button>
+                    )}
                 </form>
               </div>
             </Card>

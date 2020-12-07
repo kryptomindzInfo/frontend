@@ -142,18 +142,18 @@ export default class FeeList extends Component {
     // });
   };
 
-  getBanks = async() => {
-    const res = await postRequest("getBank", token, {bank_id: this.props.match.params.bank})
-    if(res.data.data.status === 0) {
+  getBanks = async () => {
+    const res = await postRequest("getBank", token, { bank_id: this.props.match.params.bank })
+    if (res.data.data.status === 0) {
       toast.error(res.data.data.message);
     } else {
       this.setState({ banks: res.data.data.banks, logo: res.data.data.banks.logo });
     }
   };
 
-  getRules = async() => {
-    const res = await postRequest("getRules", token, {bank_id: this.props.match.params.bank})
-    if(res.data.data.status === 0) {
+  getRules = async () => {
+    const res = await postRequest("getRules", token, { bank_id: this.props.match.params.bank })
+    if (res.data.data.status === 0) {
       toast.error(res.data.data.message);
     } else {
       this.setState({ loading: false, rules: res.data.data.rules });
@@ -170,7 +170,7 @@ export default class FeeList extends Component {
           .post(`${API_URL}/getPermission`, { token })
           .then(res => {
             if (res.status == 200) {
-              this.setState({ permissions: res.data.permissions }, () => {});
+              this.setState({ permissions: res.data.permissions }, () => { });
             }
           })
           .catch(err => {
@@ -318,8 +318,8 @@ export default class FeeList extends Component {
         <TopBar>
           <Welcome infraNav />
           <Container>
-            <A href="/dashboard" float="left">
-              <div className="headerNavDash">Main Dashboard</div>
+            <A href="/banks" float="left">
+              <div className="headerNavDash">Back</div>
             </A>
           </Container>
         </TopBar>
@@ -365,17 +365,17 @@ export default class FeeList extends Component {
                 <input type="text" placeholder="Search Revenue Sharing Rule" />
               </div>
               {this.state.permissions == 'all' ||
-              this.state.permissions.create_fee ? (
-                <Button
-                  style={{ display: 'none' }}
-                  className="addBankButton"
-                  flex
-                  onClick={this.showPopup}
-                >
-                  <i className="material-icons">add</i>
-                  <span>Create Rules</span>
-                </Button>
-              ) : null}
+                this.state.permissions.create_fee ? (
+                  <Button
+                    style={{ display: 'none' }}
+                    className="addBankButton"
+                    flex
+                    onClick={this.showPopup}
+                  >
+                    <i className="material-icons">add</i>
+                    <span>Create Rules</span>
+                  </Button>
+                ) : null}
             </ActionBar>
             <Card bigPadding>
               <div className="cardHeader">
@@ -400,51 +400,51 @@ export default class FeeList extends Component {
                   <tbody>
                     {this.state.rules && this.state.rules.length > 0
                       ? this.state.rules.map(b => {
-                          var r = b.revenue_sharing_rule.infra_share;
-                          return (
-                            <tr key={b._id}>
-                              <td>
-                                {b.status === 0 ? (
-                                  <span>{b.name}</span>
-                                ) : (
+                        var r = b.revenue_sharing_rule.infra_share;
+                        return (
+                          <tr key={b._id}>
+                            <td>
+                              {b.status === 0 ? (
+                                <span>{b.name}</span>
+                              ) : (
                                   <span>{b.name}</span>
                                 )}
-                              </td>
-                              <td className="tac">
-                                {b.status === 0 ? (
-                                  <span>{b.trans_type}</span>
-                                ) : (
+                            </td>
+                            <td className="tac">
+                              {b.status === 0 ? (
+                                <span>{b.trans_type}</span>
+                              ) : (
                                   <span>{b.trans_type}</span>
                                 )}
-                              </td>
-                              <td>
-                                <div>
-                                  Fixed:{' '}
+                            </td>
+                            <td>
+                              <div>
+                                Fixed:{' '}
                                 <span className="green">
                                   {`${CURRENCY} ${r.fixed}`}
-                                  </span>
+                                </span>
                                   , Percentage:{' '}
-                                  <span className="green">{r.percentage}</span>
-                                </div>
-                              </td>
-                              <td className="tac bold">
-                                {b.status === 2 ? (
-                                  <Button
-                                    onClick={() => this.showMiniPopUp(b, r)}
-                                    className="addBankButton"
-                                  >
-                                    <span>Approve</span>
-                                  </Button>
-                                ) : b.status === 1 ? (
-                                  <span>Approved</span>
-                                ) : (
-                                  <span>Declined</span>
-                                )
-                                }
-                              </td>
-                            </tr>
-                          );
-                        })
+                                <span className="green">{r.percentage}</span>
+                              </div>
+                            </td>
+                            <td className="tac bold">
+                              {b.status === 2 ? (
+                                <Button
+                                  onClick={() => this.showMiniPopUp(b, r)}
+                                  className="addBankButton"
+                                >
+                                  <span>Approve</span>
+                                </Button>
+                              ) : b.status === 1 ? (
+                                <span>Approved</span>
+                              ) : (
+                                    <span>Declined</span>
+                                  )
+                              }
+                            </td>
+                          </tr>
+                        );
+                      })
                       : null}
                   </tbody>
                 </Table>
@@ -483,79 +483,79 @@ export default class FeeList extends Component {
                 </form>
               </div>
             ) : (
-              <div>
-                <form>
-                  <p>
-                    <span id="popname">{this.state.popname}</span>
-                  </p>
-                  <p>
-                    {' '}
+                <div>
+                  <form>
+                    <p>
+                      <span id="popname">{this.state.popname}</span>
+                    </p>
+                    <p>
+                      {' '}
                     Sending from <span id="poptype">{this.state.poptype}</span>
-                  </p>
-                  <div>
-                    Fixed:{' '}
-                    <span className="green">
-                      {`${CURRENCY} ${this.state.html.fixed}`}
-                    </span>
+                    </p>
+                    <div>
+                      Fixed:{' '}
+                      <span className="green">
+                        {`${CURRENCY} ${this.state.html.fixed}`}
+                      </span>
                     , Percentage:{' '}
-                    <span className="green">{this.state.html.percentage}</span>
-                  </div>
+                      <span className="green">{this.state.html.percentage}</span>
+                    </div>
 
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        {this.state.declineLoading ? (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            accentedBtn
-                            onClick={this.decline}
-                            disabled
-                            type="button"
-                          >
-                            <Loader />
-                          </Button>
-                        ) : (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            accentedBtn
-                            onClick={this.decline}
-                            type="button"
-                          >
-                            <span>Decline</span>
-                          </Button>
-                        )}
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        {this.state.approveLoading ? (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            onClick={this.approve}
-                            disabled
-                            type="button"
-                          >
-                            <Loader />
-                          </Button>
-                        ) : (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            onClick={this.approve}
-                            type="button"
-                          >
-                            <span>Approve</span>
-                          </Button>
-                        )}
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </form>
-              </div>
-            )}
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          {this.state.declineLoading ? (
+                            <Button
+                              filledBtn
+                              marginTop="50px"
+                              accentedBtn
+                              onClick={this.decline}
+                              disabled
+                              type="button"
+                            >
+                              <Loader />
+                            </Button>
+                          ) : (
+                              <Button
+                                filledBtn
+                                marginTop="50px"
+                                accentedBtn
+                                onClick={this.decline}
+                                type="button"
+                              >
+                                <span>Decline</span>
+                              </Button>
+                            )}
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          {this.state.approveLoading ? (
+                            <Button
+                              filledBtn
+                              marginTop="50px"
+                              onClick={this.approve}
+                              disabled
+                              type="button"
+                            >
+                              <Loader />
+                            </Button>
+                          ) : (
+                              <Button
+                                filledBtn
+                                marginTop="50px"
+                                onClick={this.approve}
+                                type="button"
+                              >
+                                <span>Approve</span>
+                              </Button>
+                            )}
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </form>
+                </div>
+              )}
           </MiniPopUp>
         ) : null}
       </Wrapper>

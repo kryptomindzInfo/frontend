@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 import A from 'components/A';
+import messages from './messages';
 
 const NavTag = styled.nav`
   float: left;
@@ -25,43 +25,37 @@ class Nav extends Component {
     const user = this.props.active == 'user' ? 'true' : '';
     const merchants = this.props.active == 'merchants' ? 'true' : '';
     const reports = this.props.active == 'reports' ? 'true' : '';
-    const name = localStorage.getItem("name");
-    const isAdmin = localStorage.getItem("isAdmin");
-  
+    const name = localStorage.getItem('name');
+    const isAdmin = localStorage.getItem('isAdmin');
+
     return (
       <React.Fragment>
         <NavTag>
-          <A href="/dashboard" >
-          <Link active={dashboard}>
-          <FormattedMessage {...messages.menu1} /> 
-          </Link>
+          <A href="/dashboard">
+            <Link active={dashboard}>
+              <FormattedMessage {...messages.menu1} />
+            </Link>
           </A>
-          {
-          isAdmin != 'false' ?
-          <A href="/user">
-          <Link 
-           active={user}>
-            Infra User
-          </Link>
-          </A>
-          :
-          null
-          }
+          {isAdmin != 'false' ? (
+            <A href="/user">
+              <Link active={user}>Infra User</Link>
+            </A>
+          ) : null}
           <A href="/banks">
-          <Link active={bank}>
-          <FormattedMessage {...messages.menu2} /> 
-          </Link>         
+            <Link active={bank}>
+              <FormattedMessage {...messages.menu2} />
+            </Link>
+          </A>
+          {/* <A >
+            <Link active={merchants}>
+              <FormattedMessage {...messages.menu3} />
+            </Link>
           </A>
           <A >
-          <Link active={merchants}>
-          <FormattedMessage {...messages.menu3} /> 
-          </Link>
-          </A>
-          <A >
-          <Link active={reports}>
-          <FormattedMessage {...messages.menu4} /> 
-          </Link>
-          </A>
+            <Link active={reports}>
+              <FormattedMessage {...messages.menu4} />
+            </Link>
+          </A> */}
         </NavTag>
       </React.Fragment>
     );

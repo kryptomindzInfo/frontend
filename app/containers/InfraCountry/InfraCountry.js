@@ -5,20 +5,20 @@ import Header from 'components/Header/index';
 import axios from 'axios';
 import AddIcon from '@material-ui/icons/Add';
 import Wrapper from 'components/Wrapper';
-import ActionBar from '../../components/ActionBar';
 import Container from 'components/Container';
+import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
+import ActionBar from '../../components/ActionBar';
 import Main from '../../components/Main';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import SidebarThree from '../../components/Sidebar/SidebarThree';
 import Table from '../../components/Table';
 import CreateCountryPopup from './CreateCountryPopup';
-import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
-const InfraCountry = (props) => {
+const InfraCountry = props => {
   const [addCountryPopup, setAddCountryPopup] = React.useState(false);
-	const [countryList, setCountryList] = React.useState([]);
-	const [infraID, setInfraID] = React.useState('');
+  const [countryList, setCountryList] = React.useState([]);
+  const [infraID, setInfraID] = React.useState('');
   const [isLoading, setLoading] = React.useState(false);
   const [defaultCountry, setDefaultCountry] = React.useState({});
   const [defaultCountryPopup, setDefaultCountryPopup] = React.useState(false);
@@ -29,60 +29,68 @@ const InfraCountry = (props) => {
 
   const onPopupClose = () => {
     setAddCountryPopup(false);
-	};
-	
-	const getCountries = async () =>{
-		axios
+  };
+
+  const getCountries = async () => {
+    axios
       .get(`${API_URL}/get-country`)
       .then(d => {
-        if (d.data[0].country_list.length != 0) {
-          setCountryList(d.data[0].country_list);
-				}
+        console.log(d);
+        if ((d.status = 200)) {
+          console.log(d.data);
+          if (d.data.data[0].country_list.length != 0) {
+            console.log(d.data.data[0].country_list);
+            setCountryList(d.data.data[0].country_list);
+          }
+        }
       })
       .catch(err => {
         console.log(err.messages);
       });
-  }
+  };
 
   const getCountry = () => {
-    return countryList.map((country) => {
-      return (
-        <tr key={country._id}>
-          <td className="tac">{country.name}</td>
-          <td className="tac bold">
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                }}
-              >
-                <td className="tac">{country.ccode}</td>
-                <span className="absoluteMiddleRight primary popMenuTrigger">
-                  <i className="material-icons ">more_vert</i>
-                  <div className="popMenu">
-                    <span
-                      // onClick={() => handleDeleteOfferingPopupClick(offering)}
-                    >
-                      Delete
-                    </span>
-                  </div>
+    console.log(
+      countryList,
+      'lllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll',
+    );
+    return countryList.map(country => (
+      <tr key={country._id}>
+        <td className="tac">{country.name}</td>
+        <td className="tac bold">
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+            }}
+          >
+            <td className="tac">{country.ccode}</td>
+            <span className="absoluteMiddleRight primary popMenuTrigger">
+              <i className="material-icons ">more_vert</i>
+              <div className="popMenu">
+                <span
+                // onClick={() => handleDeleteOfferingPopupClick(offering)}
+                >
+                  Delete
                 </span>
               </div>
-            </td>
-        </tr>
-      );
-    });
+            </span>
+          </div>
+        </td>
+      </tr>
+    ));
   };
 
   useEffect(() => {
     getCountries();
   }, []);
+  console.log(countryList);
 
   return (
     <Wrapper>
       <Helmet>
-          <meta charSet="utf-8" />
-          <title>Country | INFRA | E-WALLET</title>
+        <meta charSet="utf-8" />
+        <title>Country | INFRA | E-WALLET</title>
       </Helmet>
       <Header active="" />
       <Container verticalMargin>
@@ -158,7 +166,7 @@ const InfraCountry = (props) => {
       </Container>
       {addCountryPopup ? (
         <CreateCountryPopup
-          refreshcountrylist={(data) => getCountries(data)}
+          refreshcountrylist={data => getCountries(data)}
           onClose={() => onPopupClose()}
         />
       ) : null}

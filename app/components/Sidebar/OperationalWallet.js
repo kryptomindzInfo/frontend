@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { toast } from 'react-toastify';
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 import axios from 'axios';
 import Card from 'components/Card';
 import Popup from 'components/Popup';
@@ -12,6 +11,7 @@ import Button from 'components/Button';
 import A from 'components/A';
 
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
+import messages from './messages';
 import { postRequest, getRequest } from '../../containers/App/ApiCall';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -60,6 +60,7 @@ class OperationalWallet extends Component {
       [name]: value,
     });
   };
+
   amountChange = event => {
     const { value, name } = event.target;
     this.setState(
@@ -84,7 +85,7 @@ class OperationalWallet extends Component {
                     {
                       livefee: res.data.fee,
                     },
-                    function() {},
+                    function () { },
                   );
                 }
               }
@@ -97,6 +98,7 @@ class OperationalWallet extends Component {
       },
     );
   };
+
   sendMoney = e => {
     e.preventDefault();
     axios
@@ -136,30 +138,30 @@ class OperationalWallet extends Component {
     });
   };
 
-  getBalance = async() => {
+  getBalance = async () => {
     const res = await getRequest(`infra/getWalletBalance?from=operational&bank=${this.props.historyLink}`, token, {})
     console.log(res);
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              balance: res.data.balance,
-            });
-          }
-        }
-      
+    if (res.status == 200) {
+      if (res.data.error) {
+        throw res.data.error;
+      } else {
+        this.setState({
+          balance: res.data.balance,
+        });
+      }
+    }
+
   };
 
   submitMoney = e => {
     e.preventDefault();
-    console.log(this.state.balance + ' : ' + this.state.amount);
+    console.log(`${this.state.balance} : ${this.state.amount}`);
     if (this.state.amount > this.state.balance) {
       this.setState(
         {
           notification: 'Insufficient Balance',
         },
-        function() {
+        function () {
           this.error();
         },
       );
@@ -168,7 +170,7 @@ class OperationalWallet extends Component {
         {
           notification: 'Invalid Amount',
         },
-        function() {
+        function () {
           this.error();
         },
       );
@@ -187,15 +189,15 @@ class OperationalWallet extends Component {
             if (res.data.error) {
               throw res.data.error;
             } else {
-              var tis = this;
+              const tis = this;
               this.setState(
                 {
                   notification:
                     'Transfer Initiated, You will be notified once done',
                 },
-                function() {
+                function () {
                   this.success();
-                  setTimeout(function() {
+                  setTimeout(function () {
                     tis.closePopup();
                     // tis.getBalance();
                     // tis.props.reload();
@@ -224,14 +226,14 @@ class OperationalWallet extends Component {
       bank: this.props.historyLink,
     });
 
-    let dis = this;
-      setInterval(function(){
-        dis.getBalance();
-      }, 10000);
+    const dis = this;
+    setInterval(function () {
+      dis.getBalance();
+    }, 10000);
   }
 
   render() {
-    var termsConditions;
+    let termsConditions;
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector('label').classList.add('focused');
@@ -251,25 +253,31 @@ class OperationalWallet extends Component {
         <h5>
           <FormattedMessage {...messages.available} />
         </h5>
+        {/* {this.state.balance != undefined && */}
         <div className="cardValue">
           {CURRENCY} {this.state.balance.toFixed(2) || '-'}
         </div>
+        {/* } */}
         {this.props.activateNeeded ? (
           <button className="fullWidth">
             <FormattedMessage {...messages.activate} />
           </button>
         ) : (
-          <button  className="sendMoneyButton" onClick={this.sendMoney}>
-            <i className="material-icons">send</i>{' '}
-            <FormattedMessage {...messages.sendmoney} />
-          </button>
-        )}
-        <A href={'/operationalHistory/' + this.props.historyLink}>
+            <button className="sendMoneyButton" onClick={this.sendMoney}>
+              <i className="material-icons">send</i>{' '}
+              <FormattedMessage {...messages.sendmoney} />
+            </button>
+          )}
+        <A href={`/operationalHistory/${this.props.historyLink}`}>
           <span className="history">History</span>
         </A>
 
         {this.state.popup ? (
-          <Popup className="modal-dialog modal-dialog-centered" close={this.closePopup.bind(this)} roundedCorner>
+          <Popup
+            className="modal-dialog modal-dialog-centered"
+            close={this.closePopup.bind(this)}
+            roundedCorner
+          >
             <h1 className="normalH1">Transfer the amount</h1>
             <form action="" method="post" onSubmit={this.submitMoney}>
               <FormGroup>
@@ -314,10 +322,13 @@ class OperationalWallet extends Component {
                   required
                 />
               </FormGroup>
+              {/* {this.state.balance != undefined && */}
               <p className="note">
                 <span style={{ color: 'red', paddingRight: '3px' }}>*</span>
-                Total available {CURRENCY} {this.state.balance.toFixed(2) || '-'}
+                Total available {CURRENCY}{' '}
+                {this.state.balance.toFixed(2) || '-'}
               </p>
+              {/* } */}
               <FormGroup>
                 <label>Note*</label>
                 <TextArea
@@ -336,7 +347,10 @@ class OperationalWallet extends Component {
                   Terms and Conditions
                 </a>
                 <div className="tooltip">
-                  <i className="fa fa-info-circle" style={{ margin: '6px', color: '#43434a' }} />
+                  <i
+                    className="fa fa-info-circle"
+                    style={{ margin: '6px', color: '#43434a' }}
+                  />
                   <span className="tooltiptext">
                     This transaction will be uploaded on Blockchain.
                   </span>

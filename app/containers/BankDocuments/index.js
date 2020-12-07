@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
@@ -27,6 +26,7 @@ import TextInput from 'components/TextInput';
 import Row from 'components/Row';
 import Loader from 'components/Loader';
 import Col from 'components/Col';
+import messages from './messages';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
@@ -41,21 +41,21 @@ toast.configure({
 });
 
 const Tab = styled.div`
-background: ${props => props.theme.primary};
-width: 194px;
-padding: 15px;
-float:left;
-border: 1px solid  ${props => props.theme.primary};
-color: #fff;
-font-size: 20px;
+  background: ${props => props.theme.primary};
+  width: 194px;
+  padding: 15px;
+  float: left;
+  border: 1px solid ${props => props.theme.primary};
+  color: #fff;
+  font-size: 20px;
 `;
 const Tab2 = styled.div`
-float:left;
-width: 194px;
-border: 1px solid  ${props => props.theme.primary};
-color: ${props => props.theme.primary};
-font-size: 20px;
-padding: 15px;
+  float: left;
+  width: 194px;
+  border: 1px solid ${props => props.theme.primary};
+  color: ${props => props.theme.primary};
+  font-size: 20px;
+  padding: 15px;
 `;
 
 // const ActiveTab = styled.div`
@@ -101,9 +101,9 @@ export default class BankDocuments extends Component {
       banks: [],
       rules: [],
       docs: [],
-      
+
       otp: '',
-      showOtp: false
+      showOtp: false,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -129,12 +129,18 @@ export default class BankDocuments extends Component {
 
   showMiniPopUp = event => {
     this.setState({ popup: true });
-    var id = event.target.getAttribute("data-id");
-    var d =  event.target.getAttribute("data-d");
+    const id = event.target.getAttribute('data-id');
+    const d = event.target.getAttribute('data-d');
     console.log(id);
-    var dd = d.split("^");
-    this.setState({ popname: dd[0], poptype: dd[1], poprange: dd[2], poppercent: dd[3], sid: id });
-    //this.props.history.push('/createfee/'+this.state.bank_id);
+    const dd = d.split('^');
+    this.setState({
+      popname: dd[0],
+      poptype: dd[1],
+      poprange: dd[2],
+      poppercent: dd[3],
+      sid: id,
+    });
+    // this.props.history.push('/createfee/'+this.state.bank_id);
   };
 
   closeMiniPopUp = () => {
@@ -151,7 +157,7 @@ export default class BankDocuments extends Component {
       logo: null,
       contract: null,
       otp: '',
-      showOtp: false
+      showOtp: false,
     });
   };
 
@@ -160,8 +166,8 @@ export default class BankDocuments extends Component {
     // axios.post(API_URL+'/logout', {token: token})
     // .then(res => {
     //    if(res.status == 200){
-    localStorage.removeItem("logged");
-    localStorage.removeItem("name");
+    localStorage.removeItem('logged');
+    localStorage.removeItem('name');
     this.setState({ redirect: true });
     //     }else{
     //       const error = new Error(res.data.error);
@@ -177,31 +183,31 @@ export default class BankDocuments extends Component {
   addBank = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/generateOTP`, {
+      .post(`${API_URL}/generateOTP`, {
         name: this.state.name,
         mobile: this.state.mobile,
         page: 'addBank',
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
               showOtp: true,
-              notification: 'OTP Sent'
+              notification: 'OTP Sent',
             });
             this.success();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
@@ -210,76 +216,71 @@ export default class BankDocuments extends Component {
   approve = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/approveFee`, {
+      .post(`${API_URL}/approveFee`, {
         id: this.state.sid,
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              notification: 'Approved'
+              notification: 'Approved',
             });
             this.success();
-            
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
-        
       });
   };
 
   decline = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/declineFee`, {
+      .post(`${API_URL}/declineFee`, {
         id: this.state.sid,
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              notification: 'Declined'
+              notification: 'Declined',
             });
             this.success();
-            
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
   };
 
-
   showWallet = event => {
     event.preventDefault();
-    
   };
 
   verifyOTP = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/addBank`, {
+      .post(`${API_URL}/addBank`, {
         name: this.state.name,
         address1: this.state.address1,
         state: this.state.state,
@@ -294,30 +295,29 @@ export default class BankDocuments extends Component {
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              notification: "Bank added successfully!",
+              notification: 'Bank added successfully!',
             });
             this.success();
             this.closeMiniPopUp();
             this.getBanks();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
   };
-
 
   removeFile = key => {
     this.setState({
@@ -332,7 +332,7 @@ export default class BankDocuments extends Component {
 
   onChange(e) {
     if (e.target.files && e.target.files[0] != null) {
-      this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
+      this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
     }
   }
 
@@ -342,72 +342,61 @@ export default class BankDocuments extends Component {
     formData.append('file', file);
     const config = {
       headers: {
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     };
 
     axios
-      .post(`${API_URL  }/fileUpload?token=${  token}`, formData, config)
+      .post(`${API_URL}/fileUpload?token=${token}`, formData, config)
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              [key] : res.data.name
+              [key]: res.data.name,
             });
           }
-        }else{
+        } else {
           throw res.data.error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
   }
 
-  getBanks = () => {
-
-  };
+  getBanks = () => {};
 
   getRules = () => {
     axios
-      .post(`${API_URL  }/getBankRules`, { bank_id: this.state.bank })
+      .post(`${API_URL}/getBankRules`, { bank_id: this.state.bank })
       .then(res => {
-        if(res.status == 200){
-          
+        if (res.status == 200) {
           this.setState({ rules: res.data.rules });
         }
       })
-      .catch(err => {
-        
-      });
+      .catch(err => {});
   };
 
   getDocs = () => {
     axios
-      .post(`${API_URL  }/getDocs`, { bank_id: this.state.bank_id })
+      .post(`${API_URL}/getDocs`, { bank_id: this.state.bank_id })
       .then(res => {
-        
-        if(res.status == 200){
-          this.setState({ loading: false, docs: res.data.docs }, function(){
+        if (res.status == 200) {
+          this.setState({ loading: false, docs: res.data.docs }, function() {
             console.log(this.state.docs);
           });
         }
       })
-      .catch(err => {
-        
-      });
+      .catch(err => {});
   };
-  
 
   componentDidMount() {
-    
     if (token !== undefined && token !== null) {
-      
       this.getBanks();
       this.getDocs();
     } else {
@@ -417,10 +406,9 @@ export default class BankDocuments extends Component {
   }
 
   render() {
-    
     function inputFocus(e) {
       const { target } = e;
-      target.parentElement.querySelector("label").classList.add("focused");
+      target.parentElement.querySelector('label').classList.add('focused');
     }
 
     function inputBlur(e) {
@@ -438,10 +426,22 @@ export default class BankDocuments extends Component {
       return null;
     }
     const dis = this;
-    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return (
-      
-      <Wrapper  from="bank">
+      <Wrapper from="bank">
         <Helmet>
           <meta charSet="utf-8" />
           <title>Banks | INFRA | E-WALLET</title>
@@ -450,100 +450,131 @@ export default class BankDocuments extends Component {
         <Container verticalMargin>
           <BankSidebarTwo active="documents" />
           <Main>
-
             <Card bigPadding>
-
               <div className="cardBody clr">
-              <h3>FILES</h3>
-              {
-                  
-                  this.state.docs && this.state.docs.length > 0
-                    ? this.state.docs.map(function(b) {
-                      var filename = b.contract.replace(/^.*[\\\/]/, '');
-                      var ext = b.contract.split('.').pop();
-                      var icon = (ext == 'pdf') ? STATIC_URL+'main/pdf-icon.png' : STATIC_URL+'main/pdf-icon.png';
-                      var isoformat = b.created_at;
-                      var readable = new Date(isoformat);
-                      var m = readable.getMonth(); // returns 6
-                      var d = readable.getDay();  // returns 15
-                      var y = readable.getFullYear();
-                      var h = readable.getHours();
-                      var mi = readable.getMinutes();
-                      var mlong = months[m];
-                      var fulldate = d + " " + mlong + " " + y+ " " + h+ ":" + mi;
-                      return <Card key={b._id} blueHover col horizontalMargin="10px" cardWidth="192px" className="doc">
-                        <a href={CONTRACT_URL+b.contract} target="_blank">
-                        <div className="profile">
-                          <img src={icon} />
+                <h3>FILES</h3>
+                {this.state.docs && this.state.docs.length > 0
+                  ? this.state.docs.map(function(b) {
+                    let filename = b.contract.replace(/^.*[\\\/]/, '');
+                    const ext = b.contract.split('.').pop();
+                    const icon =
+                        ext == 'pdf'
+                          ? `${STATIC_URL}main/pdf-icon.png`
+                          : `${STATIC_URL}main/pdf-icon.png`;
+                    const isoformat = b.created_at;
+                    const readable = new Date(isoformat);
+                    const m = readable.getMonth(); // returns 6
+                    const d = readable.getDay(); // returns 15
+                    const y = readable.getFullYear();
+                    const h = readable.getHours();
+                    const mi = readable.getMinutes();
+                    let mlong = months[m];
+                    const fulldate = `${d} ${mlong} ${y} ${h}:${mi}`;
+                    return (
+                      <Card
+                        key={b._id}
+                        blueHover
+                        col
+                        horizontalMargin="10px"
+                        cardWidth="192px"
+                        className="doc"
+                      >
+                        <a href={CONTRACT_URL + b.contract} target="_blank">
+                          <div className="profile">
+                            <img src={icon} />
                           </div>
                           <h4 className="hhh">{filename}</h4>
                           <h4 className="hhhh">{fulldate}</h4>
-                          </a>
+                        </a>
                       </Card>
-                      
-                    })
-                    :
-                    null
-                }
+                    );
+                  })
+                  : null}
               </div>
             </Card>
           </Main>
         </Container>
-        { this.state.popup ? 
+        {this.state.popup ? (
           <MiniPopUp close={this.closeMiniPopUp.bind(this)}>
-            {
-              this.state.showOtp ?
+            {this.state.showOtp ? (
               <div>
-              <h1><FormattedMessage {...messages.verify} /></h1>
-            <form >
-              <FormGroup>
-                <label><FormattedMessage {...messages.otp} />*</label>
-                <TextInput
-                  type="text"
-                  name="otp"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.otp}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.verify} /></span>
-              </Button>
-              </form>
+                <h1>
+                  <FormattedMessage {...messages.verify} />
+                </h1>
+                <form>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.otp} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <Button filledBtn marginTop="50px">
+                    <span>
+                      <FormattedMessage {...messages.verify} />
+                    </span>
+                  </Button>
+                </form>
               </div>
-              :
+            ) : (
               <div>
-            
-            <form >
-              <p><span  id="popname">{this.state.popname}</span></p>
-              <p > Sending from <span id="poptype">{this.state.poptype}</span></p>
-              <p > Transaction range<span id="poprange">{this.state.poprange}</span></p>
-              <p > Fee <span id="poppercent">{this.state.poppercent}</span> &nbsp; &nbsp; Priority: <span>100</span></p>
-                         <Row>
-                  <Col>
-                  <FormGroup>
-                  <Button filledBtn marginTop="50px" accentedBtn onClick={this.decline}>
-                <span>Decline</span>
-              </Button >
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <Button filledBtn marginTop="50px"  onClick={this.approve}>
-                <span>Approve</span>
-              </Button>
-                  </FormGroup>
-                  </Col>
-                </Row>
-
-              
-            </form>
-            </div>
-            }
+                <form>
+                  <p>
+                    <span id="popname">{this.state.popname}</span>
+                  </p>
+                  <p>
+                    {' '}
+                    Sending from <span id="poptype">{this.state.poptype}</span>
+                  </p>
+                  <p>
+                    {' '}
+                    Transaction range
+                    <span id="poprange">{this.state.poprange}</span>
+                  </p>
+                  <p>
+                    {' '}
+                    Fee <span id="poppercent">
+                      {this.state.poppercent}
+                    </span>{' '}
+                    &nbsp; &nbsp; Priority: <span>100</span>
+                  </p>
+                  <Row>
+                    <Col>
+                      <FormGroup>
+                        <Button
+                          filledBtn
+                          marginTop="50px"
+                          accentedBtn
+                          onClick={this.decline}
+                        >
+                          <span>Decline</span>
+                        </Button>
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <FormGroup>
+                        <Button
+                          filledBtn
+                          marginTop="50px"
+                          onClick={this.approve}
+                        >
+                          <span>Approve</span>
+                        </Button>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </form>
+              </div>
+            )}
           </MiniPopUp>
-          : null }
+        ) : null}
       </Wrapper>
     );
   }

@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import Header from 'components/Header/index';
@@ -29,6 +28,7 @@ import TextInput from 'components/TextInput';
 import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import messages from './messages';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
@@ -45,7 +45,7 @@ toast.configure({
 
 const token = localStorage.getItem('logged');
 
-var isAdmin = localStorage.getItem('isAdmin');
+const isAdmin = localStorage.getItem('isAdmin');
 
 export default class InfraProfile extends Component {
   constructor() {
@@ -92,7 +92,7 @@ export default class InfraProfile extends Component {
   };
 
   showPopup = () => {
-    //, name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id
+    // , name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id
     this.setState({ popup: true });
   };
 
@@ -307,7 +307,7 @@ export default class InfraProfile extends Component {
   getBanks = () => {
     axios
       .post(`${API_URL}/getBank`, {
-        token: token,
+        token,
         bank_id: this.props.match.params.bank,
       })
       .then(res => {
@@ -337,7 +337,7 @@ export default class InfraProfile extends Component {
 
   getProfile = () => {
     axios
-      .post(`${API_URL}/getProfile`, { token: token })
+      .post(`${API_URL}/getProfile`, { token })
       .then(res => {
         if (res.status == 200) {
           this.setState(
@@ -436,7 +436,7 @@ export default class InfraProfile extends Component {
                   </Button>
                 </ActionBar>
               </>
-            ) : null}
+              ) : null}
 
             <Card
               // style={{ width: '65%', textAlign: 'right' }}
@@ -456,7 +456,10 @@ export default class InfraProfile extends Component {
 
                 <Row>
                   <Col className="infoLeft">Password</Col>
-                  <Col className="infoRight">Change Only</Col>
+                  <Col className="infoRight">
+                    {this.state.profile.password}
+                    {/* Change Only */}
+                  </Col>
                 </Row>
 
                 <Row>

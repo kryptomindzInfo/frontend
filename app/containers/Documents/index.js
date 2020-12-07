@@ -12,7 +12,6 @@ import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
-import messages from './messages';
 
 import Wrapper from 'components/Wrapper';
 import TopBar from 'components/Header/TopBar';
@@ -32,6 +31,7 @@ import TextInput from 'components/TextInput';
 import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import messages from './messages';
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
@@ -46,8 +46,6 @@ toast.configure({
 });
 
 const token = localStorage.getItem('logged');
-
-
 
 export default class Documents extends Component {
   constructor() {
@@ -74,7 +72,7 @@ export default class Documents extends Component {
       rules: [],
       docs: [],
       otp: '',
-      showOtp: false
+      showOtp: false,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -98,8 +96,8 @@ export default class Documents extends Component {
   };
 
   showPopup = () => {
-    //this.setState({ popup: true });
-    this.props.history.push('/createfee/'+this.props.match.params.bank);
+    // this.setState({ popup: true });
+    this.props.history.push(`/createfee/${this.props.match.params.bank}`);
   };
 
   closePopup = () => {
@@ -116,7 +114,7 @@ export default class Documents extends Component {
       logo: null,
       contract: null,
       otp: '',
-      showOtp: false
+      showOtp: false,
     });
   };
 
@@ -125,8 +123,8 @@ export default class Documents extends Component {
     // axios.post(API_URL+'/logout', {token: token})
     // .then(res => {
     //    if(res.status == 200){
-    localStorage.removeItem("logged");
-    localStorage.removeItem("name");
+    localStorage.removeItem('logged');
+    localStorage.removeItem('name');
     this.setState({ redirect: true });
     //     }else{
     //       const error = new Error(res.data.error);
@@ -142,31 +140,31 @@ export default class Documents extends Component {
   addBank = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/generateOTP`, {
+      .post(`${API_URL}/generateOTP`, {
         name: this.state.name,
         mobile: this.state.mobile,
         page: 'addBank',
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
               showOtp: true,
-              notification: 'OTP Sent'
+              notification: 'OTP Sent',
             });
             this.success();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
@@ -175,7 +173,7 @@ export default class Documents extends Component {
   verifyOTP = event => {
     event.preventDefault();
     axios
-      .post(`${API_URL  }/addBank`, {
+      .post(`${API_URL}/addBank`, {
         name: this.state.name,
         address1: this.state.address1,
         state: this.state.state,
@@ -190,30 +188,29 @@ export default class Documents extends Component {
         token,
       })
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              notification: "Bank added successfully!",
+              notification: 'Bank added successfully!',
             });
             this.success();
             this.closePopup();
             this.getBanks();
           }
-        }else{
+        } else {
           const error = new Error(res.data.error);
           throw error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
   };
-
 
   removeFile = key => {
     this.setState({
@@ -228,7 +225,7 @@ export default class Documents extends Component {
 
   onChange(e) {
     if (e.target.files && e.target.files[0] != null) {
-      this.fileUpload(e.target.files[0], e.target.getAttribute("data-key"));
+      this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
     }
   }
 
@@ -238,28 +235,28 @@ export default class Documents extends Component {
     formData.append('file', file);
     const config = {
       headers: {
-        'content-type': 'multipart/form-data'
+        'content-type': 'multipart/form-data',
       },
     };
 
     axios
-      .post(`${API_URL  }/fileUpload?token=${  token}`, formData, config)
+      .post(`${API_URL}/fileUpload?token=${token}`, formData, config)
       .then(res => {
-        if(res.status == 200){
-          if(res.data.error){
+        if (res.status == 200) {
+          if (res.data.error) {
             throw res.data.error;
-          }else{
+          } else {
             this.setState({
-              [key] : res.data.name
+              [key]: res.data.name,
             });
           }
-        }else{
+        } else {
           throw res.data.error;
         }
       })
       .catch(err => {
         this.setState({
-          notification: (err.response) ? err.response.data.error : err.toString()
+          notification: err.response ? err.response.data.error : err.toString(),
         });
         this.error();
       });
@@ -267,46 +264,49 @@ export default class Documents extends Component {
 
   getBanks = () => {
     axios
-      .post(`${API_URL  }/getBank`, { token:token, bank_id: this.props.match.params.bank })
+      .post(`${API_URL}/getBank`, {
+        token,
+        bank_id: this.props.match.params.bank,
+      })
       .then(res => {
-        if(res.status == 200){
-          
-          this.setState({ loading: false, banks: res.data.banks, logo: res.data.banks.logo });
+        if (res.status == 200) {
+          this.setState({
+            loading: false,
+            banks: res.data.banks,
+            logo: res.data.banks.logo,
+          });
         }
       })
-      .catch(err => {
-        
-      });
+      .catch(err => { });
   };
 
   getRules = () => {
     axios
-      .post(`${API_URL  }/getRules`, { token:token, bank_id: this.props.match.params.bank })
+      .post(`${API_URL}/getRules`, {
+        token,
+        bank_id: this.props.match.params.bank,
+      })
       .then(res => {
-        if(res.status == 200){
-          
+        if (res.status == 200) {
           this.setState({ rules: res.data.rules });
         }
       })
-      .catch(err => {
-        
-      });
+      .catch(err => { });
   };
 
   getDocs = () => {
     axios
-      .post(`${API_URL  }/getDocs`, { token:token, bank_id: this.props.match.params.bank })
+      .post(`${API_URL}/getDocs`, {
+        token,
+        bank_id: this.props.match.params.bank,
+      })
       .then(res => {
-        if(res.status == 200){
-          
+        if (res.status == 200) {
           this.setState({ loading: false, docs: res.data.docs });
         }
       })
-      .catch(err => {
-        
-      });
+      .catch(err => { });
   };
-  
 
   componentDidMount() {
     this.setState({ bank: this.props.match.params.bank });
@@ -320,10 +320,9 @@ export default class Documents extends Component {
   }
 
   render() {
-    
     function inputFocus(e) {
       const { target } = e;
-      target.parentElement.querySelector("label").classList.add("focused");
+      target.parentElement.querySelector('label').classList.add('focused');
     }
 
     function inputBlur(e) {
@@ -338,34 +337,43 @@ export default class Documents extends Component {
       return <Loader fullPage />;
     }
     if (redirect) {
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
-    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
     return (
-      
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
           <title>Banks | INFRA | E-WALLET</title>
         </Helmet>
         <TopBar>
-        <Welcome infraNav/>
+          <Welcome infraNav />
           <Container>
-            <A  href="/dashboard" float="left">
-            <div className="headerNavDash">
-              Main Dashboard
-            </div>
+            <A href="/banks" float="left">
+              <div className="headerNavDash">Back</div>
             </A>
-      {/*    <div className="bankLogo">
+            {/*    <div className="bankLogo">
             <img src={STATIC_URL+this.state.logo}/>
               </div>
 
     <h2>{this.state.banks.name}</h2> */}
-            
           </Container>
         </TopBar>
         <Container verticalMargin>
-           <div
+          <div
             className="bankLogo"
             style={{
               display: 'flex',
@@ -377,7 +385,7 @@ export default class Documents extends Component {
               paddingTop: '16px',
               backgroundColor: 'white',
             }}
-            >
+          >
             <img
               src={STATIC_URL + this.state.logo}
               style={{
@@ -393,257 +401,306 @@ export default class Documents extends Component {
               <h2>{this.state.banks && this.state.banks.name}</h2>
             </div>
           </div>
-      
+
           <SidebarTwo bankId={this.state.bank} active="documents" />
           <Main big>
-            
             <Card bigPadding>
-              <div className="cardHeader" >
-               
-              </div>
+              <div className="cardHeader" />
               <div className="cardBody clr">
                 <h3>FILES</h3>
-            
-                {
-                  
-                      this.state.docs && this.state.docs.length > 0
-                        ? this.state.docs.map(function(b) {
-                          var filename = b.contract.replace(/^.*[\\\/]/, '');
-                          var ext = b.contract.split('.').pop();
-                          var icon = (ext == 'pdf') ? STATIC_URL+'main/pdf-icon.png' : STATIC_URL+'main/pdf-icon.png';
-                          var isoformat = b.created_at;
-                          var readable = new Date(isoformat);
-                          var m = readable.getMonth(); // returns 6
-                          var d = readable.getDay();  // returns 15
-                          var y = readable.getFullYear();
-                          var h = readable.getHours();
-                          var mi = readable.getMinutes();
-                          var mlong = months[m];
-                          var fulldate = d + " " + mlong + " " + y+ " " + h+ ":" + mi;
-                          return <Card key={b._id} blueHover col horizontalMargin="10px" cardWidth="192px" className="doc">
-                            <a href={CONTRACT_URL+b.contract} target="_blank">
-                            <div className="profile">
-                              <img src={icon} />
-                              </div>
-                              <h4 className="hhh">{filename}</h4>
-                              <h4 className="hhhh">{fulldate}</h4>
-                              </a>
-                          </Card>
-                          
-                        })
-                        :
-                        null
-                    }
-                  
+
+                {this.state.docs && this.state.docs.length > 0
+                  ? this.state.docs.map(function (b) {
+                    let filename = b.contract.replace(/^.*[\\\/]/, '');
+                    const ext = b.contract.split('.').pop();
+                    const icon =
+                      ext == 'pdf'
+                        ? `${STATIC_URL}main/pdf-icon.png`
+                        : `${STATIC_URL}main/pdf-icon.png`;
+                    let isoformat = b.created_at;
+                    const readable = new Date(isoformat);
+                    console.log(readable.getDate());
+                    let m = readable.getMonth(); // returns 6
+                    const d = readable.getDate(); // returns 15
+                    let y = readable.getFullYear();
+                    let h = readable.getHours();
+                    const mi = readable.getMinutes();
+                    let mlong = months[m];
+                    let fulldate = `${d} ${mlong} ${y} ${h}:${mi}`;
+                    return (
+                      <Card
+                        key={b._id}
+                        blueHover
+                        col
+                        horizontalMargin="10px"
+                        cardWidth="192px"
+                        className="doc"
+                      >
+                        <a href={CONTRACT_URL + b.contract} target="_blank">
+                          <div className="profile">
+                            {/* <img src={icon} /> */}
+                            <i className="material-icons" style={{ fontSize: "40px", color: "black" }}>file_copy</i>
+                          </div>
+                          <h4 className="hhh">{filename}</h4>
+                          <h4 className="hhhh">{fulldate}</h4>
+                        </a>
+                      </Card>
+                    );
+                  })
+                  : null}
               </div>
             </Card>
           </Main>
         </Container>
-        { this.state.popup ? 
+        {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)}>
-            {
-              this.state.showOtp ?
+            {this.state.showOtp ? (
               <div>
-              <h1><FormattedMessage {...messages.verify} /></h1>
-            <form action="" method="post" onSubmit={this.verifyOTP} >
-              <FormGroup>
-                <label><FormattedMessage {...messages.otp} />*</label>
-                <TextInput
-                  type="text"
-                  name="otp"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.otp}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.verify} /></span>
-              </Button>
-              </form>
+                <h1>
+                  <FormattedMessage {...messages.verify} />
+                </h1>
+                <form action="" method="post" onSubmit={this.verifyOTP}>
+                  <FormGroup>
+                    <label>
+                      <FormattedMessage {...messages.otp} />*
+                    </label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  <Button filledBtn marginTop="50px">
+                    <span>
+                      <FormattedMessage {...messages.verify} />
+                    </span>
+                  </Button>
+                </form>
               </div>
-              :
-              <div>
-            <h1><FormattedMessage {...messages.addbank} /></h1>
-            <form action="" method="post" onSubmit={this.addBank}>
-              <FormGroup>
-                <label><FormattedMessage {...messages.popup1} />*</label>
-                <TextInput
-                  type="text"
-                  name="name"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.name}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              <FormGroup>
-                <label><FormattedMessage {...messages.popup2} />*</label>
-                <TextInput
-                  type="text"
-                  name="address1"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.address1}
-                  onChange={this.handleInputChange}
-                  required
-                />
-              </FormGroup>
-              
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup3} />*</label>
-                  <TextInput
-                    type="text"
-                    name="state"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.state}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup4} />*</label>
-                  <TextInput
-                    type="text"
-                    name="zip"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.zip}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup5} />*</label>
-                  <TextInput
-                    type="text"
-                    name="country"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.country}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup6} />*</label>
-                  <TextInput
-                    type="text"
-                    name="ccode"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.ccode}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>  
-                <Row>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup7} />*</label>
-                  <TextInput
-                    type="text"
-                    name="mobile"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.mobile}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                  <Col>
-                  <FormGroup>
-                  <label><FormattedMessage {...messages.popup8} />*</label>
-                  <TextInput
-                    type="text"
-                    name="email"
-                    onFocus={inputFocus}
-                    onBlur={inputBlur}
-                    value={this.state.email}
-                    onChange={this.handleInputChange}
-                    required
-                  />
-                  </FormGroup>
-                  </Col>
-                </Row>
-              
+            ) : (
+                <div>
+                  <h1>
+                    <FormattedMessage {...messages.addbank} />
+                  </h1>
+                  <form action="" method="post" onSubmit={this.addBank}>
+                    <FormGroup>
+                      <label>
+                        <FormattedMessage {...messages.popup1} />*
+                    </label>
+                      <TextInput
+                        type="text"
+                        name="name"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.name}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <label>
+                        <FormattedMessage {...messages.popup2} />*
+                    </label>
+                      <TextInput
+                        type="text"
+                        name="address1"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.address1}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-              <FormGroup>
-                
-                  {/* <UploadedFile>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup3} />*
+                        </label>
+                          <TextInput
+                            type="text"
+                            name="state"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.state}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup4} />*
+                        </label>
+                          <TextInput
+                            type="text"
+                            name="zip"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.zip}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup5} />*
+                        </label>
+                          <TextInput
+                            type="text"
+                            name="country"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.country}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup6} />*
+                        </label>
+                          <TextInput
+                            type="text"
+                            name="ccode"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.ccode}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup7} />*
+                        </label>
+                          <TextInput
+                            type="text"
+                            name="mobile"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.mobile}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup8} />*
+                        </label>
+                          <TextInput
+                            type="text"
+                            name="email"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.email}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+
+                    <FormGroup>
+                      {/* <UploadedFile>
                     
                       <i className="material-icons" onClick={() => this.removeFile('logo')}>close</i>
                     </UploadedFile>
                   : */}
-                  <UploadArea  bgImg={STATIC_URL+ this.state.logo}>
-                    { 
-                    this.state.logo ? 
-                    <a className="uploadedImg" href={STATIC_URL+ this.state.logo } target="_BLANK">
-                    </a> 
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('logo')}>
-                    <input type="file" id="logo" onChange={this.onChange} data-key="logo"/>
-                    { 
-                    !this.state.logo ? 
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
-                    <label><FormattedMessage {...messages.popup9} /> *</label>
-                    </div>
-                  </UploadArea>
-                
-              </FormGroup>
+                      <UploadArea bgImg={STATIC_URL + this.state.logo}>
+                        {this.state.logo ? (
+                          <a
+                            className="uploadedImg"
+                            href={STATIC_URL + this.state.logo}
+                            target="_BLANK"
+                          />
+                        ) : (
+                            ' '
+                          )}
+                        <div
+                          className="uploadTrigger"
+                          onClick={() => this.triggerBrowse('logo')}
+                        >
+                          <input
+                            type="file"
+                            id="logo"
+                            onChange={this.onChange}
+                            data-key="logo"
+                          />
+                          {!this.state.logo ? (
+                            <i className="material-icons">cloud_upload</i>
+                          ) : (
+                              ' '
+                            )}
+                          <label>
+                            <FormattedMessage {...messages.popup9} /> *
+                        </label>
+                        </div>
+                      </UploadArea>
+                    </FormGroup>
 
-              <FormGroup>
-              <UploadArea  bgImg={STATIC_URL+ 'main/pdf-icon.png'}>
-                    { 
-                    this.state.contract ? 
-                    <a className="uploadedImg" href={CONTRACT_URL+ this.state.contract } target="_BLANK">
-                    </a> 
-                    :
-                    ' '
-                    }
-                    <div className="uploadTrigger" onClick={() => this.triggerBrowse('contract')}>
-                    <input type="file" id="contract" onChange={this.onChange} data-key="contract"/>
-                    { 
-                    !this.state.contract ? 
-                    <i className="material-icons">cloud_upload</i>
-                    :
-                    ' '
-                    }
-                    
-                    <label><FormattedMessage {...messages.popup10} /> *</label>
-                    </div>
-                  </UploadArea>
-              </FormGroup>
+                    <FormGroup>
+                      <UploadArea bgImg={`${STATIC_URL}main/pdf-icon.png`}>
+                        {this.state.contract ? (
+                          <a
+                            className="uploadedImg"
+                            href={CONTRACT_URL + this.state.contract}
+                            target="_BLANK"
+                          />
+                        ) : (
+                            ' '
+                          )}
+                        <div
+                          className="uploadTrigger"
+                          onClick={() => this.triggerBrowse('contract')}
+                        >
+                          <input
+                            type="file"
+                            id="contract"
+                            onChange={this.onChange}
+                            data-key="contract"
+                          />
+                          {!this.state.contract ? (
+                            <i className="material-icons">cloud_upload</i>
+                          ) : (
+                              ' '
+                            )}
 
-              <Button filledBtn marginTop="50px">
-                <span><FormattedMessage {...messages.addbank} /></span>
-              </Button>
-            </form>
-            </div>
-            }
+                          <label>
+                            <FormattedMessage {...messages.popup10} /> *
+                        </label>
+                        </div>
+                      </UploadArea>
+                    </FormGroup>
+
+                    <Button filledBtn marginTop="50px">
+                      <span>
+                        <FormattedMessage {...messages.addbank} />
+                      </span>
+                    </Button>
+                  </form>
+                </div>
+              )}
           </Popup>
-          : null }
+        ) : null}
       </Wrapper>
     );
   }
