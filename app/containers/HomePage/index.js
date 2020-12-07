@@ -96,7 +96,7 @@ export default class HomePage extends Component {
     } else {
       const res = await getRequest("checkInfra",token,{})
       console.log(res);
-        if (res.data.infras <= 0) {
+        if (res.data.data.infras <= 0) {
           this.props.history.push('/setup');
         }
       this.setState({ loading: false });
