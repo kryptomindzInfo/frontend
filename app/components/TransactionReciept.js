@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
 import ReactToPrint from 'react-to-print';
- 
+import Popup from './Popup';
 import { Reciept } from './Reciept';
-
 
 const TransactionReciept = props => {
   const componentRef = useRef();

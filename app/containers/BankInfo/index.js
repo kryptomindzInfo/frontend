@@ -29,7 +29,7 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import Loader from 'components/Loader';
-
+import { postRequest, getRequest } from '../App/ApiCall';
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -463,27 +463,28 @@ export default class BankInfo extends Component {
 
   getBanks = async() => {
     const res = await postRequest("getOne", token, {type: 'bank', page: 'bank' })
+    console.log(res);
         if (res.data.status == 200) {
           this.setState({
             loading: false,
-            banks: res.data.row,
-            bcode: res.data.row.bcode,
-            working_from: res.data.row.working_from  == 0? '00:00' : res.data.row.working_from ,
-            working_to: res.data.row.working_to  == 0? '00:00' : res.data.row.working_to ,
-            logo: res.data.row.logo,
-            name: res.data.row.name,
-            address1: res.data.row.address1,
-            state: res.data.row.state,
-            zip: res.data.row.zip,
-            country: res.data.row.country,
-            ccode: res.data.row.ccode,
-            mobile: res.data.row.mobile,
-            email: res.data.row.email,
-            logo: res.data.row.logo,
-            contract: res.data.row.contract,
-            username: res.data.row.contract,
-            bank_id: res.data.row._id,
-            username: res.data.row.username,
+            banks: res.data.data.row,
+            bcode: res.data.data.row.bcode,
+            working_from: res.data.data.row.working_from  == 0? '00:00' : res.data.data.row.working_from ,
+            working_to: res.data.data.row.working_to  == 0? '00:00' : res.data.data.row.working_to ,
+            logo: res.data.data.row.logo,
+            name: res.data.data.row.name,
+            address1: res.data.data.row.address1,
+            state: res.data.data.row.state,
+            zip: res.data.data.row.zip,
+            country: res.data.data.row.country,
+            ccode: res.data.data.row.ccode,
+            mobile: res.data.data.row.mobile,
+            email: res.data.data.row.email,
+            logo: res.data.data.row.logo,
+            contract: res.data.data.row.contract,
+            username: res.data.data.row.contract,
+            bank_id: res.data.data.row._id,
+            username: res.data.data.row.username,
           });
         }
   };
