@@ -20,6 +20,7 @@ import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/picker
 import { API_URL, CURRENCY } from '../../containers/App/constants';
 import CountrySelectBox from '../Form/CountrySelectBox';
 import TypeSelectBox from '../Form/TypeSelectBox';
+import TransactionReciept from '../TransactionReciept';
 
 const styles = makeStyles(() => ({
   '@global': {
