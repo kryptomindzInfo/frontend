@@ -76,9 +76,6 @@ export default class BankLoginPage extends Component {
       loginLoading: true,
     }, async() => {
       const res = await postRequest("bankLogin", token, this.state)
-      if(res.data.data.status === 0) {
-        toast.error(res.data.data.message);
-      } else {
             localStorage.setItem('bankLogged', res.data.data.token);
             localStorage.setItem('bankName', res.data.data.name);
             localStorage.setItem('bankUserName', res.data.data.username);
@@ -89,7 +86,7 @@ export default class BankLoginPage extends Component {
             console.log(localStorage.getItem('bankLogged'));
             console.log(res);
             if(res.data.data.status == 0 && res.data.data.message === "Incorrect username or password") {
-              throw res.data.data.message;
+              toast.error(res.data.data.message);
             }
             else if (!res.data.data.initial_setup) {
               window.location.href ='/bank/setup';
@@ -104,7 +101,7 @@ export default class BankLoginPage extends Component {
               window.location.href ='/bank/dashboard';
             }
 
-        }
+        
     });
 
   };

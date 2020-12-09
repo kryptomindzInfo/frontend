@@ -133,12 +133,25 @@ export default class BankBranchInfo extends Component {
     .then(res => {
       if(res.status == 200){
         console.log(res.data);
-        this.setState({ otpEmail: res.data.row.email, otpMobile: res.data.row.mobile, bankName: res.data.row.name, dbcode: res.data.row.bcode });
+        this.setState({ loading: false, name: res.data.row.name, otpEmail: res.data.row.email, otpMobile: res.data.row.mobile, bankName: res.data.row.name, dbcode: res.data.row.bcode, bcode: res.data.row.bcode, credit_limit: res.data.row.credit_limit, username: res.data.row.username, address1: res.data.row.address1, state: res.data.row.state, zip: res.data.row.zip, country: res.data.row.country, ccode: res.data.row.ccode, mobile: res.data.row.mobile, email: res.data.row.email, branch_id: res.data.row._id, status: res.data.row.status });
       }
     })
     .catch(err => {
 
     });
+  };
+
+  getBranches = () => {
+    axios
+      .post(`${API_URL}/getBranch`, { token:token, branch_id: this.state.branch_id})
+      .then(res => {
+        if(res.status == 200){
+          this.setState({ loading: false, banks: res.data.branches, name: res.data.branches.name, bcode: res.data.branches.bcode, credit_limit: res.data.branches.credit_limit, username: res.data.branches.username, address1: res.data.branches.address1, state: res.data.branches.state, zip: res.data.branches.zip, country: res.data.branches.country, ccode: res.data.branches.ccode, mobile: res.data.branches.mobile, email: res.data.branches.email, branch_id: res.data.branches._id, status: res.data.branches.status});
+        }
+      })
+      .catch(err => {
+
+      });
   };
 
   editBank = event => {
@@ -570,20 +583,6 @@ export default class BankBranchInfo extends Component {
       });
   }
 
-
-  getBranches = () => {
-    axios
-      .post(`${API_URL}/getBranch`, { token:token, branch_id: this.state.branch_id})
-      .then(res => {
-        if(res.status == 200){
-          this.setState({ loading: false, banks: res.data.branches, name: res.data.branches.name, bcode: res.data.branches.bcode, credit_limit: res.data.branches.credit_limit, username: res.data.branches.username, address1: res.data.branches.address1, state: res.data.branches.state, zip: res.data.branches.zip, country: res.data.branches.country, ccode: res.data.branches.ccode, mobile: res.data.branches.mobile, email: res.data.branches.email, branch_id: res.data.branches._id, status: res.data.branches.status});
-        }
-      })
-      .catch(err => {
-
-      });
-  };
-
   getRules = () => {
     axios
       .post(`${API_URL  }/getBankRules`, { bank_id: this.state.bank })
@@ -666,7 +665,7 @@ export default class BankBranchInfo extends Component {
     this.setState({ branch_id: this.props.match.params.branch }, () => {
       if (token !== undefined && token !== null) {
         this.getBanks();
-        this.getBranches();
+        // this.getBranches();
 
       } else {
         // alert('Login to continue');

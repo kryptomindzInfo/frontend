@@ -10,7 +10,7 @@ toast.configure({
   pauseOnHover: true,
   draggable: true,
 });
-
+const token = localStorage.getItem('bankLogged');
 const createMerchant = async (props, values, token) => {
   try {
     const res = await axios.post(`${API_URL}/bank/createMerchant`, {
@@ -55,7 +55,7 @@ const editMerchant = async (props, values, token) => {
     toast.error('Something went wrong');
   }
 };
-const token = localStorage.getItem('bankLogged');
+
 
 const fetchMerchantList = async () => {
   try {

@@ -15,6 +15,7 @@ import Container from 'components/Container';
 import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
 import MuiCheckbox from '@material-ui/core/Checkbox';
+import TransactionReciept from '../TransactionReciept';
 
 import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
 
@@ -70,6 +71,8 @@ class CashierTransactionLimit extends Component {
       isInclusive: false,
       interbank: true,
       interbankclaim: true,
+      receiptpopup: false,
+      receiptvalues: {},
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -94,6 +97,12 @@ class CashierTransactionLimit extends Component {
   closeOperationalPopup = () => {
     this.setState({
       sendtooperationalpopup: false,
+    });
+  };
+
+  closeReceiptPopup = () => {
+    this.setState({
+      receiptpopup: false,
     });
   };
 
@@ -706,6 +715,7 @@ class CashierTransactionLimit extends Component {
   startClaiming = event => {
     this.setState({
       claimMoneyLoading: true,
+      receiptvalues:{...this.state},
     });
     console.log(this.state.interbankclaim);
     let API = "";
@@ -727,6 +737,7 @@ class CashierTransactionLimit extends Component {
               popupClaimMoney: false,
               showClaimMoneyDetails: false,
               transferCode: '',
+              receiptpopup:true,
             });
             this.success();
             this.props.refresh();
@@ -762,6 +773,10 @@ class CashierTransactionLimit extends Component {
     this.setState({
       verifySendMoneyOTPLoading: true,
     });
+    const values = { ...this.state }
+    this.setState({
+      receiptvalues: values,
+    });
     let API = '';
     if (this.state.interbank){
       API = 'cashier/interBank/sendMoneyToNonWallet'
@@ -778,6 +793,7 @@ class CashierTransactionLimit extends Component {
           } else {
             this.setState({
               notification: 'Transaction Successfully Done',
+              receiptpopup: true,
             });
             this.success();
             this.closePopupSendMoney();
@@ -1073,6 +1089,12 @@ class CashierTransactionLimit extends Component {
             )}
           </Col>
         </Row>
+        {this.state.receiptpopup ? (
+          <TransactionReciept
+          values={this.state.receiptvalues}
+          close={this.closeReceiptPopup}
+        />
+        ): null}
         {this.state.sendtooperationalpopup ? (
           <CashierToOperationalForm
             close={this.closeOperationalPopup}
