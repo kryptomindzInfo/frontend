@@ -139,17 +139,35 @@ class OperationalWallet extends Component {
   };
 
   getBalance = async () => {
-    const res = await getRequest(`infra/getWalletBalance?from=operational&bank=${this.props.historyLink}`, token, {})
-    console.log(res);
-    if (res.status == 200) {
-      if (res.data.error) {
-        throw res.data.error;
-      } else {
-        this.setState({
-          balance: res.data.balance,
-        });
-      }
-    }
+    // const res = await getRequest(`infra/getWalletBalance?from=operational&bank=${this.props.historyLink}`, token, {})
+    // console.log(res);
+    // if (res.status == 200) {
+    //   if (res.data.error) {
+    //     throw res.data.error;
+    //   } else {
+    //     this.setState({
+    //       balance: res.data.balance,
+    //     });
+    //   }
+    // }
+    axios.get(
+      `${API_URL}/infra/getMyWalletBalance?bank=${this.props.historyLink
+      }&from=operational`,
+      { headers: { Authorization: this.state.token } },
+    )
+      .then(res => {
+        console.log(res.data.balance);
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              balance: res.data.balance,
+            });
+          }
+        }
+      })
+      .catch(err => { });
 
   };
 

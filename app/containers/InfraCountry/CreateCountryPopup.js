@@ -27,24 +27,45 @@ function CreateCountryPopup(props) {
   }
 
   const saveCountry = async (props, values) => {
-    try {
-        const res = await axios.post(`${API_URL}/save-country`, {
-          ...values,
-        });
-        console.log(res);
-        if (res.status === 200) {
-          if (res.data.status === 0) {
-          } else {
-            props.refreshcountrylist();
-            props.onClose();
+    console.log(props)
+    console.log(values)
+    axios
+      .get(`${API_URL}/get-country`)
+      .then(d => {
+        console.log(d);
+        if ((d.status = 200)) {
+          console.log(d.data);
+          if (d.data.data[0].country_list.length != 0) {
+            console.log(d.data.data[0].country_list);
+            const filtervalue = d.data.data[0].country_list.filter((cname) => {
+              return cname.name.tolowercase() == values.tolowercase()
+            })
+            console.log(filtervalue)
+
           }
-        } else {
-        //   notify(res.data.message, 'error');
         }
-      } catch (e) {
-        // notify('Something went wrong');
+      })
+      .catch(err => {
+        console.log(err.messages);
+      });
+    try {
+      const res = await axios.post(`${API_URL}/save-country1`, {
+        ...values,
+      });
+      console.log(res);
+      if (res.status === 200) {
+        if (res.data.status === 0) {
+        } else {
+          props.refreshcountrylist();
+          props.onClose();
+        }
+      } else {
+        //   notify(res.data.message, 'error');
       }
-    };
+    } catch (e) {
+      // notify('Something went wrong');
+    }
+  };
 
   return (
     <Popup accentedH1 close={props.onClose.bind(this)}>
@@ -112,8 +133,8 @@ function CreateCountryPopup(props) {
                   {isSubmitting ? (
                     <CircularProgress size={30} thickness={5} color="primary" />
                   ) : (
-                    <span>AddCountry</span>
-                  )}
+                      <span>AddCountry</span>
+                    )}
                 </Button>
               </Form>
             </div>
