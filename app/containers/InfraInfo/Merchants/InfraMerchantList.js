@@ -20,6 +20,7 @@ import history from '../../../utils/history';
 function InfraMerchantList(props) {
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
   const [merchantList, setMerchantList] = React.useState([]);
+  const [filterMerchantList, setfilterMerchantList] = React.useState([]);
   const [popupType, setPopupType] = React.useState('new');
   const [editingMerchant, setEditingMerchant] = React.useState({});
   const [isLoading, setLoading] = React.useState(false);
@@ -44,6 +45,7 @@ function InfraMerchantList(props) {
       toast.error(res.data.data.message);
     } else {
       setMerchantList(res.data.data.list);
+      setfilterMerchantList(res.data.data.list)
       setLoading(false);
     }
   };
@@ -144,6 +146,19 @@ function InfraMerchantList(props) {
     return <Loader fullPage />;
   }
 
+  const searchlistfunction = (value) => {
+    console.log(value)
+    console.log(filterMerchantList)
+    const newfilterdata = filterMerchantList.filter(element =>
+      element.name.toLowerCase().includes(value.toLowerCase()),
+    );
+    setMerchantList(newfilterdata)
+
+    // const filtervalue = filterMerchantList.filter((value)=>{
+    //   return value.name..toLowerCase() == value.
+    // })
+  }
+
   return (
     <Wrapper>
       <Helmet>
@@ -197,7 +212,9 @@ function InfraMerchantList(props) {
           >
             <div className="iconedInput fl">
               <i className="material-icons">search</i>
-              <input type="text" placeholder="Search Merchants" />
+              <input type="text" placeholder="Search Merchants" onChange={(e) => {
+                searchlistfunction(e.target.value)
+              }} />
             </div>
 
             <Button

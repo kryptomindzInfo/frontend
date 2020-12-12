@@ -11,7 +11,24 @@ import ErrorText from '../../components/ErrorText';
 import { API_URL, STATIC_URL, CURRENCY } from 'containers/App/constants';
 
 function CreateCountryPopup(props) {
+  const [countryList, setCountryList] = React.useState([]);
   useEffect(() => {
+    axios
+      .get(`${API_URL}/get-country`)
+      .then(d => {
+        console.log(d);
+        if ((d.status = 200)) {
+          console.log(d.data);
+          if (d.data.data[0].country_list.length != 0) {
+            console.log(d.data.data[0].country_list);
+            setCountryList(d.data.data[0].country_list);
+
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err.messages);
+      });
   }, []);
 
   const inputFocus = (e) => {
@@ -27,44 +44,38 @@ function CreateCountryPopup(props) {
   }
 
   const saveCountry = async (props, values) => {
-    console.log(props)
-    console.log(values)
-    axios
-      .get(`${API_URL}/get-country`)
-      .then(d => {
-        console.log(d);
-        if ((d.status = 200)) {
-          console.log(d.data);
-          if (d.data.data[0].country_list.length != 0) {
-            console.log(d.data.data[0].country_list);
-            const filtervalue = d.data.data[0].country_list.filter((cname) => {
-              return cname.name.tolowercase() == values.tolowercase()
-            })
-            console.log(filtervalue)
-
+    console.log(countryList)
+    const filterdata = countryList.filter((cvalue) => {
+      return cvalue.name.toLowerCase() == values.name.toLowerCase()
+    })
+    if (filterdata.length == 0) {
+      try {
+        const res = await axios.post(`${API_URL}/save-country`, {
+          ...values,
+        });
+        console.log(res);
+        if (res.status === 200) {
+          if (res.data.status === 0) {
+          } else {
+            props.refreshcountrylist();
+            props.onClose();
           }
-        }
-      })
-      .catch(err => {
-        console.log(err.messages);
-      });
-    try {
-      const res = await axios.post(`${API_URL}/save-country1`, {
-        ...values,
-      });
-      console.log(res);
-      if (res.status === 200) {
-        if (res.data.status === 0) {
         } else {
-          props.refreshcountrylist();
-          props.onClose();
+          //   notify(res.data.message, 'error');
         }
-      } else {
-        //   notify(res.data.message, 'error');
+      } catch (e) {
+        // notify('Something went wrong');
       }
-    } catch (e) {
-      // notify('Something went wrong');
     }
+    else {
+      console.log("fouhd")
+      alert("Duplicate Entry")
+      // notify('Duplicate Entry');
+      props.onClose();
+
+
+    }
+
   };
 
   return (

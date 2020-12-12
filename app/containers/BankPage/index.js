@@ -32,6 +32,8 @@ import Col from 'components/Col';
 import A from 'components/A';
 import messages from './messages';
 import { postRequest, getRequest } from '../App/ApiCall';
+import documentFileIcon from '../../images/pdf_icon.png';
+import imageIcon from '../../images/document_icon.png'
 import {
   API_URL,
   CONTRACT_URL,
@@ -394,7 +396,9 @@ export default class BankPage extends Component {
     event.preventDefault();
     const res = await postRequest("editBank", token, values)
     console.log(res);
+    console.log(res.data.data.status)
     if (res.data.data.status === 0) {
+      console.log(res.data.data)
       toast.error(res.data.data.message);
     } else {
       this.setState({
@@ -1140,8 +1144,19 @@ export default class BankPage extends Component {
                           />
                           {!this.state.contract ? (
                             <i className="material-icons">cloud_upload</i>
+
                           ) : (
-                              ' '
+                              <>
+
+                                <img src={documentFileIcon}
+                                  width="50"
+                                  height="50" />
+
+                                {/* <span style={{ marginLeft: "1%" }}><strong>Qmevzci8.pdf</strong></span> */}
+
+                              </>
+
+
                             )}
 
                           <label>

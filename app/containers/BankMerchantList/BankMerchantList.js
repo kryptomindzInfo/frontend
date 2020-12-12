@@ -162,17 +162,17 @@ function BankMerchantList(props) {
                   Unblock
                 </span>
               ) : (
-                <span onClick={() => block(merchant._id, 'block')}>Block</span>
-              )}
+                  <span onClick={() => block(merchant._id, 'block')}>Block</span>
+                )}
               {merchant.is_private === false ? (
                 <span onClick={() => visiblity(merchant._id, true)}>
                   Make Private
                 </span>
               ) : (
-                <span onClick={() => visiblity(merchant._id, false)}>
-                  Make Public
-                </span>
-              )}
+                  <span onClick={() => visiblity(merchant._id, false)}>
+                    Make Public
+                  </span>
+                )}
             </div>
           </span>
         </div>

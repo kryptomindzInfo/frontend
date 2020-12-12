@@ -71,16 +71,16 @@ class Welcome extends Component {
     }
     var tempDate = new Date();
     var date =
-    tempDate.getDate() +
-    '-' +
-    (tempDate.getMonth() + 1) +
-    '-' +
-    tempDate.getFullYear() + ' '
-      // tempDate.getHours() +
-      // ':' +
-      // tempDate.getMinutes() +
-      // ':' +
-      // tempDate.getSeconds();
+      tempDate.getDate() +
+      '-' +
+      (tempDate.getMonth() + 1) +
+      '-' +
+      tempDate.getFullYear() + ' '
+    // tempDate.getHours() +
+    // ':' +
+    // tempDate.getMinutes() +
+    // ':' +
+    // tempDate.getSeconds();
     const currDate = '' + date;
 
     const bankName = this.props.bankName;
@@ -88,10 +88,10 @@ class Welcome extends Component {
       <>
 
         <WelcomeWrap className="clr">
-        <span style={{paddingRight: '7px'}}>{currDate}</span>
-        <Icon className="material-icons fl">notifications</Icon>
+          <span style={{ paddingRight: '7px' }}>{currDate}</span>
+          <Icon className="material-icons fl">notifications</Icon>
           <div className="dropdown fl">
-           
+
             {/* <Name>
             <FormattedMessage {...messages.welcome} /> {name}
           </Name> */}
@@ -132,16 +132,16 @@ class Welcome extends Component {
                 </SubNav>
               </>
             ) : (
-              <>
-                <Name>
-                  <span>BANK:</span> {name}
-                </Name>
-                <SubNav className="bankSubNav">
-                  <A href="/bank/info">Settings</A>
-                  <span onClick={this.logoutBank}>Logout</span>
-                </SubNav>
-              </>
-            )}
+                    <>
+                      <Name>
+                        <span>BANK:</span> {name}
+                      </Name>
+                      <SubNav className="bankSubNav">
+                        <A href="/bank/info">Settings</A>
+                        <span onClick={this.logoutBank}>Logout</span>
+                      </SubNav>
+                    </>
+                  )}
           </div>
           <LanguageSwitch />
         </WelcomeWrap>

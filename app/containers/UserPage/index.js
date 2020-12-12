@@ -96,6 +96,7 @@ export default class UserPage extends Component {
       profiles: [],
       otp: '',
       showOtp: false,
+      searchusers: []
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -605,7 +606,7 @@ export default class UserPage extends Component {
       .post(`${API_URL}/getInfraUsers`, { token })
       .then(res => {
         if (res.status == 200) {
-          this.setState({ loading: false, users: res.data.users });
+          this.setState({ loading: false, users: res.data.users, searchusers: res.data.users });
         }
       })
       .catch(err => {
@@ -654,6 +655,19 @@ export default class UserPage extends Component {
     }
   }
 
+  searchlistfunction = (value) => {
+    console.log(value)
+    console.log(this.state.users)
+    // console.log(filterMerchantList)
+    console.log(this.state.searchusers)
+    const newfilterdata = this.state.searchusers.filter(element =>
+      element.name.toLowerCase().includes(value.toLowerCase()),
+    );
+    // console.log(newfilterdata)
+    this.setState({ users: newfilterdata })
+
+
+  }
   render() {
     const ep = this;
     function inputFocus(e) {
@@ -698,7 +712,8 @@ export default class UserPage extends Component {
                     inputWidth="calc(100% - 241px)"
                     className="clr"
                   >
-                    {this.state.users.length <= 1 ? (
+                    {/* {this.state.users.length <= 1 ? ( */}
+                    {this.state.users.length < 1 ? (
                       this.state.roles.length <= 0 ? (
                         <h2 className="fl m0">
                           Create Your User Profile First
@@ -709,7 +724,9 @@ export default class UserPage extends Component {
                     ) : (
                         <div className="iconedInput fl">
                           <i className="material-icons">search</i>
-                          <input type="text" placeholder="Search Infra User" />
+                          <input type="text" placeholder="Search Infra User" onChange={(e) => {
+                            ep.searchlistfunction(e.target.value)
+                          }} />
                         </div>
                       )}
 
@@ -1008,9 +1025,10 @@ export default class UserPage extends Component {
                             )}
                           <label>
                             {!this.state.logo ? (
-                              <FormattedMessage {...messages.popup9} />
+                              // <FormattedMessage {...messages.popup9} />
+                              <span>Change Profile Picture</span>
                             ) : (
-                                <span>Change Logo</span>
+                                <span>Change Profile Picture</span>
                               )}
                           *
                         </label>
@@ -1198,9 +1216,10 @@ export default class UserPage extends Component {
                             )}
                           <label>
                             {this.state.logo == '' ? (
-                              <FormattedMessage {...messages.popup9} />
+                              // <FormattedMessage {...messages.popup9} />
+                              <span>Change Profile Picture</span>
                             ) : (
-                                <span>Change Logo</span>
+                                <span>Change Profile Picture</span>
                               )}
                           *
                         </label>

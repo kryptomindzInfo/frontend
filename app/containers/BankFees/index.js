@@ -417,7 +417,7 @@ export class BankFees extends Component {
           this.setState({ loading: false, rules: res.data.rules });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   componentDidMount() {
@@ -541,9 +541,8 @@ export class BankFees extends Component {
           <BankSidebarTwo active="fees" />
           <Main
             style={{
-              display: `${
-                this.state.revenueRuleDistributionPage ? 'none' : 'block'
-              }`,
+              display: `${this.state.revenueRuleDistributionPage ? 'none' : 'block'
+                }`,
             }}
           >
             <Card
@@ -574,48 +573,48 @@ export class BankFees extends Component {
                   <tbody>
                     {this.state.rules && this.state.rules.length > 0
                       ? this.state.rules.map((b, i) => {
-                          var r = b.ranges;
-                          return (
-                            <tr key={b._id}>
-                              <td>
-                                {b.status == 0 ? (
-                                  <span>{b.name}</span>
-                                ) : (
+                        var r = b.ranges;
+                        return (
+                          <tr key={b._id}>
+                            <td>
+                              {b.status == 0 ? (
+                                <span>{b.name}</span>
+                              ) : (
                                   <span>{b.name}</span>
                                 )}
-                              </td>
-                              <td className="tac">
-                                {b.status == 0 ? (
-                                  <span>{b.trans_type}</span>
-                                ) : (
+                            </td>
+                            <td className="tac">
+                              {b.status == 0 ? (
+                                <span>{b.trans_type}</span>
+                              ) : (
                                   <span>{b.trans_type}</span>
                                 )}
-                              </td>
+                            </td>
 
-                              <td>
-                                {r.map(v => (
-                                  <div>
-                                    Count:{' '}
+                            <td>
+                              {r.map(v => (
+                                <div>
+                                  Count:{' '}
                                   <span className="green">
-                                      {v.trans_from} - {v.trans_to}
+                                    {v.trans_from} - {v.trans_to}
                                   </span>
                                     , Fixed:{' '}
-                                    <span className="green">
+                                  <span className="green">
                                     {`${CURRENCY} ${v.fixed}`}
-                                    </span>
+                                  </span>
                                     , Percentage:{' '}
-                                    <span className="green">
-                                      {v.percentage}
+                                  <span className="green">
+                                    {v.percentage}
                                   </span>
-                                  </div>
-                                ))}
-                              </td>
-                              <td className="tac bold">
-                                {b.active == 'Inactive' ? (
-                                  <span className="absoluteMiddleRight primary popMenuTrigger">
-                                    <i className="material-icons ">block</i>
-                                  </span>
-                                ) : (
+                                </div>
+                              ))}
+                            </td>
+                            <td className="tac bold">
+                              {b.active == 'Inactive' ? (
+                                <span className="absoluteMiddleRight primary popMenuTrigger">
+                                  <i className="material-icons ">block</i>
+                                </span>
+                              ) : (
                                   <Button
                                     className="addBankButton"
                                     onClick={() =>
@@ -627,8 +626,8 @@ export class BankFees extends Component {
                                     {b.status == 0
                                       ? 'Pending'
                                       : b.status == 2
-                                      ? 'Declined'
-                                      : 'Approved'}
+                                        ? 'Declined'
+                                        : 'Approved'}
                                   </Button>
                                 )
 
@@ -648,11 +647,11 @@ export class BankFees extends Component {
                                 //   </Button>
                                 //   // <span>Peding approval</span>
                                 // )
-                                }
-                              </td>
-                            </tr>
-                          );
-                        })
+                              }
+                            </td>
+                          </tr>
+                        );
+                      })
                       : null}
                   </tbody>
                 </Table>
@@ -707,64 +706,64 @@ export class BankFees extends Component {
                     <tbody>
                       {this.state.rules && this.state.rules.length > 0
                         ? this.state.rules.map((b, i) => {
-                            var r = b.ranges;
+                          var r = b.ranges;
 
-                            return (
-                              <tr key={b._id}>
-                                <td>{b.name}</td>
-                                <td className="tac">{b.trans_type}</td>
-                                {/* <td className="tac">
+                          return (
+                            <tr key={b._id}>
+                              <td>{b.name}</td>
+                              <td className="tac">{b.trans_type}</td>
+                              {/* <td className="tac">
                                   {CURRENCY}{' '}
                                   <span className="green">{b.trans_from}</span>{' '}
                                   - {CURRENCY}{' '}
                                   <span className="green">{b.trans_to}</span>{' '}
                                 </td> */}
-                                {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
+                              {/* <td className="tac green">{CURRENCY} {b.trans_from} - {CURRENCY} {b.trans_to}</td>
                           <td  className="tac"> {b.transcount_from} -  {b.transcount_to}</td><td  className="tac">{b.fixed_amount}</td> */}
-                                <td>
-                                  {r.map(v => (
+                              <td>
+                                {r.map(v => (
                                   <div>
-                                      Range:{' '}
-                                      <span className="green">
+                                    Range:{' '}
+                                    <span className="green">
                                       {v.trans_from} - {v.trans_to}
-                                      </span>
+                                    </span>
                                       , Fixed:{' '}
-                                      <span className="green">
-                                        {`${CURRENCY} ${v.fixed}`}
+                                    <span className="green">
+                                      {`${CURRENCY} ${v.fixed}`}
                                     </span>
                                       , Percentage:{' '}
-                                      <span className="green">
+                                    <span className="green">
                                       {v.percentage}
-                                      </span>
+                                    </span>
                                   </div>
                                 ))}
-                                </td>
-                                <td className="tac bold">
-                                  <Button
+                              </td>
+                              <td className="tac bold">
+                                <Button
                                   className="addBankButton"
                                   onClick={() =>
-                                      dis.goBankEdit(
-                                        b._id,
+                                    dis.goBankEdit(
+                                      b._id,
                                       // this.state.rules[i]._id,
-                                      )
+                                    )
                                   }
                                   className="pointer"
-                                  >
-                                    Edit
+                                >
+                                  Edit
                                 </Button>
-                                </td>
-                                <td>
-                                  <Button
-                                    onClick={() =>
-                                      this.showRevenueRuleDistributionPage(b)
-                                    }
-                                  >
-                                    Revenue Sharing Rule
+                              </td>
+                              <td>
+                                <Button
+                                  onClick={() =>
+                                    this.showRevenueRuleDistributionPage(b)
+                                  }
+                                >
+                                  Revenue Sharing Rule
                                   </Button>
-                                </td>
-                              </tr>
-                            );
-                          })
+                              </td>
+                            </tr>
+                          );
+                        })
                         : null}
                     </tbody>
                   </Table>
@@ -826,83 +825,83 @@ export class BankFees extends Component {
                 </form>
               </div>
             ) : (
-              <div>
-                <form>
-                  <p>
-                    <span id="popname">{this.state.popname}</span>
-                  </p>
-                  <p>
-                    {' '}
+                <div>
+                  <form>
+                    <p>
+                      <span id="popname">{this.state.popname}</span>
+                    </p>
+                    <p>
+                      {' '}
                     Sending from <span id="poptype">{this.state.poptype}</span>
-                  </p>
-                  {this.state.html.map(function(v) {
-                    return (
-                      <div>
-                        Count:{' '}
-                        <span className="green">
-                          {v.trans_from} - {v.trans_to}
-                        </span>
+                    </p>
+                    {this.state.html.map(function (v) {
+                      return (
+                        <div>
+                          Count:{' '}
+                          <span className="green">
+                            {v.trans_from} - {v.trans_to}
+                          </span>
                         , Fixed:{' '}
-                        <span className="green">
-                          {`${CURRENCY} ${v.fixed}`}
-                        </span>
+                          <span className="green">
+                            {`${CURRENCY} ${v.fixed}`}
+                          </span>
                         , Percentage:{' '}
-                        <span className="green">{v.percentage}</span>
-                      </div>
-                    );
-                  })}
+                          <span className="green">{v.percentage}</span>
+                        </div>
+                      );
+                    })}
 
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        {this.state.declineLoading ? (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            accentedBtn
-                            onClick={this.decline}
-                            disabled
-                          >
-                            <Loader />
-                          </Button>
-                        ) : (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            accentedBtn
-                            onClick={this.decline}
-                          >
-                            <span>Decline</span>
-                          </Button>
-                        )}
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        {this.state.approveLoading ? (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            onClick={this.approve}
-                            disabled
-                          >
-                            <Loader />
-                          </Button>
-                        ) : (
-                          <Button
-                            filledBtn
-                            marginTop="50px"
-                            onClick={this.approve}
-                          >
-                            <span>Approve</span>
-                          </Button>
-                        )}
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </form>
-              </div>
-            )}
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          {this.state.declineLoading ? (
+                            <Button
+                              filledBtn
+                              marginTop="50px"
+                              accentedBtn
+                              onClick={this.decline}
+                              disabled
+                            >
+                              <Loader />
+                            </Button>
+                          ) : (
+                              <Button
+                                filledBtn
+                                marginTop="50px"
+                                accentedBtn
+                                onClick={this.decline}
+                              >
+                                <span>Decline</span>
+                              </Button>
+                            )}
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          {this.state.approveLoading ? (
+                            <Button
+                              filledBtn
+                              marginTop="50px"
+                              onClick={this.approve}
+                              disabled
+                            >
+                              <Loader />
+                            </Button>
+                          ) : (
+                              <Button
+                                filledBtn
+                                marginTop="50px"
+                                onClick={this.approve}
+                              >
+                                <span>Approve</span>
+                              </Button>
+                            )}
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </form>
+                </div>
+              )}
           </MiniPopUp>
         ) : null}
       </Wrapper>
