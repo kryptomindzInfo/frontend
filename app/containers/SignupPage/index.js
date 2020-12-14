@@ -26,54 +26,54 @@ export default function SignupPage() {
 
   function inputFocus(e) {
     let target = e.target;
-   target.parentElement.querySelector("label").classList.add("focused");
+    target.parentElement.querySelector("label").classList.add("focused");
   }
-  
+
   function inputBlur(e) {
     let target = e.target;
-    if(target.value == ''){
+    if (target.value == '') {
       target.parentElement.querySelector("label").classList.remove("focused");
     }
   }
 
 
   return (
-      <Wrapper>
-        <FrontLeftSection from="user">
-        </FrontLeftSection>
-        <FrontRightSection>
-          <LoginHeader>
-            <A href="/" float="left">
+    <Wrapper>
+      <FrontLeftSection from="user">
+      </FrontLeftSection>
+      <FrontRightSection>
+        <LoginHeader>
+          <A href="/" float="left">
             <BackBtn className="material-icons">keyboard_backspace</BackBtn> Sign Up
             </A>
-          </LoginHeader>
-          <FrontFormTitle>
-            Create new account
+        </LoginHeader>
+        <FrontFormTitle>
+          Create new account
           </FrontFormTitle>
-          <FrontFormSubTitle>
-            Use your Mobile number to create new account... it's free.
+        <FrontFormSubTitle>
+          Use your Mobile number to create new account... it's free.
           </FrontFormSubTitle>
-          <form action="" method="get">
+        <form action="" method="get">
           <InputsWrap>
-          <FormGroup>
+            <FormGroup>
               <label>Name*</label>
-              <TextInput type="text"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
+              <TextInput type="text" required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
             <FormGroup>
               <label>Mobile Number*</label>
-              <TextInput type="text"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
+              <TextInput type="text" required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
             <FormGroup>
               <label>Email Address <span>(Optional)</span>*</label>
-              <TextInput type="text"  onFocus={inputFocus} onBlur={inputBlur}></TextInput>
+              <TextInput type="text" onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
             <FormGroup>
               <label>Address*</label>
-              <TextInput type="text"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
+              <TextInput type="text" required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
             <FormGroup>
               <label>Password*</label>
-              <TextInput type="pasword"  required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
+              <TextInput type="pasword" required onFocus={inputFocus} onBlur={inputBlur}></TextInput>
             </FormGroup>
             <FormGroup>
               <CheckBox><input type="checkbox" required /> I have read the <a>Terms and Conditions</a></CheckBox>
@@ -82,16 +82,16 @@ export default function SignupPage() {
           <PrimaryBtn>
             Sign Up
           </PrimaryBtn>
-          </form>
-          <Row marginTop>
-            <Col>
-              <A href="/"><span>Have an account? </span> Sign In</A>
-            </Col>
-            <Col textRight>
-              <A href="/forgot-password" >Forgot Password?</A>
-            </Col>
-          </Row>
-        </FrontRightSection>
-      </Wrapper>
+        </form>
+        <Row marginTop>
+          <Col>
+            <A href="/"><span>Have an account? </span> Sign In</A>
+          </Col>
+          <Col textRight>
+            <A href="/forgot-password" >Forgot Password?</A>
+          </Col>
+        </Row>
+      </FrontRightSection>
+    </Wrapper>
   );
 }

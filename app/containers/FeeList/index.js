@@ -120,6 +120,7 @@ export default class FeeList extends Component {
       contract: null,
       otp: '',
       showOtp: false,
+      searchrules: []
     });
   };
 
@@ -156,7 +157,7 @@ export default class FeeList extends Component {
     if (res.data.data.status === 0) {
       toast.error(res.data.data.message);
     } else {
-      this.setState({ loading: false, rules: res.data.data.rules });
+      this.setState({ loading: false, rules: res.data.data.rules, searchrules: res.data.data.rules });
     }
   };
 
@@ -288,6 +289,17 @@ export default class FeeList extends Component {
       });
   };
 
+  searchlistfunction = (value) => {
+    console.log(value)
+    // console.log(this.state.searchrules)
+    const newfilterdata = this.state.searchrules.filter(element =>
+      element.name.toLowerCase().includes(value.toLowerCase()),
+    );
+
+    this.setState({ rules: newfilterdata })
+
+  }
+
   render() {
     function inputFocus(e) {
       const { target } = e;
@@ -362,7 +374,9 @@ export default class FeeList extends Component {
             >
               <div className="iconedInput fl">
                 <i className="material-icons">search</i>
-                <input type="text" placeholder="Search Revenue Sharing Rule" />
+                <input type="text" placeholder="Search Revenue Sharing Rule" onChange={(e) => {
+                  this.searchlistfunction(e.target.value)
+                }} />
               </div>
               {this.state.permissions == 'all' ||
                 this.state.permissions.create_fee ? (

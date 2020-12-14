@@ -24,44 +24,44 @@ justify-content:center;
 class FrontLeftSection extends Component {
   render() {
     return (
-        <FrontLeftWrap>
-          <CircularLogo>
-            {
-              (this.props.logo) ?
+      <FrontLeftWrap>
+        <CircularLogo>
+          {
+            (this.props.logo) ?
               <img src={this.props.logo} />
               :
-              (this.props.from == 'bank')  ?
+              (this.props.from == 'bank') ?
                 <FormattedMessage {...messages.bank} />
-              :
-              (this.props.from == 'user')  ?
-              <FormattedMessage {...messages.user} />
-              :
-              <FormattedMessage {...messages.infra} />
+                :
+                (this.props.from == 'user') ?
+                  <FormattedMessage {...messages.user} />
+                  :
+                  <FormattedMessage {...messages.infra} />
 
-            }
-          </CircularLogo>
-          <Title>
-            {
-              this.props.title ?
+          }
+        </CircularLogo>
+        <Title>
+          {
+            this.props.title ?
               <span>{this.props.title.toUpperCase()}</span>
               :
               <FormattedMessage {...messages.title} />
-            }
+          }
 
-          </Title>
-          <SubTitle>
-            Welcome to {
-              this.props.title ?
+        </Title>
+        <SubTitle>
+          Welcome to {
+            this.props.title ?
               <span>{this.props.title}</span>
               :
               <span>E-WALLET</span>
-            }
-            <br />
-            <FormattedMessage {...messages.subTitle2} />
-            <br />
-            <FormattedMessage {...messages.subTitle3} />
-          </SubTitle>
-        </FrontLeftWrap>
+          }
+          <br />
+          <FormattedMessage {...messages.subTitle2} />
+          <br />
+          <FormattedMessage {...messages.subTitle3} />
+        </SubTitle>
+      </FrontLeftWrap>
     );
   }
 }

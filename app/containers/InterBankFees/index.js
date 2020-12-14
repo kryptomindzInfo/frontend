@@ -158,13 +158,13 @@ export class InterBankFees extends Component {
           this.setState({ loading: false, rules: res.data.rules });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   componentDidMount() {
     if (token !== undefined && token !== null) {
       this.getRules();
-    } 
+    }
   }
 
   showRevenueRuleDistributionPage = async bankFee => {
@@ -175,14 +175,14 @@ export class InterBankFees extends Component {
       bankFeeDetails: bankFee,
     });
     try {
-      const res1 = await axios.post(`${API_URL}/getOne`, { token:token, page_id: bankFee._id, type: 'bank', page: 'interbankrule' });
-      const res2 = await axios.post(`${API_URL}/bank/getRevenueFeeForInterBank`, { token:token, type: bankFee.type, bank_id: bid});
+      const res1 = await axios.post(`${API_URL}/getOne`, { token: token, page_id: bankFee._id, type: 'bank', page: 'interbankrule' });
+      const res2 = await axios.post(`${API_URL}/bank/getRevenueFeeForInterBank`, { token: token, type: bankFee.type, bank_id: bid });
       console.log(res2);
       this.setState({
         revenueData: res1.data.row,
         share: res2.data.fee,
       });
-    } catch (e){
+    } catch (e) {
       console.log(e);
     }
   };
@@ -223,9 +223,8 @@ export class InterBankFees extends Component {
           <BankSidebarTwo active="interbankfees" />
           <Main
             style={{
-              display: `${
-                this.state.revenueRuleDistributionPage ? 'none' : 'block'
-              }`,
+              display: `${this.state.revenueRuleDistributionPage ? 'none' : 'block'
+                }`,
             }}
           >
             <Card
@@ -256,48 +255,48 @@ export class InterBankFees extends Component {
                   <tbody>
                     {this.state.rules && this.state.rules.length > 0
                       ? this.state.rules.map((b, i) => {
-                          var r = b.ranges;
-                          return (
-                            <tr key={b._id}>
-                              <td>
-                                {b.status == 0 ? (
-                                  <span>{b.name}</span>
-                                ) : (
+                        var r = b.ranges;
+                        return (
+                          <tr key={b._id}>
+                            <td>
+                              {b.status == 0 ? (
+                                <span>{b.name}</span>
+                              ) : (
                                   <span>{b.name}</span>
                                 )}
-                              </td>
-                              <td className="tac">
-                                {b.status == 0 ? (
-                                  <span>{b.trans_type}</span>
-                                ) : (
+                            </td>
+                            <td className="tac">
+                              {b.status == 0 ? (
+                                <span>{b.trans_type}</span>
+                              ) : (
                                   <span>{b.trans_type}</span>
                                 )}
-                              </td>
+                            </td>
 
-                              <td>
-                                {r.map(v => (
-                                  <div>
-                                    Count:{' '}
+                            <td>
+                              {r.map(v => (
+                                <div>
+                                  Count:{' '}
                                   <span className="green">
-                                      {v.trans_from} - {v.trans_to}
+                                    {v.trans_from} - {v.trans_to}
                                   </span>
                                     , Fixed:{' '}
-                                    <span className="green">
+                                  <span className="green">
                                     {`${CURRENCY} ${v.fixed_amount}`}
-                                    </span>
+                                  </span>
                                     , Percentage:{' '}
-                                    <span className="green">
-                                      {v.percentage}
+                                  <span className="green">
+                                    {v.percentage}
                                   </span>
-                                  </div>
-                                ))}
-                              </td>
-                              <td className="tac bold">
-                                {b.active == 'Inactive' ? (
-                                  <span className="absoluteMiddleRight primary popMenuTrigger">
-                                    <i className="material-icons ">block</i>
-                                  </span>
-                                ) : (
+                                </div>
+                              ))}
+                            </td>
+                            <td className="tac bold">
+                              {b.active == 'Inactive' ? (
+                                <span className="absoluteMiddleRight primary popMenuTrigger">
+                                  <i className="material-icons ">block</i>
+                                </span>
+                              ) : (
                                   <Button
                                     className="addBankButton"
                                     onClick={() =>
@@ -310,15 +309,15 @@ export class InterBankFees extends Component {
                                     {b.status == 0
                                       ? 'Pending'
                                       : b.status == 2
-                                      ? 'Declined'
-                                      : 'Approved'}
+                                        ? 'Declined'
+                                        : 'Approved'}
                                   </Button>
                                 )
-                                }
-                              </td>
-                            </tr>
-                          );
-                        })
+                              }
+                            </td>
+                          </tr>
+                        );
+                      })
                       : null}
                   </tbody>
                 </Table>
@@ -373,58 +372,58 @@ export class InterBankFees extends Component {
                     <tbody>
                       {this.state.rules && this.state.rules.length > 0
                         ? this.state.rules.map((b, i) => {
-                            var r = b.ranges;
+                          var r = b.ranges;
 
-                            return (
-                              <tr key={b._id}>
-                                <td>{b.name}</td>
-                                <td className="tac">
-                                  {b.type}
-                                </td>
-                                <td>
-                                  {r.map(v => (
+                          return (
+                            <tr key={b._id}>
+                              <td>{b.name}</td>
+                              <td className="tac">
+                                {b.type}
+                              </td>
+                              <td>
+                                {r.map(v => (
                                   <div>
-                                      Range:{' '}
-                                      <span className="green">
+                                    Range:{' '}
+                                    <span className="green">
                                       {v.trans_from} - {v.trans_to}
-                                      </span>
+                                    </span>
                                       , Fixed:{' '}
-                                      <span className="green">
-                                        {`${CURRENCY} ${v.fixed}`}
+                                    <span className="green">
+                                      {`${CURRENCY} ${v.fixed}`}
                                     </span>
                                       , Percentage:{' '}
-                                      <span className="green">
+                                    <span className="green">
                                       {v.percentage}
-                                      </span>
+                                    </span>
                                   </div>
                                 ))}
-                                </td>
-                                <td className="tac bold">
-                                  <Button
+                              </td>
+                              <td className="tac bold">
+                                <Button
                                   className="addBankButton"
                                   onClick={() =>
-                                      dis.goBankEdit(
-                                        b._id,
+                                    dis.goBankEdit(
+                                      b._id,
                                       // this.state.rules[i]._id,
-                                      )
+                                    )
                                   }
                                   className="pointer"
-                                  >
-                                    Edit
+                                >
+                                  Edit
                                 </Button>
-                                </td>
-                                <td>
-                                  <Button
-                                    onClick={() =>
-                                      this.showRevenueRuleDistributionPage(b)
-                                    }
-                                  >
-                                    Revenue Sharing Rule
+                              </td>
+                              <td>
+                                <Button
+                                  onClick={() =>
+                                    this.showRevenueRuleDistributionPage(b)
+                                  }
+                                >
+                                  Revenue Sharing Rule
                                   </Button>
-                                </td>
-                              </tr>
-                            );
-                          })
+                              </td>
+                            </tr>
+                          );
+                        })
                         : null}
                     </tbody>
                   </Table>

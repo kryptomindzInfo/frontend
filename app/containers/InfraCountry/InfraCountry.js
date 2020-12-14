@@ -18,6 +18,8 @@ import CreateCountryPopup from './CreateCountryPopup';
 const InfraCountry = props => {
   const [addCountryPopup, setAddCountryPopup] = React.useState(false);
   const [countryList, setCountryList] = React.useState([]);
+  const [searchCountryList, setsearchCountryList] = React.useState([]);
+
   const [infraID, setInfraID] = React.useState('');
   const [isLoading, setLoading] = React.useState(false);
   const [defaultCountry, setDefaultCountry] = React.useState({});
@@ -41,6 +43,8 @@ const InfraCountry = props => {
           if (d.data.data[0].country_list.length != 0) {
             console.log(d.data.data[0].country_list);
             setCountryList(d.data.data[0].country_list);
+            setsearchCountryList(d.data.data[0].country_list);
+
           }
         }
       })
@@ -85,6 +89,18 @@ const InfraCountry = props => {
     getCountries();
   }, []);
   console.log(countryList);
+  const searchlistfunction = (value) => {
+    // console.log(value)
+    // console.log(filterMerchantList)
+    const newfilterdata = searchCountryList.filter(element =>
+      element.name.toLowerCase().includes(value.toLowerCase()),
+    );
+    setCountryList(newfilterdata)
+
+    // const filtervalue = filterMerchantList.filter((value)=>{
+    //   return value.name..toLowerCase() == value.
+    // })
+  }
 
   return (
     <Wrapper>
@@ -105,7 +121,9 @@ const InfraCountry = props => {
               <i className="material-icons">
                 <SearchIcon />
               </i>
-              <input type="text" placeholder="Search Country" />
+              <input type="text" placeholder="Search Country" onChange={(e) => {
+                searchlistfunction(e.target.value)
+              }} />
             </div>
 
             <Button

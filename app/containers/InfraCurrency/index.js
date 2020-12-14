@@ -144,6 +144,7 @@ class InfraCurrency extends Component {
       permissions: {},
       showOtp: false,
       currency: 'XOF',
+      currencylable: ''
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -251,7 +252,7 @@ class InfraCurrency extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getProfile = () => {
@@ -275,7 +276,7 @@ class InfraCurrency extends Component {
           );
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   componentDidMount() {
@@ -327,6 +328,15 @@ class InfraCurrency extends Component {
     });
   };
   showAddDenominationPopup = () => {
+    console.log(currencies)
+    console.log(this.state.currency)
+    const filtercurrency = currencies.filter((item) => {
+      return item.value == this.state.currency
+    })
+    console.log(filtercurrency)
+    if (filtercurrency.length) {
+      this.setState({ currencylable: filtercurrency[0].label })
+    }
     this.setState({ addDenominationPopup: true });
   };
 
@@ -347,6 +357,8 @@ class InfraCurrency extends Component {
       notification: 'Denomination Added',
     });
   };
+
+
 
   render() {
     const { classes } = this.props;
@@ -375,6 +387,8 @@ class InfraCurrency extends Component {
     if (redirect) {
       return <Redirect to="/" />;
     }
+
+    console.log(this.state.currency)
 
     return (
       <Wrapper>
@@ -465,9 +479,13 @@ class InfraCurrency extends Component {
                     xs={12}
                     container
                     alignItems="center"
-                    spacing={8}
+                    spacing={2}
                   >
-                    <Grid item xs={9}>
+                    <Grid item xs={2}>
+                      {this.state.currencylable}
+                    </Grid>
+                    <Grid item xs={7}>
+
                       <TextField
                         label="Number"
                         value={element}
