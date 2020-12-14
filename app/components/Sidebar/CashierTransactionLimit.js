@@ -60,10 +60,10 @@ class CashierTransactionLimit extends Component {
       proceed: false,
       livefee: 0,
       receiverIdentificationAmount: '',
-      receiverIdentificationCountry: 'Senegal',
-      senderIdentificationCountry: 'Senegal',
-      country: 'Senegal',
-      receiverCountry: 'Senegal',
+      receiverIdentificationCountry: '',
+      senderIdentificationCountry: '',
+      country: '',
+      receiverCountry: '',
       showSendMoneyOTP: false,
       isWallet: false,
       toWalletFormValues: {},
@@ -1009,7 +1009,7 @@ class CashierTransactionLimit extends Component {
                   givenname: res.data.data.name || '',
                   familyname: res.data.data.last_name || '',
                   note: '',
-                  senderIdentificationCountry: res.data.data.country || '',
+                  senderIdentificationCountry: '',
                   senderIdentificationType: res.data.data.id_type || '',
                   senderIdentificationNumber: res.data.data.id_number || '',
                   senderIdentificationValidTill: res.data.data.valid_till || '',
@@ -1364,7 +1364,7 @@ class CashierTransactionLimit extends Component {
                           <Row>
                             <Col className="popInfoLeft">Transaction ID</Col>
                             <Col className="popInfoRight">
-                              {this.state.master_code}
+                            67648821974200954
                             </Col>
                           </Row>
                           <Row>
