@@ -12,6 +12,7 @@ import Button from 'components/Button';
 import { API_URL, CONTRACT_URL, STATIC_URL } from '../../App/constants';
 import UploadArea from '../../../components/UploadArea';
 import { createInfraMerchant, editInfraMerchant } from './Api/InfraMerchantApi';
+import documentFileIcon from '../../../images/pdf_icon.png';
 
 function InfraCreateMerchantPopup(props) {
   return (
@@ -222,8 +223,8 @@ function InfraCreateMerchantPopup(props) {
                         target="_BLANK"
                       />
                     ) : (
-                      ' '
-                    )}
+                        ' '
+                      )}
                     <div
                       className="uploadTrigger"
                       onClick={() => triggerBrowse('logo')}
@@ -238,14 +239,14 @@ function InfraCreateMerchantPopup(props) {
                       {!values.logo ? (
                         <i className="material-icons">cloud_upload</i>
                       ) : (
-                        ' '
-                      )}
+                          ' '
+                        )}
                       <label>
                         {values.logo === '' ? (
                           <span>Upload Logo</span>
                         ) : (
-                          <span>Change Logo</span>
-                        )}
+                            <span>Change Logo</span>
+                          )}
                         *
                       </label>
                     </div>
@@ -263,8 +264,8 @@ function InfraCreateMerchantPopup(props) {
                         target="_BLANK"
                       />
                     ) : (
-                      ' '
-                    )}
+                        ' '
+                      )}
                     <div
                       className="uploadTrigger"
                       onClick={() => triggerBrowse('document_hash')}
@@ -279,8 +280,10 @@ function InfraCreateMerchantPopup(props) {
                       {!values.document_hash ? (
                         <i className="material-icons">cloud_upload</i>
                       ) : (
-                        ' '
-                      )}
+                          <img src={documentFileIcon}
+                            width="50"
+                            height="50" />
+                        )}
 
                       <label>
                         <div className="tooltip">
@@ -295,8 +298,8 @@ function InfraCreateMerchantPopup(props) {
                         {values.document_hash === '' ? (
                           <span>Upload Contract</span>
                         ) : (
-                          <span>Change Contract</span>
-                        )}
+                            <span>Change Contract</span>
+                          )}
                         *
                         <p>
                           <span style={{ color: 'red' }}>* </span>Only PDF
@@ -320,13 +323,13 @@ function InfraCreateMerchantPopup(props) {
                   {isSubmitting ? (
                     <CircularProgress size={30} thickness={5} color="primary" />
                   ) : (
-                    <span>
-                      {' '}
-                      {props.type === 'update'
-                        ? 'Update Merchant'
-                        : 'Add Merchant'}
-                    </span>
-                  )}
+                      <span>
+                        {' '}
+                        {props.type === 'update'
+                          ? 'Update Merchant'
+                          : 'Add Merchant'}
+                      </span>
+                    )}
                 </Button>
               </Form>
             </div>

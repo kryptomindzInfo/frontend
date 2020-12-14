@@ -14,7 +14,7 @@ import { fetchCashierMerchantList } from './api/CashierMerchantAPI';
 import PayBillPopup from './PayBillPopup';
 import Button from '../../components/Button';
 import { isNull } from 'lodash';
-import { API_URL} from '../App/constants';
+import { API_URL } from '../App/constants';
 import axios from 'axios';
 
 function CashierMerchantListPage(props) {
@@ -60,17 +60,17 @@ function CashierMerchantListPage(props) {
   };
 
   const getStats = () => {
-    const getStatus = setInterval(function(){
+    const getStatus = setInterval(function () {
       axios
-      .post(`${API_URL}/getCashierDashStats`, {
-        token: token
-      })
-      .then(res => {
-        if (res.status == 200) {
-          setIsClosed(res.data.isClosed);  
-        }
-      })
-    },2000)
+        .post(`${API_URL}/getCashierDashStats`, {
+          token: token
+        })
+        .then(res => {
+          if (res.status == 200) {
+            setIsClosed(res.data.isClosed);
+          }
+        })
+    }, 2000)
   };
 
   useEffect(() => {
@@ -90,18 +90,18 @@ function CashierMerchantListPage(props) {
         </td>
         <td className="tac">{merchant.name}</td>
         <td className="tac" style={{ cursor: 'pointer', color: '#417505' }}>
-          { isClosed ? (
+          {isClosed ? (
             <div>Casier Closed</div>
           ) : (
-            <div
-              onClick={() => {
-                setEditingMerchant(merchant);
-                setPayBillsPopup(true);
-              }}
-            >
-              Select Merchant
-            </div>
-          )}
+              <div
+                onClick={() => {
+                  setEditingMerchant(merchant);
+                  setPayBillsPopup(true);
+                }}
+              >
+                Select Merchant
+              </div>
+            )}
         </td>
       </tr>
     ));
@@ -123,7 +123,7 @@ function CashierMerchantListPage(props) {
       <Container verticalMargin>
         <SidebarCashier
           branchName={props.match.params.bank}
-          refresh={() => {}}
+          refresh={() => { }}
         />
         <Main>
           <ActionBar marginBottom="33px" className="clr">
@@ -168,8 +168,8 @@ function CashierMerchantListPage(props) {
           merchant={editingMerchant}
         />
       ) : (
-        ''
-      )}
+          ''
+        )}
     </Wrapper>
   );
 }

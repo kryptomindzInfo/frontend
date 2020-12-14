@@ -31,6 +31,9 @@ import Col from 'components/Col';
 import A from 'components/A';
 import messages from './messages';
 import { postRequest, getRequest } from '../App/ApiCall';
+import CloseIcon from '@material-ui/icons/Visibility';
+import OpenIcon from '@material-ui/icons/VisibilityOff';
+
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -54,6 +57,7 @@ export default class HomePage extends Component {
       notification: '',
       loading: true,
       redirect: false,
+      passwordtype: "password"
     };
     this.error = this.error.bind(this);
   }
@@ -77,28 +81,28 @@ export default class HomePage extends Component {
       loginLoading: true,
     });
     const res = await postRequest("login", token, this.state)
-          if(res.data.data.status === 0 && res.data.data.message === "Incorrect username or password") {
-            toast.error(res.data.data.message);
-          } else {
-            localStorage.setItem('logged', res.data.data.token);
-            localStorage.setItem('name', res.data.data.name);
-            localStorage.setItem('isAdmin', res.data.data.isAdmin);
-            window.location.href = '/dashboard';
-          }
-        this.setState({
-          loginLoading: false,
-        });
+    if (res.data.data.status === 0 && res.data.data.message === "Incorrect username or password") {
+      toast.error(res.data.data.message);
+    } else {
+      localStorage.setItem('logged', res.data.data.token);
+      localStorage.setItem('name', res.data.data.name);
+      localStorage.setItem('isAdmin', res.data.data.isAdmin);
+      window.location.href = '/dashboard';
+    }
+    this.setState({
+      loginLoading: false,
+    });
   };
 
   async componentDidMount() {
     if (token !== undefined && token !== null) {
       this.setState({ loading: false, redirect: true });
     } else {
-      const res = await getRequest("checkInfra",token,{})
+      const res = await getRequest("checkInfra", token, {})
       console.log(res);
-        if (res.data.data.infras <= 0) {
-          this.props.history.push('/setup');
-        }
+      if (res.data.data.infras <= 0) {
+        this.props.history.push('/setup');
+      }
       this.setState({ loading: false });
     }
   };
@@ -123,6 +127,8 @@ export default class HomePage extends Component {
     if (redirect) {
       return <Redirect to="/dashboard" />;
     }
+
+    console.log(this.state.passwordtype)
     return (
       <Wrapper>
         <Helmet>
@@ -160,30 +166,47 @@ export default class HomePage extends Component {
                 <label>
                   <FormattedMessage {...messages.password} />*
                 </label>
+
                 <TextInput
-                  type="password"
+                  type={this.state.passwordtype}
                   name="password"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
                   value={this.state.password}
                   onChange={this.handleInputChange}
                   required
+
                 />
+                {this.state.passwordtype == "password" ? (
+                  <div style={{ marginLeft: "90%", marginTop: "", fontSize: "" }}>
+                    <span onClick={() => {
+                      console.log("click")
+                      this.setState({ passwordtype: "text" })
+                    }}><CloseIcon style={{ fontSize: "30px" }} /></span>
+                  </div>
+                ) : (
+                    <div style={{ marginLeft: "90%", marginTop: "", fontSize: "" }}>
+                      <span onClick={() => {
+                        console.log("click")
+                        this.setState({ passwordtype: "password" })
+                      }}><OpenIcon style={{ fontSize: "30px" }} /></span>
+                    </div>
+                  )}
               </FormGroup>
             </InputsWrap>
             {/* {this.loginLoading ? (
               <PrimaryBtn disabled>
                 <Loader /> */}
-            { this.loginLoading ? (
-                <PrimaryBtn disabled>
-                  <Loader />
+            {this.loginLoading ? (
+              <PrimaryBtn disabled>
+                <Loader />
               </PrimaryBtn>
             ) : (
-              <PrimaryBtn>
-                <FormattedMessage {...messages.pagetitle} />
-              </PrimaryBtn>
-            )}
-                {/* </PrimaryBtn>
+                <PrimaryBtn>
+                  <FormattedMessage {...messages.pagetitle} />
+                </PrimaryBtn>
+              )}
+            {/* </PrimaryBtn>
              } */}
           </form>
           <Row marginTop>
@@ -195,7 +218,7 @@ export default class HomePage extends Component {
             </Col>
           </Row>
         </FrontRightSection>
-      </Wrapper>
+      </Wrapper >
     );
   }
 }

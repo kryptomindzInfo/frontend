@@ -70,38 +70,38 @@ export default class BankLoginPage extends Component {
     });
   };
 
-  loginRequest = async(event) => {
+  loginRequest = async (event) => {
     event.preventDefault();
     this.setState({
       loginLoading: true,
-    }, async() => {
+    }, async () => {
       const res = await postRequest("bankLogin", token, this.state)
-            localStorage.setItem('bankLogged', res.data.data.token);
-            localStorage.setItem('bankName', res.data.data.name);
-            localStorage.setItem('bankUserName', res.data.data.username);
-            localStorage.setItem('bankContract', res.data.data.contract);
-            localStorage.setItem('bankLogo', res.data.data.logo);
-            localStorage.setItem('bankId', res.data.data.id);
-            localStorage.setItem('bankPhone', res.data.data.mobile);
-            console.log(localStorage.getItem('bankLogged'));
-            console.log(res);
-            if(res.data.data.status == 0 && res.data.data.message === "Incorrect username or password") {
-              toast.error(res.data.data.message);
-            }
-            else if (!res.data.data.initial_setup) {
-              window.location.href ='/bank/setup';
-            }
-            else if (
-              !res.data.data.status ||
-              res.data.data.status == 0 ||
-              res.data.data.status == ''
-            ) {
-              window.location.href ='/bank/activate';
-            } else {
-              window.location.href ='/bank/dashboard';
-            }
+      localStorage.setItem('bankLogged', res.data.data.token);
+      localStorage.setItem('bankName', res.data.data.name);
+      localStorage.setItem('bankUserName', res.data.data.username);
+      localStorage.setItem('bankContract', res.data.data.contract);
+      localStorage.setItem('bankLogo', res.data.data.logo);
+      localStorage.setItem('bankId', res.data.data.id);
+      localStorage.setItem('bankPhone', res.data.data.mobile);
+      console.log(localStorage.getItem('bankLogged'));
+      console.log(res);
+      if (res.data.data.status == 0 && res.data.data.message === "Incorrect username or password") {
+        toast.error(res.data.data.message);
+      }
+      else if (!res.data.data.initial_setup) {
+        window.location.href = '/bank/setup';
+      }
+      else if (
+        !res.data.data.status ||
+        res.data.data.status == 0 ||
+        res.data.data.status == ''
+      ) {
+        window.location.href = '/bank/activate';
+      } else {
+        window.location.href = '/bank/dashboard';
+      }
 
-        
+
     });
 
   };
@@ -190,10 +190,10 @@ export default class BankLoginPage extends Component {
                 <Loader />
               </PrimaryBtn>
             ) : (
-              <PrimaryBtn>
-                <FormattedMessage {...messages.pagetitle} />
-              </PrimaryBtn>
-            )}
+                <PrimaryBtn>
+                  <FormattedMessage {...messages.pagetitle} />
+                </PrimaryBtn>
+              )}
           </form>
           <Row marginTop>
             <Col />
