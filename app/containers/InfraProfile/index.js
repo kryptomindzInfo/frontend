@@ -332,7 +332,7 @@ export default class InfraProfile extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getProfile = () => {
@@ -356,7 +356,7 @@ export default class InfraProfile extends Component {
           );
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   componentDidMount() {
@@ -385,6 +385,8 @@ export default class InfraProfile extends Component {
     }
   }
 
+
+
   render() {
     function inputFocus(e) {
       const { target } = e;
@@ -406,6 +408,8 @@ export default class InfraProfile extends Component {
       return <Redirect to="/" />;
     }
 
+    console.log(this.state.profile)
+
     return (
       <Wrapper>
         <Helmet>
@@ -419,23 +423,23 @@ export default class InfraProfile extends Component {
           {/* <SidebarTwo bankId={this.state.bank}/> */}
           <Main big>
             {this.state.permissions == 'all' ||
-            this.state.permissions.create_fee ? (
-              <>
-                <ActionBar
-                  marginBottom="33px"
-                  inputWidth="calc(100% - 241px)"
-                  className="clr"
-                  style={{ marginTop: '3%' }}
-                >
-                  <Button
-                    className="addBankButton"
-                    flex
-                    onClick={this.showPopup}
+              this.state.permissions.create_fee ? (
+                <>
+                  <ActionBar
+                    marginBottom="33px"
+                    inputWidth="calc(100% - 241px)"
+                    className="clr"
+                    style={{ marginTop: '3%' }}
                   >
-                    <span>Edit</span>
-                  </Button>
-                </ActionBar>
-              </>
+                    <Button
+                      className="addBankButton"
+                      flex
+                      onClick={this.showPopup}
+                    >
+                      <span>Edit</span>
+                    </Button>
+                  </ActionBar>
+                </>
               ) : null}
 
             <Card
@@ -466,11 +470,13 @@ export default class InfraProfile extends Component {
                   <Col className="infoLeft">Mobile</Col>
                   <Col className="infoRight">{this.state.profile.mobile}</Col>
                 </Row>
+                {this.state.profile.ccode != undefined &&
+                  <Row>
+                    <Col className="infoLeft">Country Code</Col>
+                    <Col className="infoRight">{this.state.profile.ccode}</Col>
+                  </Row>
+                }
 
-                <Row>
-                  <Col className="infoLeft">Country Code</Col>
-                  <Col className="infoRight">{this.state.profile.ccode}</Col>
-                </Row>
 
                 <Row>
                   <Col className="infoLeft">Email</Col>
@@ -1223,10 +1229,10 @@ export default class InfraProfile extends Component {
                   <Loader />
                 </Button>
               ) : (
-                <Button filledBtn marginTop="50px">
-                  <span>Update Profile</span>
-                </Button>
-              )}
+                  <Button filledBtn marginTop="50px">
+                    <span>Update Profile</span>
+                  </Button>
+                )}
             </form>
           </Popup>
         ) : null}

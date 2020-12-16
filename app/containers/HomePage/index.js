@@ -33,6 +33,7 @@ import messages from './messages';
 import { postRequest, getRequest } from '../App/ApiCall';
 import CloseIcon from '@material-ui/icons/Visibility';
 import OpenIcon from '@material-ui/icons/VisibilityOff';
+import TextField from '@material-ui/core/TextField';
 
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -57,7 +58,8 @@ export default class HomePage extends Component {
       notification: '',
       loading: true,
       redirect: false,
-      passwordtype: "password"
+      passwordtype: "password",
+      visiblity: false
     };
     this.error = this.error.bind(this);
   }
@@ -163,36 +165,87 @@ export default class HomePage extends Component {
                 />
               </FormGroup>
               <FormGroup>
+                <div style={{ backgroundColor: "" }}>
+                  <TextField
+                    name="password"
+                    label="Password"
+                    style={{ width: "100%" }}
+                    value={this.state.password}
+                    type={this.state.visiblity ? 'text' : 'password'}
+                    margin="normal"
+                    variant="outlined"
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  <span
+                    onClick={() => {
+                      this.setState({ visiblity: !this.state.visiblity })
+                    }}
+
+                    style={{
+                      position: 'relative',
+                      top: '-40px',
+                      left: "90%",
+
+                    }}
+                  >
+                    <i>
+                      {/* < CloseIcon /> */}
+                      {this.state.visiblity ? (
+                        < CloseIcon />
+                      ) : (
+                          <OpenIcon />
+                        )}
+                    </i>
+                  </span>
+                </div>
+              </FormGroup>
+              {/* <FormGroup>
+
                 <label>
                   <FormattedMessage {...messages.password} />*
                 </label>
+                <div>
 
-                <TextInput
-                  type={this.state.passwordtype}
-                  name="password"
-                  onFocus={inputFocus}
-                  onBlur={inputBlur}
-                  value={this.state.password}
-                  onChange={this.handleInputChange}
-                  required
+                  <TextInput
+                    type={this.state.passwordtype}
+                    name="password"
+                    onFocus={inputFocus}
+                    onBlur={inputBlur}
+                    value={this.state.password}
+                    onChange={this.handleInputChange}
+                    required
 
-                />
-                {this.state.passwordtype == "password" ? (
-                  <div style={{ marginLeft: "90%", marginTop: "", fontSize: "" }}>
-                    <span onClick={() => {
-                      console.log("click")
-                      this.setState({ passwordtype: "text" })
-                    }}><CloseIcon style={{ fontSize: "30px" }} /></span>
-                  </div>
-                ) : (
+                  />
+
+                </div>
+
+                <div style={{ marginTop: "", position: "" }}>
+                  {this.state.passwordtype == "password" ? (
                     <div style={{ marginLeft: "90%", marginTop: "", fontSize: "" }}>
                       <span onClick={() => {
                         console.log("click")
-                        this.setState({ passwordtype: "password" })
-                      }}><OpenIcon style={{ fontSize: "30px" }} /></span>
+                        this.setState({ passwordtype: "text" })
+                      }}>
+                      
+                        <strong>Show</strong>
+
+                      </span>
                     </div>
-                  )}
-              </FormGroup>
+                  ) : (
+                      <div style={{ marginLeft: "90%", marginTop: "", fontSize: "" }}>
+                        <span onClick={() => {
+                          console.log("click")
+                          this.setState({ passwordtype: "password" })
+                        }}>
+                      
+                          <strong>Hide</strong>
+                        </span>
+                      </div>
+                    )}
+                </div>
+
+              </FormGroup> */}
             </InputsWrap>
             {/* {this.loginLoading ? (
               <PrimaryBtn disabled>
@@ -209,6 +262,7 @@ export default class HomePage extends Component {
             {/* </PrimaryBtn>
              } */}
           </form>
+
           <Row marginTop>
             <Col />
             <Col textRight>

@@ -43,7 +43,10 @@ class LanguageSwitch extends Component {
     return (
       <LanguageWrap className="clr">
         <LocaleToggle />
-        <Icon className="material-icons fl">g_translate</Icon>
+        <Icon className="material-icons fl" onClick={() => {
+          // console.log("click")
+          window.open("https://translate.google.co.in/?sl=auto&tl=en&op=translate")
+        }}>g_translate</Icon>
       </LanguageWrap>
     );
   }

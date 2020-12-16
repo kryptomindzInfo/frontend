@@ -480,9 +480,11 @@ export default class BankPage extends Component {
         this.setState({ permissions: 'all', loading: false });
       } else {
         const res = await postRequest("getPermission", token, this.state)
-        if (res.status == 200) {
+        // console.log(res.data)
+        if (res.data.status == 200) {
+          console.log(res.data.data.permissions)
           this.setState(
-            { permissions: res.data.permissions, loading: false },
+            { permissions: res.data.data.permissions, loading: false },
             () => {
               console.log(this.state.permissions);
             },
@@ -514,6 +516,7 @@ export default class BankPage extends Component {
       return <Redirect to="/" />;
     }
     const perms = this.state.permissions;
+    console.log(perms)
     const ep = this;
     return (
       <Wrapper from="infra">
