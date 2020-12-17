@@ -18,6 +18,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MuiCheckbox from '@material-ui/core/Checkbox';
 import DateFnsUtils from '@date-io/date-fns';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import OperationalTransactionReceipt from '../OperationalTransactionReciept';
 import { API_URL, CURRENCY } from '../../containers/App/constants';
 import CountrySelectBox from '../Form/CountrySelectBox';
 import TypeSelectBox from '../Form/TypeSelectBox';
@@ -145,6 +146,7 @@ const CashierToWalletForm = ({ close }) => {
   const [interbank, setInterBank] =React.useState(true);
   const [amount, setAmount] =React.useState('');
   const [showOtp, setShowOtp] = React.useState(false);
+  const [showReceipt, setShowReceipt] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [values, setvalues] = React.useState({});
 
@@ -212,7 +214,7 @@ const CashierToWalletForm = ({ close }) => {
           toast.error(res.data.message);
         } else {
           toast.success(res.data.message);
-          close();
+          setShowReceipt(true);
         }
       } else {
         toast.error(res.data.message);
@@ -229,11 +231,20 @@ const CashierToWalletForm = ({ close }) => {
   return (
     <Popup bigBody close={close}>
       {showOtp ? (
-        <OtpPopup
-          values={values}
-          execute={handleOnProceedClick}
-          close={close}
-        />
+        <div>
+          {showReceipt ? (
+            <OperationalTransactionReceipt
+              values={values}
+              close={close}
+            />
+          ) : (
+            <OtpPopup
+            values={values}
+            execute={handleOnProceedClick}
+            close={close}
+            />
+          )}
+        </div> 
       ) : (
       <div>
         <h1>Send Money to Operational</h1>
