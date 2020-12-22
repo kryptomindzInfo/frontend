@@ -15,9 +15,9 @@ export class Reciept extends Component {
       return (
       <Container>
         <Row vAlign="flex-start">
-          <Col md="12">
+          <Col cW="100%">
          
-         `` <div
+          <div
               style={{
               fontSize: '34px',
               fontWeight: 'bold',
@@ -26,45 +26,53 @@ export class Reciept extends Component {
               color: '#417505',
             }}
           >
-              Transaction Receipt
+              {this.props.values.type} Transaction Receipt
             </div>
           <hr style={{border: '1px solid black'}}></hr>
-            <Row>
-              <Col className="popInfoLeft">Transaction ID :</Col>
+          <Row>
+            <Col cW="33.33%">
+              <Row>
+                <Col className="popInfoLeft">Transaction ID :</Col>
+                  <Col className="popInfoRight">
+                    67648821974200954
+                </Col>
+              </Row>
+              <Row>
+                <Col className="popInfoLeft">Bank Name :</Col>
                 <Col className="popInfoRight">
-                  67648821974200954
-              </Col>
-            </Row>
-            <Row>
-              <Col className="popInfoLeft">Amount :</Col>
+                   ------------------
+                </Col>
+              </Row>
+            </Col>
+            <Col cW="33.33%">
+              <Row>
+                <Col className="popInfoLeft">Branch Name :</Col>
+                  <Col className="popInfoRight">
+                    ------------------
+                </Col>
+              </Row>
+              <Row>
+                <Col className="popInfoLeft">Cashier Name :</Col>
                 <Col className="popInfoRight">
-                {this.props.values.receiverIdentificationAmount}
-              </Col>
-            </Row>
-            <Row>
-              <Col className="popInfoLeft">Transaction Type :</Col>
+                  {username}
+                </Col>
+              </Row>
+            </Col>
+            <Col cW="33.33%">
+              <Row>
+                <Col className="popInfoLeft">Transaction Date :</Col>
+                  <Col className="popInfoRight">
+                    {date.toLocaleDateString('en-US')}
+                </Col>
+              </Row>
+              <Row>
+                <Col className="popInfoLeft">Amount :</Col>
                 <Col className="popInfoRight">
-                {this.props.values.type}
-              </Col>
-            </Row>
-            <Row>
-              <Col className="popInfoLeft">Date :</Col>
-                <Col className="popInfoRight">
-                {date.toString()}
-              </Col>
-            </Row>
-            <Row>
-              <Col className="popInfoLeft">Cashier :</Col>
-                <Col className="popInfoRight">
-                {cashier}
-              </Col>
-            </Row>
-            <Row>
-              <Col className="popInfoLeft">User :</Col>
-                <Col className="popInfoRight">
-                {username}
-              </Col>
-            </Row>
+                  {this.props.values.amount}
+                </Col>
+              </Row>
+            </Col>
+          </Row>
           </Col>
         </Row>
         <hr style={{border: '1px solid black'}}></hr>
