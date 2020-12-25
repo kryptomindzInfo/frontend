@@ -15,9 +15,12 @@ import PayBillPopup from './PayBillPopup';
 import Button from '../../components/Button';
 import { isNull } from 'lodash';
 import { API_URL } from '../App/constants';
+import TransactionReceipt from './TransactionReciept';
 import axios from 'axios';
 
 function CashierMerchantListPage(props) {
+  const [receiptvalues, setReceiptvalues] = React.useState();
+  const [receiptPopup, setReceiptPopup] = React.useState(false);
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
   const [payBillsPopup, setPayBillsPopup] = React.useState(false);
   const [merchantList, setMerchantList] = React.useState([]);
@@ -36,6 +39,14 @@ function CashierMerchantListPage(props) {
 
   const onPopupClose = () => {
     setAddMerchantPopup(false);
+  };
+
+  const onReceiptPopupOpen = () => {
+    setReceiptPopup(true);
+  };
+
+  const onReceiptClose = () => {
+    setReceiptPopup(false);
   };
 
   const onPayBillsPopupClose = () => {
@@ -161,11 +172,23 @@ function CashierMerchantListPage(props) {
           </Card>
         </Main>
       </Container>
-
+      {receiptPopup ? (
+        <TransactionReceipt
+        values={receiptvalues}
+        close={() => onReceiptClose()} 
+      />
+      ) : (
+          ''
+        )}
       {payBillsPopup ? (
         <PayBillPopup
           close={() => onPayBillsPopupClose()}
           merchant={editingMerchant}
+          showReceiptPopup={(values) => {
+            console.log(values);
+            setReceiptvalues(values)
+          }}
+          show={onReceiptPopupOpen}
         />
       ) : (
           ''
