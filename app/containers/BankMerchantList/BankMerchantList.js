@@ -16,6 +16,7 @@ import { STATIC_URL, API_URL } from '../App/constants';
 import Loader from '../../components/Loader';
 import { fetchMerchantList } from './api/merchantAPI';
 
+
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,

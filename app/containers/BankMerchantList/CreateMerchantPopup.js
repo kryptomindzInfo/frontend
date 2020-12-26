@@ -14,6 +14,7 @@ import { API_URL, CONTRACT_URL, STATIC_URL } from '../App/constants';
 import messages from '../BankPage/messages';
 import UploadArea from '../../components/UploadArea';
 import { createMerchant, editMerchant } from './api/merchantAPI';
+import documentFileIcon from '../../images/pdf_icon.png';
 
 function CreateMerchantPopup(props) {
   const token = localStorage.getItem('bankLogged');
@@ -224,8 +225,8 @@ function CreateMerchantPopup(props) {
                         target="_BLANK"
                       />
                     ) : (
-                      ' '
-                    )}
+                        ' '
+                      )}
                     <div
                       className="uploadTrigger"
                       onClick={() => triggerBrowse('logo')}
@@ -240,14 +241,14 @@ function CreateMerchantPopup(props) {
                       {!values.logo ? (
                         <i className="material-icons">cloud_upload</i>
                       ) : (
-                        ' '
-                      )}
+                          ' '
+                        )}
                       <label>
                         {values.logo === '' ? (
                           <FormattedMessage {...messages.popup9} />
                         ) : (
-                          <span>Change Logo</span>
-                        )}
+                            <span>Change Logo</span>
+                          )}
                         *
                       </label>
                     </div>
@@ -265,8 +266,8 @@ function CreateMerchantPopup(props) {
                         target="_BLANK"
                       />
                     ) : (
-                      ' '
-                    )}
+                        ' '
+                      )}
                     <div
                       className="uploadTrigger"
                       onClick={() => triggerBrowse('document_hash')}
@@ -281,8 +282,10 @@ function CreateMerchantPopup(props) {
                       {!values.document_hash ? (
                         <i className="material-icons">cloud_upload</i>
                       ) : (
-                        ' '
-                      )}
+                          <img src={documentFileIcon}
+                            width="50"
+                            height="50" />
+                        )}
 
                       <label>
                         <div className="tooltip">
@@ -297,8 +300,8 @@ function CreateMerchantPopup(props) {
                         {values.document_hash === '' ? (
                           <FormattedMessage {...messages.popup10} />
                         ) : (
-                          <span>Change Contract</span>
-                        )}
+                            <span>Change Contract</span>
+                          )}
                         *
                         <p>
                           <span style={{ color: 'red' }}>* </span>Only PDF
@@ -322,13 +325,13 @@ function CreateMerchantPopup(props) {
                   {isSubmitting ? (
                     <CircularProgress size={30} thickness={5} color="primary" />
                   ) : (
-                    <span>
-                      {' '}
-                      {props.type === 'update'
-                        ? 'Update Merchant'
-                        : 'Add Merchant'}
-                    </span>
-                  )}
+                      <span>
+                        {' '}
+                        {props.type === 'update'
+                          ? 'Update Merchant'
+                          : 'Add Merchant'}
+                      </span>
+                    )}
                 </Button>
               </Form>
             </div>

@@ -64,11 +64,11 @@ export default class BankDashboard extends Component {
 
   async componentDidMount() {
     const res = await postRequest("getBankDashStats", token, {})
-      if(res.data.data.status === 0) {
-        toast.error(res.data.data.message);
-      } else {
-        this.setState({ loading: false, totalBranches: res.data.data.totalBranches, totalMerchants: res.data.data.totalMerchants});
-      }
+    if (res.data.data.status === 0) {
+      toast.error(res.data.data.message);
+    } else {
+      this.setState({ loading: false, totalBranches: res.data.data.totalBranches, totalMerchants: res.data.data.totalMerchants });
+    }
   };
 
   render() {
@@ -85,9 +85,9 @@ export default class BankDashboard extends Component {
           <meta charSet="utf-8" />
           <title>Dashboard | BANK | E-WALLET</title>
         </Helmet>
-        <BankHeader active="dashboard"/>
+        <BankHeader active="dashboard" />
         <Container verticalMargin>
-          <SidebarBank/>
+          <SidebarBank />
           <Main>
             <div className="clr">
               <A href="/bank/branches" float="left">
@@ -139,9 +139,9 @@ export default class BankDashboard extends Component {
                 col
               >
                 <h4>
-                <FormattedMessage {...messages.bbox5} />
-                <br />
-                <span>&nbsp;</span>
+                  <FormattedMessage {...messages.bbox5} />
+                  <br />
+                  <span>&nbsp;</span>
                 </h4>
                 <div className="cardValue">0</div>
               </Card>
@@ -153,7 +153,7 @@ export default class BankDashboard extends Component {
                 col
               >
                 <h4>
-                <FormattedMessage {...messages.box6} />
+                  <FormattedMessage {...messages.box6} />
                 </h4>
                 <div className="cardValue">0</div>
               </Card>
@@ -165,11 +165,11 @@ export default class BankDashboard extends Component {
                 col
               >
                 <h4>
-                <FormattedMessage {...messages.box7} />
+                  <FormattedMessage {...messages.box7} />
                 </h4>
                 <div className="cardValue">0</div>
               </Card>
-              <Card
+              {/* <Card
                 horizontalMargin="7px"
                 cardWidth="151px"
                 h4FontSize="16px"
@@ -177,10 +177,10 @@ export default class BankDashboard extends Component {
                 col
               >
                 <h4>
-                <FormattedMessage {...messages.box8} />
+                  <FormattedMessage {...messages.box8} />
                 </h4>
                 <div className="cardValue">0</div>
-              </Card>
+              </Card> */}
             </div>
           </Main>
         </Container>
