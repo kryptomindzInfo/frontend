@@ -463,7 +463,7 @@ class CashierCashInHand extends Component {
         page: "cashier",
         type: "cashier",
         where: {
-          branch_id: branchID,
+          // branch_id: branchID,
           _id: { $ne: cid },
           is_closed: false
         }

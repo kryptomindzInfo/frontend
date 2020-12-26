@@ -85,6 +85,7 @@ export default class CashierLogin extends Component {
             throw res.data.message;
           }
           else{
+            console.log(res);
             localStorage.setItem('cashierLogged', res.data.token);
             localStorage.setItem('cashierName', res.data.name);
             localStorage.setItem('cashierUserName', res.data.username);
