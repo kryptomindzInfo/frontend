@@ -584,7 +584,7 @@ export default class BankBranchList extends Component {
                 </div>
                 <div className="cardHeaderRight">
                   <h3>Branch List</h3>
-                  <h5>Your friends and family</h5>
+                  {/* <h5>Your friends and family</h5> */}
                 </div>
               </div>
               <div className="cardBody">

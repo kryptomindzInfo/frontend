@@ -35,7 +35,7 @@ class BankNav extends Component {
           <A href="/bank/dashboard">
             <Link
               active={dashboard}
-              // style={`${props => props.theme.secondary}`}
+            // style={`${props => props.theme.secondary}`}
             >
               <FormattedMessage {...messages.menu1} />
             </Link>
@@ -60,11 +60,11 @@ class BankNav extends Component {
               <FormattedMessage {...messages.menu5} />
             </Link>
           </A>
-          <A>
+          {/* <A>
             <Link active={users}>
               <FormattedMessage {...messages.bmenu3} />
             </Link>
-          </A>
+          </A> */}
           <A>
             <Link active={reports}>
               <FormattedMessage {...messages.menu4} />

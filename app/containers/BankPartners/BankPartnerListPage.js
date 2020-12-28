@@ -32,6 +32,7 @@ function BankPartnerListPage(props) {
   const [otpPopup, setOtpPopup] = React.useState(false);
   const [otpID, setOtpId] = React.useState('');
   const [partnerList, setPartnerList] = React.useState([]);
+  const [copyPartnerList, setCopyPartnerList] = React.useState([]);
   const [popupType, setPopupType] = React.useState('new');
   const [editingPartner, setEditingPartner] = React.useState({});
   const [isLoading, setLoading] = React.useState(false);
@@ -48,9 +49,9 @@ function BankPartnerListPage(props) {
     setOtpPopup(false);
   };
 
-  const fetchPartnerList = async() => {
+  const fetchPartnerList = async () => {
     const res = await postRequest("bank/listPartners", token, {})
-    if(res.data.data.status === 0) {
+    if (res.data.data.status === 0) {
       toast.error(res.data.data.message);
       return { list: [], loading: false };
     } else {
@@ -97,24 +98,24 @@ function BankPartnerListPage(props) {
   };
 
   const generateOTP = async (obj) => {
-    try{
+    try {
       const res = await axios.post(`${API_URL}/bank/generateOTP`,
-      {
-        token: token,
-        username: '',
-        page: 'addPartner',
-        name: obj.name,
-        email: obj.email,
-        mobile: obj.mobile,
-        code: obj.code,
-      });
+        {
+          token: token,
+          username: '',
+          page: 'addPartner',
+          name: obj.name,
+          email: obj.email,
+          mobile: obj.mobile,
+          code: obj.code,
+        });
       if (res.status == 200) {
         console.log(res);
-        if (res.data.status===0) {
+        if (res.data.status === 0) {
           throw res.data.message;
         } else {
           setOtpId(res.data.id),
-          toast.success("OTP Sent");
+            toast.success("OTP Sent");
           setOtpPopup(true);
         }
       } else {
@@ -132,7 +133,7 @@ function BankPartnerListPage(props) {
     generateOTP(values);
   };
 
-  const VerifyOtp = async(values) => {
+  const VerifyOtp = async (values) => {
     console.log(otpID);
     setLoading(true);
     const obj = {
@@ -150,6 +151,7 @@ function BankPartnerListPage(props) {
     const getPartnerList = async () => {
       const data = await fetchPartnerList();
       setPartnerList(data.list);
+      setCopyPartnerList(data.list)
       setLoading(data.loading);
     };
     getPartnerList();
@@ -215,14 +217,24 @@ function BankPartnerListPage(props) {
               {partner.status === -1 ? (
                 <span>Unblock</span>
               ) : (
-                <span>Block</span>
-              )}
+                  <span>Block</span>
+                )}
             </div>
           </span>
         </div>
       </td>
     </tr>
   ));
+  const searchlistfunction = (value) => {
+    console.log(value)
+    // console.log(this.state.searchrules)
+    const newfilterdata = copyPartnerList.filter(element =>
+      element.name.toLowerCase().includes(value.toLowerCase()),
+    );
+    setPartnerList(newfilterdata)
+
+
+  }
   return (
     <Wrapper from="bank">
       <Helmet>
@@ -240,7 +252,9 @@ function BankPartnerListPage(props) {
           >
             <div className="iconedInput fl">
               <i className="material-icons">search</i>
-              <input type="text" placeholder="Search Partnerss" />
+              <input type="text" placeholder="Search Partner" onChange={(e) => {
+                searchlistfunction(e.target.value)
+              }} />
             </div>
 
             <Button

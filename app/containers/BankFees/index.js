@@ -118,6 +118,7 @@ export class BankFees extends Component {
       user_id: token,
       banks: [],
       rules: [],
+      copyrules: [],
       otp: '',
       showOtp: false,
       isInfraFeeVisible: false,
@@ -414,7 +415,7 @@ export class BankFees extends Component {
         console.log(res);
         if (res.status == 200) {
           console.log(res.data);
-          this.setState({ loading: false, rules: res.data.rules });
+          this.setState({ loading: false, rules: res.data.rules, copyrules: res.data.rules });
         }
       })
       .catch(err => { });
@@ -506,6 +507,21 @@ export class BankFees extends Component {
       bankMerchantsTable: false,
     });
   };
+
+  searchlistfunction = (value) => {
+    // console.log(value)
+    // console.log(this.state.copyusers)
+    // console.log(this.state.users)
+    const newfilterdata = this.state.copyrules.filter(element =>
+      element.name.toLowerCase().includes(value.toLowerCase()),
+    );
+
+    this.setState({ rules: newfilterdata })
+
+
+  }
+
+
 
   render() {
     const { classes } = this.props;
@@ -669,7 +685,9 @@ export class BankFees extends Component {
               >
                 <div className="iconedInput fl">
                   <i className="material-icons">search</i>
-                  <input type="text" placeholder="Search" />
+                  <input type="text" placeholder="Search" onChange={(e) => {
+                    this.searchlistfunction(e.target.value)
+                  }} />
                 </div>
 
                 <A href="/bank/create-fee" float="right">
@@ -687,7 +705,7 @@ export class BankFees extends Component {
                     <i className="material-icons">supervised_user_circle</i>
                   </div>
                   <div className="cardHeaderRight">
-                    <h3>Fee Rules</h3>
+                    <h3>Intra Bank Fee Rules</h3>
                     <h5>Fees created by the bank</h5>
                   </div>
                 </div>

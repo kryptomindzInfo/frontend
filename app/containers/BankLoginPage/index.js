@@ -30,6 +30,9 @@ import Col from 'components/Col';
 import A from 'components/A';
 import Loader from 'components/Loader';
 import { postRequest, getRequest } from '../App/ApiCall';
+import CloseIcon from '@material-ui/icons/Visibility';
+import OpenIcon from '@material-ui/icons/VisibilityOff';
+import TextField from '@material-ui/core/TextField';
 
 
 import { API_URL } from '../App/constants';
@@ -53,6 +56,8 @@ export default class BankLoginPage extends Component {
       notification: '',
       loading: true,
       redirect: false,
+      passwordtype: "password",
+      visiblity: false
     };
     this.error = this.error.bind(this);
   }
@@ -170,9 +175,9 @@ export default class BankLoginPage extends Component {
                   required
                 />
               </FormGroup>
-              <FormGroup>
+              {/* <FormGroup>
                 <label>
-                  <FormattedMessage {...messages.password} />*
+                  <FormattedMessage {...messages.password} />
                 </label>
                 <TextInput
                   type="password"
@@ -183,6 +188,43 @@ export default class BankLoginPage extends Component {
                   onChange={this.handleInputChange}
                   required
                 />
+              </FormGroup> */}
+
+              <FormGroup>
+                <div style={{ backgroundColor: "" }}>
+                  <TextField
+                    name="password"
+                    label="Password"
+                    style={{ width: "100%" }}
+                    value={this.state.password}
+                    type={this.state.visiblity ? 'text' : 'password'}
+                    margin="normal"
+                    variant="outlined"
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  <span
+                    onClick={() => {
+                      this.setState({ visiblity: !this.state.visiblity })
+                    }}
+
+                    style={{
+                      position: 'relative',
+                      top: '-40px',
+                      left: "90%",
+
+                    }}
+                  >
+                    <i>
+                      {/* < CloseIcon /> */}
+                      {this.state.visiblity ? (
+                        < CloseIcon />
+                      ) : (
+                          <OpenIcon />
+                        )}
+                    </i>
+                  </span>
+                </div>
               </FormGroup>
             </InputsWrap>
             {this.loginLoading ? (

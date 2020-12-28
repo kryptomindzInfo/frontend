@@ -108,6 +108,7 @@ export class InterBankFees extends Component {
       user_id: token,
       banks: [],
       rules: [],
+      copyrules: [],
       otp: '',
       showOtp: false,
       isInfraFeeVisible: false,
@@ -155,7 +156,7 @@ export class InterBankFees extends Component {
       .post(`${API_URL}/bank/interBank/getRules`, { token })
       .then(res => {
         if (res.status == 200) {
-          this.setState({ loading: false, rules: res.data.rules });
+          this.setState({ loading: false, rules: res.data.rules, copyrules: res.data.rules });
         }
       })
       .catch(err => { });
@@ -186,6 +187,19 @@ export class InterBankFees extends Component {
       console.log(e);
     }
   };
+
+  searchlistfunction = (value) => {
+    // console.log(value)
+    // console.log(this.state.copyusers)
+    // console.log(this.state.users)
+    const newfilterdata = this.state.copyrules.filter(element =>
+      element.name.toLowerCase().includes(value.toLowerCase()),
+    );
+
+    this.setState({ rules: newfilterdata })
+
+
+  }
 
 
   render() {
@@ -335,7 +349,9 @@ export class InterBankFees extends Component {
               >
                 <div className="iconedInput fl">
                   <i className="material-icons">search</i>
-                  <input type="text" placeholder="Search" />
+                  <input type="text" placeholder="Search" onChange={(e) => {
+                    this.searchlistfunction(e.target.value)
+                  }} />
                 </div>
 
                 <A href="/bank/create-inter-bank-fee" float="right">
@@ -353,7 +369,7 @@ export class InterBankFees extends Component {
                     <i className="material-icons">supervised_user_circle</i>
                   </div>
                   <div className="cardHeaderRight">
-                    <h3>Fee Rules</h3>
+                    <h3>Inter Bank Fee Rules</h3>
                     <h5>Fees created by the bank</h5>
                   </div>
                 </div>

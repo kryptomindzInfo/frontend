@@ -592,6 +592,9 @@ export default class BankInfo extends Component {
               inputWidth="calc(100% - 241px)"
               className="clr"
             >
+
+              <span style={{ fontSize: "25px" }}>{this.state.banks.name}</span>
+
               <Button className="addBankButton" flex onClick={this.showPopup}>
                 <span>Edit</span>
               </Button>
