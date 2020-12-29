@@ -35,6 +35,7 @@ toast.configure({
 export const InfraMerchantFeeListPage = props => {
   const [loading, setLoading] = useState(false);
   const [ruleList, setRules] = useState([]);
+  const [copyRules, setCopyRules] = useState([])
   const [approvalLoading, setApprovalLoading] = useState(false);
   const [approvalPopup, setApprovalPopup] = useState(false);
   const [ruleForApproval, setRuleForApproval] = useState({});
@@ -49,6 +50,7 @@ export const InfraMerchantFeeListPage = props => {
     setLoading(true);
     getInfraMerchantRules(props.bank, props.feeType, id).then(rules => {
       setRules(rules.list.filter(rule => rule.infra_approve_status !== 0));
+      setCopyRules(rules.list.filter(rule => rule.infra_approve_status !== 0));
       setLoading(rules.loading);
     });
   };
@@ -68,9 +70,23 @@ export const InfraMerchantFeeListPage = props => {
     setApprovalPopup(false);
   };
 
+  const searchlistfunction = (value) => {
+    console.log(value)
+    // console.log(this.state.searchrules)
+    const newfilterdata = copyRules.filter(element =>
+      element.name.toLowerCase().includes(value.toLowerCase()),
+    );
+    setRules(newfilterdata)
+
+    // this.setState({ branches: newfilterdata })
+
+  }
+
+
+
   const rules = () =>
     ruleList.map(rule => {
-      if(rule.infra_share_edit_status === 1) {
+      if (rule.infra_share_edit_status === 1) {
         rule.infra_share = rule.edited.infra_share;
         rule.infra_approve_status = rule.edited.infra_approve_status;
       }
@@ -82,9 +98,39 @@ export const InfraMerchantFeeListPage = props => {
           <td className="tac">
             <span>
               {' '}
-              {rule.type === 'WM-F' || rule.type === 'IBWM-F'
+              {/* {rule.type === 'WM-F' || rule.type === 'IBWM-F'
                 ? 'Wallet to Merchant'
-                : 'Non-wallet to Merchant'}
+                : 'Non-wallet to Merchant'} */}
+              {rule.type == "WM-F" &&
+                "Wallet To Merchant"
+              }
+              {rule.type == "WM-C" &&
+                "Wallet To Merchant"
+              }
+              {rule.type == "NWM-F" &&
+                "Non Wallet To Merchant"
+              }
+              {rule.type == "NWM-C" &&
+                "Non Wallet To Merchant"
+              }
+              {rule.type == "M-F" &&
+                "Merchant Cashier To Merchant"
+              }
+              {rule.type == "M-C" &&
+                "Merchant Cashier To Merchant"
+              }
+              {rule.type == "IBNWM-C" &&
+                "IBNWM"
+              }
+              {rule.type == "IBNWM-F" &&
+                "IBNWM"
+              }
+              {rule.type == "IBWM-C" &&
+                "IBWM"
+              }
+              {rule.type == "IBWM-F" &&
+                "IBWM"
+              }
             </span>
           </td>
           <td>
@@ -108,8 +154,8 @@ export const InfraMerchantFeeListPage = props => {
             ) : rule.infra_approve_status === 1 ? (
               <span>Approved</span>
             ) : (
-              <span>Declined</span>
-            )}
+                  <span>Declined</span>
+                )}
           </td>
         </tr>
       );
@@ -170,7 +216,9 @@ export const InfraMerchantFeeListPage = props => {
           >
             <div className="iconedInput fl">
               <i className="material-icons">search</i>
-              <input type="text" placeholder="Search Revenue Sharing Rule" />
+              <input type="text" placeholder="Search Revenue Sharing Rule" onChange={(e) => {
+                searchlistfunction(e.target.value)
+              }} />
             </div>
           </ActionBar>
           <Card bigPadding>
@@ -212,9 +260,8 @@ export const InfraMerchantFeeListPage = props => {
               <p> </p>
               <div>
                 Fixed:{' '}
-                <span className="green">{`${CURRENCY} ${
-                  ruleForApproval.infra_share.fixed
-                }`}</span>
+                <span className="green">{`${CURRENCY} ${ruleForApproval.infra_share.fixed
+                  }`}</span>
                 , Percentage:{' '}
                 <span className="green">
                   {ruleForApproval.infra_share.percentage}%
@@ -235,27 +282,27 @@ export const InfraMerchantFeeListPage = props => {
                         <Loader />
                       </Button>
                     ) : (
-                      <Button
-                        filledBtn
-                        marginTop="50px"
-                        accentedBtn
-                        type="button"
-                        onClick={() =>
-                          merchantInfraRuleApi(
-                            props.bank,
-                            'decline',
-                            {
-                              rule_id: ruleForApproval._id,
-                            },
-                          ).then(() => {
-                            setApprovalPopup(false);
-                            refreshRuleList();
-                          })
-                        }
-                      >
-                        <span>Decline</span>
-                      </Button>
-                    )}
+                        <Button
+                          filledBtn
+                          marginTop="50px"
+                          accentedBtn
+                          type="button"
+                          onClick={() =>
+                            merchantInfraRuleApi(
+                              props.bank,
+                              'decline',
+                              {
+                                rule_id: ruleForApproval._id,
+                              },
+                            ).then(() => {
+                              setApprovalPopup(false);
+                              refreshRuleList();
+                            })
+                          }
+                        >
+                          <span>Decline</span>
+                        </Button>
+                      )}
                   </FormGroup>
                 </Col>
                 <Col>
@@ -265,26 +312,26 @@ export const InfraMerchantFeeListPage = props => {
                         <Loader />
                       </Button>
                     ) : (
-                      <Button
-                        onClick={() =>
-                          merchantInfraRuleApi(
-                            props.bank,
-                            'approve',
-                            {
-                              rule_id: ruleForApproval._id,
-                            },
-                          ).then(() => {
-                            setApprovalPopup(false);
-                            refreshRuleList();
-                          })
-                        }
-                        filledBtn
-                        marginTop="50px"
-                        type="button"
-                      >
-                        <span>Approve</span>
-                      </Button>
-                    )}
+                        <Button
+                          onClick={() =>
+                            merchantInfraRuleApi(
+                              props.bank,
+                              'approve',
+                              {
+                                rule_id: ruleForApproval._id,
+                              },
+                            ).then(() => {
+                              setApprovalPopup(false);
+                              refreshRuleList();
+                            })
+                          }
+                          filledBtn
+                          marginTop="50px"
+                          type="button"
+                        >
+                          <span>Approve</span>
+                        </Button>
+                      )}
                   </FormGroup>
                 </Col>
               </Row>

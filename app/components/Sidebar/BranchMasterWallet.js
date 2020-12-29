@@ -67,7 +67,7 @@ class BranchMasterWallet extends Component {
   getBalanceForBank = () => {
     axios
       .post(
-        `${API_URL}/bank/getBranchWalletBalnce`,
+        `${API_URL}/bank/getBranchWalletBalance`,
         {
           token: localStorage.getItem('bankLogged'),
           branch_id: this.props.branchId,

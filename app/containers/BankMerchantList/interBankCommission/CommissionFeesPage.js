@@ -27,7 +27,7 @@ const CommissionFeesPage = props => {
   const { id } = match.params;
   localStorage.setItem('currentMerchantId', id);
 
-  const refreshFeeList = async() => {
+  const refreshFeeList = async () => {
     setCreateRulePage(false);
     setEditRulePage(false);
     setLoading(true);
@@ -35,7 +35,7 @@ const CommissionFeesPage = props => {
     const res2 = await getInterBankSharing(id, 'IBNWM-C');
     setRules(res1.list);
     setShare(res2.share);
-    setLoading(false); 
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -99,17 +99,17 @@ const CommissionFeesPage = props => {
                 Pending Merchant Approval
               </Button>
             ) : (
-              <Button
-                onClick={() => {
-                  refreshFeeList();
-                  setEditingRule(r);
-                  setRevenueSharingRulePage(true);
-                }}
-                className="addBankButton"
-              >
-                Revenue Sharing Rule
-              </Button>
-            )}
+                <Button
+                  onClick={() => {
+                    refreshFeeList();
+                    setEditingRule(r);
+                    setRevenueSharingRulePage(true);
+                  }}
+                  className="addBankButton"
+                >
+                  Revenue Sharing Rule
+                </Button>
+              )}
           </td>
         </tr>
       );
@@ -176,8 +176,8 @@ const CommissionFeesPage = props => {
               </Card>
             </div>
           ) : (
-            ''
-          )}
+              ''
+            )}
           {editRulePage ? (
             <CommissionFee
               merchantId={id}
@@ -188,8 +188,8 @@ const CommissionFeesPage = props => {
               }}
             />
           ) : (
-            ''
-          )}
+              ''
+            )}
           {createRulePage ? (
             <CommissionFee
               merchantId={id}
@@ -200,8 +200,8 @@ const CommissionFeesPage = props => {
               }}
             />
           ) : (
-            ''
-          )}
+              ''
+            )}
           {revenueSharingRulePage ? (
             <CommissionRevenueSharingRule
               merchantId={id}
@@ -218,8 +218,8 @@ const CommissionFeesPage = props => {
               }}
             />
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Main>
       </Container>
     </Wrapper>

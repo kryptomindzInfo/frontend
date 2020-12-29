@@ -196,7 +196,7 @@ export default class BankOperationalHistory extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   showHistory = () => {
@@ -238,7 +238,7 @@ export default class BankOperationalHistory extends Component {
           );
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getHistoryTotal = () => {
@@ -255,7 +255,7 @@ export default class BankOperationalHistory extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   filterData = e => {
@@ -271,10 +271,10 @@ export default class BankOperationalHistory extends Component {
   componentDidMount() {
     // this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-      
+
       // this.getBanks();
       let dis = this;
-      setInterval(function(){
+      setInterval(function () {
         dis.getHistory();
       }, 2000);
     } else {
@@ -389,44 +389,52 @@ export default class BankOperationalHistory extends Component {
                 <Table marginTop="34px" smallTd textAlign="left">
                   <tbody>
                     {this.state.history && this.state.history.length > 0
-                      ? this.state.history.map(function(b) {
-                          var isoformat = b.Timestamp;
-                          var readable = new Date(isoformat);
-                          var m = readable.getMonth(); // returns 6
-                          var d = readable.toDateString(); // returns 15
-                          var h = readable.getHours();
-                          var mi = readable.getMinutes();
-                          var mlong = months[m];
-                          var fulldate =
-                            d + ' ' + h + ':' + mi;
+                      ? this.state.history.map(function (b) {
+                        var isoformat = b.Timestamp;
+                        var readable = new Date(isoformat);
+                        var m = readable.getMonth(); // returns 6
+                        var d = readable.toDateString(); // returns 15
+                        var h = readable.getHours();
+                        var mi = readable.getMinutes();
+                        var mlong = months[m];
+                        var fulldate =
+                          d + ' ' + h + ':' + mi;
 
-                          return dis.state.filter == b.Value.tx_data.tx_type ||
-                            dis.state.filter == '' ? (
+                        return dis.state.filter == b.Value.tx_data.tx_type ||
+                          dis.state.filter == '' ? (
                             <tr key={b.TxId}>
                               <td>
-                            <div className="labelGrey">{fulldate}</div>
+                                <div className="labelGrey">{fulldate}</div>
                               </td>
                               <td>
                                 <div className="labelBlue">
                                   {b.Value.tx_data.tx_details}
                                 </div>{' '}
-                                <div className="labelSmallGrey">Completed</div>
+                                <div className="labelSmallGrey">
+                                  {/* Completed */}
+                                  {b.Value.tx_data.tx_type == 'DR' &&
+                                    "Debit"
+                                  }
+                                  {b.Value.tx_data.tx_type == 'CR' &&
+                                    "Credit"
+                                  }
+                                </div>
                               </td>
                               <td className="right">
                                 <div className="labelGrey">
                                   {
                                     b.Value.tx_data.tx_type == 'DR'
-                                    ?
-                                    <span>{CURRENCY} -{b.Value.amount.toFixed(2)}</span>
-                                    :
-                                    <span>{CURRENCY} {b.Value.amount.toFixed(2)}</span>
+                                      ?
+                                      <span>{CURRENCY} -{b.Value.amount.toFixed(2)}</span>
+                                      :
+                                      <span>{CURRENCY} {b.Value.amount.toFixed(2)}</span>
                                   }
 
                                 </div>
                               </td>
                             </tr>
                           ) : null;
-                        })
+                      })
                       : null}
                   </tbody>
                 </Table>

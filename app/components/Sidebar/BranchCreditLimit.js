@@ -55,15 +55,25 @@ class BranchCreditLimit extends Component {
   warn = () => toast.warn(this.state.notification);
 
   getBalanceForBank = () => {
+    // console.log("444444444444444444444444444444444444444444444444444444")
     axios
       .post(
-        `${API_URL}/bank/getBranchWalletBalnce`,
+        `${API_URL}/bank/getBranchWalletBalance`,
         {
           token: localStorage.getItem('bankLogged'),
           branch_id: this.props.branchId,
           wallet_type: 'operational',
         }
       )
+      // .get(
+      //   `${API_URL}/bank/getBranchWalletBalance?branch_id=${this.props.branchId}&from=operational`,
+      //   {
+      //     headers: { Authorization: localStorage.getItem('bankLogged') }
+      //     // token: localStorage.getItem('bankLogged'),
+      //     // branch_id: this.props.branchId,
+      //     // wallet_type: 'operational',
+      //   }
+      // )
       .then(res => {
         if (res.status == 200) {
           console.log(res);
