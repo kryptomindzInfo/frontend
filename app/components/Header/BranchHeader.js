@@ -48,7 +48,7 @@ class BranchHeader extends Component {
 
 
   componentDidMount() {
-    
+
   }
 
   // componentWillUnmount() {
@@ -58,22 +58,23 @@ class BranchHeader extends Component {
   render() {
     const name = localStorage.getItem('name');
     const page = this.props.page;
+    console.log(page)
     return (
       <TopBar>
-        <Welcome from="branch" bankName={this.props.bankName}/>
+        <Welcome from="branch" bankName={this.props.bankName} />
         <Container>
           {
             page == 'branch' ?
-            <A href={this.props.goto} float="left">
-            <Link>
-              Back
+              <A href={this.props.goto} float="left">
+                <Link>
+                  Back
             </Link>
-          </A>
-            :
-            null
+              </A>
+              :
+              null
           }
 
-          <A href={"/branch/"+this.props.bankName+"/dashboard"} float="left">
+          <A href={"/branch/" + this.props.bankName + "/dashboard"} float="left">
             <div className="bankLogo">
               <img src={this.props.bankLogo} />
             </div>
@@ -82,16 +83,17 @@ class BranchHeader extends Component {
           </A>
           {
             this.props.middleTitle ?
-            <div className="middleTitle">{this.props.middleTitle}</div>
-            :
-            null
+              <div className="middleTitle">{this.props.middleTitle}</div>
+              :
+              null
           }
-          {
+          <BranchNav active={this.props.active} bankName={this.props.bankName} />
+          {/* {
             page == 'branch' ?
-            null
-            :
-            <BranchNav active={this.props.active} bankName={this.props.bankName} />
-          }
+              null
+              :
+              <BranchNav active={this.props.active} bankName={this.props.bankName} />
+          } */}
 
         </Container>
       </TopBar>

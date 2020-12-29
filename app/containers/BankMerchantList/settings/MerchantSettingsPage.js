@@ -51,12 +51,13 @@ const MerchantSettingsPage = props => {
             marginBottom="33px"
             inputWidth="calc(100% - 241px)"
             className="clr"
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-            }}
+          // style={{
+          //   display: 'flex',
+          //   flexDirection: 'row',
+          //   justifyContent: 'flex-end',
+          // }}
           >
+            <span style={{ fontSize: "25px" }}>{merchantInfo.name}</span>
             <Button
               className="addBankButton"
               style={{ padding: '8px' }}

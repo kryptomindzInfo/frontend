@@ -30,6 +30,9 @@ import Col from 'components/Col';
 import A from 'components/A';
 import Loader from 'components/Loader';
 import history from 'utils/history';
+import CloseIcon from '@material-ui/icons/Visibility';
+import OpenIcon from '@material-ui/icons/VisibilityOff';
+import TextField from '@material-ui/core/TextField';
 
 import { API_URL, STATIC_URL } from '../App/constants';
 
@@ -55,6 +58,8 @@ export default class BranchLogin extends Component {
       notification: '',
       loading: true,
       redirect: false,
+      passwordtype: "password",
+      visiblity: false
     };
     this.error = this.error.bind(this);
   }
@@ -90,13 +95,13 @@ export default class BranchLogin extends Component {
           localStorage.setItem('bankLogo', res.data.logo);
           localStorage.setItem('branchEmail', res.data.email);
           localStorage.setItem('branchMobile', res.data.mobile);
-          if(res.data.status == 0 && res.data.message === "Incorrect username or password") {
+          if (res.data.status == 0 && res.data.message === "Incorrect username or password") {
             throw res.data.message;
           }
-          else if(res.data.initial_setup){
-            window.location.href = '/branch/'+this.props.match.params.bank+'/dashboard';
-          }else{
-            window.location.href = '/branch/'+this.props.match.params.bank+'/setup';
+          else if (res.data.initial_setup) {
+            window.location.href = '/branch/' + this.props.match.params.bank + '/dashboard';
+          } else {
+            window.location.href = '/branch/' + this.props.match.params.bank + '/setup';
           }
 
         } else {
@@ -117,10 +122,10 @@ export default class BranchLogin extends Component {
 
   componentDidMount() {
     axios
-      .post(`${API_URL}/getBankByName`, {name: this.props.match.params.bank})
+      .post(`${API_URL}/getBankByName`, { name: this.props.match.params.bank })
       .then(res => {
         if (res.status == 200) {
-          this.setState({ bank: res.data.banks, loading:false });
+          this.setState({ bank: res.data.banks, loading: false });
         } else {
           throw res.data.error;
         }
@@ -153,10 +158,10 @@ export default class BranchLogin extends Component {
           <meta charSet="utf-8" />
           <title>E-WALLET | BRANCH | LOGIN</title>
         </Helmet>
-        <FrontLeftSection from="branch" title={this.state.bank.name} logo={STATIC_URL+this.state.bank.logo}></FrontLeftSection>
+        <FrontLeftSection from="branch" title={this.state.bank.name} logo={STATIC_URL + this.state.bank.logo}></FrontLeftSection>
         <FrontRightSection>
           <LoginHeader>
-          <FormattedMessage {...messages.pagetitle} />
+            <FormattedMessage {...messages.pagetitle} />
           </LoginHeader>
           <FrontFormTitle><FormattedMessage {...messages.title} /></FrontFormTitle>
           <FrontFormSubTitle><FormattedMessage {...messages.subtitle2} /></FrontFormSubTitle>
@@ -175,6 +180,42 @@ export default class BranchLogin extends Component {
                 />
               </FormGroup>
               <FormGroup>
+                <div style={{ backgroundColor: "" }}>
+                  <TextField
+                    name="password"
+                    label="Password"
+                    style={{ width: "100%" }}
+                    value={this.state.password}
+                    type={this.state.visiblity ? 'text' : 'password'}
+                    margin="normal"
+                    variant="outlined"
+                    onChange={this.handleInputChange}
+                    required
+                  />
+                  <span
+                    onClick={() => {
+                      this.setState({ visiblity: !this.state.visiblity })
+                    }}
+
+                    style={{
+                      position: 'relative',
+                      top: '-40px',
+                      left: "90%",
+
+                    }}
+                  >
+                    <i>
+                      {/* < CloseIcon /> */}
+                      {this.state.visiblity ? (
+                        < CloseIcon />
+                      ) : (
+                          <OpenIcon />
+                        )}
+                    </i>
+                  </span>
+                </div>
+              </FormGroup>
+              {/* <FormGroup>
                 <label><FormattedMessage {...messages.password} />*</label>
                 <TextInput
                   type="password"
@@ -185,20 +226,20 @@ export default class BranchLogin extends Component {
                   onChange={this.handleInputChange}
                   required
                 />
-              </FormGroup>
+              </FormGroup> */}
             </InputsWrap>
             {
               this.loginLoading ?
-              <PrimaryBtn disabled><Loader /></PrimaryBtn>
-              :
-              <PrimaryBtn><FormattedMessage {...messages.pagetitle} /></PrimaryBtn>
+                <PrimaryBtn disabled><Loader /></PrimaryBtn>
+                :
+                <PrimaryBtn><FormattedMessage {...messages.pagetitle} /></PrimaryBtn>
             }
 
           </form>
           <Row marginTop>
             <Col />
             <Col textRight>
-              <A href={"/branch/"+this.props.match.params.bank+"/forgot-password"}><FormattedMessage {...messages.forgotpassword} /></A>
+              <A href={"/branch/" + this.props.match.params.bank + "/forgot-password"}><FormattedMessage {...messages.forgotpassword} /></A>
             </Col>
           </Row>
         </FrontRightSection>

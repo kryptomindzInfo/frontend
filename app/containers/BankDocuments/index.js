@@ -369,7 +369,7 @@ export default class BankDocuments extends Component {
       });
   }
 
-  getBanks = () => {};
+  getBanks = () => { };
 
   getRules = () => {
     axios
@@ -379,7 +379,7 @@ export default class BankDocuments extends Component {
           this.setState({ rules: res.data.rules });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getDocs = () => {
@@ -387,12 +387,12 @@ export default class BankDocuments extends Component {
       .post(`${API_URL}/getDocs`, { bank_id: this.state.bank_id })
       .then(res => {
         if (res.status == 200) {
-          this.setState({ loading: false, docs: res.data.docs }, function() {
+          this.setState({ loading: false, docs: res.data.docs }, function () {
             console.log(this.state.docs);
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   componentDidMount() {
@@ -452,15 +452,15 @@ export default class BankDocuments extends Component {
           <Main>
             <Card bigPadding>
               <div className="cardBody clr">
-                <h3>FILES</h3>
+                <h3>Documents</h3>
                 {this.state.docs && this.state.docs.length > 0
-                  ? this.state.docs.map(function(b) {
+                  ? this.state.docs.map(function (b) {
                     let filename = b.contract.replace(/^.*[\\\/]/, '');
                     const ext = b.contract.split('.').pop();
                     const icon =
-                        ext == 'pdf'
-                          ? `${STATIC_URL}main/pdf-icon.png`
-                          : `${STATIC_URL}main/pdf-icon.png`;
+                      ext == 'pdf'
+                        ? `${STATIC_URL}main/pdf-icon.png`
+                        : `${STATIC_URL}main/pdf-icon.png`;
                     const isoformat = b.created_at;
                     const readable = new Date(isoformat);
                     const m = readable.getMonth(); // returns 6
@@ -524,55 +524,55 @@ export default class BankDocuments extends Component {
                 </form>
               </div>
             ) : (
-              <div>
-                <form>
-                  <p>
-                    <span id="popname">{this.state.popname}</span>
-                  </p>
-                  <p>
-                    {' '}
+                <div>
+                  <form>
+                    <p>
+                      <span id="popname">{this.state.popname}</span>
+                    </p>
+                    <p>
+                      {' '}
                     Sending from <span id="poptype">{this.state.poptype}</span>
-                  </p>
-                  <p>
-                    {' '}
+                    </p>
+                    <p>
+                      {' '}
                     Transaction range
                     <span id="poprange">{this.state.poprange}</span>
-                  </p>
-                  <p>
-                    {' '}
+                    </p>
+                    <p>
+                      {' '}
                     Fee <span id="poppercent">
-                      {this.state.poppercent}
-                    </span>{' '}
+                        {this.state.poppercent}
+                      </span>{' '}
                     &nbsp; &nbsp; Priority: <span>100</span>
-                  </p>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <Button
-                          filledBtn
-                          marginTop="50px"
-                          accentedBtn
-                          onClick={this.decline}
-                        >
-                          <span>Decline</span>
-                        </Button>
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        <Button
-                          filledBtn
-                          marginTop="50px"
-                          onClick={this.approve}
-                        >
-                          <span>Approve</span>
-                        </Button>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </form>
-              </div>
-            )}
+                    </p>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <Button
+                            filledBtn
+                            marginTop="50px"
+                            accentedBtn
+                            onClick={this.decline}
+                          >
+                            <span>Decline</span>
+                          </Button>
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          <Button
+                            filledBtn
+                            marginTop="50px"
+                            onClick={this.approve}
+                          >
+                            <span>Approve</span>
+                          </Button>
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </form>
+                </div>
+              )}
           </MiniPopUp>
         ) : null}
       </Wrapper>

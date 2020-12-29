@@ -56,14 +56,14 @@ class BranchCreditLimit extends Component {
 
   getBalanceForBank = () => {
     axios
-    .post(
-      `${API_URL}/bank/getBranchWalletBalnce`,
-      {
-        token : localStorage.getItem('bankLogged'),
-        branch_id: this.props.branchId,
-        wallet_type: 'operational',
-      }
-    )
+      .post(
+        `${API_URL}/bank/getBranchWalletBalnce`,
+        {
+          token: localStorage.getItem('bankLogged'),
+          branch_id: this.props.branchId,
+          wallet_type: 'operational',
+        }
+      )
       .then(res => {
         if (res.status == 200) {
           console.log(res);
@@ -76,7 +76,7 @@ class BranchCreditLimit extends Component {
               },
               () => {
                 var dis = this;
-                setTimeout(function() {
+                setTimeout(function () {
                   dis.getBalanceForBank();
                 }, 3000);
               },
@@ -84,17 +84,17 @@ class BranchCreditLimit extends Component {
           }
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getBalance = () => {
     axios
-    .post(
-      `${API_URL}/branch/getWalletBalance?page=operational`,
-      {
-        token : localStorage.getItem('branchLogged'),
-      }
-    )
+      .post(
+        `${API_URL}/branch/getWalletBalance?page=operational`,
+        {
+          token: localStorage.getItem('branchLogged'),
+        }
+      )
       .then(res => {
         if (res.status == 200) {
           console.log(res);
@@ -107,7 +107,7 @@ class BranchCreditLimit extends Component {
               },
               () => {
                 var dis = this;
-                setTimeout(function() {
+                setTimeout(function () {
                   dis.getBalance();
                 }, 3000);
               },
@@ -115,7 +115,7 @@ class BranchCreditLimit extends Component {
           }
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   componentDidMount() {
@@ -124,9 +124,9 @@ class BranchCreditLimit extends Component {
         bank: this.props.historyLink,
       },
       () => {
-        if(this.props.branchId){
+        if (this.props.branchId) {
           this.getBalanceForBank();
-        }else{
+        } else {
           this.getBalance();
         }
       },
@@ -146,20 +146,39 @@ class BranchCreditLimit extends Component {
       }
     }
     return (
-      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
+      // <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
+      <>
         <h3>
           Credit Limit
         </h3>
-        <Row>
-        <Col><h3 className="miniTitle">Maximum</h3><div className="cardValue">
-          {CURRENCY} {this.props.credit_limit ? this.props.credit_limit: limit}
-        </div></Col>
-        <Col><h3 className="miniTitle">Remaining</h3><div className="cardValue">
-          {CURRENCY} {this.props.credit_limit ? 
-            this.state.balance > 0 ? this.props.credit_limit : this.props.credit_limit+this.state.balance :
-            this.state.balance > 0 ? limit : limit+this.state.balance}
-        </div></Col>
-        </Row>
+        <h3 className="miniTitle">Maximum</h3>
+        <div className="cardValue" style={{ fontSize: "30px" }}>
+          {CURRENCY} {this.props.credit_limit ? this.props.credit_limit : limit}
+        </div>
+        <br />
+        <h3 className="miniTitle">Remaining</h3>
+        <div className="cardValue" style={{ fontSize: "30px" }}>
+          {CURRENCY} {this.props.credit_limit ?
+            this.state.balance > 0 ? this.props.credit_limit : this.props.credit_limit + this.state.balance :
+            this.state.balance > 0 ? limit : limit + this.state.balance}
+        </div>
+        {/* <Row>
+          <Col>
+            <h3 className="miniTitle">Maximum</h3>
+            <div className="cardValue">
+              {CURRENCY} {this.props.credit_limit ? this.props.credit_limit : limit}
+            </div>
+          </Col>
+          <Col>
+            <h3 className="miniTitle">Remaining</h3>
+            <div className="cardValue">
+              {CURRENCY} {this.props.credit_limit ?
+                this.state.balance > 0 ? this.props.credit_limit : this.props.credit_limit + this.state.balance :
+                this.state.balance > 0 ? limit : limit + this.state.balance}
+            </div>
+          </Col>
+        </Row> */}
+
 
         {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)} roundedCorner>
@@ -232,7 +251,8 @@ class BranchCreditLimit extends Component {
             </form>
           </Popup>
         ) : null}
-      </Card>
+        {/* </Card> */}
+      </>
     );
   }
 }

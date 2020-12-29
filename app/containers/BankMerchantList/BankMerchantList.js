@@ -16,6 +16,7 @@ import { STATIC_URL, API_URL } from '../App/constants';
 import Loader from '../../components/Loader';
 import { fetchMerchantList } from './api/merchantAPI';
 
+
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -28,6 +29,7 @@ toast.configure({
 function BankMerchantList(props) {
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
   const [merchantList, setMerchantList] = React.useState([]);
+  const [copyMerchantList, setCopyMerchantList] = React.useState([]);
   const [popupType, setPopupType] = React.useState('new');
   const [editingMerchant, setEditingMerchant] = React.useState({});
   const [isLoading, setLoading] = React.useState(false);
@@ -103,6 +105,7 @@ function BankMerchantList(props) {
     const getMerchantList = async () => {
       const data = await fetchMerchantList();
       setMerchantList(data.list);
+      setCopyMerchantList(data.list)
       setLoading(data.loading);
     };
     getMerchantList();
@@ -179,6 +182,17 @@ function BankMerchantList(props) {
       </td>
     </tr>
   ));
+
+  const searchlistfunction = (value) => {
+    console.log(value)
+    // console.log(this.state.searchrules)
+    const newfilterdata = copyMerchantList.filter(element =>
+      element.name.toLowerCase().includes(value.toLowerCase()),
+    );
+    setMerchantList(newfilterdata)
+
+
+  }
   return (
     <Wrapper from="bank">
       <Helmet>
@@ -196,7 +210,9 @@ function BankMerchantList(props) {
           >
             <div className="iconedInput fl">
               <i className="material-icons">search</i>
-              <input type="text" placeholder="Search Merchants" />
+              <input type="text" placeholder="Search Merchants" onChange={(e) => {
+                searchlistfunction(e.target.value)
+              }} />
             </div>
 
             <Button
