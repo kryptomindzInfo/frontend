@@ -66,14 +66,14 @@ class BranchMasterWallet extends Component {
 
   getBalanceForBank = () => {
     axios
-    .post(
-      `${API_URL}/bank/getBranchWalletBalnce`,
-      {
-        token : localStorage.getItem('bankLogged'),
-        branch_id: this.props.branchId,
-        wallet_type: 'master',
-      }
-    )
+      .post(
+        `${API_URL}/bank/getBranchWalletBalnce`,
+        {
+          token: localStorage.getItem('bankLogged'),
+          branch_id: this.props.branchId,
+          wallet_type: 'master',
+        }
+      )
       .then(res => {
         if (res.status == 200) {
           console.log(res);
@@ -86,7 +86,7 @@ class BranchMasterWallet extends Component {
               },
               () => {
                 var dis = this;
-                setTimeout(function() {
+                setTimeout(function () {
                   dis.getBalanceForBank();
                 }, 3000);
               },
@@ -94,17 +94,17 @@ class BranchMasterWallet extends Component {
           }
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getBalance = () => {
     axios
-    .post(
-      `${API_URL}/branch/getWalletBalance?page=master`,
-      {
-        token : localStorage.getItem('branchLogged'),
-      }
-    )
+      .post(
+        `${API_URL}/branch/getWalletBalance?page=master`,
+        {
+          token: localStorage.getItem('branchLogged'),
+        }
+      )
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {
@@ -116,7 +116,7 @@ class BranchMasterWallet extends Component {
               },
               () => {
                 var dis = this;
-                setTimeout(function() {
+                setTimeout(function () {
                   dis.getBalance();
                 }, 3000);
               },
@@ -130,9 +130,9 @@ class BranchMasterWallet extends Component {
   };
 
   componentDidMount() {
-    if(this.props.branchId){
+    if (this.props.branchId) {
       this.getBalanceForBank();
-    }else{
+    } else {
       this.getBalance();
     }
   };
@@ -160,9 +160,9 @@ class BranchMasterWallet extends Component {
             <span className="history" style={{ position: 'inherit' }}>
               History
             </span>
-        </A>
+          </A>
         </h5>
-        
+
         <div className="cardValue">
           {CURRENCY} {this.state.balance.toFixed(2)}
         </div>
