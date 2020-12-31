@@ -1032,6 +1032,15 @@ class CashierTransactionLimit extends Component {
         }
       }
     };
+
+    let popupstyle = "bigBody"
+
+    // if (this.state.showOTPClaimMoney) {
+    //   popupstyle = "bigbody1"
+    // }
+    // else {
+    //   popupstyle = "bigbody"
+    // }
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
         <h3>Max. Daily Cash Out Amount</h3>
@@ -1107,53 +1116,19 @@ class CashierTransactionLimit extends Component {
           />
         ) : null}
         {this.state.popupClaimMoney ? (
-          <Popup close={this.closePopupSendMoney.bind(this)} accentedH1>
-            {this.state.showClaimMoneyDetails ? (
-              this.state.showVerifyClaimMoney ? (
-                this.state.showOTPClaimMoney ? (
-                  <div>
-                    <h1>Verify OTP</h1>
-                    <form
-                      action=""
-                      method="post"
-                      onSubmit={this.verifyOTPClaimMoney}
-                    >
-                      <p>&nbsp;</p>
-                      <FormGroup>
-                        <label>OTP*</label>
-                        <TextInput
-                          type="text"
-                          name="otp"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.otp}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                      {this.state.claimMoneyLoading ? (
-                        <Button
-                          filledBtn
-                          marginTop="50px"
-                          marginBottom="50px"
-                          disabled
-                        >
-                          <Loader />
-                        </Button>
-                      ) : (
-                          <Button filledBtn marginTop="50px" marginBottom="50px">
-                            <span>Verify</span>
-                          </Button>
-                        )}
-                    </form>
-                  </div>
-                ) : (
+          <>
+
+
+            <Popup bigBody close={this.closePopupSendMoney.bind(this)} accentedH1>
+              {this.state.showClaimMoneyDetails ? (
+                this.state.showVerifyClaimMoney ? (
+                  this.state.showOTPClaimMoney ? (
                     <div>
                       <h1>Verify OTP</h1>
                       <form
                         action=""
                         method="post"
-                        onSubmit={this.verifyClaimMoney}
+                        onSubmit={this.verifyOTPClaimMoney}
                       >
                         <p>&nbsp;</p>
                         <FormGroup>
@@ -1182,33 +1157,423 @@ class CashierTransactionLimit extends Component {
                               <span>Verify</span>
                             </Button>
                           )}
-
-                        <p className="resend">
-                          Wait for{' '}
-                          <span className="timer">{this.state.timer}</span> to{' '}
-                          {this.state.resend ? (
-                            <span className="go" onClick={this.generateOTP}>
-                              Resend
-                            </span>
+                      </form>
+                    </div>
+                  ) : (
+                      <div>
+                        <h1>Verify OTP</h1>
+                        <form
+                          action=""
+                          method="post"
+                          onSubmit={this.verifyClaimMoney}
+                        >
+                          <p>&nbsp;</p>
+                          <FormGroup>
+                            <label>OTP*</label>
+                            <TextInput
+                              type="text"
+                              name="otp"
+                              onFocus={inputFocus}
+                              onBlur={inputBlur}
+                              value={this.state.otp}
+                              onChange={this.handleInputChange}
+                              required
+                            />
+                          </FormGroup>
+                          {this.state.claimMoneyLoading ? (
+                            <Button
+                              filledBtn
+                              marginTop="50px"
+                              marginBottom="50px"
+                              disabled
+                            >
+                              <Loader />
+                            </Button>
                           ) : (
-                              <span>Resend</span>
+                              <Button filledBtn marginTop="50px" marginBottom="50px">
+                                <span>Verify</span>
+                              </Button>
                             )}
-                        </p>
+
+                          <p className="resend">
+                            Wait for{' '}
+                            <span className="timer">{this.state.timer}</span> to{' '}
+                            {this.state.resend ? (
+                              <span className="go" onClick={this.generateOTP}>
+                                Resend
+                              </span>
+                            ) : (
+                                <span>Resend</span>
+                              )}
+                          </p>
+                        </form>
+                      </div>
+                    )
+                ) : (
+                    <div>
+                      <h1>Claim Money</h1>
+                      <form action="" method="post" onSubmit={this.claimMoney}>
+                        <Container>
+                          <Row>
+                            <Col md="4" />
+                            <Col sm="12" md="4">
+                              <FormGroup>
+                                <label>
+                                  Enter the transfer code
+                              {/* <FormattedMessage {...messages.popup1} />* */}
+                                </label>
+                                <TextInput
+                                  type="text"
+                                  name="transferCode"
+                                  pattern=".{3,12}"
+                                  // title="Minimum 3 characters"
+                                  onFocus={inputFocus}
+                                  onBlur={inputBlur}
+                                  value={this.state.transferCode}
+                                  onChange={this.handleInputChange}
+                                  required
+                                />
+                              </FormGroup>
+                            </Col>
+                            <Col md="4" />
+                          </Row>
+                        </Container>
+                        <Container>
+                          <Row vAlign="flex-start">
+                            <Col
+                              sm="12"
+                              md="4"
+                              style={{
+                                // display: this.state.sender_id ? 'block' : 'none',
+                                display: 'block',
+                              }}
+                            >
+                              <div
+                                style={{
+                                  fontSize: '24px',
+                                  fontWeight: 'bold',
+                                  padding: '13px 0px',
+                                  color: '#417505',
+                                }}
+                              >
+                                Sender's Info
+                          </div>
+                              <Row>
+                                <Col className="popInfoLeft">Mobile Number</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.mobile}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Given Name</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.givenname}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Family Name</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.familyname}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Address</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.address1}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">State</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.state}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Zip Code</Col>
+                                <Col className="popInfoRight">{this.state.zip}</Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Country</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.country}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Email ID</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.email}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Notes</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.note}
+                                </Col>
+                              </Row>
+                            </Col>
+                            <Col sm="12" md="4">
+                              <div
+                                style={{
+                                  fontSize: '24px',
+                                  fontWeight: 'bold',
+                                  padding: '13px 0px',
+                                  color: '#417505',
+                                }}
+                              >
+                                Receiver's Info
+                          </div>
+                              <Row>
+                                <Col className="popInfoLeft">Mobile Number</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.receiverMobile}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Given Name</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.receiverGivenName}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Family Name</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.receiverFamilyName}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Country</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.receiverCountry}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Email ID</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.receiverEmail}
+                                </Col>
+                              </Row>
+                              <Row /> <Row /> <Row />
+                            </Col>
+                            <Col sm="12" md="4">
+                              <div
+                                style={{
+                                  fontSize: '24px',
+                                  fontWeight: 'bold',
+                                  padding: '13px 0px',
+                                  color: '#417505',
+                                }}
+                              >
+                                &nbsp;
+                          </div>
+                              <Row>
+                                <Col className="popInfoLeft">Amount</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.receiverIdentificationAmount}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Date</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.dateClaimMoney}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Transaction ID</Col>
+                                <Col className="popInfoRight">
+                                  67648821974200954
+                            </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">ID required</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.withoutID ? 'No' : 'Yes'}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">OTP required</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.requireOTP ? 'Yes' : 'No'}
+                                </Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                          <Row vAlign="flex-start">
+                            <Col
+                              style={{
+                                display: this.state.sender_id ? 'block' : 'none',
+                              }}
+                            >
+                              <div
+                                style={{
+                                  fontSize: '24px',
+                                  fontWeight: 'bold',
+                                  padding: '13px 0px',
+                                }}
+                              >
+                                Sender's Identification
+                          </div>
+                              <Row>
+                                <Col className="popInfoLeft">Country</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.senderIdentificationCountry}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Type</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.senderIdentificationType}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Number</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.senderIdentificationNumber}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Valid till</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.senderIdentificationValidTill}
+                                </Col>
+                              </Row>
+                            </Col>
+                            <Col>
+                              <div
+                                style={{
+                                  fontSize: '24px',
+                                  fontWeight: 'bold',
+                                  padding: '13px 0px',
+                                }}
+                              >
+                                Receiver's Identification
+                          </div>
+                              <Row>
+                                <Col className="popInfoLeft">Country</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.receiverIdentificationCountry}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Type</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.receiverIdentificationType}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Number</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.receiverIdentificationNumber}
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="popInfoLeft">Valid till</Col>
+                                <Col className="popInfoRight">
+                                  {this.state.receiverIdentificationValidTill}
+                                </Col>
+                              </Row>
+                            </Col>
+                            <Col>
+                              {this.state.withoutID ? null : (
+                                <FormGroup>
+                                  <UploadArea
+                                    bgImg={`${STATIC_URL}main/pdf-icon.png`}
+                                  >
+                                    {this.state.proof ? (
+                                      <a
+                                        className="uploadedImg"
+                                        href={CONTRACT_URL + this.state.proof}
+                                        target="_BLANK"
+                                      />
+                                    ) : (
+                                        ' '
+                                      )}
+                                    <div
+                                      className="uploadTrigger"
+                                      onClick={() => this.triggerBrowse('proof')}
+                                    >
+                                      <input
+                                        type="file"
+                                        id="proof"
+                                        onChange={this.onChange}
+                                        data-key="proof"
+                                        accept=".pdf"
+                                      />
+                                      {!this.state.proof ? (
+                                        <i className="material-icons">
+                                          cloud_upload
+                                        </i>
+                                      ) : (
+                                          ' '
+                                        )}
+
+                                      <label>
+                                        <div className="tooltip">
+                                          <i
+                                            className="fa fa-info-circle"
+                                            style={{ margin: '5px' }}
+                                          />
+                                          <span className="tooltiptext">
+                                            This proof will be uploaded on
+                                            Blockchain.
+                                      </span>
+                                        </div>
+                                        {!this.state.proof ? (
+                                          <span>Upload</span>
+                                        ) : (
+                                            // <FormattedMessage {...messages.popup10} />
+                                            <span>Change Proof</span>
+                                          )}
+                                    *
+                                    <p>
+                                          <span style={{ color: 'red' }}>* </span>
+                                      Only PDF allowed
+                                    </p>
+                                      </label>
+                                    </div>
+                                  </UploadArea>
+                                </FormGroup>
+                              )}
+                              {this.state.claimMoneyLoading ? (
+                                <Button filledBtn marginTop="20px" disabled>
+                                  <Loader />
+                                </Button>
+                              ) : (
+                                  <Button filledBtn marginTop="20px">
+                                    <span>
+                                      Proceed
+                                {/* <FormattedMessage {...messages.addbank} /> */}
+                                    </span>
+                                  </Button>
+                                )}
+
+                              <br />
+                              {/* <p className="note">
+                      <span style={{ color: 'red' }}>* </span>
+                      Total fee $200 will be charged
+                    </p> */}
+                            </Col>
+                          </Row>
+                        </Container>
                       </form>
                     </div>
                   )
               ) : (
                   <div>
                     <h1>Claim Money</h1>
-                    <form action="" method="post" onSubmit={this.claimMoney}>
+                    <form
+                      action=""
+                      method="post"
+                      onSubmit={this.getClaimMoney}
+                      style={{ marginTop: '20px' }}
+                    >
                       <Container>
                         <Row>
-                          <Col md="4" />
-                          <Col sm="12" md="4">
+                          {/* <Col md="4" /> */}
+                          <Col sm="12" md="12">
                             <FormGroup>
                               <label>
                                 Enter the transfer code
-                              {/* <FormattedMessage {...messages.popup1} />* */}
+                            {/* <FormattedMessage {...messages.popup1} />* */}
                               </label>
                               <TextInput
                                 type="text"
@@ -1223,385 +1588,33 @@ class CashierTransactionLimit extends Component {
                               />
                             </FormGroup>
                           </Col>
-                          <Col md="4" />
+                          {/* <Col md="4" /> */}
                         </Row>
                       </Container>
                       <Container>
-                        <Row vAlign="flex-start">
-                          <Col
-                            sm="12"
-                            md="4"
-                            style={{
-                              // display: this.state.sender_id ? 'block' : 'none',
-                              display: 'block',
-                            }}
-                          >
-                            <div
-                              style={{
-                                fontSize: '24px',
-                                fontWeight: 'bold',
-                                padding: '13px 0px',
-                                color: '#417505',
-                              }}
-                            >
-                              Sender's Info
-                          </div>
-                            <Row>
-                              <Col className="popInfoLeft">Mobile Number</Col>
-                              <Col className="popInfoRight">
-                                {this.state.mobile}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Given Name</Col>
-                              <Col className="popInfoRight">
-                                {this.state.givenname}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Family Name</Col>
-                              <Col className="popInfoRight">
-                                {this.state.familyname}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Address</Col>
-                              <Col className="popInfoRight">
-                                {this.state.address1}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">State</Col>
-                              <Col className="popInfoRight">
-                                {this.state.state}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Zip Code</Col>
-                              <Col className="popInfoRight">{this.state.zip}</Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Country</Col>
-                              <Col className="popInfoRight">
-                                {this.state.country}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Email ID</Col>
-                              <Col className="popInfoRight">
-                                {this.state.email}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Notes</Col>
-                              <Col className="popInfoRight">
-                                {this.state.note}
-                              </Col>
-                            </Row>
-                          </Col>
+                        <Row>
+                          <Col md="4" />
                           <Col sm="12" md="4">
-                            <div
-                              style={{
-                                fontSize: '24px',
-                                fontWeight: 'bold',
-                                padding: '13px 0px',
-                                color: '#417505',
-                              }}
-                            >
-                              Receiver's Info
-                          </div>
-                            <Row>
-                              <Col className="popInfoLeft">Mobile Number</Col>
-                              <Col className="popInfoRight">
-                                {this.state.receiverMobile}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Given Name</Col>
-                              <Col className="popInfoRight">
-                                {this.state.receiverGivenName}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Family Name</Col>
-                              <Col className="popInfoRight">
-                                {this.state.receiverFamilyName}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Country</Col>
-                              <Col className="popInfoRight">
-                                {this.state.receiverCountry}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Email ID</Col>
-                              <Col className="popInfoRight">
-                                {this.state.receiverEmail}
-                              </Col>
-                            </Row>
-                            <Row /> <Row /> <Row />
-                          </Col>
-                          <Col sm="12" md="4">
-                            <div
-                              style={{
-                                fontSize: '24px',
-                                fontWeight: 'bold',
-                                padding: '13px 0px',
-                                color: '#417505',
-                              }}
-                            >
-                              &nbsp;
-                          </div>
-                            <Row>
-                              <Col className="popInfoLeft">Amount</Col>
-                              <Col className="popInfoRight">
-                                {this.state.receiverIdentificationAmount}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Date</Col>
-                              <Col className="popInfoRight">
-                                {this.state.dateClaimMoney}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Transaction ID</Col>
-                              <Col className="popInfoRight">
-                                67648821974200954
-                            </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">ID required</Col>
-                              <Col className="popInfoRight">
-                                {this.state.withoutID ? 'No' : 'Yes'}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">OTP required</Col>
-                              <Col className="popInfoRight">
-                                {this.state.requireOTP ? 'Yes' : 'No'}
-                              </Col>
-                            </Row>
-                          </Col>
-                        </Row>
-                        <Row vAlign="flex-start">
-                          <Col
-                            style={{
-                              display: this.state.sender_id ? 'block' : 'none',
-                            }}
-                          >
-                            <div
-                              style={{
-                                fontSize: '24px',
-                                fontWeight: 'bold',
-                                padding: '13px 0px',
-                              }}
-                            >
-                              Sender's Identification
-                          </div>
-                            <Row>
-                              <Col className="popInfoLeft">Country</Col>
-                              <Col className="popInfoRight">
-                                {this.state.senderIdentificationCountry}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Type</Col>
-                              <Col className="popInfoRight">
-                                {this.state.senderIdentificationType}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Number</Col>
-                              <Col className="popInfoRight">
-                                {this.state.senderIdentificationNumber}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Valid till</Col>
-                              <Col className="popInfoRight">
-                                {this.state.senderIdentificationValidTill}
-                              </Col>
-                            </Row>
-                          </Col>
-                          <Col>
-                            <div
-                              style={{
-                                fontSize: '24px',
-                                fontWeight: 'bold',
-                                padding: '13px 0px',
-                              }}
-                            >
-                              Receiver's Identification
-                          </div>
-                            <Row>
-                              <Col className="popInfoLeft">Country</Col>
-                              <Col className="popInfoRight">
-                                {this.state.receiverIdentificationCountry}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Type</Col>
-                              <Col className="popInfoRight">
-                                {this.state.receiverIdentificationType}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Number</Col>
-                              <Col className="popInfoRight">
-                                {this.state.receiverIdentificationNumber}
-                              </Col>
-                            </Row>
-                            <Row>
-                              <Col className="popInfoLeft">Valid till</Col>
-                              <Col className="popInfoRight">
-                                {this.state.receiverIdentificationValidTill}
-                              </Col>
-                            </Row>
-                          </Col>
-                          <Col>
-                            {this.state.withoutID ? null : (
-                              <FormGroup>
-                                <UploadArea
-                                  bgImg={`${STATIC_URL}main/pdf-icon.png`}
-                                >
-                                  {this.state.proof ? (
-                                    <a
-                                      className="uploadedImg"
-                                      href={CONTRACT_URL + this.state.proof}
-                                      target="_BLANK"
-                                    />
-                                  ) : (
-                                      ' '
-                                    )}
-                                  <div
-                                    className="uploadTrigger"
-                                    onClick={() => this.triggerBrowse('proof')}
-                                  >
-                                    <input
-                                      type="file"
-                                      id="proof"
-                                      onChange={this.onChange}
-                                      data-key="proof"
-                                      accept=".pdf"
-                                    />
-                                    {!this.state.proof ? (
-                                      <i className="material-icons">
-                                        cloud_upload
-                                      </i>
-                                    ) : (
-                                        ' '
-                                      )}
-
-                                    <label>
-                                      <div className="tooltip">
-                                        <i
-                                          className="fa fa-info-circle"
-                                          style={{ margin: '5px' }}
-                                        />
-                                        <span className="tooltiptext">
-                                          This proof will be uploaded on
-                                          Blockchain.
-                                      </span>
-                                      </div>
-                                      {!this.state.proof ? (
-                                        <span>Upload</span>
-                                      ) : (
-                                          // <FormattedMessage {...messages.popup10} />
-                                          <span>Change Proof</span>
-                                        )}
-                                    *
-                                    <p>
-                                        <span style={{ color: 'red' }}>* </span>
-                                      Only PDF allowed
-                                    </p>
-                                    </label>
-                                  </div>
-                                </UploadArea>
-                              </FormGroup>
-                            )}
-                            {this.state.claimMoneyLoading ? (
-                              <Button filledBtn marginTop="20px" disabled>
-                                <Loader />
-                              </Button>
-                            ) : (
-                                <Button filledBtn marginTop="20px">
-                                  <span>
-                                    Proceed
-                                {/* <FormattedMessage {...messages.addbank} /> */}
-                                  </span>
+                            <FormGroup>
+                              {this.state.claimMoneyLoading ? (
+                                <Button filledBtn marginTop="20px" disabled>
+                                  <Loader />
                                 </Button>
-                              )}
-
-                            <br />
-                            {/* <p className="note">
-                      <span style={{ color: 'red' }}>* </span>
-                      Total fee $200 will be charged
-                    </p> */}
+                              ) : (
+                                  <Button filledBtn marginTop="20px">
+                                    <span>Proceed</span>
+                                  </Button>
+                                )}
+                            </FormGroup>
                           </Col>
+                          <Col md="4" />
                         </Row>
                       </Container>
                     </form>
                   </div>
-                )
-            ) : (
-                <div>
-                  <h1>Claim Money</h1>
-                  <form
-                    action=""
-                    method="post"
-                    onSubmit={this.getClaimMoney}
-                    style={{ marginTop: '20px' }}
-                  >
-                    <Container>
-                      <Row>
-                        {/* <Col md="4" /> */}
-                        <Col sm="12" md="12">
-                          <FormGroup>
-                            <label>
-                              Enter the transfer code
-                            {/* <FormattedMessage {...messages.popup1} />* */}
-                            </label>
-                            <TextInput
-                              type="text"
-                              name="transferCode"
-                              pattern=".{3,12}"
-                              // title="Minimum 3 characters"
-                              onFocus={inputFocus}
-                              onBlur={inputBlur}
-                              value={this.state.transferCode}
-                              onChange={this.handleInputChange}
-                              required
-                            />
-                          </FormGroup>
-                        </Col>
-                        {/* <Col md="4" /> */}
-                      </Row>
-                    </Container>
-                    <Container>
-                      <Row>
-                        <Col md="4" />
-                        <Col sm="12" md="4">
-                          <FormGroup>
-                            {this.state.claimMoneyLoading ? (
-                              <Button filledBtn marginTop="20px" disabled>
-                                <Loader />
-                              </Button>
-                            ) : (
-                                <Button filledBtn marginTop="20px">
-                                  <span>Proceed</span>
-                                </Button>
-                              )}
-                          </FormGroup>
-                        </Col>
-                        <Col md="4" />
-                      </Row>
-                    </Container>
-                  </form>
-                </div>
-              )}
-          </Popup>
+                )}
+            </Popup>
+          </>
         ) : null}
 
         {this.state.popupSendMoney ? (
