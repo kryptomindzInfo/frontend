@@ -608,7 +608,13 @@ export default class OperationalHistory extends Component {
                                 <div className="labelBlue">
                                   {b.Value.tx_data.tx_details}
                                 </div>{' '}
-                                <div className="labelSmallGrey">Completed</div>
+                                {/* <div className="labelSmallGrey">Completed</div> */}
+                                {b.Value.tx_data.tx_type == 'DR' &&
+                                  <div className="labelSmallGrey">Debit</div>
+                                }
+                                {b.Value.tx_data.tx_type == 'CR' &&
+                                  <div className="labelSmallGrey">Credit</div>
+                                }
                               </td>
                               <td className="right">
                                 <div className="labelGrey">

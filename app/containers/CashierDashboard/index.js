@@ -47,7 +47,7 @@ const logo = localStorage.getItem('bankLogo');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
 //enable the following line and disable the next line to test for tomorrow
-var today =new Date(new Date().setDate(new Date().getDate()+1));
+var today = new Date(new Date().setDate(new Date().getDate() + 1));
 //var today =new Date();
 today.setHours(0, 0, 0, 0);
 today = today.getTime();
@@ -62,7 +62,7 @@ export default class CashierDashboard extends Component {
       token,
       otpEmail: email,
       otpMobile: mobile,
-      agree:false,
+      agree: false,
       historyPop: false,
       tomorrow: false,
       trans_type: '',
@@ -120,7 +120,7 @@ export default class CashierDashboard extends Component {
     this.getTransHistory(v.master_code);
   };
 
-    showPending = v => {
+  showPending = v => {
     this.setState({
       showPending: true
     });
@@ -133,9 +133,9 @@ export default class CashierDashboard extends Component {
     });
   };
 
-addOpeningBalance = event => {
+  addOpeningBalance = event => {
     event.preventDefault();
-      if(this.state.agree){
+    if (this.state.agree) {
 
       this.setState(
         {
@@ -147,23 +147,23 @@ addOpeningBalance = event => {
           this.generateOTP();
         },
       );
-  }else{
-        this.setState({
-          notification: 'You need to agree'
-        });
-        this.error();
-  }
+    } else {
+      this.setState({
+        notification: 'You need to agree'
+      });
+      this.error();
+    }
   };
 
-    proceed = (items) => {
+  proceed = (items) => {
 
-this.child.current.proceed(items);
+    this.child.current.proceed(items);
   };
 
 
   startTimer = () => {
     var dis = this;
-    var timer = setInterval(function() {
+    var timer = setInterval(function () {
       if (dis.state.timer <= 0) {
         clearInterval(timer);
         dis.setState({ resend: true });
@@ -173,7 +173,7 @@ this.child.current.proceed(items);
       }
     }, 1000);
   };
-generateOTP = () => {
+  generateOTP = () => {
     this.setState({ resend: false, timer: 30 });
 
     axios
@@ -225,7 +225,7 @@ generateOTP = () => {
               {
                 notification: 'Cashier opened successfully!',
               },
-              function() {
+              function () {
                 this.success();
                 this.closePopup();
                 this.getStats();
@@ -250,11 +250,11 @@ generateOTP = () => {
 
   };
 
-   handleCheckbox = event => {
+  handleCheckbox = event => {
     const { value, name } = event.target;
-    if(value == "true"){
+    if (value == "true") {
       var v = false;
-    }else{
+    } else {
       var v = true;
     }
     this.setState({
@@ -282,7 +282,7 @@ generateOTP = () => {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
   showHistory = () => {
     this.setState({ history: [] }, () => {
@@ -297,7 +297,7 @@ generateOTP = () => {
       }
       this.setState({ history: out }, () => {
         let dis = this;
-        setTimeout(function() {
+        setTimeout(function () {
           dis.getHistory();
         }, 3000);
       });
@@ -318,13 +318,13 @@ generateOTP = () => {
           var notification = {};
           var result = res.data.history1.concat(res.data.history2);
           result.sort(
-            function(a, b) {
+            function (a, b) {
               return (
                 new Date(b.created_at).getTime() -
                 new Date(a.created_at).getTime()
               ); // implicit conversion in number
             },
-            () => {},
+            () => { },
           );
           var l = result.length;
           const allHistory = result;
@@ -343,7 +343,7 @@ generateOTP = () => {
           );
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getStats = () => {
@@ -357,22 +357,22 @@ generateOTP = () => {
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
           var closingTime = res.data.closingTime;
 
-          if(closingTime != undefined && closingTime != null){
-             closingTime  = new Date(closingTime);
-                          closingTime.setHours(0, 0, 0, 0);
-              closingTime = closingTime.getTime();
-              if(res.data.isClosed && closingTime < today ){
-                closingTime = true;
-              }else{
-                closingTime = false;
-              }
-          }else if(!res.data.transactionStarted){
+          if (closingTime != undefined && closingTime != null) {
+            closingTime = new Date(closingTime);
+            closingTime.setHours(0, 0, 0, 0);
+            closingTime = closingTime.getTime();
+            if (res.data.isClosed && closingTime < today) {
+              closingTime = true;
+            } else {
+              closingTime = false;
+            }
+          } else if (!res.data.transactionStarted) {
             closingTime = true;
           }
           this.setState(
             {
               tomorrow: closingTime,
-              closingTime:  res.data.closingTime,
+              closingTime: res.data.closingTime,
               loading: false,
               openingBalance: res.data.openingBalance,
               closingBalance: res.data.closingBalance,
@@ -384,7 +384,7 @@ generateOTP = () => {
             },
             () => {
               var dis = this;
-              setTimeout(function() {
+              setTimeout(function () {
                 dis.getStats();
               }, 10000);
             },
@@ -393,15 +393,15 @@ generateOTP = () => {
       })
       .catch(err => {
         var dis = this;
-              setTimeout(function() {
-                dis.getStats();
-              }, 10000);
+        setTimeout(function () {
+          dis.getStats();
+        }, 10000);
       });
   };
 
   filterData = e => {
 
-    this.setState({ showPending:false, filter: e });
+    this.setState({ showPending: false, filter: e });
   };
 
   handlePageChange = pageNumber => {
@@ -422,7 +422,7 @@ generateOTP = () => {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   formatDate = date => {
@@ -457,7 +457,7 @@ generateOTP = () => {
   }
 
   render() {
-        function inputFocus(e) {
+    function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector('label').classList.add('focused');
     }
@@ -527,9 +527,9 @@ generateOTP = () => {
               >
                 <h4>Opening Balance</h4>
                 <div className="cardValue">
-                {
-                   <span> {CURRENCY} {this.state.openingBalance.toFixed(2)}</span>
-                }
+                  {
+                    <span> {CURRENCY} {this.state.openingBalance.toFixed(2)}</span>
+                  }
                 </div>
               </Card>
               <Card
@@ -586,7 +586,7 @@ generateOTP = () => {
               </Card>
             </div>
             <div className="clr">
-            <Card
+              <Card
                 horizontalMargin="7px"
                 cardWidth="125px"
                 smallValue
@@ -608,11 +608,11 @@ generateOTP = () => {
                 col
               >
                 <div className="cardValue">
-                {
-                  this.state.tomorrow ?
-                  <Button onClick={this.openCashier}>Open Cashier</Button>
-                  : <Button disabled> Counter is Opened</Button>
-                }
+                  {
+                    this.state.tomorrow ?
+                      <Button onClick={this.openCashier}>Open Cashier</Button>
+                      : <Button disabled> Counter is Opened</Button>
+                  }
                 </div>
               </Card>
             </div>
@@ -642,26 +642,26 @@ generateOTP = () => {
                         on {this.formatDate(this.state.ticker.created_at)}
                       </span>
                     ) : (
-                      <span>
-                        <strong>Congrats</strong> You have sent {CURRENCY}{' '}
-                        {this.state.ticker.amount} to{' '}
-                        <strong>{this.state.ticker.sender_name}</strong> on{' '}
-                        {this.formatDate(dis.state.ticker.created_at)}
-                      </span>
-                    )
+                        <span>
+                          <strong>Congrats</strong> You have sent {CURRENCY}{' '}
+                          {this.state.ticker.amount} to{' '}
+                          <strong>{this.state.ticker.sender_name}</strong> on{' '}
+                          {this.formatDate(dis.state.ticker.created_at)}
+                        </span>
+                      )
                   ) : (
-                    <span>
-                      <strong className="red">Oops!</strong> Your last
+                      <span>
+                        <strong className="red">Oops!</strong> Your last
                       transaction (
-                      <strong>{dis.state.ticker.master_code}</strong>) on{' '}
-                      {this.formatDate(dis.state.ticker.created_at)} was failed
-                    </span>
-                  )}
+                        <strong>{dis.state.ticker.master_code}</strong>) on{' '}
+                        {this.formatDate(dis.state.ticker.created_at)} was failed
+                      </span>
+                    )}
                 </p>
               ) : null}
             </ActionBar>
 
-            <Card bigPadding style={{marginTop: '50px'}}>
+            <Card bigPadding style={{ marginTop: '50px' }}>
               <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">playlist_add_check</i>
@@ -702,23 +702,23 @@ generateOTP = () => {
                   smallTd
                   textAlign="left"
                 >
-                {
-                  this.state.showPending ?
-                 <tbody>
-                {
+                  {
+                    this.state.showPending ?
+                      <tbody>
+                        {
 
-                      this.state.pending && this.state.pending.length > 0
-                      ? this.state.pending.map(function(b) {
+                          this.state.pending && this.state.pending.length > 0
+                            ? this.state.pending.map(function (b) {
 
-                        var fulldate = dis.formatDate(b.created_at);
-                        return  <tr key={b._id}>
-                              <td>
-                                <div className="labelGrey">{fulldate}</div>
-                              </td>
-                              <td>
-                                <div
-                                  className="labelBlue"
-                                >
+                              var fulldate = dis.formatDate(b.created_at);
+                              return <tr key={b._id}>
+                                <td>
+                                  <div className="labelGrey">{fulldate}</div>
+                                </td>
+                                <td>
+                                  <div
+                                    className="labelBlue"
+                                  >
 
                                     <span>
                                       Cash sent from{' '}
@@ -727,117 +727,117 @@ generateOTP = () => {
                                       {b.receiver_name}
                                     </span>
 
-                                </div>
-                                <div className="labelSmallGrey">
-                                  {b.status == 1 ?
-                                    <div>
-                                    <span>Approved</span>
-                                    <br />
-                                    <Button style={{marginTop: '10px'}} onClick={() => dis.proceed(JSON.parse(b.transaction_details))}>Proceed</Button>
-                                    </div>
-                                  :
-                                  b.status == 0 ?
-                                    <span>Pending</span>
+                                  </div>
+                                  <div className="labelSmallGrey">
+                                    {b.status == 1 ?
+                                      <div>
+                                        <span>Approved</span>
+                                        <br />
+                                        <Button style={{ marginTop: '10px' }} onClick={() => dis.proceed(JSON.parse(b.transaction_details))}>Proceed</Button>
+                                      </div>
+                                      :
+                                      b.status == 0 ?
+                                        <span>Pending</span>
 
-                                  :
+                                        :
 
-                                    <span className="red">Rejected</span>
-                                  }
-                                </div>
-                              </td>
-                              <td>
-                                <div className="labelGrey">
-                                  {'XOF'}
-                                  {b.amount}
-                                </div>
-                              </td>
-                            </tr>
-                      })
-                      : null
-                    }
+                                        <span className="red">Rejected</span>
+                                    }
+                                  </div>
+                                </td>
+                                <td>
+                                  <div className="labelGrey">
+                                    {'XOF'}
+                                    {b.amount}
+                                  </div>
+                                </td>
+                              </tr>
+                            })
+                            : null
+                        }
                       </tbody>
                       :
 
-                  <tbody>
-                    {
+                      <tbody>
+                        {
 
-                      this.state.history && this.state.history.length > 0
-                      ? this.state.history.map(function(b) {
-                          // var sinfo = b.trans_type == "CR" ? b.sender_info ? null;
-                          // var rinfo = b.trans_type == "CR" ? b.receiver_info ? null;
-                          var sinfo = {};
-                          var rinfo = {};
-                          var fulldate = dis.formatDate(b.created_at);
-                          return dis.state.filter == b.trans_type ||
-                            dis.state.filter == '' ? (
-                            <tr key={b._id}>
-                              <td>
-                                <div className="labelGrey">{fulldate}</div>
-                              </td>
-                              <td>
-                                <div
-                                  className="labelBlue"
-                                  onClick={() => dis.showHistoryPop(b)}
-                                >
-                                  {b.sender_info ? (
-                                    <span>
-                                      Cash sent from{' '}
-                                      {JSON.parse(b.sender_info).givenname +
-                                        ' ' +
-                                        JSON.parse(b.sender_info)
-                                          .familyname}{' '}
+                          this.state.history && this.state.history.length > 0
+                            ? this.state.history.map(function (b) {
+                              // var sinfo = b.trans_type == "CR" ? b.sender_info ? null;
+                              // var rinfo = b.trans_type == "CR" ? b.receiver_info ? null;
+                              var sinfo = {};
+                              var rinfo = {};
+                              var fulldate = dis.formatDate(b.created_at);
+                              return dis.state.filter == b.trans_type ||
+                                dis.state.filter == '' ? (
+                                  <tr key={b._id}>
+                                    <td>
+                                      <div className="labelGrey">{fulldate}</div>
+                                    </td>
+                                    <td>
+                                      <div
+                                        className="labelBlue"
+                                        onClick={() => dis.showHistoryPop(b)}
+                                      >
+                                        {b.sender_info ? (
+                                          <span>
+                                            Cash sent from{' '}
+                                            {JSON.parse(b.sender_info).givenname +
+                                              ' ' +
+                                              JSON.parse(b.sender_info)
+                                                .familyname}{' '}
                                       to{' '}
-                                      {(JSON.parse(b.receiver_info).givenname ? JSON.parse(b.receiver_info).givenname : JSON.parse(b.receiver_info).mobile) +
-                                        ' ' +
-                                      (JSON.parse(b.receiver_info).familyname ? JSON.parse(b.receiver_info).familyname : '')}
-                                    </span>
-                                  ) : (
-                                    <span>
-                                      Cash claimed from {!b.sender_name.includes('undefined') ? b.sender_name : b.sender_mobile} to{' '}
-                                      {b.receiver_name}
-                                    </span>
-                                  )}
-                                </div>
-                                <div className="labelSmallGrey">
-                                  {b.status == 1 ? (
-                                    <span>Completed</span>
-                                  ) :
-                                  b.status == 0 ? (
-                                    <span>Pending</span>
-                                  )
-                                  :
-                                  (
-                                    <span className="red">Failed</span>
-                                  )}
-                                </div>
-                              </td>
-                              <td>
-                                <div className="labelGrey">
-                                  {b.transaction_code == 'DR' ? '-XOF' : 'XOF'}
-                                  {b.amount}
-                                </div>
-                              </td>
-                            </tr>
-                          ) : null;
-                        })
-                      : null
-                    }
-                  </tbody>
-                }
+                                            {(JSON.parse(b.receiver_info).givenname ? JSON.parse(b.receiver_info).givenname : JSON.parse(b.receiver_info).mobile) +
+                                              ' ' +
+                                              (JSON.parse(b.receiver_info).familyname ? JSON.parse(b.receiver_info).familyname : '')}
+                                          </span>
+                                        ) : (
+                                            <span>
+                                              Cash claimed from {!b.sender_name.includes('undefined') ? b.sender_name : b.sender_mobile} to{' '}
+                                              {b.receiver_name}
+                                            </span>
+                                          )}
+                                      </div>
+                                      <div className="labelSmallGrey">
+                                        {b.status == 1 ? (
+                                          <span>Completed</span>
+                                        ) :
+                                          b.status == 0 ? (
+                                            <span>Pending</span>
+                                          )
+                                            :
+                                            (
+                                              <span className="red">Failed</span>
+                                            )}
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div className="labelGrey">
+                                        {b.transaction_code == 'DR' ? '-XOF' : 'XOF'}
+                                        {b.amount}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ) : null;
+                            })
+                            : null
+                        }
+                      </tbody>
+                  }
                 </Table>
                 <div>
-                {
-                  this.state.showPending ?
-                  null
-                  :
-                  <Pagination
-                    activePage={this.state.activePage}
-                    itemsCountPerPage={this.state.perPage}
-                    totalItemsCount={this.state.totalCount}
-                    pageRangeDisplayed={5}
-                    onChange={this.handlePageChange}
-                  />
-                }
+                  {
+                    this.state.showPending ?
+                      null
+                      :
+                      <Pagination
+                        activePage={this.state.activePage}
+                        itemsCountPerPage={this.state.perPage}
+                        totalItemsCount={this.state.totalCount}
+                        pageRangeDisplayed={5}
+                        onChange={this.handlePageChange}
+                      />
+                  }
                 </div>
               </div>
             </Card>
@@ -852,10 +852,10 @@ generateOTP = () => {
                   <Loader />
                 </Button>
               ) : (
-                <Table marginTop="34px" smallTd textAlign="left">
-                  <tbody>
-                    {this.state.popresult && this.state.popresult.length > 0
-                      ? this.state.popresult.map(function(b) {
+                  <Table marginTop="34px" smallTd textAlign="left">
+                    <tbody>
+                      {this.state.popresult && this.state.popresult.length > 0
+                        ? this.state.popresult.map(function (b) {
                           var isoformat = new Date(
                             b.tx_data.tx_timestamp.seconds * 1000,
                           ).toISOString();
@@ -863,42 +863,42 @@ generateOTP = () => {
 
                           return dis.state.filter == b.tx_data.tx_type ||
                             dis.state.filter == '' ? (
-                            <tr key={b.tx_data.tx_id}>
-                              <td>
-                                <div className="labelGrey">{fulldate}</div>
-                              </td>
-                              <td>
-                                <div className="labelBlue">
-                                  {b.tx_data.tx_details}
-                                </div>{' '}
-                                <div className="labelSmallGrey">Completed</div>
-                              </td>
-                              <td className="right">
-                                <div className="labelGrey">
-                                  {b.tx_data.tx_type == 'DR' ? (
-                                    <span>
-                                      {CURRENCY} -{b.amount}
-                                    </span>
-                                  ) : (
-                                    <span>
-                                      {CURRENCY} {b.amount}
-                                    </span>
-                                  )}
-                                </div>
-                              </td>
-                              <td>{b.tx_data.child_id}</td>
-                            </tr>
-                          ) : null;
+                              <tr key={b.tx_data.tx_id}>
+                                <td>
+                                  <div className="labelGrey">{fulldate}</div>
+                                </td>
+                                <td>
+                                  <div className="labelBlue">
+                                    {b.tx_data.tx_details}
+                                  </div>{' '}
+                                  <div className="labelSmallGrey">Completed</div>
+                                </td>
+                                <td className="right">
+                                  <div className="labelGrey">
+                                    {b.tx_data.tx_type == 'DR' ? (
+                                      <span>
+                                        {CURRENCY} -{b.amount}
+                                      </span>
+                                    ) : (
+                                        <span>
+                                          {CURRENCY} {b.amount}
+                                        </span>
+                                      )}
+                                  </div>
+                                </td>
+                                <td>{b.tx_data.child_id}</td>
+                              </tr>
+                            ) : null;
                         })
-                      : null}
-                  </tbody>
-                </Table>
-              )}
+                        : null}
+                    </tbody>
+                  </Table>
+                )}
             </div>
           </Popup>
         ) : null}
 
-         {this.state.openCashierPopup ? (
+        {this.state.openCashierPopup ? (
           <Popup close={this.closePopup.bind(this)} accentedH1>
             {this.state.showOpeningOTP ? (
               <div>
@@ -921,10 +921,10 @@ generateOTP = () => {
                       <Loader />
                     </Button>
                   ) : (
-                    <Button filledBtn marginTop="50px">
-                      <span>Verify</span>
-                    </Button>
-                  )}
+                      <Button filledBtn marginTop="50px">
+                        <span>Verify</span>
+                      </Button>
+                    )}
 
                   <p className="resend">
                     Wait for <span className="timer">{this.state.timer}</span>{' '}
@@ -934,72 +934,72 @@ generateOTP = () => {
                         Resend
                       </span>
                     ) : (
-                      <span>Resend</span>
-                    )}
+                        <span>Resend</span>
+                      )}
                   </p>
                 </form>
               </div>
             ) : (
-              <div>
-                <h1>Open Cashier</h1>
-                <form action="" method="post" onSubmit={this.addOpeningBalance}>
+                <div>
+                  <h1>Open Cashier</h1>
+                  <form action="" method="post" onSubmit={this.addOpeningBalance}>
 
 
-                <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
 
-                    <Col cW="20%" textAlign="right">
-                      <strong>Opening for the day</strong>
+                      <Col cW="20%" textAlign="right">
+                        <strong>Opening for the day</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        :
                     </Col>
-                    <Col cW="20%" textAlign="center">
-                      :
-                    </Col>
-                    <Col cW="35%">
-                    {
-                      currDate
-                    }
+                      <Col cW="35%">
+                        {
+                          currDate
+                        }
                         {/* {Date.now().toISOString()} */}
 
-                    </Col>
-                  </Row>
+                      </Col>
+                    </Row>
 
-                  <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
-
-                    <Col cW="20%" textAlign="right">
-                      <strong>Cash in Hand</strong>
-                    </Col>
-                    <Col cW="20%" textAlign="center">
-                      :
-                    </Col>
-                    <Col cW="35%">
-                      {
-                        this.state.openingBalance+this.state.cashReceived-this.state.cashPaid
-                      }
-                    </Col>
-                  </Row>
                     <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
-                    <Col cW="20%" textAlign="right">
-                      <strong></strong>
+
+                      <Col cW="20%" textAlign="right">
+                        <strong>Cash in Hand</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        :
                     </Col>
-                    <Col cW="20%" textAlign="center">
+                      <Col cW="35%">
+                        {
+                          this.state.openingBalance + this.state.cashReceived - this.state.cashPaid
+                        }
+                      </Col>
+                    </Row>
+                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+                      <Col cW="20%" textAlign="right">
+                        <strong></strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
 
-                    </Col>
-                    <Col cW="35%">
+                      </Col>
+                      <Col cW="35%">
 
-                    </Col>
-                  </Row>
+                      </Col>
+                    </Row>
 
 
-                  <div style={{
-                    marginTop: '20px',
-                    fontSize: '18px',
-                    textAlign: 'center'
+                    <div style={{
+                      marginTop: '20px',
+                      fontSize: '18px',
+                      textAlign: 'center'
                     }}>
-                  <input type="checkbox"
-                  name="agree"
-                  value={this.state.agree}
-                   checked={this.state.agree}
-                   required
-                              onClick={this.handleCheckbox} />  Agree to the opening balance?
+                      <input type="checkbox"
+                        name="agree"
+                        value={this.state.agree}
+                        checked={this.state.agree}
+                        required
+                        onClick={this.handleCheckbox} />  Agree to the opening balance?
                   </div>
 
 
@@ -1007,9 +1007,9 @@ generateOTP = () => {
                       <span>Open</span>
                     </Button>
 
-                </form>
-              </div>
-            )}
+                  </form>
+                </div>
+              )}
           </Popup>
         ) : null}
       </Wrapper>

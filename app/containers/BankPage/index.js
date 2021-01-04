@@ -34,6 +34,8 @@ import messages from './messages';
 import { postRequest, getRequest } from '../App/ApiCall';
 import documentFileIcon from '../../images/pdf_icon.png';
 import imageIcon from '../../images/document_icon.png'
+import pdfIcon from '../../images/pdf_icon.png'
+
 import {
   API_URL,
   CONTRACT_URL,
@@ -1679,7 +1681,8 @@ export default class BankPage extends Component {
                           {!this.state.contract ? (
                             <i className="material-icons">cloud_upload</i>
                           ) : (
-                              ' '
+                              <img src={pdfIcon} width="50" height="50" />
+
                             )}
                           <label>
                             {this.state.contract == '' ? (

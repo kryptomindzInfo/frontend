@@ -606,7 +606,13 @@ export default class MasterHistory extends Component {
                                 <div className="labelBlue">
                                   {b.Value.tx_data.tx_details}
                                 </div>{' '}
-                                <div className="labelSmallGrey">Completed</div>
+                                {b.Value.tx_data.tx_type == 'DR' &&
+                                  <div className="labelSmallGrey">Debit</div>
+                                }
+                                {b.Value.tx_data.tx_type == 'CR' &&
+                                  <div className="labelSmallGrey">Credit</div>
+                                }
+                                {/* <div className="labelSmallGrey">Completed</div> */}
                               </td>
                               <td>
                                 <div className="labelGrey">
