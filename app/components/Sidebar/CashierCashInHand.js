@@ -398,6 +398,7 @@ class CashierCashInHand extends Component {
       })
       .then(res => {
         if (res.status == 200) {
+          console.log(res)
           let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
           let ob = res.data.openingBalance == null ? 0 : res.data.openingBalance;
@@ -457,6 +458,7 @@ class CashierCashInHand extends Component {
 
   getCashiers = () => {
     console.log(this.state.branch_id);
+    const getbankid = localStorage.getItem("bankId")
     axios
       .post(`${API_URL}/getAll`, {
         token: token,
@@ -464,9 +466,9 @@ class CashierCashInHand extends Component {
         type: "cashier",
 
         where: {
-          branch_id: branchID,
-          // _id: { $ne: cid },
-          // is_closed: false
+          // branch_id: branchID,
+          bank_id: getbankid
+
         }
 
       })
