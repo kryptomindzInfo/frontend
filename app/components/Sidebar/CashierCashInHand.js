@@ -462,14 +462,29 @@ class CashierCashInHand extends Component {
         token: token,
         page: "cashier",
         type: "cashier",
+
         where: {
-          // branch_id: branchID,
-          _id: { $ne: cid },
-          is_closed: false
+          branch_id: branchID,
+          // _id: { $ne: cid },
+          // is_closed: false
         }
+
       })
+      // .post(`${API_URL}/getAll`, {
+      //   token: token,
+      //   page: "cashier",
+      //   type: "cashier",
+
+      //   where: {
+
+      //     _id: { $ne: cid },
+      //      is_closed: false
+      //   }
+
+      // })
       .then(res => {
         if (res.status == 200) {
+          console.log(res.data.rows)
           this.setState({
             cashiers: res.data.rows
           });

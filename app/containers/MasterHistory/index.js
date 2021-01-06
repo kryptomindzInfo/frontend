@@ -42,7 +42,7 @@ const H4 = styled.h4`
   }
 `;
 
-import { API_URL, STATIC_URL } from '../App/constants';
+import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -581,7 +581,7 @@ export default class MasterHistory extends Component {
                     Payment Recieved
                   </div>
                 </div>
-                <Table marginTop="34px" smallTd>
+                <Table marginTop="34px" smallTd textAlign="left">
                   <tbody>
                     {this.state.history && this.state.history.length > 0
                       ? this.state.history.map(function (b) {
@@ -616,7 +616,7 @@ export default class MasterHistory extends Component {
                               </td>
                               <td>
                                 <div className="labelGrey">
-                                  ${b.Value.amount}
+                                  <span>{CURRENCY} {b.Value.amount}</span>
                                 </div>
                               </td>
                             </tr>

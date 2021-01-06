@@ -31,6 +31,7 @@ import Col from 'components/Col';
 import Loader from 'components/Loader';
 import { postRequest, getRequest } from '../App/ApiCall';
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
+import pdflogo from '../../images/pdf_icon.png';
 
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -1068,7 +1069,7 @@ export default class BankInfo extends Component {
                         </FormGroup>
                       </Col>
                     </Row>
-                    <label>Working Hours</label>
+                    {/* <label>Working Hours</label>
                     <Row>
                       <Col cW="49%" mR="2%">
 
@@ -1105,7 +1106,7 @@ export default class BankInfo extends Component {
                         </FormGroup>
 
                       </Col>
-                    </Row>
+                    </Row> */}
                     <FormGroup>
                       {/* <UploadedFile>
 
@@ -1175,7 +1176,7 @@ export default class BankInfo extends Component {
                           {!this.state.contract ? (
                             <i className="material-icons">cloud_upload</i>
                           ) : (
-                              ' '
+                              <img src={pdflogo} width="50" height="50" />
                             )}
 
                           <label>
