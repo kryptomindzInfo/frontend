@@ -34,6 +34,7 @@ import Row from 'components/Row';
 import Col from 'components/Col';
 import messages from './messages';
 import { postRequest, getRequest } from '../App/ApiCall';
+import pdfIcon from '../../images/pdf_icon.png'
 
 import { API_URL, STATIC_URL, CONTRACT_URL } from '../App/constants';
 
@@ -531,6 +532,7 @@ export default class InfraInfo extends Component {
                   inputWidth="calc(100% - 241px)"
                   className="clr"
                 >
+                  <span style={{ fontSize: "20px" }}> {this.state.banks.name}</span>
                   <Button className="addBankButton" flex onClick={this.showPopup}>
                     <span>Edit</span>
                   </Button>
@@ -1077,7 +1079,7 @@ export default class InfraInfo extends Component {
                           {!this.state.contract ? (
                             <i className="material-icons">cloud_upload</i>
                           ) : (
-                              ' '
+                              <img src={pdfIcon} width="50" height="50" />
                             )}
 
                           <label>

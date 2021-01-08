@@ -189,7 +189,7 @@ export default class BranchOperationalHistory extends Component {
                   this.success();
                   let ba = this.state.bank;
                   let history = this.props.history;
-                  setTimeout(function() {
+                  setTimeout(function () {
                     history.push('/fees/' + ba);
                   }, 1000);
                 },
@@ -277,7 +277,7 @@ export default class BranchOperationalHistory extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   showHistory = () => {
@@ -319,7 +319,7 @@ export default class BranchOperationalHistory extends Component {
           );
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getHistoryTotal = () => {
@@ -336,7 +336,7 @@ export default class BranchOperationalHistory extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   filterData = e => {
@@ -355,7 +355,7 @@ export default class BranchOperationalHistory extends Component {
 
       // this.getBanks();
       let dis = this;
-      setInterval(function(){
+      setInterval(function () {
         dis.getHistory();
       }, 2000);
     } else {
@@ -412,9 +412,9 @@ export default class BranchOperationalHistory extends Component {
           <meta charSet="utf-8" />
           <title>Create Fee | INFRA | E-WALLET</title>
         </Helmet>
-        <BranchHeader page="branch" goto={"/branch/"+this.props.match.params.bank+"/dashboard"} bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo} />
+        <BranchHeader page="branch" goto={"/branch/" + this.props.match.params.bank + "/dashboard"} bankName={this.props.match.params.bank} bankLogo={STATIC_URL + logo} />
         <Container verticalMargin>
-          <SidebarBranch bankName={this.props.match.params.bank} bankLogo={STATIC_URL+logo}   />
+          <SidebarBranch bankName={this.props.match.params.bank} bankLogo={STATIC_URL + logo} />
           <Main>
             {/* <ActionBar marginBottom="33px" inputWidth="calc(100% - 344px)" className="clr">
               <div className="iconedInput fl small">
@@ -470,20 +470,20 @@ export default class BranchOperationalHistory extends Component {
                 <Table marginTop="34px" smallTd textAlign="left">
                   <tbody>
                     {this.state.history && this.state.history.length > 0
-                      ? this.state.history.map(function(b) {
-                          var isoformat = b.Timestamp;
-                          var readable = new Date(isoformat);
-                          var m = readable.getMonth(); // returns 6
-                          var d = readable.getDate(); // returns 15
-                          var y = readable.getFullYear();
-                          var h = readable.getHours();
-                          var mi = readable.getMinutes();
-                          var mlong = months[m];
-                          var fulldate =
-                            d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+                      ? this.state.history.map(function (b) {
+                        var isoformat = b.Timestamp;
+                        var readable = new Date(isoformat);
+                        var m = readable.getMonth(); // returns 6
+                        var d = readable.getDate(); // returns 15
+                        var y = readable.getFullYear();
+                        var h = readable.getHours();
+                        var mi = readable.getMinutes();
+                        var mlong = months[m];
+                        var fulldate =
+                          d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
 
-                          return dis.state.filter == b.Value.tx_data.tx_type ||
-                            dis.state.filter == '' ? (
+                        return dis.state.filter == b.Value.tx_data.tx_type ||
+                          dis.state.filter == '' ? (
                             <tr key={b.TxId}>
                               <td>
                                 <div className="labelGrey">{fulldate}</div>
@@ -492,23 +492,31 @@ export default class BranchOperationalHistory extends Component {
                                 <div className="labelBlue">
                                   {b.Value.tx_data.tx_details}
                                 </div>{' '}
-                                <div className="labelSmallGrey">Completed</div>
+                                <div className="labelSmallGrey">
+                                  {/* Completed */}
+                                  {b.Value.tx_data.tx_type == 'DR' &&
+                                    "Debit"
+                                  }
+                                  {b.Value.tx_data.tx_type == 'CR' &&
+                                    "Credit"
+                                  }
+                                </div>
                               </td>
                               <td className="right">
                                 <div className="labelGrey">
                                   {
                                     b.Value.tx_data.tx_type == 'DR'
-                                    ?
-                                    <span>{CURRENCY} -{b.Value.amount.toFixed(2)}</span>
-                                    :
-                                    <span>{CURRENCY} {b.Value.amount.toFixed(2)}</span>
+                                      ?
+                                      <span>{CURRENCY} -{b.Value.amount.toFixed(2)}</span>
+                                      :
+                                      <span>{CURRENCY} {b.Value.amount.toFixed(2)}</span>
                                   }
 
                                 </div>
                               </td>
                             </tr>
                           ) : null;
-                        })
+                      })
                       : null}
                   </tbody>
                 </Table>

@@ -97,17 +97,17 @@ const CommissionFeesPage = props => {
                 Pending Merchant Approval
               </Button>
             ) : (
-              <Button
-                onClick={() => {
-                  refreshFeeList();
-                  setEditingRule(r);
-                  setRevenueSharingRulePage(true);
-                }}
-                className="addBankButton"
-              >
-                Revenue Sharing Rule
-              </Button>
-            )}
+                <Button
+                  onClick={() => {
+                    refreshFeeList();
+                    setEditingRule(r);
+                    setRevenueSharingRulePage(true);
+                  }}
+                  className="addBankButton"
+                >
+                  Revenue Sharing Rule
+                </Button>
+              )}
           </td>
         </tr>
       );
@@ -174,8 +174,8 @@ const CommissionFeesPage = props => {
               </Card>
             </div>
           ) : (
-            ''
-          )}
+              ''
+            )}
           {editRulePage ? (
             <CommissionFee
               merchantId={id}
@@ -186,8 +186,8 @@ const CommissionFeesPage = props => {
               }}
             />
           ) : (
-            ''
-          )}
+              ''
+            )}
           {createRulePage ? (
             <CommissionFee
               merchantId={id}
@@ -198,8 +198,8 @@ const CommissionFeesPage = props => {
               }}
             />
           ) : (
-            ''
-          )}
+              ''
+            )}
           {revenueSharingRulePage ? (
             <CommissionRevenueSharingRule
               merchantId={id}
@@ -215,8 +215,8 @@ const CommissionFeesPage = props => {
               }}
             />
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Main>
       </Container>
     </Wrapper>

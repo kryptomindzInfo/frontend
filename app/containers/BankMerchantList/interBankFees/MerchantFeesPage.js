@@ -12,7 +12,7 @@ import SettingSideBar from '../SettingSidebar';
 import BankHeader from '../../../components/Header/BankHeader';
 import { CURRENCY } from '../../App/constants';
 import MerchantFee from './MerchantFee';
-import { getInterBankRules , getInterBankSharing} from '../api/merchantAPI';
+import { getInterBankRules, getInterBankSharing } from '../api/merchantAPI';
 import MerchantRevenueSharingRule from './MerchantRevenueSharingRule';
 
 const MerchantFeesPage = props => {
@@ -27,7 +27,7 @@ const MerchantFeesPage = props => {
   const { id } = match.params;
   localStorage.setItem('currentMerchantId', id);
 
-  const refreshFeeList = async() => {
+  const refreshFeeList = async () => {
     setCreateRulePage(false);
     setEditRulePage(false);
     setLoading(true);
@@ -35,7 +35,7 @@ const MerchantFeesPage = props => {
     const res2 = await getInterBankSharing(id, 'IBNWM-F');
     setRules(res1.list);
     setShare(res2.share);
-    setLoading(false); 
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -99,17 +99,17 @@ const MerchantFeesPage = props => {
                 Pending Merchant Approval
               </Button>
             ) : (
-              <Button
-                onClick={() => {
-                  refreshFeeList();
-                  setEditingRule(r);
-                  setRevenueSharingRulePage(true);
-                }}
-                className="addBankButton"
-              >
-                Revenue Sharing Rule
-              </Button>
-            )}
+                <Button
+                  onClick={() => {
+                    refreshFeeList();
+                    setEditingRule(r);
+                    setRevenueSharingRulePage(true);
+                  }}
+                  className="addBankButton"
+                >
+                  Revenue Sharing Rule
+                </Button>
+              )}
           </td>
         </tr>
       );
@@ -176,8 +176,8 @@ const MerchantFeesPage = props => {
               </Card>
             </div>
           ) : (
-            ''
-          )}
+              ''
+            )}
           {editRulePage ? (
             <MerchantFee
               merchantId={id}
@@ -188,8 +188,8 @@ const MerchantFeesPage = props => {
               }}
             />
           ) : (
-            ''
-          )}
+              ''
+            )}
           {createRulePage ? (
             <MerchantFee
               merchantId={id}
@@ -200,8 +200,8 @@ const MerchantFeesPage = props => {
               }}
             />
           ) : (
-            ''
-          )}
+              ''
+            )}
           {revenueSharingRulePage ? (
             <MerchantRevenueSharingRule
               merchantId={id}
@@ -218,8 +218,8 @@ const MerchantFeesPage = props => {
               }}
             />
           ) : (
-            ''
-          )}
+              ''
+            )}
         </Main>
       </Container>
     </Wrapper>

@@ -427,10 +427,11 @@ export default class InfraProfile extends Component {
                 <>
                   <ActionBar
                     marginBottom="33px"
-                    inputWidth="calc(100% - 241px)"
+                    // inputWidth="calc(100% - 241px)"
                     className="clr"
-                    style={{ marginTop: '3%' }}
+                  // style={{ marginTop: '3%' }}
                   >
+                    <span style={{ fontSize: "20px" }}>{this.state.profile.name}</span>
                     <Button
                       className="addBankButton"
                       flex

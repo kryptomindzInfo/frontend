@@ -398,6 +398,7 @@ class CashierCashInHand extends Component {
       })
       .then(res => {
         if (res.status == 200) {
+          console.log(res)
           let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
           let ob = res.data.openingBalance == null ? 0 : res.data.openingBalance;
@@ -457,19 +458,35 @@ class CashierCashInHand extends Component {
 
   getCashiers = () => {
     console.log(this.state.branch_id);
+    const getbankid = localStorage.getItem("bankId")
     axios
       .post(`${API_URL}/getAll`, {
         token: token,
         page: "cashier",
         type: "cashier",
+
         where: {
           // branch_id: branchID,
-          _id: { $ne: cid },
-          is_closed: false
+          bank_id: getbankid
+
         }
+
       })
+      // .post(`${API_URL}/getAll`, {
+      //   token: token,
+      //   page: "cashier",
+      //   type: "cashier",
+
+      //   where: {
+
+      //     _id: { $ne: cid },
+      //      is_closed: false
+      //   }
+
+      // })
       .then(res => {
         if (res.status == 200) {
+          console.log(res.data.rows)
           this.setState({
             cashiers: res.data.rows
           });
@@ -515,8 +532,8 @@ class CashierCashInHand extends Component {
         <h3>
           {
             this.state.transactionStarted && !this.state.isClosed ?
-              <span style={{ float: "right", position: "relative", color: "#555", marginRight: '-20px',cursor: "pointer", right: '141px', fontSize: '16px' }} onClick={this.showIncoming}>
-                 <span>Pending</span>
+              <span style={{ float: "right", position: "relative", color: "#555", marginRight: '-20px', cursor: "pointer", right: '141px', fontSize: '16px' }} onClick={this.showIncoming}>
+                <span>Pending</span>
                 <span style={{
                   fontSize: "16px",
                   color: "#ff1818",
@@ -529,12 +546,12 @@ class CashierCashInHand extends Component {
               :
               <span style={{ float: "right", position: "relative", color: "#555", marginRight: '-20px', cursor: "pointer", right: '141px', fontSize: '16px' }} disabled>
                 <span>Pending</span>
-                 <span style={{
-                   fontSize: "16px",
-                   color: "#ff1818",
-                   fontWeight: "bold",
-                   marginLeft: '10px',
-                 }}>{this.state.incoming.length}</span>
+                <span style={{
+                  fontSize: "16px",
+                  color: "#ff1818",
+                  fontWeight: "bold",
+                  marginLeft: '10px',
+                }}>{this.state.incoming.length}</span>
                 {/* <i class="material-icons">notifications</i> */}
 
               </span>
@@ -542,7 +559,7 @@ class CashierCashInHand extends Component {
 
         </h3>
         <div className="cardValue">
-         {this.state.balance.toFixed(2)}
+          {this.state.balance.toFixed(2)}
         </div>
         {
           this.state.transactionStarted && !this.state.isClosed ?
@@ -568,7 +585,7 @@ class CashierCashInHand extends Component {
         <span
           className="anchor history"
           onClick={this.showHistory}
-          style= {{right: '30px', bottom: '60px'}}
+          style={{ right: '30px', bottom: '60px' }}
         >
           History
                       </span>
