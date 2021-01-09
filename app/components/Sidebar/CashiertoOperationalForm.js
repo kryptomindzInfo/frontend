@@ -200,10 +200,13 @@ const CashierToWalletForm = ({ close }) => {
     const token = localStorage.getItem('cashierLogged');
     let receiverIdentificationAmount = values.amount
     let isInclusive = values.is_inclusive
+    let walletId = values.wallet_id
     values.receiverIdentificationAmount = receiverIdentificationAmount
     values.isInclusive = isInclusive
+    values.walletId = walletId
     delete values.amount
     delete values.is_inclusive
+    delete values.wallet_id
     let API = "";
     if (interbank) {
       API = "cashier/interBank/sendToOperational"
