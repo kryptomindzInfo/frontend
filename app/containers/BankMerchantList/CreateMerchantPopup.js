@@ -32,8 +32,7 @@ function CreateMerchantPopup(props) {
         }}
         onSubmit={async values => {
           if (props.type === 'update') {
-            values.username = values.code;
-            values.code = props.merchant._id;
+            values.merchant_id = props.merchant._id;
             await editMerchant(props, values, token);
           } else {
             await createMerchant(props, values, token);

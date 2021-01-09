@@ -5,7 +5,8 @@ import Container from './Container';
 
 const username = localStorage.getItem('cashierUserName');
 
-const cashier = localStorage.getItem('cashierName');
+const bankName = localStorage.getItem('bankName');
+const branchName = localStorage.getItem('branchName');
 const date = new Date()
 
 export class OperationalReiept extends Component {
@@ -40,7 +41,7 @@ export class OperationalReiept extends Component {
               <Row>
                 <Col className="popInfoLeft">Bank Name :</Col>
                 <Col className="popInfoRight">
-                   ------------------
+                   {bankName}
                 </Col>
               </Row>
             </Col>
@@ -48,7 +49,7 @@ export class OperationalReiept extends Component {
               <Row>
                 <Col className="popInfoLeft">Branch Name :</Col>
                   <Col className="popInfoRight">
-                    ------------------
+                    {branchName}
                 </Col>
               </Row>
               <Row>

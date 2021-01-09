@@ -7,7 +7,8 @@ import Table from '../../components/Table';
 
 const date = new Date();
 const username = localStorage.getItem('cashierUserName');
-
+const bankName = localStorage.getItem('bankName');
+const branchName = localStorage.getItem('branchName');
 export class Reciept extends Component {
 
   componentDidMount() {
@@ -68,7 +69,7 @@ export class Reciept extends Component {
               <Row>
                 <Col className="popInfoLeft">Bank Name :</Col>
                 <Col className="popInfoRight">
-                   ------------------
+                   {bankName}
                 </Col>
               </Row>
             </Col>
@@ -76,7 +77,7 @@ export class Reciept extends Component {
               <Row>
                 <Col className="popInfoLeft">Branch Name :</Col>
                   <Col className="popInfoRight">
-                    ------------------
+                    {branchName}
                 </Col>
               </Row>
               <Row>

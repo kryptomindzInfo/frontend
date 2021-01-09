@@ -4,6 +4,8 @@ import Col from './Col';
 import Container from './Container';
 
 const username = localStorage.getItem('cashierUserName');
+const bankName = localStorage.getItem('bankName');
+const branchName = localStorage.getItem('branchName');
 
 const cashier = localStorage.getItem('cashierName');
 const date = new Date()
@@ -40,7 +42,7 @@ export class Reciept extends Component {
               <Row>
                 <Col className="popInfoLeft">Bank Name :</Col>
                 <Col className="popInfoRight">
-                   ------------------
+                   {bankName}
                 </Col>
               </Row>
             </Col>
@@ -48,7 +50,7 @@ export class Reciept extends Component {
               <Row>
                 <Col className="popInfoLeft">Branch Name :</Col>
                   <Col className="popInfoRight">
-                    ------------------
+                    {branchName}
                 </Col>
               </Row>
               <Row>
@@ -68,7 +70,7 @@ export class Reciept extends Component {
               <Row>
                 <Col className="popInfoLeft">Amount :</Col>
                 <Col className="popInfoRight">
-                  {this.props.values.amount}
+                  {this.props.values.receiverIdentificationAmount}
                 </Col>
               </Row>
             </Col>
