@@ -65,6 +65,32 @@ function BankPartnerListPage(props) {
     setLoading(data.loading);
   };
 
+  const block = (id, type) => {
+    const token = localStorage.getItem('bankLogged');
+    axios
+      .post(`${API_URL}/bank/${type}Partner`, {
+        token,
+        partner_id: id,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.status === 0) {
+            throw res.data.message;
+          } else {
+            const n = type == 'unblock' ? 'Unblocked' : 'Blocked';
+            toast.success(`Partner ${n}`);
+            refreshPartnertList();
+          }
+        } else {
+          toast.error(res.data.message);
+        }
+      })
+      .catch(err => {
+        toast.error('Something went wrong');
+      });
+  };
+
+
   const partnerAPI = async (values, apiType) => {
     let API = '';
     if (apiType === 'update') {
@@ -214,11 +240,13 @@ function BankPartnerListPage(props) {
               >
                 Revenue Sharing
               </span>
-              {partner.status === -1 ? (
-                <span>Unblock</span>
+              {partner.status === 0 ? (
+                <span onClick={() => block(partner._id, 'unblock')}>
+                  Unblock
+                </span>
               ) : (
-                  <span>Block</span>
-                )}
+                  <span onClick={() => block(partner._id, 'block')}>Block</span>
+              )}
             </div>
           </span>
         </div>
