@@ -381,6 +381,7 @@ export default class BankPage extends Component {
       verifyEditOTPLoading: true,
     });
     const values = {
+      bank_id: this.state.bank_id,
       name: this.state.name,
       address1: this.state.address1,
       state: this.state.state,
@@ -399,16 +400,16 @@ export default class BankPage extends Component {
     const res = await postRequest("editBank", token, values)
     console.log(res);
     console.log(res.data.data.status)
-    if (res.data.data.status === 0) {
-      console.log(res.data.data)
-      toast.error(res.data.data.message);
-    } else {
+    if (res.data.data.mobile) {
       this.setState({
         notification: 'Bank edited successfully!',
       });
       this.success();
       this.closePopup();
       this.getBanks();
+    } else {
+      console.log(res.data.data)
+      toast.error(res.data.data.message);
     }
   };
 

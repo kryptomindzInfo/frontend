@@ -146,6 +146,7 @@ export default class BankCashierInfo extends Component {
       type: 'bank'
     })
     .then(res => {
+      console.log(res);
       if(res.status == 200){
         if(res.data.error){
           throw res.data.error;

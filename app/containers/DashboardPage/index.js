@@ -45,6 +45,11 @@ export default class DashboardPage extends Component {
       redirect: false,
       totalBanks: 0,
       totalMerchants: 0,
+      totalUsers: 0,
+      totalCashiers: 0,
+      totalBranches: 0,
+      totalMerchantBranches: 0,
+      totalPartners: 0,
       notification: '',
       popup: false,
     };
@@ -76,6 +81,11 @@ export default class DashboardPage extends Component {
           loading: false,
           totalBanks: res.data.data.totalBanks,
           totalMerchants: res.data.data.totalMerchants,
+          totalUsers: res.data.data.totalusers,
+          totalCashiers: res.data.data.totalcashiers,
+          totalBranches: res.data.data.totalbranches,
+          totalMerchantBranches: res.data.data.totalmerchantbranches,
+          totalPartners: res.data.data.totalpartners,
         });
       }
     } else {
@@ -139,7 +149,7 @@ export default class DashboardPage extends Component {
                 <h4>
                   <FormattedMessage {...messages.box3} />
                 </h4>
-                <div className="cardValue">0</div>
+                <div className="cardValue">{this.state.totalUsers}</div>
               </Card>
               <Card
                 horizontalMargin="7px"
@@ -150,7 +160,7 @@ export default class DashboardPage extends Component {
                 <h4>
                   <FormattedMessage {...messages.box4} />
                 </h4>
-                <div className="cardValue">0</div>
+                <div className="cardValue">{this.state.totalCashiers}</div>
               </Card>
             </div>
 
@@ -165,7 +175,7 @@ export default class DashboardPage extends Component {
                 <h4>
                   <FormattedMessage {...messages.box5} />
                 </h4>
-                <div className="cardValue">0</div>
+                <div className="cardValue">{this.state.totalBranches}</div>
               </Card>
               <Card
                 horizontalMargin="7px"
@@ -177,7 +187,7 @@ export default class DashboardPage extends Component {
                 <h4>
                   <FormattedMessage {...messages.box6} />
                 </h4>
-                <div className="cardValue">0</div>
+                <div className="cardValue">{this.state.totalMerchantBranches}</div>
               </Card>
               <Card
                 horizontalMargin="7px"
@@ -189,7 +199,7 @@ export default class DashboardPage extends Component {
                 <h4>
                   <FormattedMessage {...messages.box7} />
                 </h4>
-                <div className="cardValue">0</div>
+                <div className="cardValue">{this.state.totalPartners}</div>
               </Card>
               <Card
                 horizontalMargin="7px"
