@@ -281,7 +281,22 @@ export default class FeeList extends Component {
     // console.log(newfilterdata)
     this.setState({ rules: newfilterdata })
 
-  }
+  };
+
+  handleType = (newValue) => {
+    switch (newValue) {
+      case 'IBWW':
+        return ('Wallet to Wallet');
+      case 'IBNWNW':
+        return ('Non Wallet to Non Wallet');
+      case 'IBNWW':
+        return ('Non Wallet to Wallet');
+      case 'IBWNW':
+        return ('Wallet to Non Wallet');
+      case 'IBNWO':
+          return ('Non Wallet to Operational');
+    }
+  };
 
   render() {
     function inputFocus(e) {
@@ -413,11 +428,7 @@ export default class FeeList extends Component {
                                 )}
                             </td>
                             <td className="tac">
-                              {b.status === 0 ? (
-                                <span>{b.type}</span>
-                              ) : (
-                                  <span>{b.type}</span>
-                                )}
+                                  <span>{this.handleType(b.type)}</span>
                             </td>
                             <td>
                               <div>

@@ -396,55 +396,49 @@ class CashierClosingBalance extends Component {
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
 
-        <h3>
+        <h3 style ={{textAlign:'center'}}>
           Closing Balance
-          <span
-            className="anchor absoluteMiddleRight"
-            onClick={this.showHistoryPop}
-          >
-            History
-          </span>
         </h3>
-
-        <h5>
-          {this.state.lastdate ? this.state.lastdate : <span>&nbsp;</span>}
-        </h5>
-        <div className="cardValue">
+        <div style ={{textAlign:'center', fontSize:'20px'}} className="cardValue">
           {CURRENCY} {this.state.balance1.toFixed(2)}
         </div>
-        <br />
+        {/* <br />
         <h5>Discrepancy</h5>
         <div className="cardValue">
           {CURRENCY} {this.state.balance2.toFixed(2)}
-        </div>
-        {/* <Row>
-          <Col>
-            <h5>
-              {this.state.lastdate ? this.state.lastdate : <span>&nbsp;</span>}
-            </h5>
-            <div className="cardValue">
-              {CURRENCY} {this.state.balance1.toFixed(2)}
-            </div>
-          </Col>
-          <Col>
-            <h5>Discrepancy</h5>
-            <div className="cardValue">
-              {CURRENCY} {this.state.balance2.toFixed(2)}
-            </div>
-          </Col>
-        </Row> */}
-        {
+        </div> */}
+        <Row>
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+          {
           this.state.transactionStarted && !this.state.isClosed ? (
-            <button className="sendMoneyButton" onClick={this.showOpeningPopup}>
-              <i className="material-icons">send</i>
-            Close my day
-            </button>
+            <Button 
+            dashBtn
+            onClick={this.showOpeningPopup}
+            >
+              
+               Close my day
+            </Button>
           ) : (
-              <button className="sendMoneyButton" disabled>
-                <i className="material-icons">send</i>
-            Close my day
-              </button>
+            <Button
+              dashBtn
+              disabled>
+                   Close my day
+              </Button>
             )}
+          </Col>
+        </Row>
+        <Row>
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+          <Button
+              dashBtn
+              onClick={this.showHistoryPop}
+            >
+              History
+            </Button>
+          </Col>
+        </Row>
+
+        
 
         {this.state.openingPopup ? (
           <Popup close={this.closePopup.bind(this)} accentedH1>

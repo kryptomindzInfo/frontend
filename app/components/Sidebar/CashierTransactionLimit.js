@@ -16,6 +16,7 @@ import UploadArea from 'components/UploadArea';
 import Loader from 'components/Loader';
 import MuiCheckbox from '@material-ui/core/Checkbox';
 import TransactionReciept from '../TransactionReciept';
+import FormDialog from '../../components/FormDialog';
 
 import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
 
@@ -52,6 +53,10 @@ class CashierTransactionLimit extends Component {
     super();
     this.state = {
       balance: 0,
+      agree: false,
+      showOpeningOTP: false,
+      tomorrow: false,
+      openCashierPopup: false,
       sendtooperationalpopup: false,
       closingTime: null,
       withoutID: false,
@@ -91,6 +96,20 @@ class CashierTransactionLimit extends Component {
   openOperationalPopup = () => {
     this.setState({
       sendtooperationalpopup: true,
+    });
+  };
+
+  openCashier = e => {
+    this.setState({
+      openCashierPopup: true
+    });
+  };
+
+  closeOpenCashierPopup = () => {
+    this.setState({
+      openCashierPopup: false,
+      showOpeningOTP: false,
+      agree: false,
     });
   };
 
@@ -231,6 +250,69 @@ class CashierTransactionLimit extends Component {
       this.setState({
         withoutID: false,
       });
+    }
+  };
+
+  verifyOpeningOTP = event => {
+    event.preventDefault();
+
+    this.setState({
+      verifyEditOTPLoading: true,
+    });
+    axios
+      .post(`${API_URL}/openCashierBalance`, this.state)
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState(
+              {
+                notification: 'Cashier opened successfully!',
+              },
+              function () {
+                this.success();
+                this.closeOpenCashierPopup();
+              },
+            );
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+        this.setState({
+          verifyEditOTPLoading: false,
+        });
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          verifyEditOTPLoading: false,
+        });
+        this.error();
+      });
+
+  };
+
+  addOpeningBalance = event => {
+    event.preventDefault();
+    if (this.state.agree) {
+
+      this.setState(
+        {
+          showOpeningOTP: true,
+          otpOpt: 'openingBalance',
+          otpTxt: 'Your OTP to open cashier balance is ',
+        },
+        () => {
+          this.generateOTP();
+        },
+      );
+    } else {
+      this.setState({
+        notification: 'You need to agree'
+      });
+      this.error();
     }
   };
 
@@ -887,6 +969,7 @@ class CashierTransactionLimit extends Component {
             this.setState(
               {
                 balance: Number(res.data.limit),
+                tomorrow: res.data.isClosed,
                 closingTime: res.data.closingTime,
                 cashInHand: res.data.cashInHand,
                 transactionStarted: res.data.transactionStarted,
@@ -984,6 +1067,45 @@ class CashierTransactionLimit extends Component {
     this.setState({ [event.target.name]: event.target.checked }, () => this.amountChange());
   };
 
+  handleCheckbox = event => {
+    const { value, name } = event.target;
+    if (value == "true") {
+      var v = false;
+    } else {
+      var v = true;
+    }
+    this.setState({
+      [name]: v,
+    });
+  };
+
+  formatDate = date => {
+    var months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    var isoformat = date;
+
+    var readable = new Date(isoformat);
+    var m = readable.getMonth(); // returns 6
+    var d = readable.getDate(); // returns 15
+    var y = readable.getFullYear();
+    var h = readable.getHours();
+    var mi = readable.getMinutes();
+    var mlong = months[m];
+    return d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+  };
+
   render() {
     function inputFocus(e) {
       const { target } = e;
@@ -1032,55 +1154,50 @@ class CashierTransactionLimit extends Component {
         }
       }
     };
+    var tempDate = new Date();
+    var date =
+      tempDate.getDate() +
+      '-' +
+      (tempDate.getMonth() + 1) +
+      '-' +
+      tempDate.getFullYear()
+    const currDate = this.formatDate(tempDate);
 
-    let popupstyle = "bigBody"
-
-    // if (this.state.showOTPClaimMoney) {
-    //   popupstyle = "bigbody1"
-    // }
-    // else {
-    //   popupstyle = "bigbody"
-    // }
     return (
       <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
-        <h3>Max. Daily Cash Out Amount</h3>
-        <h5>
-          <FormattedMessage {...messages.available} />
-        </h5>
-        <div className="cardValue">
-          {CURRENCY} {this.state.balance.toFixed(2)}
-        </div>
-
         <Row>
-          <Col>
-            {this.state.transactionStarted && !this.state.isClosed ? (
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+            { this.state.tomorrow ? (
               <Button
-                className="sendMoneybutton"
-                noMin
-                onClick={this.showPopupSendMoney}
+                dashBtn
+                onClick={this.openCashier}
               >
-                <i className="material-icons">send</i> {/* Send Money */}
-                <FormattedMessage {...messages.sendmoney} />
+                  Open My Counter
               </Button>
             ) : (
-                <Button className="sendMoneybutton" noMin disabled>
-                  <i className="material-icons">send</i> {/* Send Money */}
-                  <FormattedMessage {...messages.sendmoney} />
+                <Button dashBtn disabled>
+                  Open My Counter
                 </Button>
               )}
           </Col>
-          <Col>
+        </Row>
+        <Row style={{ marginTop: '25%' }}>
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+            <FormDialog />
+          </Col>
+        </Row>
+        <Row>
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
             {this.state.transactionStarted && !this.state.isClosed ? (
               <Button
-                noMin
-                className="sendMoneybutton"
-                onClick={this.showClaimMoneyPopup}
+                dashBtn
+                onClick={this.showPopupSendMoney}
               >
-                <i className="material-icons">send</i> Claim Money
+                <FormattedMessage {...messages.sendmoney} />
               </Button>
             ) : (
-                <Button noMin className="sendMoneybutton" disabled>
-                  <i className="material-icons">send</i> Claim Money
+                <Button dashBtn disabled>
+                  <FormattedMessage {...messages.sendmoney} />
                 </Button>
               )}
           </Col>
@@ -1089,21 +1206,36 @@ class CashierTransactionLimit extends Component {
           <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
             {this.state.transactionStarted && !this.state.isClosed ? (
               <Button
-                className="sendMoneybutton"
-                noMin
-                onClick={this.openOperationalPopup}
+                dashBtn
+                onClick={this.showClaimMoneyPopup}
               >
-                <i className="material-icons">send</i> {/* Send Money */}
-                Send Money to Operational
+                Claim Money
               </Button>
             ) : (
-                <Button className="sendMoneybutton" noMin disabled>
-                  <i className="material-icons">send</i> {/* Send Money */}
-                Send Money to Operational
+                <Button dashBtn disabled>
+                  Claim Money
                 </Button>
               )}
           </Col>
         </Row>
+        <Row>
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+            {this.state.transactionStarted && !this.state.isClosed ? (
+              <Button
+                dashBtn
+                onClick={this.openOperationalPopup}
+              >
+                Send to Operational
+              </Button>
+            ) : (
+                <Button dashBtn disabled>
+                Send to Operational
+                </Button>
+              )}
+          </Col>
+        </Row>
+        
+        
         {this.state.receiptpopup ? (
           <TransactionReciept
             values={this.state.receiptvalues}
@@ -1117,8 +1249,6 @@ class CashierTransactionLimit extends Component {
         ) : null}
         {this.state.popupClaimMoney ? (
           <>
-
-
             <Popup bigBody close={this.closePopupSendMoney.bind(this)} accentedH1>
               {this.state.showClaimMoneyDetails ? (
                 this.state.showVerifyClaimMoney ? (
@@ -2769,6 +2899,121 @@ class CashierTransactionLimit extends Component {
                       </form>
                     </div>
                   )}
+          </Popup>
+        ) : null}
+
+        {this.state.openCashierPopup ? (
+          <Popup close={this.closeOpenCashierPopup.bind(this)} accentedH1>
+            {this.state.showOpeningOTP ? (
+              <div>
+                <h1>Verify OTP</h1>
+                <form action="" method="post" onSubmit={this.verifyOpeningOTP}>
+                  <FormGroup>
+                    <label>OTP*</label>
+                    <TextInput
+                      type="text"
+                      name="otp"
+                      onFocus={inputFocus}
+                      onBlur={inputBlur}
+                      value={this.state.otp}
+                      onChange={this.handleInputChange}
+                      required
+                    />
+                  </FormGroup>
+                  {this.verifyEditOTPLoading ? (
+                    <Button filledBtn marginTop="50px" disabled>
+                      <Loader />
+                    </Button>
+                  ) : (
+                      <Button filledBtn marginTop="50px">
+                        <span>Verify</span>
+                      </Button>
+                    )}
+
+                  <p className="resend">
+                    Wait for <span className="timer">{this.state.timer}</span>{' '}
+                    to{' '}
+                    {this.state.resend ? (
+                      <span className="go" onClick={this.generateOTP}>
+                        Resend
+                      </span>
+                    ) : (
+                        <span>Resend</span>
+                      )}
+                  </p>
+                </form>
+              </div>
+            ) : (
+                <div>
+                  <h1>Open Cashier</h1>
+                  <form action="" method="post" onSubmit={this.addOpeningBalance}>
+
+
+                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+
+                      <Col cW="20%" textAlign="right">
+                        <strong>Opening for the day</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        :
+                    </Col>
+                      <Col cW="35%">
+                        {
+                          currDate
+                        }
+                        {/* {Date.now().toISOString()} */}
+
+                      </Col>
+                    </Row>
+
+                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+
+                      <Col cW="20%" textAlign="right">
+                        <strong>Cash in Hand</strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+                        :
+                    </Col>
+                      <Col cW="35%">
+                        {
+                          this.state.cashInHand
+                        }
+                      </Col>
+                    </Row>
+                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
+                      <Col cW="20%" textAlign="right">
+                        <strong></strong>
+                      </Col>
+                      <Col cW="20%" textAlign="center">
+
+                      </Col>
+                      <Col cW="35%">
+
+                      </Col>
+                    </Row>
+
+
+                    <div style={{
+                      marginTop: '20px',
+                      fontSize: '18px',
+                      textAlign: 'center'
+                    }}>
+                      <input type="checkbox"
+                        name="agree"
+                        value={this.state.agree}
+                        checked={this.state.agree}
+                        required
+                        onClick={this.handleCheckbox} />  Agree to the opening balance?
+                  </div>
+
+
+                    <Button filledBtn marginTop="50px">
+                      <span>Open</span>
+                    </Button>
+
+                  </form>
+                </div>
+              )}
           </Popup>
         ) : null}
       </Card>

@@ -30,7 +30,6 @@ import Button from 'components/Button';
 import { API_URL, CURRENCY, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
-import FormDialog from '../../components/FormDialog';
 
 toast.configure({
   position: 'bottom-right',
@@ -566,7 +565,7 @@ export default class CashierDashboard extends Component {
                 textAlign="center"
                 col
               >
-                <h4>Fee Generated</h4>
+                <h4>Fee</h4>
                 <div className="cardValue">
                   {CURRENCY} {this.state.feeGenerated.toFixed(2)}
                 </div>
@@ -579,40 +578,9 @@ export default class CashierDashboard extends Component {
                 textAlign="center"
                 col
               >
-                <h4>Commision Generated</h4>
+                <h4>Commision</h4>
                 <div className="cardValue">
                   {CURRENCY}  {this.state.commissionGenerated.toFixed(2)}
-                </div>
-              </Card>
-            </div>
-            <div className="clr">
-              <Card
-                horizontalMargin="7px"
-                cardWidth="125px"
-                smallValue
-                h4FontSize="16px"
-                textAlign="center"
-                col
-              >
-                <div className="cardValue">
-                  <FormDialog />
-                </div>
-              </Card>
-              <Card
-                horizontalMargin="7px"
-                cardWidth="125px"
-                h4FontSize="16px"
-                smallValue
-                textAlign="center"
-                height="5.5rem"
-                col
-              >
-                <div className="cardValue">
-                  {
-                    this.state.tomorrow ?
-                      <Button onClick={this.openCashier}>Open Cashier</Button>
-                      : <Button disabled> Counter is Opened</Button>
-                  }
                 </div>
               </Card>
             </div>
