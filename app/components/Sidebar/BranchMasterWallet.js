@@ -5,8 +5,8 @@ import messages from './messages';
 import axios from 'axios';
 import Card from 'components/Card';
 import Popup from 'components/Popup';
-import TextInput from 'components/TextInput';
-import TextArea from 'components/TextArea';
+import Row from 'components/Row';
+import Col from 'components/Col';
 import FormGroup from 'components/FormGroup';
 import Button from 'components/Button';
 import SendToOperationalPopup from './SendToOperationalPopup';
@@ -166,13 +166,16 @@ class BranchMasterWallet extends Component {
         <div className="cardValue">
           {CURRENCY} {this.state.balance.toFixed(2)}
         </div>
-        <button
-          onClick={this.handlePopupOpen}
-          className="sendMoneyButton"
-        >
-          <i className="material-icons">send</i>{' '}
-          <FormattedMessage {...messages.sendmoney} />
-        </button>
+        <Row>
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+            <Button
+              dashBtn
+              onClick={this.handlePopupOpen}
+            >
+              <FormattedMessage {...messages.sendmoney} />
+            </Button>
+          </Col>
+        </Row>
         {this.state.popup ? (
           <SendToOperationalPopup
             close={this.handlePopupClose}

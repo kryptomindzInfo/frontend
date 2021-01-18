@@ -156,7 +156,7 @@ class BranchCreditLimit extends Component {
       }
     }
     return (
-      // <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
+      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding smallValue>
       <>
         <h3>
           Credit Limit
@@ -261,8 +261,9 @@ class BranchCreditLimit extends Component {
             </form>
           </Popup>
         ) : null}
-        {/* </Card> */}
+       
       </>
+      </Card>
     );
   }
 }
