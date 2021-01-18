@@ -1154,13 +1154,13 @@ export default class BranchDashboard extends Component {
                                   >
                                     Assign User
                                     </span>
-                                  {b.is_closed ? (
+                                  {/* {b.is_closed ? (
                                     <span
                                       onClick={() => dis.releaseCashier(b._id)}
                                     >
                                       Re-open Access
                                     </span>
-                                  ) : null}
+                                  ) : null} */}
                                   {b.status == -1 ? (
                                     <span
                                       onClick={() =>

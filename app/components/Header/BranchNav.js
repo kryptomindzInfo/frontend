@@ -36,11 +36,11 @@ class BranchNav extends Component {
               <FormattedMessage {...messages.menu1} />
             </Link>
           </A>
-          <A href={"/branch/" + bankName + "/cashiers"}>
+          {/* <A href={"/branch/" + bankName + "/cashiers"}>
             <Link active={cashier}>
               Cashier
             </Link>
-          </A>
+          </A> */}
           {/* <A >
             <Link active={users}>
               <FormattedMessage {...messages.bmenu3} />
