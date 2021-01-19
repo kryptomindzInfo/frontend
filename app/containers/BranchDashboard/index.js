@@ -63,6 +63,9 @@ export default class BranchDashboard extends Component {
       openingBalance: 0,
       commissionGenerated: 0,
       cashPaid: 0,
+      pending: 0,
+      accepted: 0,
+      cancelled: 0,
       totalCashier: 0,
       cashInHand: 0,
       perPage: 20,
@@ -803,6 +806,9 @@ export default class BranchDashboard extends Component {
             feeGenerated:res.data.feeGenerated.toFixed(2),
             commissionGenerated:res.data.commissionGenerated.toFixed(2),
             openingBalance:res.data.openingBalance.toFixed(2),
+            pending: res.data.pending,
+            accepted: res.data.accepted,
+            cancelled: res.data.cancelled,
           },
           () => {
             var dis = this;
@@ -1043,15 +1049,15 @@ export default class BranchDashboard extends Component {
                   <Row>
                     <Col>
                       <h5>Approved</h5>
-                      <div className="cardValue">0</div>
+                      <div className="cardValue">{this.state.accepted}</div>
                     </Col>
                     <Col>
                       <h5>Declined</h5>
-                      <div className="cardValue">0</div>
+                      <div className="cardValue">{this.state.cancelled}</div>
                     </Col>
                     <Col>
                       <h5>Pending</h5>
-                      <div className="cardValue">0</div>
+                      <div className="cardValue">{this.state.pending}</div>
                     </Col>
                   </Row>
                   
