@@ -1085,7 +1085,7 @@ export default class BranchDashboard extends Component {
                       <th>Input amount</th>
                       <th>Withdrawal</th>
                       <th>Fee collected</th>
-                      <th>Pending Trans. Count</th>
+                      <th>Pending Transaction</th>
                       <th></th>
                     </tr>
                   </thead>
