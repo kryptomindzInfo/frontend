@@ -46,6 +46,7 @@ toast.configure({
 const token = localStorage.getItem('cashierLogged');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
+const maxTransAmt = localStorage.getItem('maxTransAmt');
 const date = new Date();
 
 class CashierTransactionLimit extends Component {
@@ -56,6 +57,7 @@ class CashierTransactionLimit extends Component {
       agree: false,
       showOpeningOTP: false,
       tomorrow: false,
+      pendingTransType: '',
       openCashierPopup: false,
       sendtooperationalpopup: false,
       closingTime: null,
@@ -132,9 +134,8 @@ class CashierTransactionLimit extends Component {
     });
   };
 
-  proceed = items => {
-
-    const dis = this;
+  proceed = (items,type,interbank) => {
+    console.log(type);
     for (const key in items) {
       if (items.hasOwnProperty(key)) {
         this.setState({
@@ -142,9 +143,10 @@ class CashierTransactionLimit extends Component {
         });
       }
     }
-
     this.setState({
       proceed: true,
+      interbank: interbank,
+      pendingTransType:type,
       popupSendMoney: true,
     });
   };
@@ -411,7 +413,6 @@ class CashierTransactionLimit extends Component {
     const { value, name } = event.target;
     const { title } = event.target.options[event.target.selectedIndex];
     const ccode = event.target.getAttribute('data-change');
-    console.log(name, value);
     this.setState({
       [name]: value,
       [ccode]: title,
@@ -547,7 +548,6 @@ class CashierTransactionLimit extends Component {
           } else {
             const o = res.data.row;
             if (o.sender_id) {
-              console.log(o.is_inter_bank);
               const senderid = JSON.parse(o.sender_id);
               this.setState({
                 sender_id: senderid,
@@ -628,7 +628,7 @@ class CashierTransactionLimit extends Component {
       verifySendMoneyOTPLoading: true,
     });
     axios
-      .post(`${API_URL}/cashierSendMoneyPending`, this.state)
+      .post(`${API_URL}/cashierSendMoneyPending`, {...this.state, type: "Non Wallet to Non Wallet Send Money"})
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {
@@ -666,8 +666,7 @@ class CashierTransactionLimit extends Component {
   sendMoney = event => {
     event.preventDefault();
     if (
-      !this.state.proceed &&
-      this.state.receiverIdentificationAmount > this.state.balance
+      this.state.receiverIdentificationAmount > 1000 && !this.state.proceed
     ) {
       // this.setState({
       //   notification: 'Amount has to be lesser than transaction limit',
@@ -799,7 +798,6 @@ class CashierTransactionLimit extends Component {
       claimMoneyLoading: true,
       receiptvalues: { ...this.state, type: "Claim Money" },
     });
-    console.log(this.state.interbankclaim);
     let API = "";
     if (this.state.interbankclaim) {
       API = 'cashier/interBank/claimMoney';
@@ -1008,7 +1006,18 @@ class CashierTransactionLimit extends Component {
       });
   };
 
+  proceedTransaction = event => {
+    event.preventDefault();
+    console.log(this.state.pendingTransType);
+    if (this.state.pendingTransType === 'Non Wallet to Non Wallet Send Money'){
+      this.sendMoney(event);
+    } else if(this.state.pendingTransType === 'Claim Money') {
+      this.claimMoney();
+    }
+  };
+
   componentDidMount() {
+    console.log(maxTransAmt);
     this.getTransLimit();
   }
 
@@ -1891,9 +1900,10 @@ class CashierTransactionLimit extends Component {
               </div>
             ) : (
                     <div>
-                      <h1>Send Money</h1>
-                      <form action="" method="post" onSubmit={this.sendMoney}>
-                        {this.state.proceed ? (
+                      {this.state.proceed ? (
+                        <div>
+                        <h1>{this.state.pendingTransType}</h1>
+                        <form action="" method="post" onSubmit={(event) => this.proceedTransaction(event)}>                       
                           <div>
                             <Container>
                               <Row vAlign="flex-start">
@@ -2024,17 +2034,17 @@ class CashierTransactionLimit extends Component {
                                     </Col>
                                   </Row>
                                   <Row>
-                                    <Col className="popInfoLeft">Date</Col>
+                                    <Col className="popInfoLeft">Interbank Transaction</Col>
                                     <Col className="popInfoRight">
-                                      {this.state.dateClaimMoney}
+                                      {this.state.interbank ? "Yes" : "No"}
                                     </Col>
                                   </Row>
-                                  <Row>
+                                  {/* <Row>
                                     <Col className="popInfoLeft">Transaction ID</Col>
                                     <Col className="popInfoRight">
                                       {this.state.transferCode}
                                     </Col>
-                                  </Row>
+                                  </Row> */}
                                   <Row>
                                     <Col className="popInfoLeft">ID required</Col>
                                     <Col className="popInfoRight">
@@ -2143,7 +2153,12 @@ class CashierTransactionLimit extends Component {
                               </Row>
                             </Container>
                           </div>
-                        ) : (
+                        </form>
+                        </div>
+                      ) : (
+                        <div>
+                        <h1>Send Money</h1>
+                        <form action="" method="post" onSubmit={this.sendMoney}>
                             <div style={{ width: '100%', height: '100%' }}>
                               <CashierPopupToggle
                                 handleToggleChange={value =>
@@ -2895,8 +2910,10 @@ class CashierTransactionLimit extends Component {
                                   </Blur>
                                 )}
                             </div>
-                          )}
+                          
                       </form>
+                    </div>
+                    )}
                     </div>
                   )}
           </Popup>

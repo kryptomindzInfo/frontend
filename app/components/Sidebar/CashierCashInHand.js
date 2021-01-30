@@ -122,7 +122,6 @@ class CashierCashInHand extends Component {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            console.log(res.data.status);
             this.setState({
               notification: 'Transfer Cancelled!',
             });
@@ -167,7 +166,6 @@ class CashierCashInHand extends Component {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            console.log(res.data.status);
             this.setState({
               notification: 'Transfer Accepted!',
             });
@@ -290,7 +288,6 @@ class CashierCashInHand extends Component {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            console.log(res.data.status);
             this.setState({
               notification: 'Transaction Successfully Done',
             });
@@ -398,7 +395,6 @@ class CashierCashInHand extends Component {
       })
       .then(res => {
         if (res.status == 200) {
-          console.log(res)
           let received = res.data.cashReceived == null ? 0 : res.data.cashReceived;
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
           let ob = res.data.openingBalance == null ? 0 : res.data.openingBalance;
@@ -457,8 +453,6 @@ class CashierCashInHand extends Component {
   };
 
   getCashiers = () => {
-    console.log(this.state.branch_id);
-    const getbankid = localStorage.getItem("bankId")
     axios
       .post(`${API_URL}/getAll`, {
         token: token,
@@ -466,11 +460,9 @@ class CashierCashInHand extends Component {
         type: "cashier",
 
         where: {
-          // branch_id: branchID,
-          bank_id: getbankid
-
+          branch_id: branchID,
+          _id: { $ne: cid }
         }
-
       })
       // .post(`${API_URL}/getAll`, {
       //   token: token,
@@ -486,7 +478,6 @@ class CashierCashInHand extends Component {
       // })
       .then(res => {
         if (res.status == 200) {
-          console.log(res.data.rows)
           this.setState({
             cashiers: res.data.rows
           });
@@ -536,14 +527,14 @@ class CashierCashInHand extends Component {
               onClick={this.showPopupSendMoney}
 
             >
-              <i className="material-icons">send</i> Cashier to Cashier Transfer
+              Cashier to Cashier Transfer
             </Button>
             :
             <Button 
               dashBtn
               disabled
             >
-              <i className="material-icons">send</i> Cashier to Cashier Transfer
+              Cashier to Cashier Transfer
             </Button>
         }
           </Col>

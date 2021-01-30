@@ -111,7 +111,6 @@ export default class BranchDashboard extends Component {
   };
 
     showPending = v => {
-      console.log(v);
     this.setState({
       selectedCashier: v,
       pendingPop: true,
@@ -153,7 +152,7 @@ export default class BranchDashboard extends Component {
     });
   };
 
-  showPendingDetails = (id, items) => {
+  showPendingDetails = (id, items,type,interbank) => {
 
     var dis = this;
     for (var key in items) {
@@ -162,8 +161,11 @@ export default class BranchDashboard extends Component {
         this.setState({
           [key] : items[key]
         });
-
     }
+    this.setState({
+      type : type,
+      interbank : interbank,
+    });
 }
     this.setState({
       selectedId: id,
@@ -438,7 +440,7 @@ export default class BranchDashboard extends Component {
               },
               function() {
                 this.success();
-              //  this.closePopup();
+                this.closePopup();
                 this.getCashiers();
               },
             );
@@ -716,7 +718,7 @@ export default class BranchDashboard extends Component {
           // var l = result.length;
           const perndingHistory = res.data.rows.reverse();
           this.setState({
-            pending: perndingHistory,
+            pendingCashierHistory: perndingHistory,
             historyLoading: false
           });
         }
@@ -1940,8 +1942,8 @@ export default class BranchDashboard extends Component {
                   <tbody>
                 {
 
-                      this.state.pending && this.state.pending.length > 0
-                      ? this.state.pending.map(function(b) {
+                      this.state.pendingCashierHistory && this.state.pendingCashierHistory.length > 0
+                      ? this.state.pendingCashierHistory.map(function(b) {
 
                         var fulldate = dis.formatDate(b.created_at);
                         return  <tr key={b._id}>
@@ -1953,7 +1955,7 @@ export default class BranchDashboard extends Component {
                                   className="labelBlue"
                                 >
 
-                                    <span onClick={() => dis.showPendingDetails(b._id, JSON.parse(b.transaction_details))}>
+                                    <span onClick={() => dis.showPendingDetails(b._id, JSON.parse(b.transaction_details),b.trans_type,b.interbank)}>
                                       Cash sent from{' '}
                                       {b.sender_name}{' '}
                                       to{' '}
@@ -2124,16 +2126,22 @@ export default class BranchDashboard extends Component {
                               {this.state.receiverIdentificationAmount}
                             </Col>
                           </Row>
-                          <Row>
+                          {/* <Row>
                             <Col className="popInfoLeft">Date</Col>
                             <Col className="popInfoRight">
                               {this.state.dateClaimMoney}
                             </Col>
+                          </Row> */}
+                          <Row>
+                            <Col className="popInfoLeft">Transaction Type</Col>
+                            <Col className="popInfoRight">
+                              {this.state.type}
+                            </Col>
                           </Row>
                           <Row>
-                            <Col className="popInfoLeft">Transaction ID</Col>
+                            <Col className="popInfoLeft">Interbank Transaction ?</Col>
                             <Col className="popInfoRight">
-                              {this.state.transferCode}
+                              {this.state.interbank ? "Yes" : "No"}
                             </Col>
                           </Row>
                           <Row>

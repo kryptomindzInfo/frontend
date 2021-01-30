@@ -186,13 +186,14 @@ export default class FeeList extends Component {
     }
   }
 
-  showMiniPopUp = (b, r) => {
+  showMiniPopUp = (b, r,ranges) => {
     this.setState({
       popname: b.name,
       poptype: b.trans_type,
       sid: b._id,
       popupMini: true,
       html: r,
+      popupranges: ranges
     });
     // this.props.history.push('/createfee/'+this.state.bank_id);
   };
@@ -415,6 +416,7 @@ export default class FeeList extends Component {
                     {this.state.rules && this.state.rules.length > 0
                       ? this.state.rules.map(b => {
                         var r = b.revenue_sharing_rule.infra_share;
+                        var ranges = b.ranges;
                         return (
                           <tr key={b._id}>
                             <td>
@@ -432,19 +434,27 @@ export default class FeeList extends Component {
                                 )}
                             </td>
                             <td>
-                              <div>
-                                Fixed:{' '}
-                                <span className="green">
-                                  {`${CURRENCY} ${r.fixed}`}
-                                </span>
-                                  , Percentage:{' '}
-                                <span className="green">{r.percentage}</span>
-                              </div>
+                                {ranges.map(v => (
+                                  <div>
+                                    Range:{' '}
+                                    <span className="green">
+                                      {v.trans_from} - {v.trans_to}
+                                    </span>
+                                      , Fixed:{' '}
+                                    <span className="green">
+                                      {`${CURRENCY} ${v.fixed}`}
+                                    </span>
+                                      , Percentage:{' '}
+                                    <span className="green">
+                                      {v.percentage}
+                                    </span>
+                                  </div>
+                                ))}
                             </td>
                             <td className="tac bold">
                               {b.status === 2 ? (
                                 <Button
-                                  onClick={() => this.showMiniPopUp(b, r)}
+                                  onClick={() => this.showMiniPopUp(b, r, ranges)}
                                   className="addBankButton"
                                 >
                                   <span>Approve</span>
@@ -506,7 +516,25 @@ export default class FeeList extends Component {
                       {' '}
                     Sending from <span id="poptype">{this.state.poptype}</span>
                     </p>
+                    <h5>Ranges</h5>
+                    {this.state.popupranges.map(v => (
+                                  <div>
+                                    Range:{' '}
+                                    <span className="green">
+                                      {v.trans_from} - {v.trans_to}
+                                    </span>
+                                      , Fixed:{' '}
+                                    <span className="green">
+                                      {`${CURRENCY} ${v.fixed}`}
+                                    </span>
+                                      , Percentage:{' '}
+                                    <span className="green">
+                                      {v.percentage}
+                                    </span>
+                                  </div>
+                                ))}
                     <div>
+                    <h5 style={{marginTop:'15px'}}>Infra share:</h5>
                       Fixed:{' '}
                       <span className="green">
                         {`${CURRENCY} ${this.state.html.fixed}`}

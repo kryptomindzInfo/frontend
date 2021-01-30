@@ -62,6 +62,8 @@ export default class CashierDashboard extends Component {
       otpEmail: email,
       otpMobile: mobile,
       agree: false,
+      showPending: false,
+      loading:true,
       historyPop: false,
       tomorrow: false,
       trans_type: '',
@@ -80,6 +82,7 @@ export default class CashierDashboard extends Component {
       trans_from: '',
       trans_to: '',
       transcount_from: '',
+      pending: [],
       history: [],
       filter: '',
     };
@@ -154,9 +157,9 @@ export default class CashierDashboard extends Component {
     }
   };
 
-  proceed = (items) => {
+  proceed = (items,type,interbank) => {
 
-    this.child.current.proceed(items);
+    this.child.current.proceed(items,type,interbank);
   };
 
 
@@ -314,30 +317,31 @@ export default class CashierDashboard extends Component {
       })
       .then(res => {
         if (res.status == 200) {
-          var notification = {};
-          var result = res.data.history1.concat(res.data.history2);
-          result.sort(
-            function (a, b) {
-              return (
-                new Date(b.created_at).getTime() -
-                new Date(a.created_at).getTime()
-              ); // implicit conversion in number
-            },
-            () => { },
-          );
-          var l = result.length;
-          const allHistory = result;
-          const pendingHistory = res.data.history3.reverse();
+          console.log(res);
+          // var notification = {};
+          // var result = res.data.history1.concat(res.data.history2);
+          // result.sort(
+          //   function (a, b) {
+          //     return (
+          //       new Date(b.created_at).getTime() -
+          //       new Date(a.created_at).getTime()
+          //     ); // implicit conversion in number
+          //   },
+          //   () => { },
+          // );
+          // var l = result.length;
+          const allHistory = res.data.history;
+          const pendingHistory = res.data.pending.reverse();
           this.setState(
             {
-              pending: pendingHistory,
-              ticker: allHistory[0],
+              pending:res.data.pending,
+              // ticker: allHistory[0],
               loading: false,
-              allhistory: allHistory,
-              totalCount: result.length,
+              // allhistory: allHistory,
+              // totalCount: result.length,
             },
             () => {
-              this.showHistory();
+              // this.showHistory();
             },
           );
         }
@@ -372,11 +376,11 @@ export default class CashierDashboard extends Component {
             {
               tomorrow: closingTime,
               closingTime: res.data.closingTime,
-              loading: false,
               openingBalance: res.data.openingBalance,
               closingBalance: res.data.closingBalance,
               cashReceived: received,
               cashPaid: paid,
+              loading: false,
               feeGenerated: res.data.feeGenerated,
               commissionGenerated: res.data.commissionGenerated,
               isClosed: res.data.isClosed
@@ -416,8 +420,6 @@ export default class CashierDashboard extends Component {
       .then(res => {
         if (res.status == 200) {
           this.setState({ branchDetails: res.data.banks }, () => {
-            this.getStats();
-            this.getHistory();
           });
         }
       })
@@ -451,8 +453,11 @@ export default class CashierDashboard extends Component {
     return d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
   };
 
-  componentDidMount() {
+  componentDidMount () {
+    this.getHistory();
     this.getBranchByName();
+    this.getStats();
+    
   }
 
   render() {
@@ -673,13 +678,12 @@ export default class CashierDashboard extends Component {
                   {
                     this.state.showPending ?
                       <tbody>
-                        {
-
-                          this.state.pending && this.state.pending.length > 0
+                        {this.state.pending.length > 0
                             ? this.state.pending.map(function (b) {
 
                               var fulldate = dis.formatDate(b.created_at);
-                              return <tr key={b._id}>
+                              return (
+                              <tr key={b._id}>
                                 <td>
                                   <div className="labelGrey">{fulldate}</div>
                                 </td>
@@ -701,7 +705,7 @@ export default class CashierDashboard extends Component {
                                       <div>
                                         <span>Approved</span>
                                         <br />
-                                        <Button style={{ marginTop: '10px' }} onClick={() => dis.proceed(JSON.parse(b.transaction_details))}>Proceed</Button>
+                                        <Button style={{ marginTop: '10px' }} onClick={() => dis.proceed(JSON.parse(b.transaction_details),b.trans_type,b.interbank)}>Proceed</Button>
                                       </div>
                                       :
                                       b.status == 0 ?
@@ -720,12 +724,12 @@ export default class CashierDashboard extends Component {
                                   </div>
                                 </td>
                               </tr>
+                              )
                             })
-                            : null
+                            : "eff"
                         }
                       </tbody>
                       :
-
                       <tbody>
                         {
 
