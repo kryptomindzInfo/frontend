@@ -29,7 +29,7 @@ toast.configure({
 const MerchantFee = props => {
   const [isLoading, setLoading] = useState(false);
   const [rule, setRule] = useState(props.rules);
-  const [ranges , setRanges] = useState(props.rules.ranges);
+  const [ranges , setRanges] = useState([]);
 
   const handleRangeChange = (e,index) => {
     const rangelist = [...ranges];
@@ -55,7 +55,7 @@ const MerchantFee = props => {
 
   useEffect(() => {
     console.log(props.rules);
-    if(props.rules){
+    if(props.rules.ranges){
       setRanges(props.rules.ranges);
     } else {
       setRanges([

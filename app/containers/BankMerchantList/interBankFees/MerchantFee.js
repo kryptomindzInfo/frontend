@@ -54,7 +54,7 @@ const MerchantFee = props => {
   };
 
   useEffect(() => {
-    if(props.rules){
+    if(props.rules.ranges){
       setRanges(props.rules.ranges);
     } else {
       setRanges([
