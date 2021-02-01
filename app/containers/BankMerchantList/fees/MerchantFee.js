@@ -29,12 +29,45 @@ toast.configure({
 const MerchantFee = props => {
   const [isLoading, setLoading] = useState(false);
   const [rule, setRule] = useState(props.rules);
+  const [ranges , setRanges] = useState(props.rules.ranges);
+
+  const handleRangeChange = (e,index) => {
+    const rangelist = [...ranges];
+    if( parseInt(e.target.value,10) < parseInt(rangelist[index].trans_from,10)){
+      console.log('h');
+      rangelist[index].trans_to = '9999999999';
+      e.target.value = '9999999999';
+      setRanges(rangelist);
+      console.log(rangelist);
+    }
+    else if(e.target.value < 9999999999) {
+      rangelist[index].trans_to = e.target.value;
+      const obj = {
+        trans_from: `${parseInt(e.target.value,10) + 1}`,
+        trans_to: '9999999999',
+        fixed: '',
+        percentage: '',
+      };
+      rangelist.push(obj);
+      setRanges(rangelist);
+    }
+  };
 
   useEffect(() => {
-    if (Object.keys(rule).length > 0) {
-      correctFocus('update');
+    console.log(props.rules);
+    if(props.rules){
+      setRanges(props.rules.ranges);
+    } else {
+      setRanges([
+        {
+          trans_from: '1',
+          trans_to: '9999999999',
+          fixed: '',
+          percentage: '',
+        },
+      ]);
     }
-  });
+  },[]);
 
   return (
     <Card bigPadding>
@@ -57,23 +90,18 @@ const MerchantFee = props => {
             name: rule.name || '',
             type: rule.type || '',
             active: rule.active || '',
-            ranges: rule.ranges || [
-              {
-                trans_from: '',
-                trans_to: '',
-                fixed: '',
-                percentage: '',
-              },
-            ],
+            ranges: ranges,
           }}
           validationSchema={Yup.object().shape({
             name: Yup.string().required('Name is required'),
             type: Yup.string().required('Transaction Type is required'),
             active: Yup.string().required('Status is required'),
-            transaction: Yup.array().of(
+            ranges: Yup.array().of(
               Yup.object().shape({
                 trans_from: Yup.number().required('Trans From is required'),
-                trans_to: Yup.number().required('Trans To is required'),
+                trans_to: Yup.number()
+                  .required('Trans To is required')
+                  .moreThan(Yup.ref('trans_from')),
                 fixed: Yup.number().required('Fixed Amount is required'),
                 percentage: Yup.number()
                   .max(100, 'Cannot exceed 100')
@@ -102,7 +130,7 @@ const MerchantFee = props => {
             return (
               <Form>
                 <FormGroup>
-                  <label htmlFor="name">Name*</label>
+                  <label htmlFor="name" className="focused">Name*</label>
                   <TextInput
                     type="text"
                     name="name"
@@ -166,12 +194,7 @@ const MerchantFee = props => {
                                 <FormGroup>
                                   <label
                                     htmlFor={`ranges[${index}].trans_from`}
-                                    className={
-                                      ranges[index - 1 < 0 ? 0 : index - 1]
-                                        .trans_to > 0
-                                        ? 'focused'
-                                        : ''
-                                    }
+                                    className='focused'
                                   >
                                     Transaction From
                                   </label>
@@ -181,14 +204,11 @@ const MerchantFee = props => {
                                     value={transaction.trans_from}
                                     onFocus={e => {
                                       inputFocus(e);
-                                      handleChange(e);
                                     }}
+                                    disabled
                                     onBlur={e => {
                                       inputBlur(e);
                                       handleBlur(e);
-                                    }}
-                                    onChange={e => {
-                                      handleChange(e);
                                     }}
                                   />
                                   <ErrorMessage
@@ -198,24 +218,23 @@ const MerchantFee = props => {
                               </Col>
                               <Col cW="30%">
                                 <FormGroup>
-                                  <label htmlFor={`ranges[${index}].trans_to`}>
+                                  <label htmlFor={`ranges[${index}].trans_to`}  className='focused'>
                                     Transaction To
                                   </label>
                                   <TextInput
                                     type="number"
                                     name={`ranges[${index}].trans_to`}
                                     value={transaction.trans_to}
+                                    disabled={index === ranges.length-1 ? false : true }
                                     onFocus={e => {
                                       inputFocus(e);
-                                      handleChange(e);
                                     }}
                                     onBlur={e => {
                                       inputBlur(e);
                                       handleBlur(e);
+                                      handleRangeChange(e,index);
                                     }}
-                                    onChange={e => {
-                                      handleChange(e);
-                                    }}
+                                    onChange={handleChange}
                                   />
                                   <ErrorMessage
                                     name={`ranges[${index}].trans_to`}
@@ -224,7 +243,7 @@ const MerchantFee = props => {
                               </Col>
                               <Col cW="30%">
                                 <FormGroup>
-                                  <label htmlFor={`ranges[${index}].fixed`}>
+                                  <label htmlFor={`ranges[${index}].fixed`} className="focused">
                                     Fixed Amount
                                   </label>
                                   <TextInput
@@ -250,6 +269,7 @@ const MerchantFee = props => {
                                 <FormGroup>
                                   <label
                                     htmlFor={`ranges[${index}].percentage`}
+                                    className="focused"
                                   >
                                     Percentage
                                   </label>
@@ -272,23 +292,6 @@ const MerchantFee = props => {
                                   />
                                 </FormGroup>
                               </Col>
-                              <Col
-                                cW="10%"
-                                style={{
-                                  justifyContent: 'center',
-                                  marginBottom: '14px',
-                                }}
-                              >
-                                {index > 0 ? (
-                                  <span
-                                    onClick={() => remove(index)}
-                                    style={{ position: 'initial' }}
-                                    className="material-icons removeBtn pointer"
-                                  >
-                                    cancel
-                                  </span>
-                                ) : null}
-                              </Col>
                             </Row>
                           ))}
                           <Button
@@ -296,24 +299,17 @@ const MerchantFee = props => {
                             accentedBtn
                             marginTop="10px"
                             onClick={() => {
-                              const obj = {
-                                trans_from:
-                                  ranges[ranges.length - 1].trans_to + 1,
-                                trans_to: '',
-                                fixed: '',
-                                percentage: '',
-                              };
-                              if (ranges[ranges.length - 1].trans_to > 0) {
-                                push(obj);
-                              } else {
-                                form.setFieldError(
-                                  `ranges[${ranges.length - 1}].trans_to`,
-                                  'Add value',
-                                );
-                              }
-                            }}
+                              setRanges([
+                                {
+                                  trans_from: '1',
+                                  trans_to: '9999999999',
+                                  fixed: '',
+                                  percentage: '',
+                                },
+                              ]);
+                          }}
                           >
-                            <span>Add Another Range</span>
+                            <span>Reset</span>
                           </Button>
                         </div>
                       );

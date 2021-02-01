@@ -464,18 +464,6 @@ class CashierCashInHand extends Component {
           _id: { $ne: cid }
         }
       })
-      // .post(`${API_URL}/getAll`, {
-      //   token: token,
-      //   page: "cashier",
-      //   type: "cashier",
-
-      //   where: {
-
-      //     _id: { $ne: cid },
-      //      is_closed: false
-      //   }
-
-      // })
       .then(res => {
         if (res.status == 200) {
           this.setState({

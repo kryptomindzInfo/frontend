@@ -14,6 +14,7 @@ const PayBillsInvoiceList = props => {
   const { merchant } = props;
   const currentDate = new Date(); 
   const [isLoading, setLoading] = useState(true);
+  const [isValid, setIsValid] = useState(true);
   const [isButtonLoading, setButtonLoading] = useState(false);
   const [selectedInvoiceList, setSelectedInvoiceList] = useState([]);
   const [totalFee, setTotalFee] = useState(0);
@@ -279,7 +280,9 @@ const PayBillsInvoiceList = props => {
     return <Loader />;
   }
   return (
+    
     <div>
+
       <Card>
         <div className="cardHeader">
           <div className="cardHeaderLeft">
@@ -329,6 +332,7 @@ const PayBillsInvoiceList = props => {
         </FormGroup>
       </Card>
     </div>
+    
   );
 };
 
