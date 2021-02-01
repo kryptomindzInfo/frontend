@@ -240,7 +240,7 @@ function BankPartnerListPage(props) {
               >
                 Revenue Sharing
               </span>
-              {partner.status === 0 ? (
+              {partner.status === -1 ? (
                 <span onClick={() => block(partner._id, 'unblock')}>
                   Unblock
                 </span>
