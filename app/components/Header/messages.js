@@ -43,7 +43,7 @@ export default defineMessages({
   },
   bmenu3: {
     id: `${scope2}.menu3`,
-    defaultMessage: '',
+    defaultMessage: 'Back Office',
   },
   welcome: {
     id: `${scope}.welcome`,

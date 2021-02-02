@@ -80,6 +80,18 @@ export default class BankActivate extends Component {
       .post(`${API_URL}/bankActivate`, { token: token })
       .then(res => {
         if (res.status == 200) {
+          console.log(res);
+          if (res.data.status === 0){
+            this.setState(
+              {
+                notification: res.data.message,
+              },
+              () => {
+                this.error();
+              },
+            );
+
+          } else {
           this.setState(
             {
               notification: 'Account activated!' + res.data.walletStatus,
@@ -92,6 +104,7 @@ export default class BankActivate extends Component {
               }, 1000);
             },
           );
+          }
         } else {
           throw res.data.error;
         }
