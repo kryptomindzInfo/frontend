@@ -30,8 +30,8 @@ const PayBillsInvoiceDetails = props => {
   const checkFee = () => {
     checkCashierFee({
       merchant_id: props.merchantId,
-      amount: invoice.amount,
-    }).then(data => {
+      amount: invoice.amount + props.penalty,
+    },props.merchant.bank_id).then(data => {
       setFee(data.fee);
     });
   };

@@ -186,6 +186,7 @@ const PayBillPopup = props => {
             )}
             {displayInvoiceDetailForm ? (
               <PayBillsInvoiceDetails
+                merchant={merchant}
                 merchantId={merchant._id}
                 showOTPPopup={(values,invoices) => {
                   console.log(invoices);
