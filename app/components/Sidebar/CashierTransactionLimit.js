@@ -666,7 +666,7 @@ class CashierTransactionLimit extends Component {
   sendMoney = event => {
     event.preventDefault();
     if (
-      this.state.receiverIdentificationAmount > 1000 && !this.state.proceed
+      this.state.receiverIdentificationAmount > maxTransAmt && !this.state.proceed
     ) {
       // this.setState({
       //   notification: 'Amount has to be lesser than transaction limit',
