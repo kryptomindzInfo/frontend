@@ -68,7 +68,7 @@ class BankMasterWallet extends Component {
           } else {
             this.setState(
               {
-                balance: res.data.balance,
+                balance: res.data.balance.toFixed(2),
               },
               () => {
                 var dis = this;
@@ -98,7 +98,7 @@ class BankMasterWallet extends Component {
         <h5>
           <FormattedMessage {...messages.available} />
         </h5>
-        <div className="cardValue">{CURRENCY} {this.state.balance.toFixed(2)}</div>
+        <div className="cardValue">{CURRENCY} {this.state.balance}</div>
         <A href={'/bank/masterHistory'}>
           <span className="history">History</span>
         </A>

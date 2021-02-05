@@ -30,7 +30,7 @@ constructor() {
           } else {
             this.setState(
               {
-                balance: res.data.balance,
+                balance: res.data.balance.toFixed(2),
               },
               () => {
                 var dis = this;
@@ -60,7 +60,7 @@ constructor() {
         <h5>
           <FormattedMessage {...messages.available} />
         </h5>
-        <div className="cardValue">{CURRENCY} {this.state.balance.toFixed(2)}</div>
+        <div className="cardValue">{CURRENCY} {this.state.balance}</div>
         {/* {
               this.props.activateNeeded ?
               <button className="fullWidth">

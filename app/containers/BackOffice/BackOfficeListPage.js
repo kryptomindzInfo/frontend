@@ -50,12 +50,12 @@ function BankPartnerListPage(props) {
   };
 
   const fetchPartnerList = async () => {
-    const res = await postRequest("bank/listPartners", token, {})
+    const res = await postRequest("bank/getFailedTransactions", token, {})
     if (res.data.data.status === 0) {
       toast.error(res.data.data.message);
       return { list: [], loading: false };
     } else {
-      return { list: res.data.data.partners, loading: false };
+      console.log(res);
     }
   };
 

@@ -173,7 +173,7 @@ class BankOperationalWallet extends Component {
           } else {
             this.setState(
               {
-                balance: res.data.balance,
+                balance: res.data.balance.toFixed(2),
               },
               () => {
                 var dis = this;
@@ -225,7 +225,7 @@ class BankOperationalWallet extends Component {
           <FormattedMessage {...messages.available} />
         </h5>
         <div className="cardValue">
-          {CURRENCY} {this.state.balance.toFixed(2)}
+          {CURRENCY} {this.state.balance}
         </div>
         <A href={'/bank/operationalHistory'}>
           <span className="history">History</span>
