@@ -166,7 +166,7 @@ export default class BranchDashboard extends Component {
     this.setState({
       type : type,
       interbank : interbank,
-      pendingTransStatus: status,
+      pendingtransStatus: status,
     });
 }
     this.setState({
