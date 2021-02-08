@@ -11,7 +11,7 @@ import ActionBar from '../../components/ActionBar';
 import Button from '../../components/Button';
 import Card from '../../components/Card';
 import Table from '../../components/Table';
-import CreatePartnerPopup from './CreatePartnerPopup';
+import DetailsPopup from './DetailsPopup';
 import EnterOTPPopup from './EnterOTPPopup';
 import { STATIC_URL, API_URL } from '../App/constants';
 import Loader from '../../components/Loader';
@@ -27,15 +27,14 @@ toast.configure({
 });
 
 function BankPartnerListPage(props) {
-  const [addPartnerPopup, setAddPartnerPopup] = React.useState(false);
   const [newPartner, setNewPartner] = React.useState({});
   const [otpPopup, setOtpPopup] = React.useState(false);
   const [otpID, setOtpId] = React.useState('');
   const [partnerList, setPartnerList] = React.useState([]);
-  const [copyPartnerList, setCopyPartnerList] = React.useState([]);
   const [popupType, setPopupType] = React.useState('new');
-  const [editingPartner, setEditingPartner] = React.useState({});
+  const [Transaction, setTransaction] = React.useState({});
   const [isLoading, setLoading] = React.useState(false);
+  const [detailsPopup, setDetailsPopup] = React.useState(false);
   const token = localStorage.getItem('bankLogged');
 
   const handlePartnerPopupClick = (type, partner) => {
@@ -45,7 +44,7 @@ function BankPartnerListPage(props) {
   };
 
   const onPopupClose = () => {
-    setAddPartnerPopup(false);
+    setDetailsPopup(false);
     setOtpPopup(false);
   };
 
@@ -56,6 +55,7 @@ function BankPartnerListPage(props) {
       return { list: [], loading: false };
     } else {
       console.log(res);
+      return { list: res.data.data.transactions, loading: false };
     }
   };
 
@@ -64,32 +64,6 @@ function BankPartnerListPage(props) {
     setPartnerList(data.list);
     setLoading(data.loading);
   };
-
-  const block = (id, type) => {
-    const token = localStorage.getItem('bankLogged');
-    axios
-      .post(`${API_URL}/bank/${type}Partner`, {
-        token,
-        partner_id: id,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.status === 0) {
-            throw res.data.message;
-          } else {
-            const n = type == 'unblock' ? 'Unblocked' : 'Blocked';
-            toast.success(`Partner ${n}`);
-            refreshPartnertList();
-          }
-        } else {
-          toast.error(res.data.message);
-        }
-      })
-      .catch(err => {
-        toast.error('Something went wrong');
-      });
-  };
-
 
   const partnerAPI = async (values, apiType) => {
     let API = '';
@@ -152,11 +126,12 @@ function BankPartnerListPage(props) {
     }
   };
 
-  const handleFormSubmit = (values) => {
-    console.log("hi");
-    setAddPartnerPopup(false);
-    setNewPartner(values);
-    generateOTP(values);
+  
+
+  const showDetails = (transaction) => {
+    setTransaction(transaction);
+    setDetailsPopup(true);
+
   };
 
   const VerifyOtp = async (values) => {
@@ -177,7 +152,6 @@ function BankPartnerListPage(props) {
     const getPartnerList = async () => {
       const data = await fetchPartnerList();
       setPartnerList(data.list);
-      setCopyPartnerList(data.list)
       setLoading(data.loading);
     };
     getPartnerList();
@@ -186,19 +160,40 @@ function BankPartnerListPage(props) {
   if (isLoading) {
     return <Loader fullPage />;
   }
-  const partners = partnerList.map(partner => (
+  const partners = partnerList.map(partner => {
+    var months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    var isoformat = partner.createdAt;
+                        var readable = new Date(isoformat);
+                        var m = readable.getMonth(); // returns 6
+                        var d = readable.getDate(); // returns 15
+                        var y = readable.getFullYear();
+                        var h = readable.getHours();
+                        var mi = readable.getMinutes();
+                        var mlong = months[m];
+                        var fulldate =
+                          d + ' ' + mlong + ' ' + y;
+                        var time =  h + ':' + mi;
+    return(
     <tr key={partner._id}>
-      <td className="tac">
-        <img
-          style={{ height: '60px', width: '60px' }}
-          src={`${STATIC_URL}${partner.logo}`}
-        />
-      </td>
-      <td className="tac">{partner.name}</td>
-      <td className="tac">{partner.code}</td>
-      <td className="tac">{partner.total_branches}</td>
-      <td className="tac">{partner.total_cashiers}</td>
-      <td className="tac">
+      <td className="tac">{partner.txType}</td>
+      <td className="tac">{partner.state}</td>
+      <td className="tac">{fulldate}</td>
+      <td className="tac">{time}</td>
+      <td className="tac" style={{display:"flex",justifyContent:"center"}}><Button onClick={()=>showDetails(partner)}>Get Details</Button></td>
+      {/* <td className="tac">
         <div
           style={{
             display: 'flex',
@@ -250,9 +245,10 @@ function BankPartnerListPage(props) {
             </div>
           </span>
         </div>
-      </td>
+      </td> */}
     </tr>
-  ));
+    );
+  });
   const searchlistfunction = (value) => {
     console.log(value)
     // console.log(this.state.searchrules)
@@ -299,36 +295,35 @@ function BankPartnerListPage(props) {
               <div className="cardHeaderLeft">
                 <i className="material-icons">supervised_user_circle</i>
               </div>
-              {/* <div className="cardHeaderRight">
-                <h3>Partner List</h3>
-              </div> */}
+              <div className="cardHeaderRight">
+                <h3>Failed Transactions</h3>
+              </div>
             </div>
             <div className="cardBody">
-              {/* <Table marginTop="34px" smallTd>
+              <Table marginTop="34px" smallTd>
                 <thead>
                   <tr>
-                    <th>Logo</th>
-                    <th>Name</th>
-                    <th>Code</th>
-                    <th>Total Branches</th>
-                    <th>Total Cashiers</th>
-                    <th>Total Transactions</th>
+                    {/* <th>Wallet Id</th> */}
+                    <th>Type</th>
+                    <th>State</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Details</th>
                   </tr>
                 </thead>
                 <tbody>
                   {partnerList && partnerList.length > 0 ? partners : null}
                 </tbody>
-              </Table> */}
+              </Table>
             </div>
           </Card>
         </Main>
       </Container>
-      {addPartnerPopup ? (
-        <CreatePartnerPopup
-          type={popupType}
-          partner={editingPartner}
+      {detailsPopup ? (
+        <DetailsPopup
+          transaction={Transaction}
+          refresh={refreshPartnertList}
           onClose={() => onPopupClose()}
-          submit={(values) => handleFormSubmit(values)}
         />
       ) : null}
       {otpPopup ? (
