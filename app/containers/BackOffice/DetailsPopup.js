@@ -32,9 +32,9 @@ function DetailsPopup(props) {
         if (res.data.status === 0) {
           toast.error(res.data.message);
         } else {
-            toast.success("Retry successful");
             props.refresh();
             props.onClose();
+            toast.success("Retry successful");
         }
       } else {
        

@@ -269,27 +269,6 @@ function BankPartnerListPage(props) {
       <Container verticalMargin>
         <SidebarBank />
         <Main>
-          <ActionBar
-            marginBottom="33px"
-            inputWidth="calc(100% - 241px)"
-            className="clr"
-          >
-            <div className="iconedInput fl">
-              <i className="material-icons">search</i>
-              <input type="text" placeholder="Search Partner" onChange={(e) => {
-                searchlistfunction(e.target.value)
-              }} />
-            </div>
-
-            <Button
-              className="addBankButton"
-              flex
-              onClick={() => handlePartnerPopupClick('new', {})}
-            >
-              <i className="material-icons">add</i>
-              <span>Add Partner</span>
-            </Button>
-          </ActionBar>
           <Card bigPadding>
             <div className="cardHeader">
               <div className="cardHeaderLeft">
