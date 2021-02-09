@@ -9,7 +9,7 @@ const LinkWrap = styled.span `
     text-decoration:none;
     color: ${props => props.theme.primary};
     font-weight: bold;
-    font-size: 14px;
+    font-size: 10px;
 `;
 
 class A extends Component {

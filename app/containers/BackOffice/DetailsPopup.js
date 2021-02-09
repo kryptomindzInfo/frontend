@@ -72,14 +72,19 @@ function DetailsPopup(props) {
                           d + ' ' + mlong + ' ' + y;
                         var time =  h + ':' + mi;
     return(
-    <tr key={partner._id}>
+    <tr key={partner._id} className={ Number(partner.state) === 0  ? 'red' : ''}>
       <td className="tac">{partner.transaction.from_name}</td>
       <td className="tac">{partner.transaction.to_name}</td>
       <td className="tac">{fulldate}</td>
       <td className="tac">{time}</td>
       <td className="tac">{partner.transaction.amount.toFixed(2)}</td>
-      <td className="tac">{partner.retry_count}</td>
-      <td className="tac" style={{display:"flex",justifyContent:"center"}}><Button filledBtn onClick={()=>retry(partner.transaction.master_code,partner.transaction.child_code)}>Retry</Button></td>
+      <td className="tac">{Number(partner.state) === 1 ? 'Successful' : 'Failed'}</td>
+      <td className="tac">{partner.message}</td>
+      <td className="tac" style={{display:"flex",justifyContent:"center"}}>
+      {Number(partner.state) === 0 ? (
+        <Button filledBtn onClick={()=>retry(partner.transaction.master_code,partner.transaction.child_code)}>Retry</Button>
+      ) : null}
+      </td>
     </tr>
     );
   });
@@ -97,7 +102,8 @@ function DetailsPopup(props) {
                     <th>Date</th>
                     <th>Time</th>
                     <th>Amount</th>
-                    <th>Retry count</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
                     <th></th>
                   </tr>
                 </thead>

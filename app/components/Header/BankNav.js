@@ -11,7 +11,7 @@ const NavTag = styled.nav`
 
 const Link = styled.span`
   color: #fff;
-  font-size: 18px;
+  font-size: 15px;
   margin: 0 12px;
   padding-bottom: 7px;
   font-weight: normal;

@@ -187,7 +187,7 @@ function BankPartnerListPage(props) {
                           d + ' ' + mlong + ' ' + y;
                         var time =  h + ':' + mi;
     return(
-    <tr key={partner._id}>
+    <tr key={partner._id} style={{display: partner.childTx.length > 0 ? '' : 'None'}}>
       <td className="tac">{partner.txType}</td>
       <td className="tac">{partner.state}</td>
       <td className="tac">{fulldate}</td>
