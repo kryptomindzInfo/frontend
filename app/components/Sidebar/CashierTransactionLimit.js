@@ -54,6 +54,7 @@ class CashierTransactionLimit extends Component {
     super();
     this.state = {
       balance: 0,
+      pendingtype: '',
       agree: false,
       showOpeningOTP: false,
       tomorrow: false,
@@ -147,7 +148,8 @@ class CashierTransactionLimit extends Component {
       proceed: true,
       interbank: interbank,
       pendingTransType:type,
-      popupSendMoney: true,
+      popupSendMoney: type === 'Non Wallet to Non Wallet Send Money' ? true : false,
+      popupClaimMoney : type === 'Non Wallet to Non Wallet Send Money' ? false : true,
     });
   };
 
@@ -358,6 +360,7 @@ class CashierTransactionLimit extends Component {
   closePopupSendMoney = () => {
     this.setState({
       proceed: false,
+      pendingtype: '',
       popupSendMoney: false,
       showSendMoneyOTP: false,
       showConfirmPending: false,
@@ -628,7 +631,10 @@ class CashierTransactionLimit extends Component {
       verifySendMoneyOTPLoading: true,
     });
     axios
-      .post(`${API_URL}/cashierSendMoneyPending`, {...this.state, type: "Non Wallet to Non Wallet Send Money"})
+      .post(`${API_URL}/cashierSendMoneyPending`, {
+        ...this.state,
+        type: this.state.pendingtype === 'send'? "Non Wallet to Non Wallet Send Money" : "Claim Money"
+      })
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {
@@ -674,6 +680,7 @@ class CashierTransactionLimit extends Component {
       // });
       // this.error();
       this.setState({
+        pendingtype: 'send',
         showConfirmPending: true,
       });
     } else {
@@ -694,31 +701,41 @@ class CashierTransactionLimit extends Component {
 
   claimMoney = event => {
     event.preventDefault();
-    if (this.state.cashInHand >= this.state.receiverIdentificationAmount) {
-      this.setState(
-        {
-          showVerifyClaimMoney: true,
-          otpOpt: 'cashierClaimMoney',
-          otpEmail: email,
-          otpMobile: mobile,
-          otpTxt: 'Your OTP to add claim money is ',
-        },
-        () => {
-          this.generateOTP();
-        },
-      );
+    if (
+      Number(this.state.receiverIdentificationAmount) > Number(maxTransAmt) && !this.state.proceed
+    ) {
+      console.log('fge');
+      this.setState({
+        showConfirmPending: true,
+        pendingtype: 'claim',
+      });
     } else {
-      this.setState(
-        {
-          notification:
-            'You do not have enough cash in hand to claim this amount',
-        },
-        () => {
-          this.error();
-        },
-      );
+      if (this.state.cashInHand >= this.state.receiverIdentificationAmount) {
+        this.setState(
+          {
+            showVerifyClaimMoney: true,
+            otpOpt: 'cashierClaimMoney',
+            otpEmail: email,
+            otpMobile: mobile,
+            otpTxt: 'Your OTP to add claim money is ',
+          },
+          () => {
+            this.generateOTP();
+          },
+        );
+      } else {
+        this.setState(
+          {
+            notification:
+              'You do not have enough cash in hand to claim this amount',
+          },
+          () => {
+            this.error();
+          },
+        );
     }
-  };
+    }
+    };
 
   verifyClaimMoney = event => {
     event.preventDefault();
@@ -1013,7 +1030,7 @@ class CashierTransactionLimit extends Component {
     if (this.state.pendingTransType === 'Non Wallet to Non Wallet Send Money'){
       this.sendMoney(event);
     } else if(this.state.pendingTransType === 'Claim Money') {
-      this.claimMoney();
+      this.claimMoney(event);
     }
   };
 
@@ -1260,6 +1277,8 @@ class CashierTransactionLimit extends Component {
         {this.state.popupClaimMoney ? (
           <>
             <Popup bigBody close={this.closePopupSendMoney.bind(this)} accentedH1>
+              {!this.state.showConfirmPending ? (
+                <div>
               {this.state.showClaimMoneyDetails ? (
                 this.state.showVerifyClaimMoney ? (
                   this.state.showOTPClaimMoney ? (
@@ -1698,6 +1717,8 @@ class CashierTransactionLimit extends Component {
                     </div>
                   )
               ) : (
+                <div>
+                  
                   <div>
                     <h1>Claim Money</h1>
                     <form
@@ -1752,7 +1773,57 @@ class CashierTransactionLimit extends Component {
                       </Container>
                     </form>
                   </div>
+                  
+                </div>  
                 )}
+                </div>
+              ) : (
+                <div>
+                <h1>Confirm </h1>
+
+                <p>&nbsp;</p>
+                <FormGroup>
+                  <p style={{ textAlign: 'center', fontSize: '20px' }}>
+                    You need Manager approval for execute this transaction. Do
+                    you want to send for approval ?
+                  </p>
+                </FormGroup>
+                <Row>
+                  <Col cW="49%" mR="2%">
+                    {this.state.verifySendMoneyOTPLoading ? (
+                      <Button
+                        filledBtn
+                        marginTop="50px"
+                        marginBottom="50px"
+                        disabled
+                      >
+                        <Loader />
+                      </Button>
+                    ) : (
+                        <Button
+                          filledBtn
+                          marginTop="50px"
+                          marginBottom="50px"
+                          onClick={this.confirmPending}
+                        >
+                          <span>Yes</span>
+                        </Button>
+                      )}
+                  </Col>
+                  <Col cW="49%">
+                    <Button
+                      style={{ backgroundColor: '#111111' }}
+                      filledBtn
+                      marginTop="50px"
+                      marginBottom="50px"
+                      onClick={this.cancelPending}
+                    >
+                      <span>No</span>
+                    </Button>
+                  </Col>
+                </Row>
+              </div>
+              )}
             </Popup>
           </>
         ) : null}
@@ -2156,7 +2227,8 @@ class CashierTransactionLimit extends Component {
                           </div>
                         </form>
                         </div>
-                      ) : (
+                     
+                     ) : (
                         <div>
                         <h1>Send Money</h1>
                         <form action="" method="post" onSubmit={this.sendMoney}>
