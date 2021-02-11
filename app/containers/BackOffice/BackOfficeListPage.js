@@ -301,7 +301,7 @@ function BankPartnerListPage(props) {
       {detailsPopup ? (
         <DetailsPopup
           transaction={Transaction}
-          refresh={refreshPartnertList}
+          refresh={()=>refreshPartnertList()}
           onClose={() => onPopupClose()}
         />
       ) : null}

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import Popup from '../../components/Popup';
 import Table from '../../components/Table';
+import Loader from '../../components/Loader';
 import Button from '../../components/Button';
 import { postRequest, getRequest } from '../App/ApiCall';
 import { toast } from 'react-toastify';
@@ -22,26 +23,25 @@ function DetailsPopup(props) {
   }, []);
 
   const retry = async (mastercode, childcode) =>{
-    console.log(mastercode, childcode);
+    setRetryLoading(true);
     try {
       const res = await postRequest("bank/retryTransaction", token, {
         master_code:mastercode,
         child_code:childcode,
       });
-      if (res.status === 200) {
-        if (res.data.status === 0) {
-          toast.error(res.data.message);
+        if (res.data.data.status === 0) {
+          setRetryLoading(false);
+          props.onClose();
+          toast.error(res.data.data.message);
         } else {
             props.refresh();
             props.onClose();
-            toast.success("Retry successful");
+            setRetryLoading(false);
+            toast.success("Retry Successful");
         }
-      } else {
-       
-        toast.error(res.data.message);
-      }
     } catch (err) {
       console.log(err);
+      setRetryLoading(false);
       toast.error('Something went wrong');
     }
   };
@@ -82,14 +82,20 @@ function DetailsPopup(props) {
       <td className="tac">{partner.message}</td>
       <td className="tac" style={{display:"flex",justifyContent:"center"}}>
       {Number(partner.state) === 0 ? (
-        <Button filledBtn onClick={()=>retry(partner.transaction.master_code,partner.transaction.child_code)}>Retry</Button>
+        <div>
+          {!retryLoading ? (
+            <Button style={{width:'70px'}} filledBtn onClick={()=>retry(partner.transaction.master_code,partner.transaction.child_code)}>Retry</Button>
+          ) : (
+            <Button style={{width:'70px'}} filledBtn ><Loader></Loader></Button>
+          )}
+        </div>
       ) : null}
       </td>
     </tr>
     );
   });
   return (
-    <Popup  bigBody accentedH1 close={props.onClose.bind(this)}>
+    <Popup  bigBody accentedH1 close={props.onClose}>
       <div>
         <h1>
           Child Transactions

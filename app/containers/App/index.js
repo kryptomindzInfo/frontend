@@ -70,6 +70,7 @@ import CashierForgotPassword from 'containers/CashierForgotPassword';
 import CashierOTPPage from 'containers/CashierOTPPage';
 import CashierSetup from 'containers/CashierSetup';
 import CashierDashboard from 'containers/CashierDashboard';
+import CashierReports from 'containers/CashierReports';
 import CashierInfo from 'containers/CashierInfo';
 import BankEditFee from 'containers/BankEditFee';
 import BankEditInterBankFee from 'containers/BankEditInterBankFee';
@@ -371,6 +372,11 @@ export default function App(props) {
             exact
             path="/cashier/:bank?/dashboard"
             component={CashierDashboard}
+          />
+          <CashierRoute
+            exact
+            path="/cashier/:bank?/reports"
+            component={CashierReports}
           />
           <CashierRoute
             exact

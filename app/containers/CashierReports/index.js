@@ -77,6 +77,8 @@ export default class CashierDashboard extends Component {
       perPage: 20,
       totalCount: 100,
       allhistory: {},
+      DR:{},
+      CR:{},
       activePage: 1,
       active: 'Active',
       trans_from: '',
@@ -334,9 +336,14 @@ export default class CashierDashboard extends Component {
         offset: this.state.perPage,
       });
       if (res.status == 200) {
-        return res.data;
-      }
+        return (
+          {
+            DR: res.data.history.filter(element => element.Value.tx_data.tx_type === 'DR'),
+            CR: res.data.history.filter(element => element.Value.tx_data.tx_type === 'CR'),
+          }
+        )
 
+        }
     }catch (err){
       console.log(err);
     }
@@ -461,12 +468,14 @@ export default class CashierDashboard extends Component {
     this.getStats();
     const allHistory = await this.getHistory();
     console.log(allHistory);
-    const TransHistory = await this.groupHistoryBasedOnMasterCode(allHistory.history,trans => trans.Value.tx_data.master_id);
+    const TransHistoryDR = await this.groupHistoryBasedOnMasterCode(allHistory.DR,trans => trans.Value.tx_data.master_id);
+    const TransHistoryCR = await this.groupHistoryBasedOnMasterCode(allHistory.CR,trans => trans.Value.tx_data.master_id);
+
     this.setState(
       {
         branchDetails:branch,
-        allhistory:TransHistory,
-        pending: allHistory.pending.reverse(),
+        DR:TransHistoryDR,
+        CR:TransHistoryCR,
         loading:false,
       }
     );
@@ -524,85 +533,13 @@ export default class CashierDashboard extends Component {
           <title>Dashboard | CASHIER | E-WALLET</title>
         </Helmet>
         <CashierHeader
-          active="dashboard"
+          active="reports"
           bankName={this.props.match.params.bank}
           bankLogo={STATIC_URL + logo}
           from="cashier"
         />
         <Container verticalMargin>
-          <SidebarCashier refresh={this.getHistory.bind(this)} branchName={this.props.match.params.bank} ref={this.child} />
           <Main>
-
-            <div className="clr">
-              <Card
-                horizontalMargin="7px"
-                cardWidth="151px"
-                h4FontSize="16px"
-                smallValue
-                textAlign="center"
-                col
-              >
-                <h4>Opening Balance</h4>
-                <div className="cardValue">
-                  {
-                    <span> {CURRENCY} {this.state.openingBalance.toFixed(2)}</span>
-                  }
-                </div>
-              </Card>
-              <Card
-                horizontalMargin="7px"
-                cardWidth="125px"
-                h4FontSize="16px"
-                smallValue
-                textAlign="center"
-                col
-              >
-                <h4>Cash Received</h4>
-                <div className="cardValue">
-                  {CURRENCY} {this.state.cashReceived.toFixed(2)}
-                </div>
-              </Card>
-              <Card
-                horizontalMargin="7px"
-                cardWidth="125px"
-                h4FontSize="16px"
-                smallValue
-                textAlign="center"
-                col
-              >
-                <h4>Paid in Cash</h4>
-                <div className="cardValue">
-                  {CURRENCY} {this.state.cashPaid.toFixed(2)}
-                </div>
-              </Card>
-              <Card
-                horizontalMargin="7px"
-                cardWidth="125px"
-                smallValue
-                h4FontSize="16px"
-                textAlign="center"
-                col
-              >
-                <h4>Fee</h4>
-                <div className="cardValue">
-                  {CURRENCY} {this.state.feeGenerated.toFixed(2)}
-                </div>
-              </Card>
-              <Card
-                horizontalMargin="7px"
-                cardWidth="125px"
-                smallValue
-                h4FontSize="16px"
-                textAlign="center"
-                col
-              >
-                <h4>Commision</h4>
-                <div className="cardValue">
-                  {CURRENCY}  {this.state.commissionGenerated.toFixed(2)}
-                </div>
-              </Card>
-            </div>
-
             <ActionBar
               marginBottom="15px"
               marginTop="15px"
@@ -648,107 +585,20 @@ export default class CashierDashboard extends Component {
             </ActionBar>
 
             <Card bigPadding style={{ marginTop: '50px' }}>
-              <div className="cardHeader">
-                <div className="cardHeaderLeft">
-                  <i className="material-icons">playlist_add_check</i>
-                </div>
-                <div className="cardHeaderRight">
-                  <h3>Recent Activity</h3>
-                  <h5>E-wallet activity</h5>
-                </div>
-              </div>
-              <div className="cardBody">
-                <div className="clr">
-                  <div className="menuTabs" onClick={() => this.showALL()}>
-                    All
-                  </div>
-                  <div
-                    className="menuTabs"
-                    // onClick={() => this.filterData('DR')}
-                  >
-                    Payment Sent
-                  </div>
-                  <div
-                    className="menuTabs"
-                    // onClick={() => this.filterData('CR')}
-                  >
-                    Payment Received
-                  </div>
-                  <div
-                    className="menuTabs"
-                    onClick={() => this.showPending()}
-                  >
-                    Transaction Pending
-                  </div>
-                </div>
-
+            <div>
+                <h1>DR</h1>
                 <Table
                   marginTop="34px"
                   marginBottom="34px"
                   smallTd
                   textAlign="left"
                 >
-                  {
-                    this.state.showPending ?
+                  <thead>
+                        <tr><th>Date</th><th>Time</th> <th>Description</th><th>Status</th><th>Amount</th></tr>
+                      </thead>
                       <tbody>
-                        {this.state.pending.length > 0
-                            ? this.state.pending.map(function (b) {
-
-                              var fulldate = dis.formatDate(b.created_at);
-                              return (
-                              <tr key={b._id}>
-                                <td>
-                                  <div className="labelGrey">{fulldate.date}</div>
-                                </td>
-                                <td>
-                                  <div className="labelGrey">{fulldate.time}</div>
-                                </td>
-                                <td>
-                                  <div
-                                    className="labelBlue"
-                                  >
-
-                                    <span>
-                                      Cash sent from{' '}
-                                      {b.sender_name}{' '}
-                                      to{' '}
-                                      {b.receiver_name}
-                                    </span>
-
-                                  </div>
-                                  <div className="labelSmallGrey">
-                                    {b.status == 1 ?
-                                      <div>
-                                        <span>Approved</span>
-                                        <br />
-                                        <Button style={{ marginTop: '10px' }} onClick={() => dis.proceed(JSON.parse(b.transaction_details),b.trans_type,b.interbank)}>Proceed</Button>
-                                      </div>
-                                      :
-                                      b.status == 0 ?
-                                        <span>Pending</span>
-
-                                        :
-
-                                        <span className="red">Rejected</span>
-                                    }
-                                  </div>
-                                </td>
-                                <td>
-                                  <div className="labelGrey">
-                                    {'XOF'}
-                                    {b.amount}
-                                  </div>
-                                </td>
-                              </tr>
-                              )
-                            })
-                            : null
-                        }
-                      </tbody>
-                      :
-                      <tbody>
-                      {this.state.allhistory
-                          ? Array.from(this.state.allhistory).map( ([key, b]) => {
+                      {this.state.DR
+                          ? Array.from(this.state.DR).map( ([key, b]) => {
                             var fulldate = dis.formatDate(b[0].Timestamp);
                             return (
                             <tr key={key}>
@@ -780,19 +630,67 @@ export default class CashierDashboard extends Component {
                                 </div>
 
                               </td>
+                            </tr>
+                            )
+                          })
+                          : null
+                        }
+                    </tbody>
+                </Table>
+            </div>
+            <div>
+                <h1>CR</h1>
+                <Table
+                  marginTop="34px"
+                  marginBottom="34px"
+                  smallTd
+                  textAlign="left"
+                >
+                   <thead>
+                        <tr><th>Date</th><th>Time</th> <th>Description</th><th>Status</th><th>Amount</th></tr>
+                      </thead>
+                      <tbody>
+                      {this.state.CR
+                          ? Array.from(this.state.CR).map( ([key, b]) => {
+                            var fulldate = dis.formatDate(b[0].Timestamp);
+                            return (
+                            <tr key={key}>
                               <td>
-                              <Button dashBtn>Actions</Button>
+                                <div className="labelGrey">{fulldate.date}</div>
+                              </td>
+                              <td>
+                                <div className="labelGrey">{fulldate.time}</div>
+                              </td>
+                              <td>
+                                <div
+                                  className="labelGrey"
+                                >
+                                  {b[0].Value.remarks}
+                                </div>
+                              </td>
+                              <td>
+                                <div
+                                  className="labelBlue"
+                                >
+                                  {b[0].Value.tx_data.tx_details}
+                                </div>
+                              </td>
+                              <td>
+                              <div
+                                  className="labelGrey"
+                                >
+                                  XOF {b[0].Value.amount}
+                                </div>
 
                               </td>
                             </tr>
                             )
                           })
                           : null
-                      }
+                        }
                     </tbody>
-                  }
                 </Table>
-              </div>
+            </div>
             </Card>
           </Main>
         </Container>
