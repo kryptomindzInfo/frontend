@@ -46,6 +46,7 @@ toast.configure({
 
 const token = localStorage.getItem('branchLogged');
 const bid = localStorage.getItem('branchId');
+const bankid = localStorage.getItem('bankId');
 const logo = localStorage.getItem('bankLogo');
 const email = localStorage.getItem('branchEmail');
 const mobile = localStorage.getItem('branchMobile');
@@ -895,7 +896,7 @@ export default class BranchDashboard extends Component {
         page: 'bankuser',
         type: 'branch',
         token: token,
-        where: {},
+        where: {bank_id:bankid},
       })
       .then(res => {
         if (res.status == 200) {
