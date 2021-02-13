@@ -44,7 +44,9 @@ const token = localStorage.getItem('cashierLogged');
 const bid = localStorage.getItem('cashierId');
 const logo = localStorage.getItem('bankLogo');
 const email = localStorage.getItem('cashierEmail');
+const bankId = localStorage.getItem('bankId');
 const mobile = localStorage.getItem('cashierMobile');
+
 //enable the following line and disable the next line to test for tomorrow
 var today = new Date(new Date().setDate(new Date().getDate() + 1));
 //var today =new Date();
@@ -343,6 +345,22 @@ export default class CashierDashboard extends Component {
     
       
   };
+  newhistory = async() => {
+    try{
+      const res = await axios.post(`${API_URL}/cashier/getFailedTransactions`, {
+        token: token,
+        bank_id: bankId,
+      });
+      if (res.status == 200) {
+        return res.data.transactions.filter(trans => trans.state==="DONE");
+      }
+
+    }catch (err){
+      console.log(err);
+    }
+    
+      
+  };
 
   getStats = () => {
     axios
@@ -460,12 +478,12 @@ export default class CashierDashboard extends Component {
     const branch=await this.getBranchByName();
     this.getStats();
     const allHistory = await this.getHistory();
-    console.log(allHistory);
-    const TransHistory = await this.groupHistoryBasedOnMasterCode(allHistory.history,trans => trans.Value.tx_data.master_id);
+    const newhistory = await this.newhistory();
+    console.log(newhistory);
     this.setState(
       {
         branchDetails:branch,
-        allhistory:TransHistory,
+        allhistory:newhistory,
         pending: allHistory.pending.reverse(),
         loading:false,
       }
@@ -747,38 +765,27 @@ export default class CashierDashboard extends Component {
                       </tbody>
                       :
                       <tbody>
-                      {this.state.allhistory
-                          ? Array.from(this.state.allhistory).map( ([key, b]) => {
-                            var fulldate = dis.formatDate(b[0].Timestamp);
+                      {this.state.allhistory.length>0
+                          ? this.state.allhistory.map( (b,i) => {
+                            var fulldate = dis.formatDate(b.createdAt);
                             return (
-                            <tr key={key}>
-                              <td>
+                            <tr key={i} >
+                              <td style={{textAlign:"center"}}>
                                 <div className="labelGrey">{fulldate.date}</div>
                               </td>
-                              <td>
-                                <div className="labelGrey">{fulldate.time}</div>
-                              </td>
-                              <td>
-                                <div
-                                  className="labelGrey"
-                                >
-                                  {b[0].Value.remarks}
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">
+                                  Transfered From {b.childTx[0].transaction.from_name} to {b.childTx[0].transaction.to_name}
                                 </div>
                               </td>
-                              <td>
-                                <div
-                                  className="labelBlue"
-                                >
-                                  {b[0].Value.tx_data.tx_details}
-                                </div>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{b.txType}</div>
                               </td>
-                              <td>
-                              <div
-                                  className="labelGrey"
-                                >
-                                  XOF {b[0].Value.amount}
-                                </div>
-
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Completed</div>
+                              </td>
+                              <td style={{textAlign:"center"}}> 
+                                <div className="labelGrey">XOF {b.childTx[0].transaction.amount}</div>
                               </td>
                               <td>
                               <Button dashBtn>Actions</Button>

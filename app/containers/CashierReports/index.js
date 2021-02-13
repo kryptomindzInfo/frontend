@@ -45,6 +45,7 @@ const bid = localStorage.getItem('cashierId');
 const logo = localStorage.getItem('bankLogo');
 const email = localStorage.getItem('cashierEmail');
 const mobile = localStorage.getItem('cashierMobile');
+const bankId = localStorage.getItem('bankId');
 //enable the following line and disable the next line to test for tomorrow
 var today = new Date(new Date().setDate(new Date().getDate() + 1));
 //var today =new Date();
@@ -84,6 +85,11 @@ export default class CashierDashboard extends Component {
       trans_from: '',
       trans_to: '',
       transcount_from: '',
+      sendMoneyNwtNw: [],
+      sendMoneyNwtW: [],
+      sendMoneyNwtM: [],
+      sendMoneyNwtO: [],
+      sendMoneyWtNw: [],
       pending: [],
       history: [],
       filter: '',
@@ -92,7 +98,7 @@ export default class CashierDashboard extends Component {
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
 
-    this.showHistory = this.showHistory.bind(this);
+
     this.child = React.createRef();
   }
 
@@ -102,249 +108,23 @@ export default class CashierDashboard extends Component {
 
   warn = () => toast.warn(this.state.notification);
 
-  handleInputChange = event => {
-    const { value, name } = event.target;
-    this.setState({
-      [name]: value,
-    });
-  };
-  closePopup = () => {
-    this.setState({
-      historyPop: false,
-      openCashierPopup: false,
-      showOpeningOTP: false,
-    });
-  };
-  showHistoryPop = v => {
-    this.setState({
-      historyPop: true,
-      historyLoading: true,
-      popmaster: v.master_code,
-    });
-    this.getTransHistory(v.master_code);
-  };
-
-  showPending = () => {
-    this.setState({
-      showPending: true
-    });
-
-  };
-  showALL = () => {
-    this.setState({
-      showPending: false
-    });
-  }
-
-  openCashier = e => {
-    this.setState({
-      openCashierPopup: true
-    });
-  };
-
-  addOpeningBalance = event => {
-    event.preventDefault();
-    if (this.state.agree) {
-
-      this.setState(
-        {
-          showOpeningOTP: true,
-          otpOpt: 'openingBalance',
-          otpTxt: 'Your OTP to open cashier balance is ',
-        },
-        () => {
-          this.generateOTP();
-        },
-      );
-    } else {
-      this.setState({
-        notification: 'You need to agree'
-      });
-      this.error();
-    }
-  };
-
-  proceed = (items,type,interbank) => {
-
-    this.child.current.proceed(items,type,interbank);
-  };
-
-
-  startTimer = () => {
-    var dis = this;
-    var timer = setInterval(function () {
-      if (dis.state.timer <= 0) {
-        clearInterval(timer);
-        dis.setState({ resend: true });
-      } else {
-        var time = Number(dis.state.timer) - 1;
-        dis.setState({ timer: time });
-      }
-    }, 1000);
-  };
-  generateOTP = () => {
-    this.setState({ resend: false, timer: 30 });
-
-    axios
-      .post(`${API_URL}/sendOTP`, {
-        email: this.state.otpEmail,
-        mobile: this.state.otpMobile,
-        page: this.state.otpOpt,
-        type: 'cashier',
-        txt: this.state.otpTxt,
-        token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              otpId: res.data.id,
-              notification: 'OTP Sent',
-            });
-            this.startTimer();
-            this.success();
-          }
-        } else {
-          throw res.data.error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
-  };
-  verifyOpeningOTP = event => {
-    event.preventDefault();
-
-    this.setState({
-      verifyEditOTPLoading: true,
-    });
-    axios
-      .post(`${API_URL}/openCashierBalance`, this.state)
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState(
-              {
-                notification: 'Cashier opened successfully!',
-              },
-              function () {
-                this.success();
-                this.closePopup();
-                this.getStats();
-              },
-            );
-          }
-        } else {
-          const error = new Error(res.data.error);
-          throw error;
-        }
-        this.setState({
-          verifyEditOTPLoading: false,
-        });
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-          verifyEditOTPLoading: false,
-        });
-        this.error();
-      });
-
-  };
-
-  handleCheckbox = event => {
-    const { value, name } = event.target;
-    if (value == "true") {
-      var v = false;
-    } else {
-      var v = true;
-    }
-    this.setState({
-      [name]: v,
-    });
-  };
-  getTransHistory = master_code => {
-    axios
-      .post(`${API_URL}/getTransHistory`, {
-        token: token,
-        master_code: master_code,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          // var result = res.data.history1.concat(res.data.history2);
-          // result.sort(function(a, b) {
-          //     return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()// implicit conversion in number
-          // });
-          // var l = result.length;
-          const history = res.data.result.reverse();
-          this.setState({
-            popresult: history,
-            historyLoading: false,
-            popmaster: master_code,
-          });
-        }
-      })
-      .catch(err => { });
-  };
-  showHistory = () => {
-    this.setState({ history: [] }, () => {
-      var out = [];
-      var start = (this.state.activePage - 1) * this.state.perPage;
-      var end = this.state.perPage * this.state.activePage;
-      if (end > this.state.totalCount) {
-        end = this.state.totalCount;
-      }
-      for (var i = start; i < end; i++) {
-        out.push(this.state.allhistory[i]);
-      }
-      this.setState({ history: out }, () => {
-        let dis = this;
-        setTimeout(function () {
-          dis.getHistory();
-        }, 3000);
-      });
-    });
-  };
   
-  groupHistoryBasedOnMasterCode = (list, keyGetter) => {
-    const map = new Map();
-    list.forEach((item) => {
-         const key = keyGetter(item);
-         const collection = map.get(key);
-         if (!collection) {
-             map.set(key, [item]);
-         } else {
-             collection.push(item);
-         }
-    });
-    return map;
-}
   getHistory = async() => {
     try{
-      const res = await axios.post(`${API_URL}/cashier/getTransactionHistory`, {
+      const res = await axios.post(`${API_URL}/cashier/getFailedTransactions`, {
         token: token,
-        where: { cashier_id: bid },
-        from: 'cashier',
-        page: this.state.activePage,
-        offset: this.state.perPage,
+        bank_id: bankId,
       });
       if (res.status == 200) {
-        return (
-          {
-            DR: res.data.history.filter(element => element.Value.tx_data.tx_type === 'DR'),
-            CR: res.data.history.filter(element => element.Value.tx_data.tx_type === 'CR'),
-          }
-        )
-
-        }
-    }catch (err){
+        return ({
+          sendMoneyNwtNw:res.data.transactions.filter(trans => trans.txType === "Non Wallet To Non Wallet" && trans.state==="DONE"),
+          sendMoneyNwtW: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Wallet" && trans.state==="DONE"),
+          sendMoneyNwtM: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Merchant" && trans.state==="DONE"),
+          sendMoneyNwtO: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Operational" && trans.state==="DONE"),
+          sendMoneyWtNw:res.data.transactions.filter(trans => trans.txType === "Wallet To Non Wallet" && trans.state==="DONE"),
+        });
+      }
+    } catch (err){
       console.log(err);
     }
     
@@ -403,10 +183,7 @@ export default class CashierDashboard extends Component {
       });
   };
 
-  filterData = e => {
-
-    this.setState({ showPending: false, filter: e });
-  };
+  
 
   handlePageChange = pageNumber => {
     this.setState({ activePage: pageNumber });
@@ -467,15 +244,14 @@ export default class CashierDashboard extends Component {
     const branch=await this.getBranchByName();
     this.getStats();
     const allHistory = await this.getHistory();
-    console.log(allHistory);
-    const TransHistoryDR = await this.groupHistoryBasedOnMasterCode(allHistory.DR,trans => trans.Value.tx_data.master_id);
-    const TransHistoryCR = await this.groupHistoryBasedOnMasterCode(allHistory.CR,trans => trans.Value.tx_data.master_id);
-
     this.setState(
       {
         branchDetails:branch,
-        DR:TransHistoryDR,
-        CR:TransHistoryCR,
+        sendMoneyNwtNw: allHistory.sendMoneyNwtNw.reverse(),
+        sendMoneyNwtW: allHistory.sendMoneyNwtW.reverse(),
+        sendMoneyNwtM: allHistory.sendMoneyNwtM.reverse(),
+        sendMoneyNwtO: allHistory.sendMoneyNwtO.reverse(),
+        sendMoneyWtNw: allHistory.sendMoneyWtNw.reverse(),
         loading:false,
       }
     );
@@ -539,7 +315,76 @@ export default class CashierDashboard extends Component {
           from="cashier"
         />
         <Container verticalMargin>
-          <Main>
+        <div className="clr">
+              <Card
+                horizontalMargin="7px"
+                cardWidth="151px"
+                h4FontSize="16px"
+                smallValue
+                textAlign="center"
+                col
+              >
+                <h4>Opening Balance</h4>
+                <div className="cardValue">
+                  {
+                    <span> {CURRENCY} {this.state.openingBalance.toFixed(2)}</span>
+                  }
+                </div>
+              </Card>
+              <Card
+                horizontalMargin="7px"
+                cardWidth="125px"
+                h4FontSize="16px"
+                smallValue
+                textAlign="center"
+                col
+              >
+                <h4>Cash Received</h4>
+                <div className="cardValue">
+                  {CURRENCY} {this.state.cashReceived.toFixed(2)}
+                </div>
+              </Card>
+              <Card
+                horizontalMargin="7px"
+                cardWidth="125px"
+                h4FontSize="16px"
+                smallValue
+                textAlign="center"
+                col
+              >
+                <h4>Paid in Cash</h4>
+                <div className="cardValue">
+                  {CURRENCY} {this.state.cashPaid.toFixed(2)}
+                </div>
+              </Card>
+              <Card
+                horizontalMargin="7px"
+                cardWidth="125px"
+                smallValue
+                h4FontSize="16px"
+                textAlign="center"
+                col
+              >
+                <h4>Fee</h4>
+                <div className="cardValue">
+                  {CURRENCY} {this.state.feeGenerated.toFixed(2)}
+                </div>
+              </Card>
+              <Card
+                horizontalMargin="7px"
+                cardWidth="125px"
+                smallValue
+                h4FontSize="16px"
+                textAlign="center"
+                col
+              >
+                <h4>Commision</h4>
+                <div className="cardValue">
+                  {CURRENCY}  {this.state.commissionGenerated.toFixed(2)}
+                </div>
+              </Card>
+            </div>
+
             <ActionBar
               marginBottom="15px"
               marginTop="15px"
@@ -584,9 +429,9 @@ export default class CashierDashboard extends Component {
               ) : null}
             </ActionBar>
 
-            <Card bigPadding style={{ marginTop: '50px' }}>
+            <Card style={{ marginTop: '50px' }}>
             <div>
-                <h1>DR</h1>
+                <h3 style={{color:"green"}}>Send Money (Cash to Cash)</h3>
                 <Table
                   marginTop="34px"
                   marginBottom="34px"
@@ -594,94 +439,36 @@ export default class CashierDashboard extends Component {
                   textAlign="left"
                 >
                   <thead>
-                        <tr><th>Date</th><th>Time</th> <th>Description</th><th>Status</th><th>Amount</th></tr>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
                       </thead>
                       <tbody>
-                      {this.state.DR
-                          ? Array.from(this.state.DR).map( ([key, b]) => {
-                            var fulldate = dis.formatDate(b[0].Timestamp);
+                      {this.state.sendMoneyNwtNw.length > 0
+                          ? this.state.sendMoneyNwtNw.map( (b,i) => {
+                            var fulldate = dis.formatDate(b.createdAt);
                             return (
-                            <tr key={key}>
-                              <td>
+                            <tr key={i} >
+                              <td style={{textAlign:"center"}}>
                                 <div className="labelGrey">{fulldate.date}</div>
                               </td>
-                              <td>
-                                <div className="labelGrey">{fulldate.time}</div>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{b.childTx[0].transaction.master_code}</div>
                               </td>
-                              <td>
-                                <div
-                                  className="labelGrey"
-                                >
-                                  {b[0].Value.remarks}
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">
+                                  Transfered From {b.childTx[0].transaction.from_name} to {b.childTx[0].transaction.to_name}
                                 </div>
                               </td>
-                              <td>
-                                <div
-                                  className="labelBlue"
-                                >
-                                  {b[0].Value.tx_data.tx_details}
-                                </div>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Cash to Cash</div>
                               </td>
-                              <td>
-                              <div
-                                  className="labelGrey"
-                                >
-                                  XOF {b[0].Value.amount}
-                                </div>
-
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Completed</div>
                               </td>
-                            </tr>
-                            )
-                          })
-                          : null
-                        }
-                    </tbody>
-                </Table>
-            </div>
-            <div>
-                <h1>CR</h1>
-                <Table
-                  marginTop="34px"
-                  marginBottom="34px"
-                  smallTd
-                  textAlign="left"
-                >
-                   <thead>
-                        <tr><th>Date</th><th>Time</th> <th>Description</th><th>Status</th><th>Amount</th></tr>
-                      </thead>
-                      <tbody>
-                      {this.state.CR
-                          ? Array.from(this.state.CR).map( ([key, b]) => {
-                            var fulldate = dis.formatDate(b[0].Timestamp);
-                            return (
-                            <tr key={key}>
-                              <td>
-                                <div className="labelGrey">{fulldate.date}</div>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">-</div>
                               </td>
-                              <td>
-                                <div className="labelGrey">{fulldate.time}</div>
-                              </td>
-                              <td>
-                                <div
-                                  className="labelGrey"
-                                >
-                                  {b[0].Value.remarks}
-                                </div>
-                              </td>
-                              <td>
-                                <div
-                                  className="labelBlue"
-                                >
-                                  {b[0].Value.tx_data.tx_details}
-                                </div>
-                              </td>
-                              <td>
-                              <div
-                                  className="labelGrey"
-                                >
-                                  XOF {b[0].Value.amount}
-                                </div>
-
+                              <td style={{textAlign:"center"}}> 
+                                <div className="labelGrey">XOF {b.childTx[0].transaction.amount}</div>
                               </td>
                             </tr>
                             )
@@ -692,7 +479,262 @@ export default class CashierDashboard extends Component {
                 </Table>
             </div>
             </Card>
-          </Main>
+            <Card style={{ marginTop: '50px' }}>
+            <div>
+                <h3 style={{color:"green"}}>Send Money (Cash to Wallet)</h3>
+                <Table
+                  marginTop="34px"
+                  marginBottom="34px"
+                  smallTd
+                  textAlign="left"
+                >
+                  <thead>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                      </thead>
+                      <tbody>
+                      {this.state.sendMoneyNwtW.length > 0
+                          ? this.state.sendMoneyNwtW.map( (b,i) => {
+                            var fulldate = dis.formatDate(b.createdAt);
+                            return (
+                            <tr key={i} >
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{fulldate.date}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{b.childTx[0].transaction.master_code}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">
+                                  Transfered From {b.childTx[0].transaction.from_name} to {b.childTx[0].transaction.to_name}
+                                </div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Cash to Cash</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Completed</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">-</div>
+                              </td>
+                              <td style={{textAlign:"center"}}> 
+                                <div className="labelGrey">XOF {b.childTx[0].transaction.amount}</div>
+                              </td>
+                            </tr>
+                            )
+                          })
+                          : null
+                        }
+                    </tbody>
+                </Table>
+            </div>
+            </Card>
+            
+            <Card style={{ marginTop: '50px' }}>
+            <div>
+                <h3 style={{color:"green"}}>Send Money (Cash to Merchant)</h3>
+                <Table
+                  marginTop="34px"
+                  marginBottom="34px"
+                  smallTd
+                  textAlign="left"
+                >
+                  <thead>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                      </thead>
+                      <tbody>
+                      {this.state.sendMoneyNwtM.length > 0
+                          ? this.state.sendMoneyNwtM.map( (b,i) => {
+                            var fulldate = dis.formatDate(b.createdAt);
+                            return (
+                            <tr key={i} >
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{fulldate.date}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{b.childTx[0].transaction.master_code}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">
+                                  Transfered From {b.childTx[0].transaction.from_name} to {b.childTx[0].transaction.to_name}
+                                </div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Cash to Cash</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Completed</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">-</div>
+                              </td>
+                              <td style={{textAlign:"center"}}> 
+                                <div className="labelGrey">XOF {b.childTx[0].transaction.amount}</div>
+                              </td>
+                            </tr>
+                            )
+                          })
+                          : null
+                        }
+                    </tbody>
+                </Table>
+            </div>
+            </Card>
+          
+            <Card style={{ marginTop: '50px' }}>
+            <div>
+                <h3 style={{color:"green"}}>Send Money (Cash to Operational)</h3>
+                <Table
+                  marginTop="34px"
+                  marginBottom="34px"
+                  smallTd
+                  textAlign="left"
+                >
+                  <thead>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                      </thead>
+                      <tbody>
+                      {this.state.sendMoneyNwtO.length > 0
+                          ? this.state.sendMoneyNwtO.map( (b,i) => {
+                            var fulldate = dis.formatDate(b.createdAt);
+                            return (
+                            <tr key={i} >
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{fulldate.date}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{b.childTx[0].transaction.master_code}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">
+                                  Transfered From {b.childTx[0].transaction.from_name} to {b.childTx[0].transaction.to_name}
+                                </div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Cash to Cash</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Completed</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">XOF {b.childTx[0].transaction.amount}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}> 
+                                <div className="labelGrey">-</div>
+                              </td>
+                            </tr>
+                            )
+                          })
+                          : null
+                        }
+                    </tbody>
+                </Table>
+            </div>
+            </Card>
+            <Card style={{ marginTop: '50px' }}>
+            <div>
+                <h3 style={{color:"green"}}>Claim Money (Cash to Cash)</h3>
+                <Table
+                  marginTop="34px"
+                  marginBottom="34px"
+                  smallTd
+                  textAlign="left"
+                >
+                  <thead>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                      </thead>
+                      <tbody>
+                      {this.state.sendMoneyNwtNw.length > 0
+                          ? this.state.sendMoneyNwtNw.map( (b,i) => {
+                            var fulldate = dis.formatDate(b.createdAt);
+                            var child = b.childTx.filter(c=>c.transaction.note === "Cashier claim Money");
+                            return (
+                            <tr key={i} >
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{fulldate.date}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{child[0].transaction.master_code}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">
+                                  Transfered From {child[0].transaction.from_name} to {child[0].transaction.to_name}
+                                </div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Cash to Cash</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Completed</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">XOF {child[0].transaction.amount}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}> 
+                                <div className="labelGrey">-</div>
+                              </td>
+                            </tr>
+                            )
+                          })
+                          : null
+                        }
+                    </tbody>
+                </Table>
+            </div>
+            </Card>
+          
+            <Card style={{ marginTop: '50px' }}>
+            <div>
+                <h3 style={{color:"green"}}>Claim Money (Wallet to Cash)</h3>
+                <Table
+                  marginTop="34px"
+                  marginBottom="34px"
+                  smallTd
+                  textAlign="left"
+                >
+                  <thead>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                      </thead>
+                      <tbody>
+                      {this.state.sendMoneyWtNw.length > 0
+                          ? this.state.sendMoneyWtNw.map( (b,i) => {
+                            var fulldate = dis.formatDate(b.createdAt);
+                            var child = b.childTx.filter(c=>c.transaction.note === "Cashier claim Money");
+                            return (
+                            <tr key={i} >
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{fulldate.date}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{child[0].transaction.master_code}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">
+                                  Transfered From {child[0].transaction.from_name} to {child[0].transaction.to_name}
+                                </div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Cash to Cash</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">Completed</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">XOF {child[0].transaction.amount}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}> 
+                                <div className="labelGrey">-</div>
+                              </td>
+                            </tr>
+                            )
+                          })
+                          : null
+                        }
+                    </tbody>
+                </Table>
+            </div>
+            </Card>
+          
         </Container>
         {this.state.historyPop ? (
           <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
