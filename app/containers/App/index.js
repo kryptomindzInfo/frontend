@@ -71,6 +71,7 @@ import CashierOTPPage from 'containers/CashierOTPPage';
 import CashierSetup from 'containers/CashierSetup';
 import CashierDashboard from 'containers/CashierDashboard';
 import CashierReports from 'containers/CashierReports';
+import BranchReports from 'containers/BranchReports';
 import CashierInfo from 'containers/CashierInfo';
 import BankEditFee from 'containers/BankEditFee';
 import BankEditInterBankFee from 'containers/BankEditInterBankFee';
@@ -323,6 +324,11 @@ export default function App(props) {
             exact
             path="/branch/:bank?/dashboard"
             component={BranchDashboard}
+          />
+          <BranchRoute
+            exact
+            path="/branch/:bank?/report"
+            component={BranchReports}
           />
           {/* <BranchRoute
             exact

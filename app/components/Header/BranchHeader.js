@@ -58,7 +58,6 @@ class BranchHeader extends Component {
   render() {
     const name = localStorage.getItem('name');
     const page = this.props.page;
-    console.log(page)
     return (
       <TopBar>
         <Welcome from="branch" bankName={this.props.bankName} />

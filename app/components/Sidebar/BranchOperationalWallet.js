@@ -521,7 +521,6 @@ class BranchOperationalWallet extends Component {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            console.log(res.data.status);
             this.setState({
               notification: 'Transaction Successfully Done',
             });
@@ -558,7 +557,6 @@ class BranchOperationalWallet extends Component {
           if (res.data.error) {
             throw res.data.error;
           } else {
-            console.log(res.data.status);
             this.setState({
               notification: 'Transaction Successfully Done',
             });
@@ -595,7 +593,6 @@ class BranchOperationalWallet extends Component {
       )
       .then(res => {
         if (res.status == 200) {
-          console.log(res);
           if (res.data.error) {
             throw res.data.error;
           } else {
@@ -626,7 +623,6 @@ class BranchOperationalWallet extends Component {
       )
       .then(res => {
         if (res.status == 200) {
-          console.log(res);
           if (res.data.error) {
             throw res.data.error;
           } else {

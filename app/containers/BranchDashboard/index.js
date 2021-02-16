@@ -56,6 +56,7 @@ export default class BranchDashboard extends Component {
   constructor() {
     super();
     this.state = {
+      loading:true,
       token,
       otpEmail: email,
       otpMobile: mobile,
@@ -159,7 +160,6 @@ export default class BranchDashboard extends Component {
     var dis = this;
     for (var key in items) {
     if (items.hasOwnProperty(key)) {
-        console.log(key + " -> " + items[key]);
         this.setState({
           [key] : items[key]
         });
@@ -791,59 +791,46 @@ export default class BranchDashboard extends Component {
   };
   getBanks = () => {};
 
-  getStats = () => {
-    axios
-      .post(`${API_URL}/getBranchDashStats`, {
+  getStats = async() => {
+    try {
+      const res = await axios.post(`${API_URL}/getBranchDashStats`, {
         token: token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          let received =
-            res.data.cashReceived == null ? 0 : res.data.cashReceived;
-          let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
-          let total = res.data.totalCashier == null ? 0 : res.data.totalCashier;
-          this.setState({
-            loading: false,
-            totalCashier: total,
-            cashReceived: received.toFixed(2),
-            cashPaid: paid.toFixed(2),
-            cashInHand: res.data.cashInHand.toFixed(2),
-            feeGenerated:res.data.feeGenerated.toFixed(2),
-            commissionGenerated:res.data.commissionGenerated.toFixed(2),
-            openingBalance:res.data.openingBalance.toFixed(2),
-            pending: res.data.pending,
-            accepted: res.data.accepted,
-            cancelled: res.data.cancelled,
-          },
-          () => {
-            var dis = this;
-            setTimeout(function () {
-              dis.getStats();
-            }, 10000);
-          },
-          );
-        }
-      })
-      .catch(err => {
-        var dis = this;
-        setTimeout(function () {
-          dis.getStats();
-        }, 10000);
       });
+      if (res.status == 200) {
+        let received =
+          res.data.cashReceived == null ? 0 : res.data.cashReceived;
+        let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
+        let total = res.data.totalCashier == null ? 0 : res.data.totalCashier;
+        return({
+          totalCashier: total,
+          cashReceived: received.toFixed(2),
+          cashPaid: paid.toFixed(2),
+          cashInHand: res.data.cashInHand.toFixed(2),
+          feeGenerated:res.data.feeGenerated.toFixed(2),
+          commissionGenerated:res.data.commissionGenerated.toFixed(2),
+          openingBalance:res.data.openingBalance.toFixed(2),
+          pending: res.data.pending,
+          accepted: res.data.accepted,
+          cancelled: res.data.cancelled,
+        });
+      }
+    }catch(err){
+      console.log(err);
+    }
   };
-  getBranchByName = () => {
-    axios
-      .post(`${API_URL}/getBranchByName`, {
+  getBranchByName = async() => {
+    try {
+      const res = await axios.post(`${API_URL}/getBranchByName`, {
         name: name,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({ branchDetails: res.data.banks }, () => {
-            this.getHistory();
-          });
-        }
-      })
-      .catch(err => {});
+      });
+      if (res.status === 200){
+        return ({
+          branchDetails: res.data.banks
+        });
+      } 
+    }catch(err){
+      console.log(err);
+    }
   };
   formatDate = date => {
     var months = [
@@ -873,50 +860,70 @@ export default class BranchDashboard extends Component {
   };
 
 
-  getCashiers = () => {
-    axios
-      .post(`${API_URL}/getAll`, {
+  getCashiers = async() => {
+    try {
+      const res = await axios.post(`${API_URL}/getAll`, {
         page: 'cashier',
         type: 'branch',
         token: token,
         where: { branch_id: bid },
       })
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res.data);
-          this.setState({ loading: false, cashiers: res.data.rows });
-        }
-      })
-      .catch(err => {});
+      if (res.status === 200){
+        return ({
+          cashiers: res.data.rows
+        });
+      } 
+    }catch(err){
+      console.log(err);
+    }
   };
 
-  getUsers = () => {
-    axios
-      .post(`${API_URL}/getAll`, {
-        page: 'bankuser',
-        type: 'branch',
-        token: token,
-        where: {bank_id:bankid},
-      })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({ loading: false, users: res.data.rows });
-        }
-      })
-      .catch(err => { });
+  getUsers = async () => {
+    try {
+      const res = await axios.post(`${API_URL}/getAll`,
+        {
+          page: 'bankuser',
+          type: 'branch',
+          token: token,
+          where: {bank_id:bankid},
+        });
+        if (res.status === 200){
+          return ({
+            users: res.data.rows
+          });
+        } 
+    }catch(err){
+      console.log(err);
+    }
   };
 
-  componentDidMount() {
-
-    this.getCashiers();
-    this.getUsers();
-    this.getBranchByName();
-    this.getStats();
-    console.log(this.props.match.params.bank);
+  async componentDidMount() {
+    const stats= await this.getStats();
+    console.log(stats);
+    const users= await this.getUsers();
+    const cashiers = await this.getCashiers();
+    const branchDetails = await this.getBranchByName();
+    this.setState({
+      users: users.users,
+      cashiers: cashiers.cashiers,
+      branchDetails: branchDetails.branchDetails,
+      totalCashier: stats.total,
+      cashReceived: stats.cashReceived,
+      cashPaid: stats.cashPaid,
+      cashInHand: stats.cashInHand,
+      feeGenerated:stats.feeGenerated,
+      commissionGenerated:stats.commissionGenerated,
+      openingBalance:stats.openingBalance,
+      pending: stats.pending,
+      accepted: stats.accepted,
+      cancelled: stats.cancelled,
+      loading: false,
+    });
+    
+    
   }
 
   render() {
-    console.log(this.props);
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector('label').classList.add('focused');
