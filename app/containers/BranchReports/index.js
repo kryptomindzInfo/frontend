@@ -102,7 +102,6 @@ export default class BranchReports extends Component {
       sendMoneyNwtM: [],
       sendMoneyNwtO: [],
       sendMoneyWtNw: [],
-      pending: [],
       history: [],
       filter: '',
     };
