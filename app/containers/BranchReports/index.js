@@ -63,8 +63,15 @@ export default class BranchReports extends Component {
     this.state = {
       token,
       cashiers:[],
-      from:'',
-      to:'',
+      selectedCashierDetails: {},
+
+      datearray:[],
+      cancelled: 0,
+      pending: 0,
+      accepted: 0,
+      from:today,
+      selectedCashier:'',
+      to:today,
       otpEmail: email,
       otpMobile: mobile,
       agree: false,
@@ -113,7 +120,14 @@ export default class BranchReports extends Component {
 
   warn = () => toast.warn(this.state.notification);
 
-  
+  cashierChange = (event) => {
+    this.setState(
+      {
+        selectedCashier: event.target.value,
+      }
+    );
+  }
+
   getCashiers = async() => {
     try {
       const res = await axios.post(`${API_URL}/getAll`, {
@@ -131,6 +145,52 @@ export default class BranchReports extends Component {
       console.log(err);
     }
   };
+
+  getCashierDetails = async(id) => {
+    try {
+      const res = await axios.post(`${API_URL}/getCashierDetails`, {
+        cashier_id: id,
+        token: token,
+      })
+      if (res.status === 200){
+        console.log(res.data.cashier);
+        this.setState({
+          selectedCashierDetails: res.data.cashier,
+          accepted:res.data.accepted,
+          pending:res.data.pending,
+          cancelled:res.data.cancelled,
+        });
+      } 
+    }catch(err){
+      console.log(err);
+    }
+  };
+
+  getdays = async(from,to) => {
+    console.log(to,from);
+    function addDays(date, days) {
+      var result = new Date(date);
+      result.setDate(result.getDate() + days);
+      return result;
+    }
+    function getdates(){
+      var dateArray = new Array();
+      var currentDate = from;
+      while (currentDate <= to) {
+          dateArray.push(new Date (currentDate));
+          currentDate = addDays(currentDate, 1);
+      }
+      return dateArray;
+    }
+    const res=await getdates();
+    this.setState({
+      datearray:res,
+    })
+  };
+  
+  
+
+  
 
   formatDate = date => {
     var months = [
@@ -274,12 +334,11 @@ export default class BranchReports extends Component {
                         InputLabelProps={{
                         shrink: true,
                         }}
-                        // value={
-                        //   this.state
-                        //     .senderIdentificationValidTill
-                        //   }
+                        value={
+                          this.state.from
+                          }
                         onChange={date =>
-                        this.setstate({
+                        this.setState({
                               from: date,
                         })
                         }
@@ -308,12 +367,11 @@ export default class BranchReports extends Component {
                         InputLabelProps={{
                         shrink: true,
                         }}
-                        // value={
-                        //   this.state
-                        //     .senderIdentificationValidTill
-                        //   }
+                        value={
+                          this.state.to
+                          }
                         onChange={date =>
-                          this.setstate({
+                          this.setState({
                                 to: date,
                           })
                           }
@@ -326,7 +384,7 @@ export default class BranchReports extends Component {
                     </Col>
                     <Col  cW='3%'></Col>
                     <Col cw='25%'>
-                      <Button style={{padding:'9px'}}>Get Report</Button>
+                      <Button style={{padding:'9px'}} onClick={()=>this.getdays(this.state.from,this.state.to)}>Get Report</Button>
                     </Col>
                   </Row>
                       
@@ -340,7 +398,7 @@ export default class BranchReports extends Component {
                           type="text"
                           name="country"
                           // value={this.state.country}
-                          // onChange={this.countryChange}
+                          onChange={this.cashierChange}
                           required
                           autoFocus
                         >
@@ -348,7 +406,7 @@ export default class BranchReports extends Component {
                           {this.state.cashiers.length>0 ?(
                             this.state.cashiers.map((c,i)=>{
                               return(
-                                <option title="" value="">{c.name}</option>
+                                <option title="" value={c._id}>{c.name}</option>
                               );
                             })
                           ):null}
@@ -356,7 +414,7 @@ export default class BranchReports extends Component {
                         </FormGroup>
                     </Col>
                     <Col cw='50%'>
-                      <Button style={{padding:'9px'}}>Filter</Button>
+                      <Button style={{padding:'9px'}} onClick={()=>this.getCashierDetails(this.state.selectedCashier)}>Filter</Button>
                     </Col>
 
                   </Row>
@@ -377,7 +435,7 @@ export default class BranchReports extends Component {
                 <h4>Paid in cash</h4>
                 <div className="cardValue">
                   {
-                    <span> {CURRENCY} {this.state.openingBalance.toFixed(2)}</span>
+                    <span> {CURRENCY} {this.state.selectedCashierDetails.cash_paid}</span>
                   }
                 </div>
               </Card>
@@ -394,7 +452,7 @@ export default class BranchReports extends Component {
                 >
                   <h4>Cash Received</h4>
                   <div className="cardValue">
-                    {CURRENCY} {this.state.cashReceived.toFixed(2)}
+                    {CURRENCY} {this.state.selectedCashierDetails.cash_received}
                   </div>
                   </Card>
                 </Col>
@@ -409,7 +467,7 @@ export default class BranchReports extends Component {
               >
                 <h4>Fee Generated</h4>
                 <div className="cardValue">
-                  {CURRENCY} {this.state.cashPaid.toFixed(2)}
+                  {CURRENCY} {this.state.selectedCashierDetails.fee_generated}
                 </div>
               </Card>
 
@@ -425,7 +483,7 @@ export default class BranchReports extends Component {
               >
                 <h4>Commission Generated</h4>
                 <div className="cardValue">
-                  {CURRENCY} {this.state.feeGenerated.toFixed(2)}
+                  {CURRENCY} {this.state.selectedCashierDetails.commission_generated}
                 </div>
               </Card>
 
@@ -441,7 +499,12 @@ export default class BranchReports extends Component {
               >
                 <h4>Revenue Generated</h4>
                 <div className="cardValue">
-                  {CURRENCY} {this.state.feeGenerated.toFixed(2)}
+                  {this.state.selectedCashierDetails.commission_generated ? (
+                    <div>
+                     {CURRENCY} {parseInt(this.state.selectedCashierDetails.commission_generated,10) + parseInt(this.state.selectedCashierDetails.fee_generated,10)}
+                    </div>
+                  ):"XOF"}
+                 
                 </div>
               </Card>
 
@@ -457,15 +520,15 @@ export default class BranchReports extends Component {
                   <Row>
                     <Col>
                       <h5>Approve</h5>
-                      <div className="cardValue">0</div>
+                      <div className="cardValue">{this.state.accepted}</div>
                     </Col>
                     <Col>
                       <h5>Declined</h5>
-                      <div className="cardValue">0</div>
+                      <div className="cardValue">{this.state.cancelled}</div>
                     </Col>
                     <Col>
                       <h5>Pending</h5>
-                      <div className="cardValue">0</div>
+                      <div className="cardValue">{this.state.pending}</div>
                     </Col>
                   </Row>
                   
@@ -479,50 +542,79 @@ export default class BranchReports extends Component {
             <Card style={{ marginTop: '50px' }}>
             <div>
                 <Table
-                  marginTop="34px"
-                  marginBottom="34px"
-                  smallTd
-                  textAlign="left"
-                >
-                  <thead>
-                        <tr><th>Date</th><th>User</th> <th>Opening Balance</th><th>Cash in Hand</th><th>Paid in cash</th><th>Cash Received</th><th>Fee Generated</th><th>Commission Generated</th><th>Revenue Generated</th><th>Revenue Generated</th><th>Requests Approvd</th><th>Requests Declined</th><th>Requests Pending</th></tr>
-                      </thead>
-                      {/* <tbody>
-                      {this.state.sendMoneyNwtNw.length > 0
-                          ? this.state.sendMoneyNwtNw.map( (b,i) => {
-                            var fulldate = dis.formatDate(b.createdAt);
-                            return (
-                            <tr key={i} >
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">{fulldate.date}</div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">{b.childTx[0].transaction.master_code}</div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">
-                                  Transfered From {b.childTx[0].transaction.from_name} to {b.childTx[0].transaction.to_name}
-                                </div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">Cash to Cash</div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">Completed</div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">-</div>
-                              </td>
-                              <td style={{textAlign:"center"}}> 
-                                <div className="labelGrey">XOF {b.childTx[0].transaction.amount}</div>
-                              </td>
-                            </tr>
-                            )
-                          })
-                          : null
-                        }
-                    </tbody> */}
-                </Table>
+                marginTop="34px"
+                marginBottom="34px"
+                smallTd
+                textAlign="left"
+              >
+                <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Opening Balance</th>
+                        <th>Cash in Hand</th>
+                        <th>Paid in cash</th>
+                        <th>Cash Received</th>
+                        <th>Fee Generated</th>
+                        <th>Commission Generated</th>
+                        <th>Revenue Generated</th>
+                        <th>Requests Approved</th>
+                        <th>Requests Declined</th>
+                        <th>Requests Pending</th></tr>
+                    </thead>
+                    <tbody>
+                    {this.state.datearray.length > 0 && this.state.selectedCashierDetails.name
+                        ? this.state.datearray.map( (b,i) => {
+                          var fulldate = dis.formatDate(b);
+                          return (
+                          <tr key={i} >
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{fulldate.date}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{this.state.selectedCashierDetails.name}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{this.state.selectedCashierDetails.opening_balance}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{this.state.selectedCashierDetails.cash_in_hand}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{this.state.selectedCashierDetails.cash_paid}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{this.state.selectedCashierDetails.cash_received}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{this.state.selectedCashierDetails.fee_generated}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{this.state.selectedCashierDetails.commission_generated}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{parseInt(this.state.selectedCashierDetails.commission_generated,10) + parseInt(this.state.selectedCashierDetails.fee_generated,10)}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{this.state.accepted}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{this.state.cancelled}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{this.state.pending}</div>
+                            </td>
+                            
+                          </tr>
+                          )
+                        })
+                        : null
+                      }
+                  </tbody>
+              
+              </Table>
+        
+                
             </div>
             </Card>
            
