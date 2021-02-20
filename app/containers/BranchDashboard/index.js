@@ -907,7 +907,7 @@ export default class BranchDashboard extends Component {
       users: users.users,
       cashiers: cashiers.cashiers,
       branchDetails: branchDetails.branchDetails,
-      totalCashier: stats.total,
+      totalCashier: stats.totalCashier,
       cashReceived: stats.cashReceived,
       cashPaid: stats.cashPaid,
       cashInHand: stats.cashInHand,
@@ -967,19 +967,6 @@ export default class BranchDashboard extends Component {
                   smallValue
                   style={{display:'contents'}}
                 >
-                  <h4>Cash in Hand</h4>
-
-                  <div className="cardValue">{CURRENCY}: {this.state.cashInHand}</div>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                  marginBottom="54px"
-                  buttonMarginTop="32px"
-                  bigPadding
-                  smallValue
-                  style={{display:'contents'}}
-                >
                   <h4>Opening Balance</h4>
 
                   <div className="cardValue">{CURRENCY}: {this.state.openingBalance}</div>
@@ -1009,6 +996,19 @@ export default class BranchDashboard extends Component {
                   <h4>Cash Recieved</h4>
 
                   <div className="cardValue">{CURRENCY}: {this.state.cashReceived}</div>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                  marginBottom="54px"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  smallValue
+                  style={{display:'contents'}}
+                >
+                  <h4>Cash in Hand</h4>
+
+                  <div className="cardValue">{CURRENCY}: {this.state.cashInHand}</div>
                 </Card>
               </Col>
               <Col>

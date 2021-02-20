@@ -17,6 +17,8 @@ import Loader from 'components/Loader';
 import Card from 'components/Card';
 import ActionBar from 'components/ActionBar';
 import SidebarCashier from 'components/Sidebar/SidebarCashier';
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 import Main from 'components/Main';
 import Table from 'components/Table';
 import Pagination from 'react-js-pagination';
@@ -60,6 +62,8 @@ export default class CashierDashboard extends Component {
     super();
     this.state = {
       token,
+      from:'',
+      to:'',
       otpEmail: email,
       otpMobile: mobile,
       agree: false,
@@ -111,10 +115,14 @@ export default class CashierDashboard extends Component {
   
   getHistory = async() => {
     try{
-      const res = await axios.post(`${API_URL}/cashier/getFailedTransactions`, {
+      const res = await axios.post(`${API_URL}/cashier/queryTransactionStates`, {
         token: token,
-        bank_id: bankId,
-      });
+        status: "1",
+        date_after: "Thu Feb 18 2021 15:40:00 GMT+0530",
+        date_before: "Sat Feb 20 2021 15:40:00 GMT+0530",
+        page_start: 0,
+        limit: 100
+    });
       if (res.status == 200) {
         return ({
           sendMoneyNwtNw:res.data.transactions.filter(trans => trans.txType === "Non Wallet To Non Wallet" && trans.state==="DONE"),
@@ -234,6 +242,9 @@ export default class CashierDashboard extends Component {
       }
     )
   };
+  getdays = (from,to)=> {
+    console.log(from,to);
+  }
 
   componentDidMount= async() => {
     this.setState(
@@ -315,6 +326,93 @@ export default class CashierDashboard extends Component {
           from="cashier"
         />
         <Container verticalMargin>
+        <ActionBar
+              marginBottom="15px"
+              marginTop="15px"
+              inputWidth="calc(100% - 241px)"
+              className="clr"
+            >
+              <h4 style={{color:"green"}}><b>Select Date for report</b></h4>
+              <Row>
+                <Col>
+                  <Row>
+                    <Col cW='35%'>
+                      <FormGroup>
+                      <MuiPickersUtilsProvider
+                       utils={DateFnsUtils}
+                                                >
+                        <KeyboardDatePicker
+                        id="date-picker-dialog"
+                        label="From"
+                        size="small"
+                        minDate={date}
+                        fullWidth
+                        inputVariant="outlined"
+                        format="dd/MM/yyyy"
+                        required
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                        value={
+                          this.state.from
+                          }
+                        onChange={date =>
+                        this.setState({
+                              from: date,
+                        })
+                        }
+                         KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                                                    }}
+                        />
+                      </MuiPickersUtilsProvider>
+                      </FormGroup>
+                    </Col>
+                    <Col  cW='2%'>-</Col>
+                    <Col cW='35%'>
+                      <FormGroup>
+                      <MuiPickersUtilsProvider
+                       utils={DateFnsUtils}
+                                                >
+                        <KeyboardDatePicker
+                        id="date-picker-dialog"
+                        label="To"
+                        size="small"
+                        minDate={date}
+                        fullWidth
+                        inputVariant="outlined"
+                        format="dd/MM/yyyy"
+                        required
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                        value={
+                          this.state.to
+                          }
+                        onChange={date =>
+                          this.setState({
+                                to: date,
+                          })
+                          }
+                         KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                                                    }}
+                        />
+                      </MuiPickersUtilsProvider>
+                      </FormGroup>
+                    </Col>
+                    <Col  cW='3%'></Col>
+                    <Col cw='25%'>
+                      <Button style={{padding:'9px'}} onClick={()=>this.getdays(this.state.from,this.state.to)}>Get Report</Button>
+                    </Col>
+                  </Row>
+                      
+                </Col>
+
+              </Row>
+            </ActionBar>
+           
+
         <div className="clr">
               <Card
                 horizontalMargin="7px"
@@ -385,50 +483,7 @@ export default class CashierDashboard extends Component {
               </Card>
             </div>
 
-            <ActionBar
-              marginBottom="15px"
-              marginTop="15px"
-              inputWidth="calc(100% - 241px)"
-              className="clr"
-              style={{ display: 'none' }}
-            >
-              {this.state.ticker ? (
-                <p className="notification">
-                  {dis.state.ticker.status == 1 ? (
-                    dis.state.ticker.trans_type == 'DR' ? (
-                      <span>
-                        <strong>Congrats</strong> You have received {CURRENCY}{' '}
-                        {Number(this.state.ticker.amount) +
-                          Number(this.state.ticker.fee)}{' '}
-                        from{' '}
-                        <strong>
-                          {
-                            JSON.parse(this.state.ticker.receiver_info)
-                              .givenname
-                          }
-                        </strong>{' '}
-                        on {this.formatDate(this.state.ticker.created_at)}
-                      </span>
-                    ) : (
-                        <span>
-                          <strong>Congrats</strong> You have sent {CURRENCY}{' '}
-                          {this.state.ticker.amount} to{' '}
-                          <strong>{this.state.ticker.sender_name}</strong> on{' '}
-                          {this.formatDate(dis.state.ticker.created_at)}
-                        </span>
-                      )
-                  ) : (
-                      <span>
-                        <strong className="red">Oops!</strong> Your last
-                      transaction (
-                        <strong>{dis.state.ticker.master_code}</strong>) on{' '}
-                        {this.formatDate(dis.state.ticker.created_at)} was failed
-                      </span>
-                    )}
-                </p>
-              ) : null}
-            </ActionBar>
-
+           
             <Card style={{ marginTop: '50px' }}>
             <div>
                 <h3 style={{color:"green"}}>Send Money (Cash to Cash)</h3>

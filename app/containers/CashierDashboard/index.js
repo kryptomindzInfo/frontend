@@ -347,9 +347,13 @@ export default class CashierDashboard extends Component {
   };
   newhistory = async() => {
     try{
-      const res = await axios.post(`${API_URL}/cashier/getFailedTransactions`, {
-        token: token,
-        bank_id: bankId,
+      const res = await axios.post(`${API_URL}/cashier/queryTransactionStates`, {
+          token: token,
+          status: "1",
+          date_after: "2021-01-29T00:00:00.625Z",
+          date_before: "2021-02-20T09:44:46.432Z",
+          page_start: 0,
+          limit: 100
       });
       if (res.status == 200) {
         return res.data.transactions.filter(trans => trans.state==="DONE");
@@ -479,11 +483,10 @@ export default class CashierDashboard extends Component {
     this.getStats();
     const allHistory = await this.getHistory();
     const newhistory = await this.newhistory();
-    console.log(newhistory);
     this.setState(
       {
         branchDetails:branch,
-        allhistory:newhistory,
+        // allhistory:newhistory,
         pending: allHistory.pending.reverse(),
         loading:false,
       }
