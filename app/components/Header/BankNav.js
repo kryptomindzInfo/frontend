@@ -61,6 +61,11 @@ class BankNav extends Component {
               <FormattedMessage {...messages.menu5} />
             </Link>
           </A>
+          <A href="/bank/customers">
+            <Link active={users}>
+              Customes
+            </Link>
+          </A>
           <A href="/bank/backoffice">
             <Link active={backoffice}>
               <FormattedMessage {...messages.bmenu3} />

@@ -62,8 +62,7 @@ export default class CashierDashboard extends Component {
     super();
     this.state = {
       token,
-      from:'',
-      to:'',
+      date:new Date(),
       otpEmail: email,
       otpMobile: mobile,
       agree: false,
@@ -114,12 +113,14 @@ export default class CashierDashboard extends Component {
 
   
   getHistory = async() => {
+    const yesterday = new Date(this.state.date)
+    yesterday.setDate(yesterday.getDate() - 2)
     try{
       const res = await axios.post(`${API_URL}/cashier/queryTransactionStates`, {
         token: token,
         status: "1",
-        date_after: "Thu Feb 18 2021 15:40:00 GMT+0530",
-        date_before: "Sat Feb 20 2021 15:40:00 GMT+0530",
+        date_after: yesterday,
+        date_before: this.state.date,
         page_start: 0,
         limit: 100
     });
@@ -242,9 +243,6 @@ export default class CashierDashboard extends Component {
       }
     )
   };
-  getdays = (from,to)=> {
-    console.log(from,to);
-  }
 
   componentDidMount= async() => {
     this.setState(
@@ -254,15 +252,15 @@ export default class CashierDashboard extends Component {
     );
     const branch=await this.getBranchByName();
     this.getStats();
-    const allHistory = await this.getHistory();
+    // const allHistory = await this.getHistory();
     this.setState(
       {
         branchDetails:branch,
-        sendMoneyNwtNw: allHistory.sendMoneyNwtNw.reverse(),
-        sendMoneyNwtW: allHistory.sendMoneyNwtW.reverse(),
-        sendMoneyNwtM: allHistory.sendMoneyNwtM.reverse(),
-        sendMoneyNwtO: allHistory.sendMoneyNwtO.reverse(),
-        sendMoneyWtNw: allHistory.sendMoneyWtNw.reverse(),
+        // sendMoneyNwtNw: allHistory.sendMoneyNwtNw.reverse(),
+        // sendMoneyNwtW: allHistory.sendMoneyNwtW.reverse(),
+        // sendMoneyNwtM: allHistory.sendMoneyNwtM.reverse(),
+        // sendMoneyNwtO: allHistory.sendMoneyNwtO.reverse(),
+        // sendMoneyWtNw: allHistory.sendMoneyWtNw.reverse(),
         loading:false,
       }
     );
@@ -343,7 +341,7 @@ export default class CashierDashboard extends Component {
                                                 >
                         <KeyboardDatePicker
                         id="date-picker-dialog"
-                        label="From"
+                        label="Date"
                         size="small"
                         minDate={date}
                         fullWidth
@@ -354,11 +352,11 @@ export default class CashierDashboard extends Component {
                         shrink: true,
                         }}
                         value={
-                          this.state.from
+                          this.state.date
                           }
                         onChange={date =>
                         this.setState({
-                              from: date,
+                              date: date,
                         })
                         }
                          KeyboardButtonProps={{
@@ -368,42 +366,9 @@ export default class CashierDashboard extends Component {
                       </MuiPickersUtilsProvider>
                       </FormGroup>
                     </Col>
-                    <Col  cW='2%'>-</Col>
-                    <Col cW='35%'>
-                      <FormGroup>
-                      <MuiPickersUtilsProvider
-                       utils={DateFnsUtils}
-                                                >
-                        <KeyboardDatePicker
-                        id="date-picker-dialog"
-                        label="To"
-                        size="small"
-                        minDate={date}
-                        fullWidth
-                        inputVariant="outlined"
-                        format="dd/MM/yyyy"
-                        required
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                        value={
-                          this.state.to
-                          }
-                        onChange={date =>
-                          this.setState({
-                                to: date,
-                          })
-                          }
-                         KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                                                    }}
-                        />
-                      </MuiPickersUtilsProvider>
-                      </FormGroup>
-                    </Col>
-                    <Col  cW='3%'></Col>
+
                     <Col cw='25%'>
-                      <Button style={{padding:'9px'}} onClick={()=>this.getdays(this.state.from,this.state.to)}>Get Report</Button>
+                      <Button style={{padding:'9px'}} onClick={()=>this.getHistory()}>Get Report</Button>
                     </Col>
                   </Row>
                       
