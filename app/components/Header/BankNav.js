@@ -63,7 +63,7 @@ class BankNav extends Component {
           </A>
           <A href="/bank/customers">
             <Link active={users}>
-              Customes
+              Announcements
             </Link>
           </A>
           <A href="/bank/backoffice">

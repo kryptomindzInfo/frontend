@@ -57,6 +57,8 @@ today = today.getTime();
 
 
 
+
+
 export default class CashierDashboard extends Component {
   constructor() {
     super();
@@ -114,7 +116,7 @@ export default class CashierDashboard extends Component {
   
   getHistory = async() => {
     const yesterday = new Date(this.state.date)
-    yesterday.setDate(yesterday.getDate() - 2)
+    yesterday.setDate(yesterday.getDate() - 1)
     try{
       const res = await axios.post(`${API_URL}/cashier/queryTransactionStates`, {
         token: token,
@@ -330,9 +332,7 @@ export default class CashierDashboard extends Component {
               inputWidth="calc(100% - 241px)"
               className="clr"
             >
-              <h4 style={{color:"green"}}><b>Select Date for report</b></h4>
-              <Row>
-                <Col>
+              <h4 style={{color:"green"}}><b>Date</b></h4>
                   <Row>
                     <Col cW='35%'>
                       <FormGroup>
@@ -341,9 +341,8 @@ export default class CashierDashboard extends Component {
                                                 >
                         <KeyboardDatePicker
                         id="date-picker-dialog"
-                        label="Date"
                         size="small"
-                        minDate={date}
+                        maxDate={new Date()}
                         fullWidth
                         inputVariant="outlined"
                         format="dd/MM/yyyy"
@@ -368,24 +367,27 @@ export default class CashierDashboard extends Component {
                     </Col>
 
                     <Col cw='25%'>
-                      <Button style={{padding:'9px'}} onClick={()=>this.getHistory()}>Get Report</Button>
+                      <Button 
+                        style={{padding:'9px', color:'white', backgroundColor:'#417505'}}
+                        onClick={()=>this.getHistory()}
+                      >
+                        Get Report
+                      </Button>
                     </Col>
+                    <Col cW='40%'></Col>
                   </Row>
-                      
-                </Col>
-
-              </Row>
             </ActionBar>
-           
-
         <div className="clr">
-              <Card
+          <Row style={{backgroundColor:"lightgray"}}>
+            <Col >
+            <Card
                 horizontalMargin="7px"
-                cardWidth="151px"
+                cardWidth="-webkit-fill-available"
                 h4FontSize="16px"
                 smallValue
                 textAlign="center"
                 col
+                style={{backgroundColor:"lightgray"}}
               >
                 <h4>Opening Balance</h4>
                 <div className="cardValue">
@@ -394,61 +396,89 @@ export default class CashierDashboard extends Component {
                   }
                 </div>
               </Card>
-              <Card
+            </Col>
+            <Col>
+            <Card
                 horizontalMargin="7px"
-                cardWidth="125px"
+                cardWidth="-webkit-fill-available"
                 h4FontSize="16px"
                 smallValue
                 textAlign="center"
                 col
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
               >
                 <h4>Cash Received</h4>
                 <div className="cardValue">
                   {CURRENCY} {this.state.cashReceived.toFixed(2)}
                 </div>
               </Card>
-              <Card
+            </Col>
+            <Col>
+            <Card
                 horizontalMargin="7px"
-                cardWidth="125px"
+                cardWidth="-webkit-fill-available"
                 h4FontSize="16px"
                 smallValue
                 textAlign="center"
                 col
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
               >
                 <h4>Paid in Cash</h4>
                 <div className="cardValue">
                   {CURRENCY} {this.state.cashPaid.toFixed(2)}
                 </div>
               </Card>
-              <Card
+            </Col>
+            <Col>
+            <Card
                 horizontalMargin="7px"
-                cardWidth="125px"
+                cardWidth="-webkit-fill-available"
                 smallValue
                 h4FontSize="16px"
                 textAlign="center"
                 col
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
               >
                 <h4>Fee</h4>
                 <div className="cardValue">
                   {CURRENCY} {this.state.feeGenerated.toFixed(2)}
                 </div>
               </Card>
-              <Card
+            </Col>
+            <Col>
+            <Card
                 horizontalMargin="7px"
-                cardWidth="125px"
+                cardWidth="-webkit-fill-available"
                 smallValue
                 h4FontSize="16px"
                 textAlign="center"
                 col
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
               >
                 <h4>Commision</h4>
                 <div className="cardValue">
                   {CURRENCY}  {this.state.commissionGenerated.toFixed(2)}
                 </div>
               </Card>
-            </div>
-
-           
+            </Col>
+          </Row>
+          </div>
             <Card style={{ marginTop: '50px' }}>
             <div>
                 <h3 style={{color:"green"}}>Send Money (Cash to Cash)</h3>
@@ -603,7 +633,7 @@ export default class CashierDashboard extends Component {
           
             <Card style={{ marginTop: '50px' }}>
             <div>
-                <h3 style={{color:"green"}}>Send Money (Cash to Operational)</h3>
+                <h3 style={{color:"green"}}>Send Money (Cash to Operational Wallet)</h3>
                 <Table
                   marginTop="34px"
                   marginBottom="34px"
