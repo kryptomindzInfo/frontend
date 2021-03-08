@@ -35,6 +35,7 @@ function BankPartnerListPage(props) {
   const [Transaction, setTransaction] = React.useState({});
   const [isLoading, setLoading] = React.useState(false);
   const [detailsPopup, setDetailsPopup] = React.useState(false);
+  const [copyPartnerList, setcopyPartnerList] = React.useState([]);
   const token = localStorage.getItem('bankLogged');
 
   const handlePartnerPopupClick = (type, partner) => {
@@ -49,19 +50,28 @@ function BankPartnerListPage(props) {
   };
 
   const fetchPartnerList = async () => {
-    const res = await postRequest("bank/getFailedTransactions", token, {})
+    // const res = await postRequest("bank/getFailedTransactions", token, {})
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 3);
+    const res = await postRequest('bank/queryTransactionStates', token, {
+      status: '1',
+      date_after: yesterday,
+      date_before: new Date(),
+      page_start: 0,
+      limit: 100,
+    });
     if (res.data.data.status === 0) {
       toast.error(res.data.data.message);
       return { list: [], loading: false };
-    } else {
-      console.log(res);
-      return { list: res.data.data.transactions, loading: false };
     }
+    console.log(res);
+    return { list: res.data.data.transactions.reverse(), loading: false };
   };
 
   const refreshPartnertList = async () => {
     const data = await fetchPartnerList();
     setPartnerList(data.list);
+    setcopyPartnerList(data.list);
     setLoading(data.loading);
   };
 
@@ -81,10 +91,10 @@ function BankPartnerListPage(props) {
           toast.error(res.data.message);
         } else {
           if (apiType === 'update') {
-            toast.success("Partner Edited");
+            toast.success('Partner Edited');
             refreshPartnertList();
           } else {
-            toast.success("Partner Created");
+            toast.success('Partner Created');
             refreshPartnertList();
           }
           setOtpPopup(false);
@@ -97,25 +107,23 @@ function BankPartnerListPage(props) {
     }
   };
 
-  const generateOTP = async (obj) => {
+  const generateOTP = async obj => {
     try {
-      const res = await axios.post(`${API_URL}/bank/generateOTP`,
-        {
-          token: token,
-          username: '',
-          page: 'addPartner',
-          name: obj.name,
-          email: obj.email,
-          mobile: obj.mobile,
-          code: obj.code,
-        });
+      const res = await axios.post(`${API_URL}/bank/generateOTP`, {
+        token,
+        username: '',
+        page: 'addPartner',
+        name: obj.name,
+        email: obj.email,
+        mobile: obj.mobile,
+        code: obj.code,
+      });
       if (res.status == 200) {
         console.log(res);
         if (res.data.status === 0) {
           throw res.data.message;
         } else {
-          setOtpId(res.data.id),
-            toast.success("OTP Sent");
+          setOtpId(res.data.id), toast.success('OTP Sent');
           setOtpPopup(true);
         }
       } else {
@@ -126,21 +134,19 @@ function BankPartnerListPage(props) {
     }
   };
 
-  
-
-  const showDetails = (transaction) => {
+  const showDetails = transaction => {
+    console.log(transaction);
     setTransaction(transaction);
     setDetailsPopup(true);
-
   };
 
-  const VerifyOtp = async (values) => {
+  const VerifyOtp = async values => {
     console.log(otpID);
     setLoading(true);
     const obj = {
       ...newPartner,
       ...values,
-      token: token,
+      token,
       otp_id: otpID,
     };
     await partnerAPI(obj, popupType);
@@ -152,6 +158,8 @@ function BankPartnerListPage(props) {
     const getPartnerList = async () => {
       const data = await fetchPartnerList();
       setPartnerList(data.list);
+      console.log(data.list);
+      setcopyPartnerList(data.list);
       setLoading(data.loading);
     };
     getPartnerList();
@@ -161,7 +169,7 @@ function BankPartnerListPage(props) {
     return <Loader fullPage />;
   }
   const partners = partnerList.map(partner => {
-    var months = [
+    const months = [
       'Jan',
       'Feb',
       'Mar',
@@ -175,25 +183,36 @@ function BankPartnerListPage(props) {
       'Nov',
       'Dec',
     ];
-    var isoformat = partner.createdAt;
-                        var readable = new Date(isoformat);
-                        var m = readable.getMonth(); // returns 6
-                        var d = readable.getDate(); // returns 15
-                        var y = readable.getFullYear();
-                        var h = readable.getHours();
-                        var mi = readable.getMinutes();
-                        var mlong = months[m];
-                        var fulldate =
-                          d + ' ' + mlong + ' ' + y;
-                        var time =  h + ':' + mi;
-    return(
-    <tr key={partner._id} style={{display: partner.childTx.length > 0 ? '' : 'None'}}>
-      <td className="tac">{partner.txType}</td>
-      <td className="tac">{partner.state}</td>
-      <td className="tac">{fulldate}</td>
-      <td className="tac">{time}</td>
-      <td className="tac" style={{display:"flex",justifyContent:"center"}}><Button onClick={()=>showDetails(partner)}>Get Details</Button></td>
-      {/* <td className="tac">
+    const isoformat = partner.createdAt;
+    const readable = new Date(isoformat);
+    const m = readable.getMonth(); // returns 6
+    const d = readable.getDate(); // returns 15
+    const y = readable.getFullYear();
+    const h = readable.getHours();
+    const mi = readable.getMinutes();
+    const mlong = months[m];
+    const fulldate = `${d} ${mlong} ${y}`;
+    const time = `${h}:${mi}`;
+    return (
+      <tr
+        key={partner._id}
+        style={{ display: partner.childTx.length > 0 ? '' : 'None' }}
+      >
+        <td className="tac">{partner.txType}</td>
+        <td className="tac">{partner.state}</td>
+
+        <td className="tac">
+          {fulldate} {time}
+        </td>
+        <td className="tac">{partner._id}</td>
+        {/* <td className="tac">{time}</td> */}
+        <td
+          className="tac"
+          style={{ display: 'flex', justifyContent: 'center' }}
+        >
+          <Button onClick={() => showDetails(partner)}>Get Details</Button>
+        </td>
+        {/* <td className="tac">
         <div
           style={{
             display: 'flex',
@@ -246,19 +265,18 @@ function BankPartnerListPage(props) {
           </span>
         </div>
       </td> */}
-    </tr>
+      </tr>
     );
   });
-  const searchlistfunction = (value) => {
-    console.log(value)
+  const searchlistfunction = value => {
+    console.log(value);
     // console.log(this.state.searchrules)
+
     const newfilterdata = copyPartnerList.filter(element =>
-      element.name.toLowerCase().includes(value.toLowerCase()),
+      element.txType.toLowerCase().includes(value.toLowerCase()),
     );
-    setPartnerList(newfilterdata)
-
-
-  }
+    setPartnerList(newfilterdata);
+  };
   return (
     <Wrapper from="bank">
       <Helmet>
@@ -269,6 +287,27 @@ function BankPartnerListPage(props) {
       <Container verticalMargin>
         <SidebarBank />
         <Main>
+          <ActionBar
+            marginBottom="33px"
+            // inputWidth="calc(100% - 241px)"
+            className="clr"
+          >
+            <div className="iconedInput fl">
+              <i className="material-icons">search</i>
+              <input
+                type="text"
+                placeholder="Search"
+                onChange={e => {
+                  searchlistfunction(e.target.value);
+                }}
+              />
+            </div>
+
+            {/* <Button className="addBankButton" flex onClick={this.showPopup}>
+                <i className="material-icons">add</i>
+                <span>Add Branch</span>
+              </Button> */}
+          </ActionBar>
           <Card bigPadding>
             <div className="cardHeader">
               <div className="cardHeaderLeft">
@@ -286,7 +325,8 @@ function BankPartnerListPage(props) {
                     <th>Type</th>
                     <th>State</th>
                     <th>Date</th>
-                    <th>Time</th>
+                    <th>Transaction Id</th>
+                    {/* <th>Time</th> */}
                     <th>Details</th>
                   </tr>
                 </thead>
@@ -301,7 +341,7 @@ function BankPartnerListPage(props) {
       {detailsPopup ? (
         <DetailsPopup
           transaction={Transaction}
-          refresh={()=>refreshPartnertList()}
+          refresh={() => refreshPartnertList()}
           onClose={() => onPopupClose()}
         />
       ) : null}
@@ -309,7 +349,7 @@ function BankPartnerListPage(props) {
         <EnterOTPPopup
           onClose={() => onPopupClose()}
           resend={() => generateOTP(newPartner)}
-          submit={(values) => VerifyOtp(values)}
+          submit={values => VerifyOtp(values)}
         />
       ) : null}
     </Wrapper>
