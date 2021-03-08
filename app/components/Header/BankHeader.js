@@ -64,7 +64,7 @@ class BankHeader extends Component {
                 <Link>
               Back
                 </Link>
-            </A>
+            </A>)
               :
               null
           }
