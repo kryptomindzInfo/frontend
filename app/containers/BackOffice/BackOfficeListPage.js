@@ -273,7 +273,7 @@ function BankPartnerListPage(props) {
     // console.log(this.state.searchrules)
 
     const newfilterdata = copyPartnerList.filter(element =>
-      element.txType.toLowerCase().includes(value.toLowerCase()),
+      element.txType.toLowerCase().includes(value.toLowerCase()) || element.state.toLowerCase().includes(value.toLowerCase()),
     );
     setPartnerList(newfilterdata);
   };
