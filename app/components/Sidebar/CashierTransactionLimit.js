@@ -17,7 +17,7 @@ import Loader from 'components/Loader';
 import MuiCheckbox from '@material-ui/core/Checkbox';
 import TransactionReciept from '../TransactionReciept';
 import FormDialog from '../../components/FormDialog';
-
+import history from 'utils/history';
 import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -62,6 +62,7 @@ class CashierTransactionLimit extends Component {
       openCashierPopup: false,
       sendtooperationalpopup: false,
       closingTime: null,
+      openingTime: null,
       withoutID: false,
       requireOTP: false,
       token,
@@ -988,6 +989,7 @@ class CashierTransactionLimit extends Component {
                 balance: Number(res.data.limit),
                 tomorrow: res.data.isClosed,
                 closingTime: res.data.closingTime,
+                openingTime: res.data.openingTime,
                 cashInHand: res.data.cashInHand,
                 transactionStarted: res.data.transactionStarted,
                 isClosed: res.data.isClosed,
@@ -1203,15 +1205,36 @@ class CashierTransactionLimit extends Component {
                   Open My Counter
               </Button>
             ) : (
-                <Button dashBtn disabled>
-                  Open My Counter
-                </Button>
+              <Button dashBtn disabled>
+              <Row>
+                Counter Opened At 
+               </Row>
+               <Row>
+               {new Date(this.state.openingTime).getHours()}:{new Date(this.state.openingTime).getMinutes()}
+               </Row>
+            </Button>
               )}
           </Col>
         </Row>
         <Row style={{ marginTop: '25%' }}>
           <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
             <FormDialog />
+          </Col>
+        </Row>
+        <Row>
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+            {this.state.transactionStarted && !this.state.isClosed ? (
+              <Button
+                dashBtn
+                onClick={()=>history.push(`/cashier/${this.props.bankName}/pay-bills`)}
+              >
+                Pay Bills
+              </Button>
+            ) : (
+                <Button dashBtn disabled>
+                  Paybills
+                </Button>
+              )}
           </Col>
         </Row>
         <Row>
