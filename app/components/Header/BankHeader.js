@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 // import Logo from './Logo';
-import BankNav from './BankNav';
 import TopBar from './TopBar';
 import Welcome from './Welcome';
 import Container from 'components/Container';
@@ -16,6 +15,7 @@ import {
 } from '../../../app/containers/App/constants';
 
 import { FormattedMessage } from 'react-intl';
+import BankNav from './BankNav';
 import messages from './messages';
 
 const Link = styled.span`
@@ -34,54 +34,52 @@ const token = localStorage.getItem('bankLogged');
 const name = localStorage.getItem('bankName');
 const logo = localStorage.getItem('bankLogo');
 
-var permissions = localStorage.getItem('permissions');
+let permissions = localStorage.getItem('permissions');
 if (permissions != 'all' && permissions != '') {
   permissions = JSON.parse(permissions);
 }
 
 class BankHeader extends Component {
-  
   constructor() {
     super();
     this.state = {
-     logo,
-     name,
-     token
+      logo,
+      name,
+      token
     };
   }
-  
 
-  componentDidMount() {
-    
-  }
-
+  componentDidMount() {}
 
   render() {
     const name = localStorage.getItem('name');
-    const page = this.props.page;
+    const {page} = this.props;
     return (
       <TopBar>
         {/* <Welcome from={toUpperCase(`${'bank'}`)} /> */}
-        <Welcome from="bank"/>
+        <Welcome from="bank" />
         <Container>
-          {
-            page == 'branch' ?
-            <A href={this.props.goto} float="left">
-            <Link>
+          {page == 'branch' ? (
+              <A href={this.props.goto} float="left">
+                <Link>
               Back
-            </Link>
-          </A>
-            :
-            null
+                </Link>
+            </A>)
+              :
+              null
           }
 
           <A href="/bank/dashboard" float="left">
             <div className="bankLogo">
-              <img src={STATIC_URL + this.state.logo} alt="Bank Logo"/>
+              <img
+                src={STATIC_URL + this.state.logo}
+                alt="Bank Logo"
+                style={{ borderRadius: '50%' }}
+              />
             </div>
             <h2>{this.state.name.toUpperCase()}</h2>
           </A>
-          { this.props.middleTitle ? (
+          {this.props.middleTitle ? (
             <div className="middleTitle">{this.props.middleTitle}</div>
           ) : null}
           {page == 'branch' ? null : <BankNav active={this.props.active} />}
