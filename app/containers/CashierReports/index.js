@@ -16,6 +16,7 @@ import Container from 'components/Container';
 import Loader from 'components/Loader';
 import Card from 'components/Card';
 import ActionBar from 'components/ActionBar';
+import PrintIcon from '@material-ui/icons/Print';
 import SidebarCashier from 'components/Sidebar/SidebarCashier';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -25,13 +26,16 @@ import Pagination from 'react-js-pagination';
 import TextInput from 'components/TextInput';
 import Popup from 'components/Popup';
 import Button from 'components/Button';
+import ReactToPrint from 'react-to-print';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import Footer from 'components/Footer';
 import FormGroup from 'components/FormGroup';
 
 import { API_URL, CURRENCY, STATIC_URL } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
+import { getDayOfYear } from 'date-fns';
 
 toast.configure({
   position: 'bottom-right',
@@ -57,14 +61,19 @@ today = today.getTime();
 
 
 
-
-
 export default class CashierDashboard extends Component {
   constructor() {
     super();
     this.state = {
       token,
-      date:new Date(),
+      toggle: 'report',
+      bankName: localStorage.getItem('bankName'),
+      bankLogo: localStorage.getItem('bankLogo'),
+      branchName: localStorage.getItem('branchName'),
+      cashierName: localStorage.getItem('cashierName'),
+      formDate: new Date(),
+      startDate: new Date(),
+      endDate: new Date(),
       otpEmail: email,
       otpMobile: mobile,
       agree: false,
@@ -74,6 +83,7 @@ export default class CashierDashboard extends Component {
       tomorrow: false,
       trans_type: '',
       cashReceived: 0,
+      discripencyTotal:0,
       openingBalance: 0,
       closingBalance: 0,
       cashPaid: 0,
@@ -95,14 +105,21 @@ export default class CashierDashboard extends Component {
       sendMoneyNwtM: [],
       sendMoneyNwtO: [],
       sendMoneyWtNw: [],
-      pending: [],
+      total1: 0,
+      total2: 0,
+      total3: 0,
+      total4: 0,
+      total5: 0,
+      total6: 0,
+      reports: [],
+      datereport: [],
       history: [],
       filter: '',
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
-
+    this.componentRef = React.createRef();
 
     this.child = React.createRef();
   }
@@ -114,25 +131,24 @@ export default class CashierDashboard extends Component {
   warn = () => toast.warn(this.state.notification);
 
   
-  getHistory = async() => {
-    const yesterday = new Date(this.state.date)
-    yesterday.setDate(yesterday.getDate() - 1)
+  getHistory = async(after,before) => {
     try{
       const res = await axios.post(`${API_URL}/cashier/queryTransactionStates`, {
         token: token,
-        status: "1",
-        date_after: yesterday,
-        date_before: this.state.date,
+        bank_id: bankId,
+        status: "2",
+        date_after: after,
+        date_before: before,
         page_start: 0,
         limit: 100
-    });
+      });
       if (res.status == 200) {
         return ({
-          sendMoneyNwtNw:res.data.transactions.filter(trans => trans.txType === "Non Wallet To Non Wallet" && trans.state==="DONE"),
-          sendMoneyNwtW: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Wallet" && trans.state==="DONE"),
-          sendMoneyNwtM: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Merchant" && trans.state==="DONE"),
-          sendMoneyNwtO: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Operational" && trans.state==="DONE"),
-          sendMoneyWtNw:res.data.transactions.filter(trans => trans.txType === "Wallet To Non Wallet" && trans.state==="DONE"),
+          sendMoneyNwtNw:res.data.transactions.filter(trans => trans.txType === "Non Wallet To Non Wallet" ),
+          sendMoneyNwtW: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Wallet" ),
+          sendMoneyNwtM: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Merchant" ),
+          sendMoneyNwtO: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Operational"),
+          sendMoneyWtNw:res.data.transactions.filter(trans => trans.txType === "Wallet To Non Wallet"),
         });
       }
     } catch (err){
@@ -141,6 +157,27 @@ export default class CashierDashboard extends Component {
     
       
   };
+
+  getReport = async(after,before) => {
+    try{
+      const res = await axios.post(`${API_URL}/cashier/getDailyReport`, {
+        token: token,
+        start:after,
+        end: before,
+      });
+      if (res.status == 200) {
+        return ({
+         result:res.data,
+         loading: false,
+        });
+      }
+    } catch (err){
+      console.log(err);
+    }
+    
+      
+  };
+  
 
   getStats = () => {
     axios
@@ -246,26 +283,85 @@ export default class CashierDashboard extends Component {
     )
   };
 
-  componentDidMount= async() => {
+  getData = async() => {
     this.setState(
       {
         loading:true,
       }
     );
+    const after = new Date(this.state.formDate);
+    const before = new Date(this.state.formDate);
+    after.setHours(0,0,0,0);
+    before.setHours(23,59,59,0);
     const branch=await this.getBranchByName();
     this.getStats();
-    // const allHistory = await this.getHistory();
+    const allHistory = await this.getHistory(after,before);
+    const report = await this.getReport(after,before);
+    console.log(report.result);
     this.setState(
       {
+        datereport: report.result.reports,
         branchDetails:branch,
-        // sendMoneyNwtNw: allHistory.sendMoneyNwtNw.reverse(),
-        // sendMoneyNwtW: allHistory.sendMoneyNwtW.reverse(),
-        // sendMoneyNwtM: allHistory.sendMoneyNwtM.reverse(),
-        // sendMoneyNwtO: allHistory.sendMoneyNwtO.reverse(),
-        // sendMoneyWtNw: allHistory.sendMoneyWtNw.reverse(),
+        total1: (allHistory.sendMoneyNwtNw.reduce(
+          function(a, b){
+            return a + (b.childTx[0].transaction.amount);
+          }, 0)),
+        total2: (allHistory.sendMoneyNwtW.reduce(
+          function(a, b){
+            return a + (b.childTx[0].transaction.amount);
+          }, 0)),
+        total3: (allHistory.sendMoneyNwtM.reduce(
+          function(a, b){
+            return a + (b.childTx[0].transaction.amount);
+          }, 0)),
+        total4: (allHistory.sendMoneyNwtO.reduce(
+          function(a, b){
+            return a + (b.childTx[0].transaction.amount);
+          }, 0)),
+        total5: (allHistory.sendMoneyWtNw.reduce(
+          function(a, b){
+            return a + (b.childTx[0].transaction.amount);
+          }, 0)),
+        sendMoneyNwtNw: allHistory.sendMoneyNwtNw.reverse(),
+        sendMoneyNwtW: allHistory.sendMoneyNwtW.reverse(),
+        sendMoneyNwtM: allHistory.sendMoneyNwtM.reverse(),
+        sendMoneyNwtO: allHistory.sendMoneyNwtO.reverse(),
+        sendMoneyWtNw: allHistory.sendMoneyWtNw.reverse(),
         loading:false,
       }
     );
+
+  };
+
+  getDailyReport = async() => {
+    this.setState(
+      {
+        loading:true,
+      }
+    );
+    const after = new Date(this.state.startDate);
+    const before = new Date(this.state.endDate);
+    after.setHours(0,0,0,0);
+    before.setHours(23,59,59,0);
+    const branch = await this.getBranchByName();
+    const report = await this.getReport(after,before);
+    console.log(report.result.reports);
+    this.setState(
+      {
+        discripencyTotal: (report.result.reports.reduce(
+          function(a, b){
+            return a + b.descripency;
+          }, 0)),
+        branchDetails:branch,
+        reports:report.result.reports,
+        loading:false,
+      }
+    );
+
+  };
+
+  componentDidMount= async() => {
+    this.getData();
     
   };
 
@@ -326,13 +422,49 @@ export default class CashierDashboard extends Component {
           from="cashier"
         />
         <Container verticalMargin>
+        <div
+                style={{
+                  justifyContent: 'left',
+                  marginTop: '10px',
+                  marginBottom: '10px',
+                }}
+              >
+                <Row>
+                  <Col cW="10%">
+                      <Button
+                        className={this.state.toggle === 'report' ? 'active' : ''}
+                        onClick={()=>{this.setState({
+                          toggle:'report'
+                        })}}
+                        style={{marginLeft:'5px'}}
+                      >
+                      Transaction Report
+                    </Button>
+                  </Col>
+                  <Col cW="10%">
+                      <Button
+                        className={this.state.toggle === 'discrepancy' ? 'active' : ''}
+                        onClick={()=>{this.setState({
+                          toggle:'discrepancy'
+                        })}}
+                        style={{marginLeft:'5px'}}
+                      >
+                       Dicripency Report
+                      </Button>
+                  </Col>
+                  <Col cW="80%"></Col>
+                </Row>
+              </div>
+          
         <ActionBar
               marginBottom="15px"
               marginTop="15px"
               inputWidth="calc(100% - 241px)"
               className="clr"
             >
-              <h4 style={{color:"green"}}><b>Date</b></h4>
+              {this.state.toggle === 'report' ? (
+              <div>
+                <h4 style={{color:"green"}}><b>Date</b></h4>
                   <Row>
                     <Col cW='35%'>
                       <FormGroup>
@@ -351,11 +483,11 @@ export default class CashierDashboard extends Component {
                         shrink: true,
                         }}
                         value={
-                          this.state.date
+                          this.state.formDate
                           }
                         onChange={date =>
                         this.setState({
-                              date: date,
+                          formDate: date,
                         })
                         }
                          KeyboardButtonProps={{
@@ -365,18 +497,128 @@ export default class CashierDashboard extends Component {
                       </MuiPickersUtilsProvider>
                       </FormGroup>
                     </Col>
-
                     <Col cw='25%'>
                       <Button 
                         style={{padding:'9px', color:'white', backgroundColor:'#417505'}}
-                        onClick={()=>this.getHistory()}
+                        onClick={()=>this.getData()}
                       >
                         Get Report
                       </Button>
                     </Col>
                     <Col cW='40%'></Col>
                   </Row>
-            </ActionBar>
+              </div>
+              ) : (
+                <div>
+                  <h4 style={{color:"green"}}><b>Date Range</b></h4>
+                  <Row>
+                    <Col cW='25%'>
+                      <FormGroup>
+                      <MuiPickersUtilsProvider
+                       utils={DateFnsUtils}
+                                                >
+                        <KeyboardDatePicker
+                        id="date-picker-dialog"
+                        size="small"
+                        maxDate={new Date()}
+                        fullWidth
+                        inputVariant="outlined"
+                        format="dd/MM/yyyy"
+                        required
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                        value={
+                          this.state.startDate
+                          }
+                        onChange={date =>
+                        this.setState({
+                          startDate: date,
+                        })
+                        }
+                         KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                                                    }}
+                        />
+                      </MuiPickersUtilsProvider>
+                      </FormGroup>
+                    </Col>
+                    <Col cW='2%'> to </Col>
+                    <Col cW='25%'>
+                      <FormGroup>
+                      <MuiPickersUtilsProvider
+                       utils={DateFnsUtils}
+                                                >
+                        <KeyboardDatePicker
+                        id="date-picker-dialog"
+                        size="small"
+                        maxDate={new Date()}
+                        fullWidth
+                        inputVariant="outlined"
+                        format="dd/MM/yyyy"
+                        required
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                        value={
+                          this.state.endDate
+                          }
+                        onChange={date =>
+                        this.setState({
+                          endDate: date,
+                        })
+                        }
+                         KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                                                    }}
+                        />
+                      </MuiPickersUtilsProvider>
+                      </FormGroup>
+                    </Col>
+                    <Col cw='25%'>
+                      <Button 
+                        style={{padding:'9px', color:'white', backgroundColor:'#417505'}}
+                        onClick={()=>this.getDailyReport()}
+                      >
+                        Get Report
+                      </Button>
+                    </Col>
+                    <Col cW='13%'></Col>
+                  </Row>
+
+
+                </div>
+              )}
+        <Row>
+          <Col cW='90%'></Col>
+          <Col cW='10%'>
+            <ReactToPrint
+              style={{float:'right'}}
+            trigger={() => <Button ><PrintIcon/>  Print</Button>}
+            content={() => this.componentRef.current}
+          />
+          </Col>
+        </Row>
+        </ActionBar>
+        <div ref={this.componentRef}>
+        <Card marginBottom="20px" buttonMarginTop="5px" smallValue style={{height:'90px'}}>
+        <Row>
+          <Col>
+          <h4 style={{color:"green",marginBottom:"20px" }}><b>Bank Name : </b>{this.state.bankName} </h4> 
+        </Col>
+        <Col>
+          <h4 style={{color:"green", marginBottom:"20px"}}><b>Branch Name : </b>{this.state.branchName}</h4>      
+        </Col>
+        <Col>
+          <h4 style={{color:"green", marginBottom:"20px"}}><b>Cashier Name : </b>{this.state.cashierName}</h4>   
+        </Col>
+      </Row>
+      </Card>
+
+     
+      
+      {this.state.toggle === 'report' ? (
+      <div>
         <div className="clr">
           <Row style={{backgroundColor:"lightgray"}}>
             <Col >
@@ -478,7 +720,94 @@ export default class CashierDashboard extends Component {
               </Card>
             </Col>
           </Row>
-          </div>
+          <Row style={{backgroundColor:"lightgray", marginTop:'20px'}}>
+            <Col >
+            <Card
+                horizontalMargin="7px"
+                cardWidth="-webkit-fill-available"
+                h4FontSize="16px"
+                smallValue
+                textAlign="center"
+                col
+                style={{backgroundColor:"lightgray"}}
+              >
+                <h4>Closing Balance</h4>
+                <div className="cardValue">
+                  {
+                    <span> {CURRENCY} {this.state.datereport.length > 0 ? this.state.datereport[0].closing_balance : "-"}</span>
+                  }
+                </div>
+              </Card>
+            </Col>
+            <Col>
+            <Card
+                horizontalMargin="7px"
+                cardWidth="-webkit-fill-available"
+                h4FontSize="16px"
+                smallValue
+                textAlign="center"
+                col
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
+              >
+                <h4>Closing Time</h4>
+                <div className="cardValue">
+                {
+                    <span>{this.state.datereport.length > 0 ? `${new Date(this.state.datereport[0].closing_time).getHours()}:${new Date(this.state.datereport[0].closing_time).getMinutes()}` : "-:--"}</span>
+                }
+                </div>
+              </Card>
+            </Col>
+            <Col>
+            <Card
+                horizontalMargin="7px"
+                cardWidth="-webkit-fill-available"
+                h4FontSize="16px"
+                smallValue
+                textAlign="center"
+                col
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
+              >
+                <h4>Report Date</h4>
+                <div className="cardValue">
+                 {`${new Date().getDate()}/${new Date().getMonth()-1}/${new Date().getFullYear()}`}
+                </div>
+              </Card>
+            </Col>
+            <Col>
+            <Card
+                horizontalMargin="7px"
+                cardWidth="-webkit-fill-available"
+                smallValue
+                h4FontSize="16px"
+                textAlign="center"
+                col
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
+              >
+                <h4>Opening Time</h4>
+                <div className="cardValue">
+                {
+                    <span>{this.state.datereport.length > 0 ? `${new Date(this.state.datereport[0].opening_time).getHours()}:${new Date(this.state.datereport[0].opening_time).getMinutes()}` : "-:--"}</span>
+                }
+                </div>
+              </Card>
+            </Col>
+            
+          </Row>
+         
+         </div>
+
             <Card style={{ marginTop: '50px' }}>
             <div>
                 <h3 style={{color:"green"}}>Send Money (Cash to Cash)</h3>
@@ -489,12 +818,13 @@ export default class CashierDashboard extends Component {
                   textAlign="left"
                 >
                   <thead>
-                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
                       </thead>
                       <tbody>
                       {this.state.sendMoneyNwtNw.length > 0
                           ? this.state.sendMoneyNwtNw.map( (b,i) => {
                             var fulldate = dis.formatDate(b.createdAt);
+                            
                             return (
                             <tr key={i} >
                               <td style={{textAlign:"center"}}>
@@ -507,9 +837,6 @@ export default class CashierDashboard extends Component {
                                 <div className="labelGrey">
                                   Transfered From {b.childTx[0].transaction.from_name} to {b.childTx[0].transaction.to_name}
                                 </div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">Cash to Cash</div>
                               </td>
                               <td style={{textAlign:"center"}}>
                                 <div className="labelGrey">Completed</div>
@@ -525,6 +852,16 @@ export default class CashierDashboard extends Component {
                           })
                           : null
                         }
+                        <tr style={{textAlign:"center", backgroundColor:'green'}}>
+                          <td style={{textAlign:"center", color:'white'}}><b>Total</b></td>
+                          <td style={{textAlign:"center"}}></td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> 
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.total1}</b></div>
+                          </td>
+                        </tr>
                     </tbody>
                 </Table>
             </div>
@@ -539,7 +876,7 @@ export default class CashierDashboard extends Component {
                   textAlign="left"
                 >
                   <thead>
-                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
                       </thead>
                       <tbody>
                       {this.state.sendMoneyNwtW.length > 0
@@ -559,9 +896,6 @@ export default class CashierDashboard extends Component {
                                 </div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">Cash to Cash</div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
                                 <div className="labelGrey">Completed</div>
                               </td>
                               <td style={{textAlign:"center"}}>
@@ -575,6 +909,16 @@ export default class CashierDashboard extends Component {
                           })
                           : null
                         }
+                        <tr style={{textAlign:"center", backgroundColor:'green'}}>
+                          <td style={{textAlign:"center", color:'white'}}><b>Total</b></td>
+                          <td style={{textAlign:"center"}}></td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> 
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.total2}</b></div>
+                          </td>
+                        </tr>
                     </tbody>
                 </Table>
             </div>
@@ -582,7 +926,7 @@ export default class CashierDashboard extends Component {
             
             <Card style={{ marginTop: '50px' }}>
             <div>
-                <h3 style={{color:"green"}}>Send Money (Cash to Merchant)</h3>
+                <h3 style={{color:"green"}}>Send Money (Cash bill payment to Merchant)</h3>
                 <Table
                   marginTop="34px"
                   marginBottom="34px"
@@ -590,7 +934,7 @@ export default class CashierDashboard extends Component {
                   textAlign="left"
                 >
                   <thead>
-                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
                       </thead>
                       <tbody>
                       {this.state.sendMoneyNwtM.length > 0
@@ -610,9 +954,6 @@ export default class CashierDashboard extends Component {
                                 </div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">Cash to Cash</div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
                                 <div className="labelGrey">Completed</div>
                               </td>
                               <td style={{textAlign:"center"}}>
@@ -626,6 +967,16 @@ export default class CashierDashboard extends Component {
                           })
                           : null
                         }
+                        <tr style={{textAlign:"center", backgroundColor:'green'}}>
+                          <td style={{textAlign:"center", color:'white'}}><b>Total</b></td>
+                          <td style={{textAlign:"center"}}></td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> 
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.total3}</b></div>
+                          </td>
+                        </tr>
                     </tbody>
                 </Table>
             </div>
@@ -633,7 +984,7 @@ export default class CashierDashboard extends Component {
           
             <Card style={{ marginTop: '50px' }}>
             <div>
-                <h3 style={{color:"green"}}>Send Money (Cash to Operational Wallet)</h3>
+                <h3 style={{color:"green"}}>Send Money (Cash to Operational wallet)</h3>
                 <Table
                   marginTop="34px"
                   marginBottom="34px"
@@ -641,7 +992,7 @@ export default class CashierDashboard extends Component {
                   textAlign="left"
                 >
                   <thead>
-                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
                       </thead>
                       <tbody>
                       {this.state.sendMoneyNwtO.length > 0
@@ -661,9 +1012,6 @@ export default class CashierDashboard extends Component {
                                 </div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">Cash to Cash</div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
                                 <div className="labelGrey">Completed</div>
                               </td>
                               <td style={{textAlign:"center"}}>
@@ -677,6 +1025,16 @@ export default class CashierDashboard extends Component {
                           })
                           : null
                         }
+                         <tr style={{textAlign:"center", backgroundColor:'green'}}>
+                          <td style={{textAlign:"center", color:'white'}}><b>Total</b></td>
+                          <td style={{textAlign:"center"}}></td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> 
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.total4}</b></div>
+                          </td>
+                        </tr>
                     </tbody>
                 </Table>
             </div>
@@ -691,14 +1049,15 @@ export default class CashierDashboard extends Component {
                   textAlign="left"
                 >
                   <thead>
-                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
                       </thead>
                       <tbody>
                       {this.state.sendMoneyNwtNw.length > 0
                           ? this.state.sendMoneyNwtNw.map( (b,i) => {
                             var fulldate = dis.formatDate(b.createdAt);
                             var child = b.childTx.filter(c=>c.transaction.note === "Cashier claim Money");
-                            return (
+                            if(child.length>0){
+                              return (
                             <tr key={i} >
                               <td style={{textAlign:"center"}}>
                                 <div className="labelGrey">{fulldate.date}</div>
@@ -712,9 +1071,6 @@ export default class CashierDashboard extends Component {
                                 </div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">Cash to Cash</div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
                                 <div className="labelGrey">Completed</div>
                               </td>
                               <td style={{textAlign:"center"}}>
@@ -725,9 +1081,20 @@ export default class CashierDashboard extends Component {
                               </td>
                             </tr>
                             )
+                            }
                           })
                           : null
                         }
+                         <tr style={{textAlign:"center", backgroundColor:'green'}}>
+                          <td style={{textAlign:"center", color:'white'}}><b>Total</b></td>
+                          <td style={{textAlign:"center"}}></td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}>
+                          <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.total1}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}> </td>
+                        </tr>
                     </tbody>
                 </Table>
             </div>
@@ -735,7 +1102,7 @@ export default class CashierDashboard extends Component {
           
             <Card style={{ marginTop: '50px' }}>
             <div>
-                <h3 style={{color:"green"}}>Claim Money (Wallet to Cash)</h3>
+                <h3 style={{color:"green"}}>Claim Money from Wallet</h3>
                 <Table
                   marginTop="34px"
                   marginBottom="34px"
@@ -743,7 +1110,7 @@ export default class CashierDashboard extends Component {
                   textAlign="left"
                 >
                   <thead>
-                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Type</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
+                        <tr><th>Date</th><th>Transaction ID</th> <th>Description</th><th>Transaction Status</th><th>Debit</th><th>Credit</th></tr>
                       </thead>
                       <tbody>
                       {this.state.sendMoneyWtNw.length > 0
@@ -764,9 +1131,6 @@ export default class CashierDashboard extends Component {
                                 </div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey">Cash to Cash</div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
                                 <div className="labelGrey">Completed</div>
                               </td>
                               <td style={{textAlign:"center"}}>
@@ -780,181 +1144,102 @@ export default class CashierDashboard extends Component {
                           })
                           : null
                         }
+                        <tr style={{textAlign:"center", backgroundColor:'green'}}>
+                          <td style={{textAlign:"center", color:'white'}}><b>Total</b></td>
+                          <td style={{textAlign:"center"}}></td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.total5}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}></td>
+                        </tr>
                     </tbody>
                 </Table>
             </div>
             </Card>
-          
-        </Container>
-        {this.state.historyPop ? (
-          <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
+      </div>
+      ):(
+        <Card style={{ marginTop: '50px' }}>
             <div>
-              <h1>Transaction Details ({this.state.popmaster})</h1>
-              {this.state.historyLoading ? (
-                <Button filledBtn disabled>
-                  <Loader />
-                </Button>
-              ) : (
-                  <Table marginTop="34px" smallTd textAlign="left">
-                    <tbody>
-                      {this.state.popresult && this.state.popresult.length > 0
-                        ? this.state.popresult.map(function (b) {
-                          var isoformat = new Date(
-                            b.tx_data.tx_timestamp.seconds * 1000,
-                          ).toISOString();
-                          var fulldate = dis.formatDate(isoformat);
-
-                          return dis.state.filter == b.tx_data.tx_type ||
-                            dis.state.filter == '' ? (
-                              <tr key={b.tx_data.tx_id}>
-                                <td>
-                                  <div className="labelGrey">{fulldate}</div>
-                                </td>
-                                <td>
-                                  <div className="labelBlue">
-                                    {b.tx_data.tx_details}
-                                  </div>{' '}
-                                  <div className="labelSmallGrey">Completed</div>
-                                </td>
-                                <td className="right">
-                                  <div className="labelGrey">
-                                    {b.tx_data.tx_type == 'DR' ? (
-                                      <span>
-                                        {CURRENCY} -{b.amount}
-                                      </span>
-                                    ) : (
-                                        <span>
-                                          {CURRENCY} {b.amount}
-                                        </span>
-                                      )}
-                                  </div>
-                                </td>
-                                <td>{b.tx_data.child_id}</td>
-                              </tr>
-                            ) : null;
-                        })
-                        : null}
+                <h3 style={{color:"green"}}> Dicripency Report</h3>
+                <Table
+                  marginTop="34px"
+                  marginBottom="34px"
+                  smallTd
+                  textAlign="left"
+                >
+                  <thead>
+                        <tr><th>Date</th><th>Opening Time</th> <th>Opening Balance</th><th>System closing balance </th><th>Closing Balance</th><th>Discripancy</th><th>Remark</th><th>Closing Time</th></tr>
+                      </thead>
+                      <tbody>
+                      {this.state.reports.length > 0
+                          ? this.state.reports.map( (b,i) => {
+                            var fulldate = dis.formatDate(b.created_at);
+                             return (
+                            <tr key={i} >
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{fulldate.date}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{b.opening_time ? `${new Date(b.opening_time).getHours()}:${new Date(b.opening_time).getMinutes()}` : '0:00'}</div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">
+                                  {b.opening_balance ? b.opening_balance.toFixed(2) : 0}
+                                </div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">
+                                  {b.closing_balance && b.descripency ? (b.closing_balance+b.descripency).toFixed(2) : 0}
+                                </div>
+                              </td>
+                              
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">
+                                  {b.closing_balance ? b.closing_balance.toFixed(2) : 0}
+                                </div>
+                              </td>
+                              <td style={{textAlign:"center"}}> 
+                                <div className="labelGrey">
+                                {b.descripency ? b.descripency.toFixed(2) : 0}
+                                </div>
+                              </td>
+                              <td style={{textAlign:"center"}}> 
+                               <div className="labelGrey">
+                                {b.note ? b.note : 0}
+                               </div>
+                             </td>
+                             <td style={{textAlign:"center"}}>
+                                <div className="labelGrey">{b.closing_time ? `${new Date(b.closing_time).getHours()}:${new Date(b.closing_time).getMinutes()}` : '-:--'}</div>
+                              </td>
+                            </tr>
+                            )
+                            
+                            
+                          })
+                          : null
+                        }
+                        <tr style={{textAlign:"center", backgroundColor:'green'}}>
+                          <td style={{textAlign:"center", color:'white'}}><b>Total</b></td>
+                          <td style={{textAlign:"center"}}></td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> 
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.discripencyTotal.toFixed(2)}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}> </td>
+                          <td style={{textAlign:"center"}}> </td>
+                        </tr>
                     </tbody>
-                  </Table>
-                )}
+                </Table>
             </div>
-          </Popup>
-        ) : null}
-
-        {this.state.openCashierPopup ? (
-          <Popup close={this.closePopup.bind(this)} accentedH1>
-            {this.state.showOpeningOTP ? (
-              <div>
-                <h1>Verify OTP</h1>
-                <form action="" method="post" onSubmit={this.verifyOpeningOTP}>
-                  <FormGroup>
-                    <label>OTP*</label>
-                    <TextInput
-                      type="text"
-                      name="otp"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.otp}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  {this.verifyEditOTPLoading ? (
-                    <Button filledBtn marginTop="50px" disabled>
-                      <Loader />
-                    </Button>
-                  ) : (
-                      <Button filledBtn marginTop="50px">
-                        <span>Verify</span>
-                      </Button>
-                    )}
-
-                  <p className="resend">
-                    Wait for <span className="timer">{this.state.timer}</span>{' '}
-                    to{' '}
-                    {this.state.resend ? (
-                      <span className="go" onClick={this.generateOTP}>
-                        Resend
-                      </span>
-                    ) : (
-                        <span>Resend</span>
-                      )}
-                  </p>
-                </form>
-              </div>
-            ) : (
-                <div>
-                  <h1>Open Cashier</h1>
-                  <form action="" method="post" onSubmit={this.addOpeningBalance}>
-
-
-                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
-
-                      <Col cW="20%" textAlign="right">
-                        <strong>Opening for the day</strong>
-                      </Col>
-                      <Col cW="20%" textAlign="center">
-                        :
-                    </Col>
-                      <Col cW="35%">
-                        {
-                          currDate
-                        }
-                        {/* {Date.now().toISOString()} */}
-
-                      </Col>
-                    </Row>
-
-                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
-
-                      <Col cW="20%" textAlign="right">
-                        <strong>Cash in Hand</strong>
-                      </Col>
-                      <Col cW="20%" textAlign="center">
-                        :
-                    </Col>
-                      <Col cW="35%">
-                        {
-                          this.state.openingBalance + this.state.cashReceived - this.state.cashPaid
-                        }
-                      </Col>
-                    </Row>
-                    <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>
-                      <Col cW="20%" textAlign="right">
-                        <strong></strong>
-                      </Col>
-                      <Col cW="20%" textAlign="center">
-
-                      </Col>
-                      <Col cW="35%">
-
-                      </Col>
-                    </Row>
-
-
-                    <div style={{
-                      marginTop: '20px',
-                      fontSize: '18px',
-                      textAlign: 'center'
-                    }}>
-                      <input type="checkbox"
-                        name="agree"
-                        value={this.state.agree}
-                        checked={this.state.agree}
-                        required
-                        onClick={this.handleCheckbox} />  Agree to the opening balance?
-                  </div>
-
-
-                    <Button filledBtn marginTop="50px">
-                      <span>Open</span>
-                    </Button>
-
-                  </form>
-                </div>
-              )}
-          </Popup>
-        ) : null}
+            </Card>
+      )}
+      </div>    
+      </Container>
+      <Footer bankname={this.state.bankName} banklogo={this.state.bankLogo}/>
       </Wrapper>
     );
   }
