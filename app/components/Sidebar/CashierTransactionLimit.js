@@ -820,7 +820,7 @@ class CashierTransactionLimit extends Component {
     });
     let API = "";
     if (this.state.interbank) {
-      API = 'cashier/interBank/claimMoney';
+      API = 'cashier/interBank/cashierClaimMoney';
     } else {
       API = 'cashierClaimMoney';
     }

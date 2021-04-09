@@ -526,7 +526,7 @@ getTransactions = async(after,before) => {
                     col
                   >
                     <h4>Commision</h4>
-                    <div className="cardValue">
+                    <div>
                       {CURRENCY}  {this.state.commissionGenerated.toFixed(2)}
                     </div>
                   </Card>

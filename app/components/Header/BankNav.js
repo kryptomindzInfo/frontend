@@ -66,11 +66,11 @@ class BankNav extends Component {
               Announcements
             </Link>
           </A>
-          <A href="/bank/backoffice">
+          {/* <A href="/bank/backoffice">
             <Link active={backoffice}>
               <FormattedMessage {...messages.bmenu3} />
             </Link>
-          </A>
+          </A> */}
           <A>
             <Link active={reports}>
               <FormattedMessage {...messages.menu4} />
