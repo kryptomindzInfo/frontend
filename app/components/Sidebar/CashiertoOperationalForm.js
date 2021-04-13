@@ -204,9 +204,7 @@ const CashierToWalletForm = ({ close }) => {
     values.receiverIdentificationAmount = receiverIdentificationAmount
     values.isInclusive = isInclusive
     values.walletId = walletId
-    delete values.amount
-    delete values.is_inclusive
-    delete values.wallet_id
+
     let API = "";
     if (interbank) {
       API = "cashier/interBank/sendToOperational"

@@ -150,7 +150,7 @@ export default class CashierDashboard extends Component {
         return ({
           sendMoneyNwtNw:res.data.transactions.filter(trans => trans.txType === "Non Wallet To Non Wallet" ),
           sendMoneyNwtW: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Wallet" ),
-          sendMoneyNwtM: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Merchant" ),
+          sendMoneyNwtM: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Merchant" || trans.txType === "Inter Bank Non Wallet To Merchant" ),
           sendMoneyNwtO: res.data.transactions.filter(trans => trans.txType === "Non Wallet to Operational"),
           sendMoneyWtNw:res.data.transactions.filter(trans => trans.txType === "Wallet To Non Wallet"),
         });
@@ -619,26 +619,17 @@ export default class CashierDashboard extends Component {
         </ActionBar>
         <div ref={this.componentRef}>
         <Card marginBottom="20px" buttonMarginTop="5px" smallValue style={{height:'90px'}}>
-        <Row>
-        <Col>
-          <h4 style={{color:"green",marginBottom:"20px" }}><b>Bank Name : </b>{this.state.bankName} </h4> 
-          </Col>
-          <Col>
-          <h4 style={{color:"green",marginBottom:"20px" }}><b>Bank Name : </b>{this.state.bankName}</h4> 
-          </Col>
-          </Row>
           <Row>
-          <Col>
-          <h4 style={{color:"green", marginBottom:"20px"}}><b>Branch Name : </b>{this.state.branchName}</h4>      
-          </Col>
-          <Col>
-          <h4 style={{color:"green", marginBottom:"20px"}}><b>Cashier Name : </b>{this.state.cashierName}</h4> 
-             
-          </Col>
+            <Col>
+              <h4 style={{color:"green",marginBottom:"20px" }}><b>Bank Name : </b>{this.state.bankName} </h4> 
+            </Col>
+            <Col>
+              <h4 style={{color:"green", marginBottom:"20px"}}><b>Branch Name : </b>{this.state.branchName}</h4>      
+            </Col>
+            <Col>
+              <h4 style={{color:"green", marginBottom:"20px"}}><b>Cashier Name : </b>{this.state.cashierName}</h4>  
+            </Col>
           </Row>
-          {/* <Row>
-          <Button style={{float:'right'}}>Download as CSV</Button>
-          </Row> */}
       </Card>
 
      

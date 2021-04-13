@@ -80,6 +80,7 @@ export default class CashierDashboard extends Component {
       sentRow: [],
       receivedRow: [],
       allRow: [],
+      invoiceRow: [],
       selectedRow: [],
     };
     this.success = this.success.bind(this);
@@ -345,6 +346,8 @@ getTransactions = async(after,before) => {
       this.setState({ selectedRow: this.state.allRow });
     }else if ( type === 'sent') {
       this.setState({ selectedRow: this.state.sentRow });
+    }else if ( type === 'invoice') {
+      this.setState({ selectedRow: this.state.invoiceRow });
     }else{
       console.log(this.state.receivedRow);
       this.setState({ selectedRow: this.state.receivedRow });
@@ -364,6 +367,7 @@ getTransactions = async(after,before) => {
       allRow: transactions.data,
       receivedRow: transactions.data.filter(val=> val.txType === 'Non Wallet To Non Wallet'),
       sentRow: transactions.data.filter(val=> val.txType === 'Non Wallet to Wallet' || val.txType === 'Non Wallet To Non Wallet'),
+      invoiceRow: transactions.data.filter(val=> val.txType === 'Non Wallet To Merchant' || val.txType === 'Inter Bank Non Wallet To Merchant'),
       loading: transactions.loading,
     });
   };
@@ -453,8 +457,9 @@ getTransactions = async(after,before) => {
           <Main>
 
             <div className="clr">
-              <Row>
-                <Col>
+              <Container>
+              <Row >
+                <Col style={{marginLeft:'35px'}}>
                   <Card
                     horizontalMargin="7px"
                     cardWidth="170px"
@@ -532,6 +537,7 @@ getTransactions = async(after,before) => {
                   </Card>
                 </Col>
               </Row>
+              </Container>
             </div>
 
             <Card bigPadding style={{marginTop: '50px'}}>
@@ -563,7 +569,7 @@ getTransactions = async(after,before) => {
                   </div>
                   <div
                     className="menuTabs"
-                    onClick={() => this.filterData('received')}
+                    onClick={() => this.filterData('invoice')}
                   >
                     Invoices Paid
                   </div>

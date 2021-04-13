@@ -285,10 +285,11 @@ export default class BranchDashboard extends Component {
   };
 
   showAssignPopup = v => {
+    console.log(v);
     this.setState({
       assignPop: true,
       name: v.name,
-      code: v.code,
+      code: v.bcode,
       working_from: v.working_from,
       working_to: v.working_to,
       per_trans_amt: v.per_trans_amt,
@@ -1202,7 +1203,7 @@ export default class BranchDashboard extends Component {
                                 {b.closing_balance.toFixed(2)}
                               </td>
                               <td>
-                                {(b.closing_balance-b.cash_in_hand).toFixed(2)}
+                                0
                               </td>
 
                             <td className="tac bold green">
