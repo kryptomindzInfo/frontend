@@ -94,6 +94,7 @@ export default class BranchDashboard extends Component {
       perPage: 20,
       totalCount: 100,
       allhistory: [],
+      cashierStats: [],
       activePage: 1,
       active: 'Active',
       trans_from: '',
@@ -781,7 +782,6 @@ export default class BranchDashboard extends Component {
           let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
           let total = res.data.totalCashier == null ? 0 : res.data.totalCashier;
           this.setState({
-            loading: false,
             totalCashier: total,
             cashReceived: received.toFixed(2),
             cashPaid: paid.toFixed(2),
@@ -839,7 +839,7 @@ export default class BranchDashboard extends Component {
   };
 
 
-  getCashiers = () => {
+  getCashiers = async() => {
     let apiType = "";
     if (this.props.apitype === 'bank' || this.props.apitype === 'branch'){
       if( localStorage.getItem('admin') === true){
@@ -850,22 +850,22 @@ export default class BranchDashboard extends Component {
     }else{
       apiType = this.props.apitype;
     }
-    axios
-      .post(`${API_URL}/${this.props.apitype}/getAll`, {
+    try {
+      const res = await axios.post(`${API_URL}/${this.props.apitype}/getAll`, {
         page: 'cashier',
         token: this.state.token,
         where: { branch_id: this.state.bid },
-      })
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res.data);
-          this.setState({ loading: false, cashiers: res.data.rows });
-        }
-      })
-      .catch(err => { });
+      });
+      if (res.status == 200) {
+        return(res.data.rows );
+      }
+    } catch(err){
+      console.log(err);
+    }
+    
   };
 
-  getUsers = () => {
+  getUsers = async() => {
     let apiType = "";
     if (this.props.apitype === 'partner' || this.props.apitype === 'partnerBranch'){
       if( localStorage.getItem('admin') === true){
@@ -876,27 +876,77 @@ export default class BranchDashboard extends Component {
     }else{
       apiType = this.props.apitype;
     }
-    axios
+    try {
+      const res = await axios
       .post(`${API_URL}/${this.props.apitype}/getAll`, {
         page: 'bankuser',
         type: 'branch',
         token: this.state.token,
         where: {bank_id:this.state.bankId},
-      })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({ loading: false, users: res.data.rows });
-        }
-      })
-      .catch(err => {
-        
       });
+      if (res.status == 200) {
+        return(res.data.rows );
+      }
+    } catch(err){
+      console.log(err);
+    }
+    
   };
 
-  componentDidMount() {
+  fetchCashierStats = async(id) => {
+    try {
+      const res = await axios
+      .post(`${API_URL}/${this.props.apitype}/cashierStats`, {
+        cashier_id:id,
+        token: this.state.token,
+      });
+      if (res.status == 200) {
+        return(res.data.stats);
+      }
+    } catch(err){
+      console.log(err);
+    }
+    
+  };
 
-    this.getCashiers();
-    this.getUsers();
+  getCashierStats = async(clist) => {
+    const stats = clist.map(async (cashier) => {
+      const cashiedatestats = await this.fetchCashierStats(cashier._id);
+      console.log(cashiedatestats);
+      return (
+        cashiedatestats
+      );
+    });
+    const result= await Promise.all(stats);
+    return({
+      res:result,
+      loading:false,
+    });
+  };
+
+
+  getData = async() => {
+    this.setState(
+      {
+        loading:true,
+      }
+    );
+    const cashiers = await this.getCashiers();
+    const users = await this.getUsers();
+    const cashierstats = await this.getCashierStats(cashiers);
+    this.setState(
+      {
+        cashiers:cashiers,
+        users:users,
+        cashierStats: cashierstats.res,
+        loading:cashierstats.loading,
+      }
+    );
+
+  }
+
+  componentDidMount() {
+    this.getData()
     this.getStats()
   }
 
@@ -1152,6 +1202,8 @@ export default class BranchDashboard extends Component {
                       <th>Paid In Cash</th>
                       <th>Cash Received</th>
                       <th>Revenue Generated</th>
+                      <th>Invoice Paid</th>
+                      <th>Amount of Invoice Paid</th>
                       <th>Cash in Hand</th>
                       <th>Closing Time</th>
                       <th>Closing Balance</th>
@@ -1162,7 +1214,7 @@ export default class BranchDashboard extends Component {
                   </thead>
                   <tbody>
                     {this.state.cashiers && this.state.cashiers.length > 0 && this.state.users
-                      ? this.state.cashiers.map(b => {
+                      ? this.state.cashiers.map((b,i) => {
                         return (
                           <tr key={b._id}>
                              <td style={{display:"inline-flex"}}>
@@ -1192,6 +1244,12 @@ export default class BranchDashboard extends Component {
                               </td>
                               <td>
                                 {(b.fee_generated+b.commission_generated).toFixed(2)}
+                              </td>
+                              <td>
+                                {this.state.cashierStats[i][0].bills_paid}
+                              </td>
+                              <td>
+                                {this.state.cashierStats[i][0].amount_collected}
                               </td>
                               <td className="tac">
                                 {b.cash_in_hand.toFixed(2)}

@@ -660,6 +660,28 @@ export default class CashierDashboard extends Component {
             <Card
                 horizontalMargin="7px"
                 cardWidth="-webkit-fill-available"
+                smallValue
+                h4FontSize="16px"
+                textAlign="center"
+                col
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
+              >
+                <h4>Opening Time</h4>
+                <div className="cardValue">
+                {
+                    <span>{this.state.datereport.length > 0 ? `${new Date(this.state.datereport[0].opening_time).getHours()}:${new Date(this.state.datereport[0].opening_time).getMinutes()}` : "-:--"}</span>
+                }
+                </div>
+              </Card>
+            </Col>
+            <Col>
+            <Card
+                horizontalMargin="7px"
+                cardWidth="-webkit-fill-available"
                 h4FontSize="16px"
                 smallValue
                 textAlign="center"
@@ -695,7 +717,50 @@ export default class CashierDashboard extends Component {
                   {CURRENCY} {this.state.cashPaid.toFixed(2)}
                 </div>
               </Card>
+            </Col> 
+            <Col>
+            <Card
+                horizontalMargin="7px"
+                cardWidth="-webkit-fill-available"
+                h4FontSize="16px"
+                smallValue
+                textAlign="center"
+                col
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
+              >
+                <h4>Invoice Paid</h4>
+                <div className="cardValue">
+                  {CURRENCY} {this.state.sendMoneyNwtM.length}
+                </div>
+              </Card>
             </Col>
+            <Col>
+            <Card
+                horizontalMargin="7px"
+                cardWidth="-webkit-fill-available"
+                h4FontSize="16px"
+                smallValue
+                textAlign="center"
+                col
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
+              >
+                <h4>Amount of Invoice Paid</h4>
+                <div className="cardValue">
+                  {CURRENCY} {this.state.total3}
+                </div>
+              </Card>
+            </Col>
+          
+          </Row>
+          <Row style={{backgroundColor:"lightgray", marginTop:'20px'}}>
             <Col>
             <Card
                 horizontalMargin="7px"
@@ -704,11 +769,7 @@ export default class CashierDashboard extends Component {
                 h4FontSize="16px"
                 textAlign="center"
                 col
-                style={{
-                  backgroundColor:"lightgray",
-                  borderStyle:"hidden hidden hidden solid",
-                  borderColor:"grey"
-                }}
+                style={{backgroundColor:"lightgray"}}
               >
                 <h4>Fee</h4>
                 <div className="cardValue">
@@ -736,8 +797,6 @@ export default class CashierDashboard extends Component {
                 </div>
               </Card>
             </Col>
-          </Row>
-          <Row style={{backgroundColor:"lightgray", marginTop:'20px'}}>
             <Col >
             <Card
                 horizontalMargin="7px"
@@ -746,7 +805,11 @@ export default class CashierDashboard extends Component {
                 smallValue
                 textAlign="center"
                 col
-                style={{backgroundColor:"lightgray"}}
+                style={{
+                  backgroundColor:"lightgray",
+                  borderStyle:"hidden hidden hidden solid",
+                  borderColor:"grey"
+                }}
               >
                 <h4>Closing Balance</h4>
                 <div className="cardValue">
@@ -795,28 +858,6 @@ export default class CashierDashboard extends Component {
                 <h4>Report Date</h4>
                 <div className="cardValue">
                  {`${new Date().getDate()}/${new Date().getMonth()-1}/${new Date().getFullYear()}`}
-                </div>
-              </Card>
-            </Col>
-            <Col>
-            <Card
-                horizontalMargin="7px"
-                cardWidth="-webkit-fill-available"
-                smallValue
-                h4FontSize="16px"
-                textAlign="center"
-                col
-                style={{
-                  backgroundColor:"lightgray",
-                  borderStyle:"hidden hidden hidden solid",
-                  borderColor:"grey"
-                }}
-              >
-                <h4>Opening Time</h4>
-                <div className="cardValue">
-                {
-                    <span>{this.state.datereport.length > 0 ? `${new Date(this.state.datereport[0].opening_time).getHours()}:${new Date(this.state.datereport[0].opening_time).getMinutes()}` : "-:--"}</span>
-                }
                 </div>
               </Card>
             </Col>

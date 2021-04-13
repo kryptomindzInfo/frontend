@@ -82,6 +82,7 @@ export default class CashierDashboard extends Component {
       allRow: [],
       invoiceRow: [],
       selectedRow: [],
+      invoiceAmount: 0,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -368,6 +369,10 @@ getTransactions = async(after,before) => {
       receivedRow: transactions.data.filter(val=> val.txType === 'Non Wallet To Non Wallet'),
       sentRow: transactions.data.filter(val=> val.txType === 'Non Wallet to Wallet' || val.txType === 'Non Wallet To Non Wallet'),
       invoiceRow: transactions.data.filter(val=> val.txType === 'Non Wallet To Merchant' || val.txType === 'Inter Bank Non Wallet To Merchant'),
+      invoiceAmount: (transactions.data.filter(val=> val.txType === 'Non Wallet To Merchant' || val.txType === 'Inter Bank Non Wallet To Merchant').reduce(
+        function(a, b){
+          return a + (b.childTx[0].transaction.amount);
+        }, 0)),
       loading: transactions.loading,
     });
   };
@@ -459,7 +464,7 @@ getTransactions = async(after,before) => {
             <div className="clr">
               <Container>
               <Row >
-                <Col style={{marginLeft:'35px'}}>
+                <Col>
                   <Card
                     horizontalMargin="7px"
                     cardWidth="170px"
@@ -515,6 +520,38 @@ getTransactions = async(after,before) => {
                     textAlign="center"
                     col
                   >
+                    <h4>Invoice Paid</h4>
+                    <div className="cardValue">
+                      {CURRENCY} {this.state.invoiceRow.length}
+                    </div>
+                  </Card>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Card
+                    horizontalMargin="7px"
+                    cardWidth="170px"
+                    smallValue
+                    h4FontSize="16px"
+                    textAlign="center"
+                    col
+                  >
+                    <h4>Amount of Invoice Paid</h4>
+                    <div className="cardValue">
+                      {CURRENCY} {this.state.invoiceAmount}
+                    </div>
+                  </Card>
+                </Col>
+                <Col>
+                  <Card
+                    horizontalMargin="7px"
+                    cardWidth="170px"
+                    smallValue
+                    h4FontSize="16px"
+                    textAlign="center"
+                    col
+                  >
                     <h4>Fee</h4>
                     <div className="cardValue">
                       {CURRENCY} {this.state.feeGenerated.toFixed(2)}
@@ -536,6 +573,23 @@ getTransactions = async(after,before) => {
                     </div>
                   </Card>
                 </Col>
+                <Col>
+                  <Card
+                    horizontalMargin="7px"
+                    cardWidth="170px"
+                    smallValue
+                    h4FontSize="16px"
+                    textAlign="center"
+                    col
+                  >
+                    <h4>Total Revenue</h4>
+                    <div className="cardValue">
+                      {CURRENCY} {(this.state.commissionGenerated+this.state.feeGenerated).toFixed(2)}
+                    </div>
+                  </Card>
+                </Col>
+              
+
               </Row>
               </Container>
             </div>
