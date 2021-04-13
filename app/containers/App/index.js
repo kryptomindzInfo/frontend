@@ -328,11 +328,19 @@ export default function App(props) {
           <Route exact path="/branch/:bank?/setup" component={BranchSetup} />
           <BranchRoute
             exact
+            apitype={'branch'}
             path="/branch/:bank?/dashboard"
             component={BranchDashboard}
           />
+           <BranchRoute
+            apitype='branch'
+            exact
+            path="/branch/:bank?/cashier/reports/:id"
+            component={CashierReports}
+          />
           <BranchRoute
             exact
+            apitype={'branch'}
             path="/branch/:bank?/report"
             component={BranchReports}
           />
@@ -387,6 +395,7 @@ export default function App(props) {
           />
           <CashierRoute
             exact
+            apitype={'cashier'}
             path="/cashier/:bank?/reports"
             component={CashierReports}
           />

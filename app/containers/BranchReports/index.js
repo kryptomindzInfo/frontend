@@ -6,10 +6,13 @@
  */
 import React, { Component } from 'react';
 import axios from 'axios';
+import PrintIcon from '@material-ui/icons/Print';
+import ReactToPrint from 'react-to-print';
 import { Helmet } from 'react-helmet';
-
+import endOfDay from 'date-fns/endOfDay';
+import startOfDay from 'date-fns/startOfDay';
 import { toast } from 'react-toastify';
-
+import BankHeader from 'components/Header/BankHeader';
 import Wrapper from 'components/Wrapper';
 import BranchHeader from 'components/Header/BranchHeader';
 import Container from 'components/Container';
@@ -17,17 +20,16 @@ import Loader from 'components/Loader';
 import Card from 'components/Card';
 import ActionBar from 'components/ActionBar';
 import FormGroup from 'components/FormGroup';
+import A from 'components/A';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import SelectInput from 'components/SelectInput';
+import Footer from 'components/Footer';
 import Main from 'components/Main';
 import Table from 'components/Table';
-import Pagination from 'react-js-pagination';
-import TextInput from 'components/TextInput';
-import Popup from 'components/Popup';
 import Button from 'components/Button';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import history from 'utils/history.js';
 
 import { API_URL, CURRENCY, STATIC_URL } from '../App/constants';
 
@@ -58,57 +60,46 @@ today = today.getTime();
 
 
 export default class BranchReports extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
-      token,
+      token: props.apitype === 'bank' ? localStorage.getItem('bankLogged') : localStorage.getItem('branchLogged'),
+      bid: props.apitype === 'bank' ? props.match.params.id : localStorage.getItem('branchId'),
+      apiType: props.apitype,
+      bankName: localStorage.getItem('bankName'),
+      bankLogo: localStorage.getItem('bankLogo'),
       cashiers:[],
+      branchName: props.apitype === 'bank' ?   JSON.parse(localStorage.getItem('selectedBranch')).name  : localStorage.getItem('branchName'),
       selectedCashierDetails: {},
-
       datearray:[],
       cancelled: 0,
       pending: 0,
+      datestats: [],
       accepted: 0,
-      from:today,
-      selectedCashier:'',
-      to:today,
-      otpEmail: email,
-      otpMobile: mobile,
-      agree: false,
-      showPending: false,
-      loading:false,
-      historyPop: false,
-      tomorrow: false,
-      trans_type: '',
+      from:new Date(),
+      to:new Date(),
       cashReceived: 0,
       openingBalance: 0,
+      paidInCash:0,
       closingBalance: 0,
       cashPaid: 0,
       feeGenerated: 0,
+      cashInhand: 0,
+      pending: 0,
+      accepted: 0,
+      declined: 0,
+      invoicePaid: 0,
+      invoiceAmount:0,
       commissionGenerated: 0,
       closingTime: null,
-      perPage: 20,
-      totalCount: 100,
-      allhistory: {},
-      DR:{},
-      CR:{},
-      activePage: 1,
-      active: 'Active',
-      trans_from: '',
-      trans_to: '',
-      transcount_from: '',
-      sendMoneyNwtNw: [],
-      sendMoneyNwtW: [],
-      sendMoneyNwtM: [],
-      sendMoneyNwtO: [],
-      sendMoneyWtNw: [],
       history: [],
+      datelist: [],
       filter: '',
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
-
+    this.componentRef = React.createRef();
 
     this.child = React.createRef();
   }
@@ -128,12 +119,22 @@ export default class BranchReports extends Component {
   }
 
   getCashiers = async() => {
+    let apiType = "";
+    if (this.props.apitype === 'partner'){
+      if( localStorage.getItem('admin') === true){
+        apiType = 'partnerUser';
+      }else{
+        apiType = 'partner';
+      }
+    }else{
+      apiType = this.props.apitype;
+    }
     try {
-      const res = await axios.post(`${API_URL}/getAll`, {
+      const res = await axios.post(`${API_URL}/${this.props.apitype}/getAll`, {
         page: 'cashier',
-        type: 'branch',
-        token: token,
-        where: { branch_id: bid },
+        type: this.state.apiType,
+        token: this.state.token,
+        where: { branch_id: this.state.bid },
       })
       if (res.status === 200){
         return ({
@@ -146,13 +147,22 @@ export default class BranchReports extends Component {
   };
 
   getCashierDetails = async(id) => {
+    let apiType = "";
+    if (this.props.apitype === 'partner'){
+      if( localStorage.getItem('admin') === true){
+        apiType = 'partnerUser';
+      }else{
+        apiType = 'partner';
+      }
+    }else{
+      apiType = this.props.apitype;
+    }
     try {
-      const res = await axios.post(`${API_URL}/getCashierDetails`, {
+      const res = await axios.post(`${API_URL}/${this.props.apitype}/getCashierDetails`, {
         cashier_id: id,
-        token: token,
+        token: this.state.token,
       })
       if (res.status === 200){
-        console.log(res.data.cashier);
         this.setState({
           selectedCashierDetails: res.data.cashier,
           accepted:res.data.accepted,
@@ -166,7 +176,6 @@ export default class BranchReports extends Component {
   };
 
   getdays = async(from,to) => {
-    console.log(to,from);
     function addDays(date, days) {
       var result = new Date(date);
       result.setDate(result.getDate() + days);
@@ -181,15 +190,130 @@ export default class BranchReports extends Component {
       }
       return dateArray;
     }
-    const res=await getdates();
-    this.setState({
-      datearray:res,
-    })
+    const res = await getdates();
+    return res;
   };
   
+  getDatesBetweenDates = (startDate, endDate) => {
+    let dates = []
+    //to avoid modifying the original date
+    const theDate = new Date(startDate)
+    while (theDate < endDate) {
+      dates = [...dates, new Date(theDate)]
+      theDate.setDate(theDate.getDate() + 1)
+    }
+    return dates;
+  };
+
+  getCashierDailyReport = async(after,before,cashier) => {
+    let apiType = "";
+    if (this.props.apitype === 'partner'){
+      if( localStorage.getItem('admin') === true){
+        apiType = 'partnerUser';
+      }else{
+        apiType = 'partner';
+      }
+    }else{
+      apiType = this.props.apitype;
+    }
+    try{
+      const res = await axios.post(`${API_URL}/${apiType}/getCashierDailyReport`, {
+        token: this.state.token,
+        cashier_id: cashier._id,
+        start:after,
+        end: before,
+      });
+      if (res.status == 200) {
+        return ({
+          cashier: cashier,
+          reports: res.data.reports,
+          accepted: res.data.accepted,
+          pending: res.data.pending,
+          declined: res.data.decline,
+          paid: res.data.invoicePaid,
+          amountpaid : res.data.amountPaid,
+        });
+      }
+    } catch (err){
+      console.log(err);
+    }
+    
+      
+  };
   
 
-  
+  getCashierStatsByDate = async(date,clist) => {
+    const stats = clist.map(async (cashier) => {
+      const after = new Date(date);
+      const before = new Date(date);
+      after.setHours(0,0,0,0);
+      before.setHours(23,59,59,0);
+      const cashiedatestats = await this.getCashierDailyReport(after,before,cashier);
+      return ({cashiedatestats:cashiedatestats});
+    });
+    const result= await Promise.all(stats);
+    return(result);
+  }
+
+  getDateStats = async(dlist,clist) => {
+    const stats = dlist.map(async (date) => {
+      const cashiedatestats = await this.getCashierStatsByDate(date,clist);
+      console.log(cashiedatestats);
+      return ({
+        cashiedatestats: cashiedatestats,
+        totalCih: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_in_hand : 0), 0
+        ).toFixed(2),
+        totalOb: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].opening_balance : 0), 0
+        ).toFixed(2),
+        totalCb: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].closing_balance : 0), 0
+        ).toFixed(2),
+        totalDis: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].descripency : 0), 0
+        ).toFixed(2),
+        totalCr: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_received : 0), 0
+        ).toFixed(2),
+        totalCb: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].closing_balance : 0), 0
+        ).toFixed(2),
+        totalDis: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].descripency : 0), 0
+        ).toFixed(2),
+        totalFee: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].fee_generated : 0), 0
+        ).toFixed(2),
+        totalComm: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].comm_generated : 0), 0
+        ).toFixed(2),
+        totalPic: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].paid_in_cash : 0), 0
+        ),
+        totalRa: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.accepted, 0
+        ),
+        totalRp: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.pending, 0
+        ),
+        totalRd: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.declined, 0
+        ),
+        totalInvoice:  cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.paid, 0
+        ),
+        totalInvoiceAmount:  cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.amountpaid, 0
+        ),
+      })
+    });
+    const result= await Promise.all(stats);
+    return({
+      res:result,
+      loading:false,
+    });
+  };
 
   formatDate = date => {
     var months = [
@@ -223,30 +347,67 @@ export default class BranchReports extends Component {
     )
   };
 
-  componentDidMount= async() => {
+  getData = async() => {
     this.setState(
       {
         loading:true,
       }
     );
     const cashiers = await this.getCashiers();
-    console.log(cashiers);
-    // const branch=await this.getBranchByName();
-    // this.getStats();
-    // const allHistory = await this.getHistory();
+    const start = startOfDay(new Date(this.state.from));
+    const end = endOfDay(new Date(this.state.to));
+    const datelist = await this.getDatesBetweenDates(start, end);
+    const datestats =  await this.getDateStats(datelist,cashiers.cashiers);
+    console.log(datestats);
     this.setState(
       {
         cashiers: cashiers.cashiers,
-        // branchDetails:branch,
-        // sendMoneyNwtNw: allHistory.sendMoneyNwtNw.reverse(),
-        // sendMoneyNwtW: allHistory.sendMoneyNwtW.reverse(),
-        // sendMoneyNwtM: allHistory.sendMoneyNwtM.reverse(),
-        // sendMoneyNwtO: allHistory.sendMoneyNwtO.reverse(),
-        // sendMoneyWtNw: allHistory.sendMoneyWtNw.reverse(),
-        loading:false,
+        datelist: datelist,
+        datestats: datestats.res,
+        openingBalance: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalOb), 0
+        ),
+        closingBalance: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalCb), 0
+        ),
+        paidInCash: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalPic), 0
+        ),
+        cashReceived: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalCr), 0
+        ),
+        cashInhand: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalCih), 0
+        ),
+        feeGenerated: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalFee), 0
+        ),
+        commissionGenerated: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalComm), 0
+        ),
+        pending : datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalRp), 0
+        ),
+        accepted: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalRa), 0
+        ),
+        declined: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalRd), 0
+        ),
+        invoicePaid: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalInvoice), 0
+        ),
+        invoiceAmount:datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalInvoiceAmount), 0
+        ),
+        loading:datestats.loading,
       }
     );
-    
+  }
+
+  componentDidMount= async() => {
+    console.log(localStorage.getItem('admin') === true);
+    this.getData();
   };
 
   render() {
@@ -299,11 +460,36 @@ export default class BranchReports extends Component {
           <meta charSet="utf-8" />
           <title>Reports | AGENCY | E-WALLET</title>
         </Helmet>
+        {this.state.apiType === 'bank' ?   (
+          <BankHeader />
+        ) : (
         <BranchHeader
           active="reports"
           bankName={this.props.match.params.bank}
           bankLogo={STATIC_URL + logo}
         />
+        )}
+         {this.state.apiType === 'bank' ? (
+        
+        <Card >
+        <div style={{display:'flex'}}>
+          <button style={{border:"none",width:"100px",marginLeft:"150px"}} >
+              <A>
+                <u>Reports</u>
+              </A>
+          </button>
+          <button style={{border:"none",width:"100px"}} onClick={() => {
+             history.push(`/partner/branch/dashboard/${this.state.bid}`);
+            }}>
+              <A>
+                DashBoard
+            </A>
+          </button>
+        <h2 style={{color:"green", marginLeft:"320px"  }}><b>{this.state.branchName}</b> </h2> 
+        
+        </div>
+      </Card>
+      ):''}
         <Container verticalMargin>
         <ActionBar
               marginBottom="15px"
@@ -313,10 +499,8 @@ export default class BranchReports extends Component {
               // style={{ display: 'none' }}
             >
               <h4 style={{color:"green"}}><b>Select Date for report</b></h4>
-              <Row>
-                <Col>
                   <Row>
-                    <Col cW='35%'>
+                    <Col cW='20%'>
                       <FormGroup>
                       <MuiPickersUtilsProvider
                        utils={DateFnsUtils}
@@ -325,7 +509,7 @@ export default class BranchReports extends Component {
                         id="date-picker-dialog"
                         label="From"
                         size="small"
-                        minDate={date}
+                        maxDate={this.state.to}
                         fullWidth
                         inputVariant="outlined"
                         format="dd/MM/yyyy"
@@ -348,8 +532,8 @@ export default class BranchReports extends Component {
                       </MuiPickersUtilsProvider>
                       </FormGroup>
                     </Col>
-                    <Col  cW='2%'>-</Col>
-                    <Col cW='35%'>
+                    <Col  cW='2%'>To</Col>
+                    <Col cW='20%'>
                       <FormGroup>
                       <MuiPickersUtilsProvider
                        utils={DateFnsUtils}
@@ -358,7 +542,7 @@ export default class BranchReports extends Component {
                         id="date-picker-dialog"
                         label="To"
                         size="small"
-                        minDate={date}
+                        maxDate={new Date()}
                         fullWidth
                         inputVariant="outlined"
                         format="dd/MM/yyyy"
@@ -381,144 +565,161 @@ export default class BranchReports extends Component {
                       </MuiPickersUtilsProvider>
                       </FormGroup>
                     </Col>
-                    <Col  cW='3%'></Col>
-                    <Col cw='25%'>
+                    <Col  cW='58%'></Col>
+                    {/* <Col cw='25%'>
                       <Button style={{padding:'9px'}} onClick={()=>this.getdays(this.state.from,this.state.to)}>Get Report</Button>
-                    </Col>
+                    </Col> */}
                   </Row>
-                      
-                </Col>
-                <Col>
-                  <Row>
+                  <Row style={{marginTop:'12px'}}>
+                    <Col cW='17%'></Col>
                     <Col cw='50%'>
-                    <FormGroup>
-                        <SelectInput
-                          style={{marginTop:'17px'}}
-                          type="text"
-                          name="country"
-                          // value={this.state.country}
-                          onChange={this.cashierChange}
-                          required
-                          autoFocus
-                        >
-                          <option title="" value="">Select Cashier*</option>
-                          {this.state.cashiers.length>0 ?(
-                            this.state.cashiers.map((c,i)=>{
-                              return(
-                                <option title="" value={c._id}>{c.name}</option>
-                              );
-                            })
-                          ):null}
-                        </SelectInput>
-                        </FormGroup>
+                      <Button style={{padding:'9px'}} onClick={()=>this.getData()}>Get Report</Button>
                     </Col>
-                    <Col cw='50%'>
-                      <Button style={{padding:'9px'}} onClick={()=>this.getCashierDetails(this.state.selectedCashier)}>Filter</Button>
-                    </Col>
+                    <Col cw='25%'></Col>
 
                   </Row>
-                </Col>
-              </Row>
+                  <Row>
+                    <Col cW='90%'></Col>
+                    <Col cW='10%'>
+                      <ReactToPrint
+                        style={{float:'right'}}
+                      trigger={() => <Button ><PrintIcon/>  Print</Button>}
+                      content={() => this.componentRef.current}
+                    />
+                    </Col>
+                  </Row>
             </ActionBar>
-              <div className="clr">
+           <div ref={this.componentRef}>
+            <Card marginBottom="20px" buttonMarginTop="5px" smallValue style={{height:'90px'}}>
               <Row>
                 <Col>
-                <Card
-                horizontalMargin="7px"
-                cardWidth="151px"
-                h4FontSize="16px"
-                smallValue
-                textAlign="center"
-                col
-              >
-                <h4>Paid in cash</h4>
-                <div className="cardValue">
-                  {
-                    <span> {CURRENCY} {this.state.selectedCashierDetails.cash_paid}</span>
-                  }
-                </div>
-              </Card>
-
+                  <h4 style={{color:"green",marginBottom:"20px" }}><b>Bank Name : </b>{this.state.bankName} </h4> 
                 </Col>
                 <Col>
-                <Card
-                  horizontalMargin="7px"
-                  cardWidth="125px"
-                  h4FontSize="16px"
-                  smallValue
-                  textAlign="center"
-                  col
-                >
-                  <h4>Cash Received</h4>
-                  <div className="cardValue">
-                    {CURRENCY} {this.state.selectedCashierDetails.cash_received}
-                  </div>
-                  </Card>
+                  <h4 style={{color:"green", marginBottom:"20px"}}><b>Branch Name : </b>{this.state.branchName}</h4>      
                 </Col>
-                <Col>
+              </Row>
+      
+      </Card>
+            <div className="clr">
+            <Row>
+              <Col>
                 <Card
-                horizontalMargin="7px"
-                cardWidth="125px"
-                h4FontSize="16px"
-                smallValue
-                textAlign="center"
-                col
-              >
-                <h4>Fee Generated</h4>
-                <div className="cardValue">
-                  {CURRENCY} {this.state.selectedCashierDetails.fee_generated}
-                </div>
-              </Card>
-
-                </Col>
-                <Col>
-                <Card
-                horizontalMargin="7px"
-                cardWidth="125px"
-                smallValue
-                h4FontSize="16px"
-                textAlign="center"
-                col
-              >
-                <h4>Commission Generated</h4>
-                <div className="cardValue">
-                  {CURRENCY} {this.state.selectedCashierDetails.commission_generated}
-                </div>
-              </Card>
-
-                </Col>
-                <Col>
-                <Card
-                horizontalMargin="7px"
-                cardWidth="125px"
-                smallValue
-                h4FontSize="16px"
-                textAlign="center"
-                col
-              >
-                <h4>Revenue Generated</h4>
-                <div className="cardValue">
-                  {this.state.selectedCashierDetails.commission_generated ? (
-                    <div>
-                     {CURRENCY} {parseInt(this.state.selectedCashierDetails.commission_generated,10) + parseInt(this.state.selectedCashierDetails.fee_generated,10)}
-                    </div>
-                  ):"XOF"}
-                 
-                </div>
-              </Card>
-
-                </Col>
-                <Col>
-                <Card
-                  marginBottom="54px"
+                  style={{height:'120px'}}
+                  marginBottom="10px"
                   buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
                   smallValue
-                  style={{display:'contents'}}
+                >
+                  <h4>Opening Balance</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.openingBalance}</div>
+                </Card>
+              </Col>
+              <Col>
+              <Card
+                   style={{height:'120px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Paid in Cash</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.cashPaid}</div>
+                </Card>
+              </Col>
+              <Col>
+              <Card
+                   style={{height:'120px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash Recieved</h4>
+
+                  <div className="cardValue">{CURRENCY}: {this.state.cashReceived}</div>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                   style={{height:'120px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash in Hand</h4>
+
+                  <div className="cardValue">{CURRENCY}: {this.state.cashInHand}</div>
+                </Card>
+              </Col>
+            </Row>
+          <Row style={{marginTop:'5px',marginBottom:'0px'}}>
+          <Col cW='25%'>
+                <Card
+                  style={{height:'120px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Invoices Paid</h4>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Number</h5>
+                      <div className="cardValue">{this.state.invoicePaid}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.invoiceAmount}</div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>   
+              <Col cW='45%'>
+              <Card
+                  style={{height:'140px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Revenue Collected</h4>
+                  <Row>
+                    <Col>
+                      <h5>Fee</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.feeGenerated}</div>
+                    </Col>
+                    <Col>
+                      <h5>Commission</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.commissionGenerated}</div>
+                    </Col>
+                    <Col>
+                      <h5>Total</h5>
+                      <div className="cardValue">{CURRENCY}: {parseInt(this.state.commissionGenerated, 10)+parseInt(this.state.feeGenerated, 10)}</div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+              <Col cW='30%'>
+              <Card
+                   style={{height:'140px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  textAlign="center"
+                  smallValue
                 >
                   <h4>Authorisation Requests</h4>
                   <Row>
                     <Col>
-                      <h5>Approve</h5>
+                      <h5>Approved</h5>
                       <div className="cardValue">{this.state.accepted}</div>
                     </Col>
                     <Col>
@@ -532,14 +733,16 @@ export default class BranchReports extends Component {
                   </Row>
                   
                 </Card>
-                </Col>
-              </Row>
-            </div>
-
+              </Col>
+            </Row>
             
-
-            <Card style={{ marginTop: '50px' }}>
-            <div>
+            </div>
+        {this.state.datelist.length > 0 
+            ? this.state.datelist.map( (date,i) => {
+              return(
+              <Card style={{ marginTop: '10px' }}>
+              
+                <h3 style={{color:'green'}}><b>{`${new Date(date).getDate()}/${new Date(date).getMonth()-1}/${new Date(date).getFullYear()}`}</b></h3>
                 <Table
                 marginTop="34px"
                 marginBottom="34px"
@@ -548,8 +751,8 @@ export default class BranchReports extends Component {
               >
                 <thead>
                       <tr>
-                        <th>Date</th>
-                        <th>User</th>
+                        <th>Cashier</th>
+                        <th>Opening Time</th>
                         <th>Opening Balance</th>
                         <th>Cash in Hand</th>
                         <th>Paid in cash</th>
@@ -557,68 +760,129 @@ export default class BranchReports extends Component {
                         <th>Fee Generated</th>
                         <th>Commission Generated</th>
                         <th>Revenue Generated</th>
+                        <th>Closing Time</th>
+                        <th>Closing Balance</th>
+                        <th>Discripancy</th>
                         <th>Requests Approved</th>
                         <th>Requests Declined</th>
                         <th>Requests Pending</th></tr>
                     </thead>
                     <tbody>
-                    {this.state.datearray.length > 0 && this.state.selectedCashierDetails.name
-                        ? this.state.datearray.map( (b,i) => {
-                          var fulldate = dis.formatDate(b);
+                    {this.state.datestats[i].cashiedatestats.length > 0 
+                        ? this.state.datestats[i].cashiedatestats.map( (b, index) => {
                           return (
-                          <tr key={i} >
+                          <tr key={index} >
+                            
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{fulldate.date}</div>
+                              <div className="labelGrey">{b.cashiedatestats.cashier.name}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{this.state.selectedCashierDetails.name}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? `${new Date(b.cashiedatestats.reports[0].opening_time).getHours()}:${new Date(b.cashiedatestats.reports[0].opening_time).getMinutes()}` : "-:--"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{this.state.selectedCashierDetails.opening_balance}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].opening_balance.toFixed(2) : "-"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{this.state.selectedCashierDetails.cash_in_hand}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_in_hand.toFixed(2) : "-"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{this.state.selectedCashierDetails.cash_paid}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].paid_in_cash.toFixed(2) : "-"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{this.state.selectedCashierDetails.cash_received}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_received.toFixed(2) : "-"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{this.state.selectedCashierDetails.fee_generated}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].fee_generated.toFixed(2) : "-"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{this.state.selectedCashierDetails.commission_generated}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].comm_generated.toFixed(2) : "-"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{parseInt(this.state.selectedCashierDetails.commission_generated,10) + parseInt(this.state.selectedCashierDetails.fee_generated,10)}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? (b.cashiedatestats.reports[0].fee_generated + b.cashiedatestats.reports[0].comm_generated).toFixed(2) : ""}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{this.state.accepted}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? `${new Date(b.cashiedatestats.reports[0].closing_time).getHours()}:${new Date(b.cashiedatestats.reports[0].closing_time).getMinutes()}` : "-:--"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{this.state.cancelled}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].closing_balance.toFixed(2) : "-"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{this.state.pending}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].descripency.toFixed(2) : "-"}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{b.cashiedatestats.accepted}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{b.cashiedatestats.declined}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{b.cashiedatestats.pending}</div>
                             </td>
                             
                           </tr>
                           )
                         })
+
                         : null
                       }
+                      <tr style={{textAlign:"center", backgroundColor:'green'}}>
+                          <td style={{textAlign:"center", color:'white'}}><b>Total</b></td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalOb}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCih}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalPic}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCr}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalFee}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalComm}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {parseInt(this.state.datestats[i].totalComm) + parseInt(this.state.datestats[i].totalFee)}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCb}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalDis}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>{this.state.datestats[i].totalRa}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>{this.state.datestats[i].totalRd}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>{this.state.datestats[i].totalRp}</b></div>
+                          </td>
+                        </tr>
                   </tbody>
               
               </Table>
         
                 
-            </div>
             </Card>
-           
-        </Container>
+              )  
+          })
+          :'ef'}
 
+          </div> 
+        </Container>
+        <Footer bankname={this.state.bankName} banklogo={this.state.bankLogo}/>
       </Wrapper>
     );
   }

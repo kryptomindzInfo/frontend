@@ -13,25 +13,32 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
-
-import Wrapper from 'components/Wrapper';
-import BranchHeader from 'components/Header/BranchHeader';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import Wrapper from 'components/Wrapper';
+import A from 'components/A';
+import BranchHeader from 'components/Header/BranchHeader';
+import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
 import Loader from 'components/Loader';
+import Nav from 'components/Header/Nav';
+import Welcome from 'components/Header/Welcome';
 import SidebarBranch from 'components/Sidebar/SidebarBranch';
 import Main from 'components/Main';
-import A from 'components/A';
+import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
 import Button from 'components/Button';
 import Table from 'components/Table';
+import BranchOperationalWallet from 'components/Sidebar//BranchOperationalWallet';
+import BranchMasterWallet from 'components/Sidebar//BranchMasterWallet';
+import MiniPopUp from 'components/MiniPopUp';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
+import Footer from 'components/Footer';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import Popup from 'components/Popup';
 import SelectInput from 'components/SelectInput';
-
+import history from 'utils/history.js';
 import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -44,31 +51,44 @@ toast.configure({
   draggable: true,
 });
 
+const Sidebar = styled.aside `
+width: 260px;
+float:left;
+margin-right: ${props => props.marginRight ? '33px' : '0' };
+`;
+
 const token = localStorage.getItem('branchLogged');
 const bid = localStorage.getItem('branchId');
-const bankid = localStorage.getItem('bankId');
 const logo = localStorage.getItem('bankLogo');
+const bankId = localStorage.getItem('bankid');
 const email = localStorage.getItem('branchEmail');
 const mobile = localStorage.getItem('branchMobile');
 const name = localStorage.getItem('branchName');
 
 export default class BranchDashboard extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
-      loading:true,
-      token,
+      token: props.apitype === 'bank' ? localStorage.getItem('bankLogged') : localStorage.getItem('branchLogged'),
+      bid: props.apitype === 'bank' ? props.match.params.id : localStorage.getItem('branchId'),
+      bankId: props.apitype === 'bank' ?  localStorage.getItem('bankid')  : localStorage.getItem('bankId'),
+      branchName: props.apitype === 'bank' ?   JSON.parse(localStorage.getItem('selectedBranch')).name  : '',
+      apiType:props.apitype,
       otpEmail: email,
+      bankName: localStorage.getItem('bankName'),
+      bankLogo: localStorage.getItem('bankLogo'),
       otpMobile: mobile,
-      cashReceived: 0,
       feeGenerated: 0,
       openingBalance: 0,
+      pendingtransStatus:'',
       commissionGenerated: 0,
+      invoicePaid:0,
+      amountPaid:0,
       cashPaid: 0,
       pending: 0,
-      pendingtransStatus:'',
       accepted: 0,
       cancelled: 0,
+      cashReceived: 0,
       totalCashier: 0,
       cashInHand: 0,
       perPage: 20,
@@ -88,8 +108,6 @@ export default class BranchDashboard extends Component {
 
     this.onChange = this.onChange.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
-
-    this.showHistory = this.showHistory.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -113,7 +131,8 @@ export default class BranchDashboard extends Component {
     this.getTransHistory(v.master_code);
   };
 
-    showPending = v => {
+  showPending = v => {
+    console.log(v);
     this.setState({
       selectedCashier: v,
       pendingPop: true,
@@ -121,22 +140,6 @@ export default class BranchDashboard extends Component {
     });
     this.getPendingHistory(v);
   };
-
-  showAssignPopup = v => {
-    this.setState({
-      assignPop: true,
-      name: v.name,
-      bcode: v.bcode,
-      working_from: v.working_from,
-      working_to: v.working_to,
-      per_trans_amt: v.per_trans_amt,
-      max_trans_amt: v.max_trans_amt,
-      max_trans_count: v.max_trans_count,
-      cashier_id: v._id,
-      bank_user_id: v.bank_user_id,
-    });
-  };
-
   showPopup = () => {
     this.setState({ popup: true });
   };
@@ -151,7 +154,6 @@ export default class BranchDashboard extends Component {
       max_trans_amt: v.max_trans_amt,
       max_trans_count: v.max_trans_count,
       cashier_id: v._id,
-      bank_user_id: v.bank_user_id,
     });
   };
 
@@ -159,17 +161,19 @@ export default class BranchDashboard extends Component {
 
     var dis = this;
     for (var key in items) {
-    if (items.hasOwnProperty(key)) {
+      if (items.hasOwnProperty(key)) {
+        console.log(key + " -> " + items[key]);
         this.setState({
-          [key] : items[key]
+          [key]: items[key]
         });
+
+      }
+      this.setState({
+        type : type,
+        interbank : interbank,
+        pendingtransStatus: status,
+      });
     }
-    this.setState({
-      type : type,
-      interbank : interbank,
-      pendingtransStatus: status,
-    });
-}
     this.setState({
       selectedId: id,
       popupClaimMoney: true
@@ -253,8 +257,8 @@ export default class BranchDashboard extends Component {
       })
       .then(res => {
         if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
+          if (res.data.status === 0) {
+            throw res.data.message;
           } else {
             this.setState({
               notification: 'Branch added successfully!',
@@ -279,6 +283,22 @@ export default class BranchDashboard extends Component {
         this.error();
       });
   };
+
+  showAssignPopup = v => {
+    this.setState({
+      assignPop: true,
+      name: v.name,
+      code: v.code,
+      working_from: v.working_from,
+      working_to: v.working_to,
+      per_trans_amt: v.per_trans_amt,
+      max_trans_amt: v.max_trans_amt,
+      max_trans_count: v.max_trans_count,
+      cashier_id: v._id,
+      bank_user_id: v.bank_user_id,
+    });
+  };
+
   editCashier = event => {
     event.preventDefault();
 
@@ -295,7 +315,7 @@ export default class BranchDashboard extends Component {
   };
   startTimer = () => {
     var dis = this;
-    var timer = setInterval(function() {
+    var timer = setInterval(function () {
       if (dis.state.timer <= 0) {
         clearInterval(timer);
         dis.setState({ resend: true });
@@ -342,7 +362,6 @@ export default class BranchDashboard extends Component {
         this.error();
       });
   };
-
   verifyEditOTP = event => {
     this.setState({
       verifyEditOTPLoading: false,
@@ -359,10 +378,10 @@ export default class BranchDashboard extends Component {
               {
                 notification: 'Cashier updated successfully!',
               },
-              function() {
+              function () {
                 this.success();
                 this.closePopup();
-                this.getCashiers();
+                this.getBranches();
               },
             );
           }
@@ -383,47 +402,6 @@ export default class BranchDashboard extends Component {
       });
   };
 
-  assignUser = event => {
-    event.preventDefault();
-
-    this.setState({
-      assignLoading: true,
-    });
-
-    axios
-      .put(`${API_URL}/updateCashier`, {
-        page_id: this.state.cashier_id,
-        updateData: { bank_user_id: this.state.bank_user_id },
-        page: 'cashier',
-        type: 'branch',
-        token: token,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              notification: 'User Assigned successfully!',
-              assignLoading: false,
-            });
-            this.success();
-            this.closePopup();
-            this.getCashiers();
-          }
-        } else {
-          const error = new Error(res.data.error);
-          throw error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-          assignLoading: false,
-        });
-        this.error();
-      });
-  };
 
   approveTransfer = event => {
     this.setState({
@@ -431,19 +409,19 @@ export default class BranchDashboard extends Component {
     });
     event.preventDefault();
     axios
-      .post(`${API_URL}/updateCashierTransferStatus`, {token: this.state.token, cashier_id: this.state.selectedCashier,  transfer_id: this.state.selectedId, status: 1})
+      .post(`${API_URL}/branch/updateCashierTransferStatus`, { token: this.state.token, cashier_id: this.state.selectedCashier, transfer_id: this.state.selectedId, status: 1 })
       .then(res => {
         if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
+          if (res.data.status===0) {
+            throw res.data.message;
           } else {
             this.setState(
               {
                 notification: 'Transfer updated successfully!',
               },
-              function() {
+              function () {
                 this.success();
-                this.closePopup();
+                 this.closePopup();
                 this.getCashiers();
               },
             );
@@ -465,13 +443,13 @@ export default class BranchDashboard extends Component {
       });
   };
 
-   rejectTransfer = event => {
+  rejectTransfer = event => {
     this.setState({
       claimMoneyLoading: false,
     });
     event.preventDefault();
     axios
-      .post(`${API_URL}/updateCashierTransferStatus`, {token: this.state.token, cashier_id: this.state.selectedCashier, transfer_id: this.state.selectedId, status: -1})
+      .post(`${API_URL}/branch/updateCashierTransferStatus`, { token: this.state.token, cashier_id: this.state.selectedCashier, transfer_id: this.state.selectedId, status: -1 })
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {
@@ -481,7 +459,7 @@ export default class BranchDashboard extends Component {
               {
                 notification: 'Transfer updated successfully!',
               },
-              function() {
+              function () {
                 this.success();
                 this.closePopup();
                 this.getCashiers();
@@ -512,8 +490,8 @@ export default class BranchDashboard extends Component {
         token,
         type_id: e,
         status: s,
-        page: 'cashier',
-        type: 'branch'
+        page: 'partnerCashier',
+        type: 'partnerBranch'
       })
       .then(res => {
         if (res.status == 200) {
@@ -539,6 +517,46 @@ export default class BranchDashboard extends Component {
         this.error();
       });
 
+  };
+
+  assignUser = event => {
+    event.preventDefault();
+
+    this.setState({
+      assignLoading: true,
+    });
+
+    axios
+      .post(`${API_URL}/branch/updateCashierUser`, {
+        cashier_id: this.state.cashier_id,
+        user_id: this.state.bank_user_id,
+        token: token,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.error) {
+            throw res.data.error;
+          } else {
+            this.setState({
+              notification: 'User Assigned successfully!',
+              assignLoading: false,
+            });
+            this.success();
+            this.closePopup();
+            this.getCashiers();
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          assignLoading: false,
+        });
+        this.error();
+      });
   };
 
   approve = event => {
@@ -701,16 +719,16 @@ export default class BranchDashboard extends Component {
           });
         }
       })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   getPendingHistory = id => {
     axios
       .post(`${API_URL}/getAll`, {
         token: token,
-        type: 'branch',
+        type: 'partnerBranch',
         page: 'cashierpending',
-        where: {cashier_id: id}
+        where: { cashier_id: id }
       })
       .then(res => {
         if (res.status == 200) {
@@ -726,111 +744,71 @@ export default class BranchDashboard extends Component {
           });
         }
       })
-      .catch(err => {});
-  };
-  showHistory = () => {
-    this.setState({ history: [] }, () => {
-      var out = [];
-      var start = (this.state.activePage - 1) * this.state.perPage;
-      var end = this.state.perPage * this.state.activePage;
-      if (end > this.state.totalCount) {
-        end = this.state.totalCount;
-      }
-      for (var i = start; i < end; i++) {
-        out.push(this.state.allhistory[i]);
-      }
-      this.setState({ history: out }, () => {
-        let dis = this;
-        setTimeout(function() {
-          dis.getHistory();
-        }, 5000);
-      });
-    });
-  };
-
-  getHistory = () => {
-    axios
-      .post(`${API_URL}/getBranchTransHistory`, {
-        token: token,
-        where: { branch_id: bid },
-        from: 'branch',
-        page: this.state.activePage,
-        offset: this.state.perPage,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          var notification = {};
-          var result = res.data.history1.concat(res.data.history2);
-          result.sort(function(a, b) {
-            return (
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
-            ); // implicit conversion in number
-          });
-          var l = result.length;
-          const history = result;
-          this.setState(
-            {
-              ticker: history[l - 1],
-              result: history,
-              loading: false,
-              allhistory: history,
-              totalCount: history.length,
-            },
-            () => {
-              this.showHistory();
-            },
-          );
-        }
-      })
-      .catch(err => {});
+      .catch(err => { });
   };
 
   filterData = e => {
     this.setState({ filter: e });
   };
-  getBanks = () => {};
+  getBanks = () => { };
 
-  getStats = async() => {
-    try {
-      const res = await axios.post(`${API_URL}/getBranchDashStats`, {
+  getBranches = () => {
+    axios
+      .post(`${API_URL}/getAll`, {
+        page: 'cashier',
+        type: 'branch',
         token: token,
-      });
-      if (res.status == 200) {
-        let received =
-          res.data.cashReceived == null ? 0 : res.data.cashReceived;
-        let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
-        let total = res.data.totalCashier == null ? 0 : res.data.totalCashier;
-        return({
-          totalCashier: total,
-          cashReceived: received.toFixed(2),
-          cashPaid: paid.toFixed(2),
-          cashInHand: res.data.cashInHand.toFixed(2),
-          feeGenerated:res.data.feeGenerated.toFixed(2),
-          commissionGenerated:res.data.commissionGenerated.toFixed(2),
-          openingBalance:res.data.openingBalance.toFixed(2),
-          pending: res.data.pending,
-          accepted: res.data.accepted,
-          cancelled: res.data.cancelled,
-        });
-      }
-    }catch(err){
-      console.log(err);
-    }
+      })
+      .then(res => {
+        if (res.status == 200) {
+          console.log(res.data);
+          this.setState({ loading: false, branches: res.data.rows });
+        }
+      })
+      .catch(err => { });
   };
-  getBranchByName = async() => {
-    try {
-      const res = await axios.post(`${API_URL}/getBranchByName`, {
-        name: name,
+  getStats = () => {
+    axios
+      .post(`${API_URL}/${this.state.apiType}/getBranchDashStats`, {
+        token: this.state.token,
+        branch_id: this.state.bid,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          let received =
+            res.data.cashReceived == null ? 0 : res.data.cashReceived;
+          let paid = res.data.cashPaid == null ? 0 : res.data.cashPaid;
+          let total = res.data.totalCashier == null ? 0 : res.data.totalCashier;
+          this.setState({
+            loading: false,
+            totalCashier: total,
+            cashReceived: received.toFixed(2),
+            cashPaid: paid.toFixed(2),
+            invoicePaid: res.data.invoicePaid,
+            amountPaid: res.data.amountPaid,
+            cashInHand: res.data.cashInHand.toFixed(2),
+            feeGenerated:res.data.feeGenerated.toFixed(2),
+            commissionGenerated:res.data.commissionGenerated.toFixed(2),
+            openingBalance:res.data.openingBalance.toFixed(2),
+            pending: res.data.pending,
+            accepted: res.data.accepted,
+            cancelled: res.data.cancelled,
+          },
+          () => {
+            var dis = this;
+            setTimeout(function () {
+              dis.getStats();
+            }, 10000);
+          },
+          );
+        }
+      })
+      .catch(err => {
+        var dis = this;
+        setTimeout(function () {
+          dis.getStats();
+        }, 10000);
       });
-      if (res.status === 200){
-        return ({
-          branchDetails: res.data.banks
-        });
-      } 
-    }catch(err){
-      console.log(err);
-    }
   };
   formatDate = date => {
     var months = [
@@ -860,70 +838,69 @@ export default class BranchDashboard extends Component {
   };
 
 
-  getCashiers = async() => {
-    try {
-      const res = await axios.post(`${API_URL}/getAll`, {
+  getCashiers = () => {
+    let apiType = "";
+    if (this.props.apitype === 'bank' || this.props.apitype === 'branch'){
+      if( localStorage.getItem('admin') === true){
+        apiType = 'partnerUser';
+      }else{
+        apiType = this.props.apitype;
+      }
+    }else{
+      apiType = this.props.apitype;
+    }
+    axios
+      .post(`${API_URL}/${this.props.apitype}/getAll`, {
         page: 'cashier',
-        type: 'branch',
-        token: token,
-        where: { branch_id: bid },
+        token: this.state.token,
+        where: { branch_id: this.state.bid },
       })
-      if (res.status === 200){
-        return ({
-          cashiers: res.data.rows
-        });
-      } 
-    }catch(err){
-      console.log(err);
-    }
+      .then(res => {
+        if (res.status == 200) {
+          console.log(res.data);
+          this.setState({ loading: false, cashiers: res.data.rows });
+        }
+      })
+      .catch(err => { });
   };
 
-  getUsers = async () => {
-    try {
-      const res = await axios.post(`${API_URL}/getAll`,
-        {
-          page: 'bankuser',
-          type: 'branch',
-          token: token,
-          where: {bank_id:bankid},
-        });
-        if (res.status === 200){
-          return ({
-            users: res.data.rows
-          });
-        } 
-    }catch(err){
-      console.log(err);
+  getUsers = () => {
+    let apiType = "";
+    if (this.props.apitype === 'partner' || this.props.apitype === 'partnerBranch'){
+      if( localStorage.getItem('admin') === true){
+        apiType = 'partnerUser';
+      }else{
+        apiType = this.props.apitype;
+      }
+    }else{
+      apiType = this.props.apitype;
     }
+    axios
+      .post(`${API_URL}/${this.props.apitype}/getAll`, {
+        page: 'bankuser',
+        type: 'branch',
+        token: this.state.token,
+        where: {bank_id:this.state.bankId},
+      })
+      .then(res => {
+        if (res.status == 200) {
+          this.setState({ loading: false, users: res.data.rows });
+        }
+      })
+      .catch(err => {
+        
+      });
   };
 
-  async componentDidMount() {
-    const stats= await this.getStats();
-    console.log(stats);
-    const users= await this.getUsers();
-    const cashiers = await this.getCashiers();
-    const branchDetails = await this.getBranchByName();
-    this.setState({
-      users: users.users,
-      cashiers: cashiers.cashiers,
-      branchDetails: branchDetails.branchDetails,
-      totalCashier: stats.totalCashier,
-      cashReceived: stats.cashReceived,
-      cashPaid: stats.cashPaid,
-      cashInHand: stats.cashInHand,
-      feeGenerated:stats.feeGenerated,
-      commissionGenerated:stats.commissionGenerated,
-      openingBalance:stats.openingBalance,
-      pending: stats.pending,
-      accepted: stats.accepted,
-      cancelled: stats.cancelled,
-      loading: false,
-    });
-    
-    
+  componentDidMount() {
+
+    this.getCashiers();
+    this.getUsers();
+    this.getStats()
   }
 
   render() {
+    console.log(this.props);
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector('label').classList.add('focused');
@@ -950,125 +927,199 @@ export default class BranchDashboard extends Component {
           <meta charSet="utf-8" />
           <title>Dashboard | BRANCH | E-WALLET</title>
         </Helmet>
-        <BranchHeader
+        {this.state.apiType === 'bank' ?   (
+          <BankHeader />
+        ) : (
+          <BranchHeader
           active="dashboard"
           bankName={this.props.match.params.bank}
           bankLogo={STATIC_URL + logo}
         />
+
+        )}
+         {this.state.apiType === 'partner' ? (
+        <Card >
+          <div style={{display:'flex'}}>
+            <button  style={{border:"none",width:"100px",marginLeft:"150px"}} onClick={() => {
+                history.push(`/dashboard`);
+              }}>
+                <A>
+                  Back
+              </A>
+            </button>
+            <button style={{border:"none",width:"100px"}} onClick={() => {
+              history.push(`/partner/branch/reports/${this.state.bid}`);
+            }}>
+                <A>
+                  Reports
+                </A>
+            </button>
+            <button style={{border:"none",width:"100px"}} onClick={() => {
+                history.goBack();
+              }}>
+                <A>
+                  <u>DashBoard</u>
+              </A>
+            </button>
+          <h2 style={{color:"green", marginLeft:"220px" }}><b>{this.state.branchName}</b> </h2> 
+          
+          </div>
+        </Card>
+      ):''}
+       
         <Container verticalMargin>
+        {this.state.apiType === 'partner' ? (
+          <Sidebar marginRight>
+             <BranchOperationalWallet branchId={this.state.bid} bankName={this.props.bankName}/>
+            <BranchMasterWallet branchId={this.state.bid} bankName={this.props.bankName}/>
+          </Sidebar>
+        ) : (
           <SidebarBranch bankName={this.props.match.params.bank} />
+        )}
+         
+         
           <Main>
             <Row>
-              <Col>
+              <Col  cW='33%'>
                 <Card
-                  marginBottom="54px"
+                  style={{height:'120px'}}
+                  marginBottom="10px"
+                  textAlign="center"
                   buttonMarginTop="32px"
                   bigPadding
                   smallValue
-                  style={{display:'contents'}}
+                >
+                  <h4>Number of Cashier</h4>
+                  <div className="cardValue">{this.state.totalCashier}</div>
+                </Card>
+              </Col>
+              <Col  cW='33%'>
+                <Card
+                  style={{height:'120px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
                 >
                   <h4>Opening Balance</h4>
-
                   <div className="cardValue">{CURRENCY}: {this.state.openingBalance}</div>
                 </Card>
               </Col>
-              <Col>
-              <Card
-                  marginBottom="54px"
+              <Col  cW='33%'>
+                <Card
+                   style={{height:'120px'}}
+                  marginBottom="10px"
                   buttonMarginTop="32px"
+                  textAlign="center"
                   bigPadding
                   smallValue
-                  style={{display:'contents'}}
                 >
                   <h4>Paid in Cash</h4>
-
                   <div className="cardValue">{CURRENCY}: {this.state.cashPaid}</div>
                 </Card>
               </Col>
-              <Col>
-              <Card
-                  marginBottom="54px"
+            </Row>
+            <Row>
+              <Col  cW='33%'>
+                <Card
+                   style={{height:'120px'}}
+                  marginBottom="10px"
                   buttonMarginTop="32px"
+                  textAlign="center"
                   bigPadding
                   smallValue
-                  style={{display:'contents'}}
                 >
                   <h4>Cash Recieved</h4>
 
                   <div className="cardValue">{CURRENCY}: {this.state.cashReceived}</div>
                 </Card>
-              </Col>
-              <Col>
+                </Col>
+              <Col  cW='33%'>
                 <Card
-                  marginBottom="54px"
+                   style={{height:'120px'}}
+                  marginBottom="10px"
                   buttonMarginTop="32px"
+                  textAlign="center"
                   bigPadding
                   smallValue
-                  style={{display:'contents'}}
                 >
                   <h4>Cash in Hand</h4>
 
                   <div className="cardValue">{CURRENCY}: {this.state.cashInHand}</div>
                 </Card>
               </Col>
-              <Col>
-              <Card
-                  marginBottom="54px"
+              <Col cW='33%'>
+                <Card
+                  style={{height:'120px'}}
+                  marginBottom="10px"
                   buttonMarginTop="32px"
+                  textAlign="center"
                   bigPadding
                   smallValue
-                  style={{display:'contents'}}
                 >
-                  <h4>Number of Cashier</h4>
-                  <div className="cardValue">{this.state.totalCashier}</div>
+                  <h4>Invoices Paid</h4>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Number</h5>
+                      <div className="cardValue">{this.state.invoicePaid}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.amountPaid}</div>
+                    </Col>
+                  </Row>
                 </Card>
               </Col>
             </Row>
-            <Row style={{marginTop:'35px',marginBottom:'35px'}}>
-              <Col cW='60%'>
+            <Row >
+              
+              <Col cW='50%'>
               <Card
-                  marginBottom="54px"
+                  style={{height:'120px'}}
+                  marginBottom="10px"
                   buttonMarginTop="32px"
+                  textAlign="center"
                   bigPadding
                   smallValue
-                  style={{display:'contents'}}
                 >
                   <h4>Revenue Collected</h4>
                   <Row>
-                    <Col>
+                    <Col style={{textAlign:'center'}}>
                       <h5>Fee</h5>
                       <div className="cardValue">{CURRENCY}: {this.state.feeGenerated}</div>
                     </Col>
-                    <Col>
+                    <Col style={{textAlign:'center'}}>
                       <h5>Commission</h5>
                       <div className="cardValue">{CURRENCY}: {this.state.commissionGenerated}</div>
                     </Col>
-                    <Col>
+                    <Col style={{textAlign:'center'}}>
                       <h5>Total</h5>
                       <div className="cardValue">{CURRENCY}: {parseInt(this.state.commissionGenerated, 10)+parseInt(this.state.feeGenerated, 10)}</div>
                     </Col>
                   </Row>
                 </Card>
               </Col>
-              <Col cW='40%'>
+              <Col cW='50%'>
               <Card
-                  marginBottom="54px"
+                   style={{height:'120px'}}
+                  marginBottom="10px"
                   buttonMarginTop="32px"
                   bigPadding
+                  textAlign="center"
                   smallValue
-                  style={{display:'contents'}}
                 >
                   <h4>Authorisation Requests</h4>
                   <Row>
-                    <Col>
+                    <Col style={{textAlign:'center'}}>
                       <h5>Approved</h5>
                       <div className="cardValue">{this.state.accepted}</div>
                     </Col>
-                    <Col>
+                    <Col style={{textAlign:'center'}}>
                       <h5>Declined</h5>
                       <div className="cardValue">{this.state.cancelled}</div>
                     </Col>
-                    <Col>
+                    <Col style={{textAlign:'center'}}>
                       <h5>Pending</h5>
                       <div className="cardValue">{this.state.pending}</div>
                     </Col>
@@ -1077,6 +1128,8 @@ export default class BranchDashboard extends Component {
                 </Card>
               </Col>
             </Row>
+          </Main>
+          <Main fullWidth>  
             <Card bigPadding>
               <div className="cardHeader">
                 <div className="cardHeaderLeft">
@@ -1088,16 +1141,20 @@ export default class BranchDashboard extends Component {
                 </div>
               </div>
               <div className="cardBody">
-              <Table marginTop="34px" smallTd>
+                <Table marginTop="34px" smallTd>
                   <thead>
                     <tr>
                       <th>Cashier Name</th>
-                      <th>Cash in Hand (XOF)</th>
-                      {/* <th>Transaction limit ({CURRENCY})</th> */}
                       <th>Assigned to</th>
-                      <th>Input amount</th>
-                      <th>Withdrawal</th>
+                      <th>Opening Time</th>
+                      <th>Opening Balance</th>
+                      <th>Paid In Cash</th>
+                      <th>Cash Received</th>
                       <th>Revenue Generated</th>
+                      <th>Cash in Hand</th>
+                      <th>Closing Time</th>
+                      <th>Closing Balance</th>
+                      <th>Discripancy</th>
                       <th>Pending Transaction</th>
                       <th></th>
                     </tr>
@@ -1105,105 +1162,153 @@ export default class BranchDashboard extends Component {
                   <tbody>
                     {this.state.cashiers && this.state.cashiers.length > 0 && this.state.users
                       ? this.state.cashiers.map(b => {
-                          return (
-                            <tr key={b._id}>
-                              <td style={{display:"inline-flex"}}>
+                        return (
+                          <tr key={b._id}>
+                             <td style={{display:"inline-flex"}}>
                                   <FiberManualRecordIcon  fontSize="small" color={b.is_closed ? "secondary" : "primary"}/>
-
                                 {b.name}
                               </td>
-                              <td className="tac">
-
-                                {(
-                                  b.opening_balance +
-                                  (b.cash_received - b.cash_paid)
-                                ).toFixed(2)}
-                              </td>
-                              {/* <td className="tac">
-                                {CURRENCY}{' '}
-                                {(
-                                  Number(b.max_trans_amt) -
-                                  (b.cash_paid + b.cash_received)
-                                ).toFixed(2)}
-                              </td> */}
                               <td>
                                 {this.state.users.filter(
                                   u => u._id == b.bank_user_id,
                                 )[0]
                                   ? this.state.users.filter(
-                                      u => u._id == b.bank_user_id,
-                                    )[0].name
+                                    u => u._id == b.bank_user_id,
+                                  )[0].name
                                   : ''}
                               </td>
                               <td>
-                              {b.cash_received}
+                                {`${new Date(b.opening_time).getHours()}:${new Date(b.opening_time).getMinutes()}`}
+                              </td>
+                              <td className="tac">
+                                {b.opening_balance.toFixed(2)}
                               </td>
                               <td>
-                              {b.cash_paid}
+                                {b.cash_paid.toFixed(2)}
                               </td>
                               <td>
-                              {parseInt(b.fee_generated,10)+parseInt(b.commission_generated,10)}
+                                {b.cash_received.toFixed(2)}
                               </td>
-                              <td className="tac bold green">
-                                <span onClick={() => this.showPending(b._id)}> {b.pending_trans}</span>
+                              <td>
+                                {(b.fee_generated+b.commission_generated).toFixed(2)}
                               </td>
+                              <td className="tac">
+                                {b.cash_in_hand.toFixed(2)}
+                              </td>
+                              <td>
+                                {`${new Date(b.closing_time).getHours()}:${new Date(b.closing_time).getMinutes()}`}
+                              </td>
+                              <td className="tac">
+                                {b.closing_balance.toFixed(2)}
+                              </td>
+                              <td>
+                                {(b.closing_balance-b.cash_in_hand).toFixed(2)}
+                              </td>
+
+                            <td className="tac bold green">
+                              <span onClick={() => this.showPending(b._id)}> {b.pending_trans}</span>
+
+                            </td>
+                            {this.state.apiType === 'partner' ? (
                               <td className="tac bold green">
-                                <Button
-                                  className="sendMoneyButton"
+                                 <Button
+                                className="sendMoneyButton"
+                                style ={{marginRight:"10px"}} 
+                              >
+                                {/* <A
+                                  href={
+                                    '/branch/' +
+                                    dis.props.match.params.bank +
+                                    '/cashier/' +
+                                    b._id
+                                  }
                                 >
-                                  <A
-                                    href={
-                                      '/branch/' +
-                                      dis.props.match.params.bank +
-                                      '/cashier/' +
-                                      b._id
+                                  View
+                                </A> */}
+                                <A
+                                  href={
+                                    '/partner/branch/cashier/reports/' +
+                                    b._id
+                                  }
+                                >
+                                  Reports
+                                </A>
+                            </Button>
+
+                              </td>
+
+                              ) : (
+                              <td className="tac bold green">
+                              <Button
+                                className="sendMoneyButton"
+                                style ={{marginRight:"10px"}} 
+                              >
+                                {/* <A
+                                  href={
+                                    '/branch/' +
+                                    dis.props.match.params.bank +
+                                    '/cashier/' +
+                                    b._id
+                                  }
+                                >
+                                  View
+                                </A> */}
+                                <A
+                                  href={
+                                    '/branch/' +
+                                    dis.props.match.params.bank +
+                                    '/cashier/reports/' +
+                                    b._id
+                                  }
+                                >
+                                  Reports
+                                </A>
+                            </Button>
+                            <span style ={{marginLeft:"10px"}} className="absoluteMiddleRight primary popMenuTrigger">
+                              <i className="material-icons ">more_vert</i>
+                              <div className="popMenu">
+                                <span onClick={() => dis.showEditPopup(b)}>
+                                  Edit
+                                  </span>
+                                <span
+                                  onClick={() => dis.showAssignPopup(b)}
+                                >
+                                  Assign User
+                                  </span>
+                                {/* {b.is_closed ? (
+                                  <span
+                                    onClick={() => dis.releaseCashier(b._id)}
+                                  >
+                                    Re-open Access
+                                  </span>
+                                ) : null} */}
+                                {b.status == -1 ? (
+                                  <span
+                                    onClick={() =>
+                                      dis.blockBranch(b._id, 1)
                                     }
                                   >
-                                    View
-                                  </A>
-                              </Button>
-                              <span className="absoluteMiddleRight primary popMenuTrigger">
-                                <i className="material-icons ">more_vert</i>
-                                <div className="popMenu">
-                                  <span onClick={() => dis.showEditPopup(b)}>
-                                    Edit
-                                    </span>
-                                  <span
-                                    onClick={() => dis.showAssignPopup(b)}
-                                  >
-                                    Assign User
-                                    </span>
-                                  {/* {b.is_closed ? (
-                                    <span
-                                      onClick={() => dis.releaseCashier(b._id)}
-                                    >
-                                      Re-open Access
-                                    </span>
-                                  ) : null} */}
-                                  {b.status == -1 ? (
+                                    Unblock
+                                  </span>
+                                ) : (
                                     <span
                                       onClick={() =>
-                                        dis.blockBranch(b._id, 1)
+                                        dis.blockBranch(b._id, -1)
                                       }
                                     >
-                                      Unblock
+                                      Block
                                     </span>
-                                  ) : (
-                                      <span
-                                        onClick={() =>
-                                          dis.blockBranch(b._id, -1)
-                                        }
-                                      >
-                                        Block
-                                      </span>
-                                    )}
-                                </div>
-                              </span>
-                            </td>
+                                  )}
+                              </div>
+                            </span>
+                          </td>
 
-                            </tr>
-                          );
-                        })
+                            )}
+                           
+
+                          </tr>
+                        );
+                      })
                       : null}
                   </tbody>
                 </Table>
@@ -1238,12 +1343,12 @@ export default class BranchDashboard extends Component {
                       <Loader />
                     </Button>
                   ) : (
-                    <Button filledBtn marginTop="50px">
-                      <span>
-                        <FormattedMessage {...messages.verify} />
-                      </span>
-                    </Button>
-                  )}
+                      <Button filledBtn marginTop="50px">
+                        <span>
+                          <FormattedMessage {...messages.verify} />
+                        </span>
+                      </Button>
+                    )}
 
                   <p className="resend">
                     Wait for <span className="timer">{this.state.timer}</span>{' '}
@@ -1253,405 +1358,405 @@ export default class BranchDashboard extends Component {
                         Resend
                       </span>
                     ) : (
-                      <span>Resend</span>
-                    )}
+                        <span>Resend</span>
+                      )}
                   </p>
                 </form>
               </div>
             ) : (
-              <div>
-                <h1>Add Branch</h1>
-                <form action="" method="post" onSubmit={this.addBranch}>
-                  <FormGroup>
-                    <label>Branch Name*</label>
-                    <TextInput
-                      type="text"
-                      name="name"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.name}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <label>Branch ID*</label>
-                    <TextInput
-                      type="text"
-                      name="bcode"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.bcode}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <label>Branch Admin: User ID*</label>
-                    <TextInput
-                      type="text"
-                      name="username"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.username}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                <div>
+                  <h1>Add Branch</h1>
+                  <form action="" method="post" onSubmit={this.addBranch}>
+                    <FormGroup>
+                      <label>Branch Name*</label>
+                      <TextInput
+                        type="text"
+                        name="name"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.name}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <label>Branch ID*</label>
+                      <TextInput
+                        type="text"
+                        name="bcode"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.bcode}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <label>Branch Admin: User ID*</label>
+                      <TextInput
+                        type="text"
+                        name="username"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.username}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <FormGroup>
-                    <label>Credit Limit</label>
-                    <TextInput
-                      type="text"
-                      name="credit_limit"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.credit_limit}
-                      onChange={this.handleInputChange}
-                    />
-                  </FormGroup>
-                  <FormGroup>
-                    <label>Address*</label>
-                    <TextInput
-                      type="text"
-                      name="address1"
-                      onFocus={inputFocus}
-                      onBlur={inputBlur}
-                      value={this.state.address1}
-                      onChange={this.handleInputChange}
-                      required
-                    />
-                  </FormGroup>
+                    <FormGroup>
+                      <label>Credit Limit</label>
+                      <TextInput
+                        type="text"
+                        name="credit_limit"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.credit_limit}
+                        onChange={this.handleInputChange}
+                      />
+                    </FormGroup>
+                    <FormGroup>
+                      <label>Address*</label>
+                      <TextInput
+                        type="text"
+                        name="address1"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.address1}
+                        onChange={this.handleInputChange}
+                        required
+                      />
+                    </FormGroup>
 
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup3} />*
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup3} />*
                         </label>
-                        <TextInput
-                          type="text"
-                          name="state"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.state}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup4} />*
+                          <TextInput
+                            type="text"
+                            name="state"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.state}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup4} />*
                         </label>
-                        <TextInput
-                          type="text"
-                          name="zip"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.zip}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <FormGroup>
-                        <SelectInput
-                          type="text"
-                          name="country"
-                          value={this.state.country}
-                          onChange={this.countryChange}
-                          required
-                        >
-                          <option title="" value="">
-                            Select Country*
+                          <TextInput
+                            type="text"
+                            name="zip"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.zip}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <SelectInput
+                            type="text"
+                            name="country"
+                            value={this.state.country}
+                            onChange={this.countryChange}
+                            required
+                          >
+                            <option title="" value="">
+                              Select Country*
                           </option>
-                          <option title="+213">Algeria</option>
-                          <option title="+376">Andorra</option>
-                          <option title="+244">Angola</option>
-                          <option title="+1264">Anguilla</option>
-                          <option title="+1268">Antigua &amp; Barbuda</option>
-                          <option title="+54">Argentina</option>
-                          <option title="+374">Armenia</option>
-                          <option title="+297">Aruba</option>
-                          <option title="+61">Australia</option>
-                          <option title="+43">Austria</option>
-                          <option title="+994">Azerbaijan</option>
-                          <option title="+1242">Bahamas</option>
-                          <option title="+973">Bahrain</option>
-                          <option title="+880">Bangladesh</option>
-                          <option title="+1246">Barbados</option>
-                          <option title="+375">Belarus</option>
-                          <option title="+32">Belgium</option>
-                          <option title="+501">Belize</option>
-                          <option title="+229">Benin</option>
-                          <option title="+1441">Bermuda</option>
-                          <option title="+975">Bhutan</option>
-                          <option title="+591">Bolivia</option>
-                          <option title="+387">Bosnia Herzegovina</option>
-                          <option title="+267">Botswana</option>
-                          <option title="+55">Brazil</option>
-                          <option title="+673">Brunei</option>
-                          <option title="+359">Bulgaria</option>
-                          <option title="+226">Burkina Faso</option>
-                          <option title="+257">Burundi</option>
-                          <option title="+855">Cambodia</option>
-                          <option title="+237">Cameroon</option>
-                          <option title="+1">Canada</option>
-                          <option title="+238">Cape Verde Islands</option>
-                          <option title="+1345">Cayman Islands</option>
-                          <option title="+236">Central African Republic</option>
-                          <option title="+56">Chile</option>
-                          <option title="+86">China</option>
-                          <option title="+57">Colombia</option>
-                          <option title="+269">Comoros</option>
-                          <option title="+242">Congo</option>
-                          <option title="+682">Cook Islands</option>
-                          <option title="+506">Costa Rica</option>
-                          <option title="+385">Croatia</option>
-                          <option title="+53">Cuba</option>
-                          <option title="+90392">Cyprus North</option>
-                          <option title="+357">Cyprus South</option>
-                          <option title="+42">Czech Republic</option>
-                          <option title="+45">Denmark</option>
-                          <option title="+253">Djibouti</option>
-                          <option title="+1809">Dominica</option>
-                          <option title="+1809">Dominican Republic</option>
-                          <option title="+593">Ecuador</option>
-                          <option title="+20">Egypt</option>
-                          <option title="+503">El Salvador</option>
-                          <option title="+240">Equatorial Guinea</option>
-                          <option title="+291">Eritrea</option>
-                          <option title="+372">Estonia</option>
-                          <option title="+251">Ethiopia</option>
-                          <option title="+500">Falkland Islands</option>
-                          <option title="+298">Faroe Islands</option>
-                          <option title="+679">Fiji</option>
-                          <option title="+358">Finland</option>
-                          <option title="+33">France</option>
-                          <option title="+594">French Guiana</option>
-                          <option title="+689">French Polynesia</option>
-                          <option title="+241">Gabon</option>
-                          <option title="+220">Gambia</option>
-                          <option title="+7880">Georgia</option>
-                          <option title="+49">Germany</option>
-                          <option title="+233">Ghana</option>
-                          <option title="+350">Gibraltar</option>
-                          <option title="+30">Greece</option>
-                          <option title="+299">Greenland</option>
-                          <option title="+1473">Grenada</option>
-                          <option title="+590">Guadeloupe</option>
-                          <option title="+671">Guam</option>
-                          <option title="+502">Guatemala</option>
-                          <option title="+224">Guinea</option>
-                          <option title="+245">Guinea - Bissau</option>
-                          <option title="+592">Guyana</option>
-                          <option title="+509">Haiti</option>
-                          <option title="+504">Honduras</option>
-                          <option title="+852">Hong Kong</option>
-                          <option title="+36">Hungary</option>
-                          <option title="+354">Iceland</option>
-                          <option title="+91">India</option>
-                          <option title="+62">Indonesia</option>
-                          <option title="+98">Iran</option>
-                          <option title="+964">Iraq</option>
-                          <option title="+353">Ireland</option>
-                          <option title="+972">Israel</option>
-                          <option title="+39">Italy</option>
-                          <option title="+1876">Jamaica</option>
-                          <option title="+81">Japan</option>
-                          <option title="+962">Jordan</option>
-                          <option title="+7">Kazakhstan</option>
-                          <option title="+254">Kenya</option>
-                          <option title="+686">Kiribati</option>
-                          <option title="+850">Korea North</option>
-                          <option title="+82">Korea South</option>
-                          <option title="+965">Kuwait</option>
-                          <option title="+996">Kyrgyzstan</option>
-                          <option title="+856">Laos</option>
-                          <option title="+371">Latvia</option>
-                          <option title="+961">Lebanon</option>
-                          <option title="+266">Lesotho</option>
-                          <option title="+231">Liberia</option>
-                          <option title="+218">Libya</option>
-                          <option title="+417">Liechtenstein</option>
-                          <option title="+370">Lithuania</option>
-                          <option title="+352">Luxembourg</option>
-                          <option title="+853">Macao</option>
-                          <option title="+389">Macedonia</option>
-                          <option title="+261">Madagascar</option>
-                          <option title="+265">Malawi</option>
-                          <option title="+60">Malaysia</option>
-                          <option title="+960">Maldives</option>
-                          <option title="+223">Mali</option>
-                          <option title="+356">Malta</option>
-                          <option title="+692">Marshall Islands</option>
-                          <option title="+596">Martinique</option>
-                          <option title="+222">Mauritania</option>
-                          <option title="+269">Mayotte</option>
-                          <option title="+52">Mexico</option>
-                          <option title="+691">Micronesia</option>
-                          <option title="+373">Moldova</option>
-                          <option title="+377">Monaco</option>
-                          <option title="+976">Mongolia</option>
-                          <option title="+1664">Montserrat</option>
-                          <option title="+212">Morocco</option>
-                          <option title="+258">Mozambique</option>
-                          <option title="+95">Myanmar</option>
-                          <option title="+264">Namibia</option>
-                          <option title="+674">Nauru</option>
-                          <option title="+977">Nepal</option>
-                          <option title="+31">Netherlands</option>
-                          <option title="+687">New Caledonia</option>
-                          <option title="+64">New Zealand</option>
-                          <option title="+505">Nicaragua</option>
-                          <option title="+227">Niger</option>
-                          <option title="+234">Nigeria</option>
-                          <option title="+683">Niue</option>
-                          <option title="+672">Norfolk Islands</option>
-                          <option title="+670">Northern Marianas</option>
-                          <option title="+47">Norway</option>
-                          <option title="+968">Oman</option>
-                          <option title="+680">Palau</option>
-                          <option title="+507">Panama</option>
-                          <option title="+675">Papua New Guinea</option>
-                          <option title="+595">Paraguay</option>
-                          <option title="+51">Peru</option>
-                          <option title="+63">Philippines</option>
-                          <option title="+48">Poland</option>
-                          <option title="+351">Portugal</option>
-                          <option title="+1787">Puerto Rico</option>
-                          <option title="+974">Qatar</option>
-                          <option title="+262">Reunion</option>
-                          <option title="+40">Romania</option>
-                          <option title="+7">Russia</option>
-                          <option title="+250">Rwanda</option>
-                          <option title="+378">San Marino</option>
-                          <option title="+239">Sao Tome &amp; Principe</option>
-                          <option title="+966">Saudi Arabia</option>
-                          <option title="+221">Senegal</option>
-                          <option title="+381">Serbia</option>
-                          <option title="+248">Seychelles</option>
-                          <option title="+232">Sierra Leone</option>
-                          <option title="+65">Singapore</option>
-                          <option title="+421">Slovak Republic</option>
-                          <option title="+386">Slovenia</option>
-                          <option title="+677">Solomon Islands</option>
-                          <option title="+252">Somalia</option>
-                          <option title="+27">South Africa</option>
-                          <option title="+34">Spain</option>
-                          <option title="+94">Sri Lanka</option>
-                          <option title="+290">St. Helena</option>
-                          <option title="+1869">St. Kitts</option>
-                          <option title="+1758">St. Lucia</option>
-                          <option title="+249">Sudan</option>
-                          <option title="+597">Suriname</option>
-                          <option title="+268">Swaziland</option>
-                          <option title="+46">Sweden</option>
-                          <option title="+41">Switzerland</option>
-                          <option title="+963">Syria</option>
-                          <option title="+886">Taiwan</option>
-                          <option title="+7">Tajikstan</option>
-                          <option title="+66">Thailand</option>
-                          <option title="+228">Togo</option>
-                          <option title="+676">Tonga</option>
-                          <option title="+1868">Trinidad &amp; Tobago</option>
-                          <option title="+216">Tunisia</option>
-                          <option title="+90">Turkey</option>
-                          <option title="+7">Turkmenistan</option>
-                          <option title="+993">Turkmenistan</option>
-                          <option title="+1649">
-                            Turks &amp; Caicos Islands
+                            <option title="+213">Algeria</option>
+                            <option title="+376">Andorra</option>
+                            <option title="+244">Angola</option>
+                            <option title="+1264">Anguilla</option>
+                            <option title="+1268">Antigua &amp; Barbuda</option>
+                            <option title="+54">Argentina</option>
+                            <option title="+374">Armenia</option>
+                            <option title="+297">Aruba</option>
+                            <option title="+61">Australia</option>
+                            <option title="+43">Austria</option>
+                            <option title="+994">Azerbaijan</option>
+                            <option title="+1242">Bahamas</option>
+                            <option title="+973">Bahrain</option>
+                            <option title="+880">Bangladesh</option>
+                            <option title="+1246">Barbados</option>
+                            <option title="+375">Belarus</option>
+                            <option title="+32">Belgium</option>
+                            <option title="+501">Belize</option>
+                            <option title="+229">Benin</option>
+                            <option title="+1441">Bermuda</option>
+                            <option title="+975">Bhutan</option>
+                            <option title="+591">Bolivia</option>
+                            <option title="+387">Bosnia Herzegovina</option>
+                            <option title="+267">Botswana</option>
+                            <option title="+55">Brazil</option>
+                            <option title="+673">Brunei</option>
+                            <option title="+359">Bulgaria</option>
+                            <option title="+226">Burkina Faso</option>
+                            <option title="+257">Burundi</option>
+                            <option title="+855">Cambodia</option>
+                            <option title="+237">Cameroon</option>
+                            <option title="+1">Canada</option>
+                            <option title="+238">Cape Verde Islands</option>
+                            <option title="+1345">Cayman Islands</option>
+                            <option title="+236">Central African Republic</option>
+                            <option title="+56">Chile</option>
+                            <option title="+86">China</option>
+                            <option title="+57">Colombia</option>
+                            <option title="+269">Comoros</option>
+                            <option title="+242">Congo</option>
+                            <option title="+682">Cook Islands</option>
+                            <option title="+506">Costa Rica</option>
+                            <option title="+385">Croatia</option>
+                            <option title="+53">Cuba</option>
+                            <option title="+90392">Cyprus North</option>
+                            <option title="+357">Cyprus South</option>
+                            <option title="+42">Czech Republic</option>
+                            <option title="+45">Denmark</option>
+                            <option title="+253">Djibouti</option>
+                            <option title="+1809">Dominica</option>
+                            <option title="+1809">Dominican Republic</option>
+                            <option title="+593">Ecuador</option>
+                            <option title="+20">Egypt</option>
+                            <option title="+503">El Salvador</option>
+                            <option title="+240">Equatorial Guinea</option>
+                            <option title="+291">Eritrea</option>
+                            <option title="+372">Estonia</option>
+                            <option title="+251">Ethiopia</option>
+                            <option title="+500">Falkland Islands</option>
+                            <option title="+298">Faroe Islands</option>
+                            <option title="+679">Fiji</option>
+                            <option title="+358">Finland</option>
+                            <option title="+33">France</option>
+                            <option title="+594">French Guiana</option>
+                            <option title="+689">French Polynesia</option>
+                            <option title="+241">Gabon</option>
+                            <option title="+220">Gambia</option>
+                            <option title="+7880">Georgia</option>
+                            <option title="+49">Germany</option>
+                            <option title="+233">Ghana</option>
+                            <option title="+350">Gibraltar</option>
+                            <option title="+30">Greece</option>
+                            <option title="+299">Greenland</option>
+                            <option title="+1473">Grenada</option>
+                            <option title="+590">Guadeloupe</option>
+                            <option title="+671">Guam</option>
+                            <option title="+502">Guatemala</option>
+                            <option title="+224">Guinea</option>
+                            <option title="+245">Guinea - Bissau</option>
+                            <option title="+592">Guyana</option>
+                            <option title="+509">Haiti</option>
+                            <option title="+504">Honduras</option>
+                            <option title="+852">Hong Kong</option>
+                            <option title="+36">Hungary</option>
+                            <option title="+354">Iceland</option>
+                            <option title="+91">India</option>
+                            <option title="+62">Indonesia</option>
+                            <option title="+98">Iran</option>
+                            <option title="+964">Iraq</option>
+                            <option title="+353">Ireland</option>
+                            <option title="+972">Israel</option>
+                            <option title="+39">Italy</option>
+                            <option title="+1876">Jamaica</option>
+                            <option title="+81">Japan</option>
+                            <option title="+962">Jordan</option>
+                            <option title="+7">Kazakhstan</option>
+                            <option title="+254">Kenya</option>
+                            <option title="+686">Kiribati</option>
+                            <option title="+850">Korea North</option>
+                            <option title="+82">Korea South</option>
+                            <option title="+965">Kuwait</option>
+                            <option title="+996">Kyrgyzstan</option>
+                            <option title="+856">Laos</option>
+                            <option title="+371">Latvia</option>
+                            <option title="+961">Lebanon</option>
+                            <option title="+266">Lesotho</option>
+                            <option title="+231">Liberia</option>
+                            <option title="+218">Libya</option>
+                            <option title="+417">Liechtenstein</option>
+                            <option title="+370">Lithuania</option>
+                            <option title="+352">Luxembourg</option>
+                            <option title="+853">Macao</option>
+                            <option title="+389">Macedonia</option>
+                            <option title="+261">Madagascar</option>
+                            <option title="+265">Malawi</option>
+                            <option title="+60">Malaysia</option>
+                            <option title="+960">Maldives</option>
+                            <option title="+223">Mali</option>
+                            <option title="+356">Malta</option>
+                            <option title="+692">Marshall Islands</option>
+                            <option title="+596">Martinique</option>
+                            <option title="+222">Mauritania</option>
+                            <option title="+269">Mayotte</option>
+                            <option title="+52">Mexico</option>
+                            <option title="+691">Micronesia</option>
+                            <option title="+373">Moldova</option>
+                            <option title="+377">Monaco</option>
+                            <option title="+976">Mongolia</option>
+                            <option title="+1664">Montserrat</option>
+                            <option title="+212">Morocco</option>
+                            <option title="+258">Mozambique</option>
+                            <option title="+95">Myanmar</option>
+                            <option title="+264">Namibia</option>
+                            <option title="+674">Nauru</option>
+                            <option title="+977">Nepal</option>
+                            <option title="+31">Netherlands</option>
+                            <option title="+687">New Caledonia</option>
+                            <option title="+64">New Zealand</option>
+                            <option title="+505">Nicaragua</option>
+                            <option title="+227">Niger</option>
+                            <option title="+234">Nigeria</option>
+                            <option title="+683">Niue</option>
+                            <option title="+672">Norfolk Islands</option>
+                            <option title="+670">Northern Marianas</option>
+                            <option title="+47">Norway</option>
+                            <option title="+968">Oman</option>
+                            <option title="+680">Palau</option>
+                            <option title="+507">Panama</option>
+                            <option title="+675">Papua New Guinea</option>
+                            <option title="+595">Paraguay</option>
+                            <option title="+51">Peru</option>
+                            <option title="+63">Philippines</option>
+                            <option title="+48">Poland</option>
+                            <option title="+351">Portugal</option>
+                            <option title="+1787">Puerto Rico</option>
+                            <option title="+974">Qatar</option>
+                            <option title="+262">Reunion</option>
+                            <option title="+40">Romania</option>
+                            <option title="+7">Russia</option>
+                            <option title="+250">Rwanda</option>
+                            <option title="+378">San Marino</option>
+                            <option title="+239">Sao Tome &amp; Principe</option>
+                            <option title="+966">Saudi Arabia</option>
+                            <option title="+221">Senegal</option>
+                            <option title="+381">Serbia</option>
+                            <option title="+248">Seychelles</option>
+                            <option title="+232">Sierra Leone</option>
+                            <option title="+65">Singapore</option>
+                            <option title="+421">Slovak Republic</option>
+                            <option title="+386">Slovenia</option>
+                            <option title="+677">Solomon Islands</option>
+                            <option title="+252">Somalia</option>
+                            <option title="+27">South Africa</option>
+                            <option title="+34">Spain</option>
+                            <option title="+94">Sri Lanka</option>
+                            <option title="+290">St. Helena</option>
+                            <option title="+1869">St. Kitts</option>
+                            <option title="+1758">St. Lucia</option>
+                            <option title="+249">Sudan</option>
+                            <option title="+597">Suriname</option>
+                            <option title="+268">Swaziland</option>
+                            <option title="+46">Sweden</option>
+                            <option title="+41">Switzerland</option>
+                            <option title="+963">Syria</option>
+                            <option title="+886">Taiwan</option>
+                            <option title="+7">Tajikstan</option>
+                            <option title="+66">Thailand</option>
+                            <option title="+228">Togo</option>
+                            <option title="+676">Tonga</option>
+                            <option title="+1868">Trinidad &amp; Tobago</option>
+                            <option title="+216">Tunisia</option>
+                            <option title="+90">Turkey</option>
+                            <option title="+7">Turkmenistan</option>
+                            <option title="+993">Turkmenistan</option>
+                            <option title="+1649">
+                              Turks &amp; Caicos Islands
                           </option>
-                          <option title="+688">Tuvalu</option>
-                          <option title="+256">Uganda</option>
-                          <option title="+44">UK</option>
-                          <option title="+380">Ukraine</option>
-                          <option title="+971">United Arab Emirates</option>
-                          <option title="+598">Uruguay</option>
-                          <option title="+1">USA</option>
-                          <option title="+7">Uzbekistan</option>
-                          <option title="+678">Vanuatu</option>
-                          <option title="+379">Vatican City</option>
-                          <option title="+58">Venezuela</option>
-                          <option title="+84">Vietnam</option>
-                          <option title="+84">Virgin Islands - British</option>
-                          <option title="+84">Virgin Islands - US</option>
-                          <option title="+681">Wallis &amp; Futuna</option>
-                          <option title="+969">Yemen</option>
-                          <option title="+967">Yemen</option>
-                          <option title="+260">Zambia</option>
-                          <option title="+263">Zimbabwe</option>
-                        </SelectInput>
-                      </FormGroup>
-                    </Col>
+                            <option title="+688">Tuvalu</option>
+                            <option title="+256">Uganda</option>
+                            <option title="+44">UK</option>
+                            <option title="+380">Ukraine</option>
+                            <option title="+971">United Arab Emirates</option>
+                            <option title="+598">Uruguay</option>
+                            <option title="+1">USA</option>
+                            <option title="+7">Uzbekistan</option>
+                            <option title="+678">Vanuatu</option>
+                            <option title="+379">Vatican City</option>
+                            <option title="+58">Venezuela</option>
+                            <option title="+84">Vietnam</option>
+                            <option title="+84">Virgin Islands - British</option>
+                            <option title="+84">Virgin Islands - US</option>
+                            <option title="+681">Wallis &amp; Futuna</option>
+                            <option title="+969">Yemen</option>
+                            <option title="+967">Yemen</option>
+                            <option title="+260">Zambia</option>
+                            <option title="+263">Zimbabwe</option>
+                          </SelectInput>
+                        </FormGroup>
+                      </Col>
 
-                    <Col>
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup8} />*
+                      <Col>
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup8} />*
                         </label>
-                        <TextInput
-                          type="email"
-                          name="email"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.email}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col cW="20%" mR="2%">
-                      <FormGroup>
-                        <TextInput
-                          type="text"
-                          name="ccode"
-                          readOnly
-                          value={this.state.ccode}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col cW="78%">
-                      <FormGroup>
-                        <label>
-                          <FormattedMessage {...messages.popup7} />*
+                          <TextInput
+                            type="email"
+                            name="email"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.email}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col cW="20%" mR="2%">
+                        <FormGroup>
+                          <TextInput
+                            type="text"
+                            name="ccode"
+                            readOnly
+                            value={this.state.ccode}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col cW="78%">
+                        <FormGroup>
+                          <label>
+                            <FormattedMessage {...messages.popup7} />*
                         </label>
-                        <TextInput
-                          type="text"
-                          pattern="[0-9]{10}"
-                          title="10 Digit numeric value"
-                          name="mobile"
-                          onFocus={inputFocus}
-                          onBlur={inputBlur}
-                          value={this.state.mobile}
-                          onChange={this.handleInputChange}
-                          required
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
+                          <TextInput
+                            type="text"
+                            pattern="[0-9]{10}"
+                            title="10 Digit numeric value"
+                            name="mobile"
+                            onFocus={inputFocus}
+                            onBlur={inputBlur}
+                            value={this.state.mobile}
+                            onChange={this.handleInputChange}
+                            required
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
 
-                  {this.state.addBranchLoading ? (
-                    <Button filledBtn marginTop="10px" disabled>
-                      <Loader />
-                    </Button>
-                  ) : (
-                    <Button filledBtn marginTop="10px">
-                      <span>Add Branch</span>
-                    </Button>
-                  )}
-                </form>
-              </div>
-            )}
+                    {this.state.addBranchLoading ? (
+                      <Button filledBtn marginTop="10px" disabled>
+                        <Loader />
+                      </Button>
+                    ) : (
+                        <Button filledBtn marginTop="10px">
+                          <span>Add Branch</span>
+                        </Button>
+                      )}
+                  </form>
+                </div>
+              )}
           </Popup>
         ) : null}
 
@@ -1724,10 +1829,10 @@ export default class BranchDashboard extends Component {
                       <TextInput
                         type="text"
                         autoFocus
-                        name="bcode"
+                        name="code"
                         onFocus={inputFocus}
                         onBlur={inputBlur}
-                        value={this.state.bcode}
+                        value={this.state.code}
                         onChange={this.handleInputChange}
                         required
                       />
@@ -1820,7 +1925,402 @@ export default class BranchDashboard extends Component {
           </Popup>
         ) : null}
 
-{this.state.assignPop ? (
+        {this.state.historyPop ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
+            <div>
+              <h1>Transaction Details ({this.state.popmaster})</h1>
+              {this.state.historyLoading ? (
+                <Button filledBtn disabled>
+                  <Loader />
+                </Button>
+              ) : (
+                  <Table marginTop="34px" smallTd textAlign="left">
+                    <tbody>
+                      {this.state.popresult && this.state.popresult.length > 0
+                        ? this.state.popresult.map(function (b) {
+                          var isoformat = new Date(
+                            b.tx_data.tx_timestamp.seconds * 1000,
+                          ).toISOString();
+                          var fulldate = dis.formatDate(isoformat);
+
+                          return dis.state.filter == b.tx_data.tx_type ||
+                            dis.state.filter == '' ? (
+                              <tr key={b.tx_data.tx_id}>
+                                <td>
+                                  <div className="labelGrey">{fulldate}</div>
+                                </td>
+                                <td>
+                                  <div className="labelBlue">
+                                    {b.tx_data.tx_details}
+                                  </div>{' '}
+                                  <div className="labelSmallGrey">Completed</div>
+                                </td>
+                                <td className="right">
+                                  <div className="labelGrey">
+                                    {b.tx_data.tx_type == 'DR' ? (
+                                      <span>
+                                        {CURRENCY} -{b.amount}
+                                      </span>
+                                    ) : (
+                                        <span>
+                                          {CURRENCY} {b.amount}
+                                        </span>
+                                      )}
+                                  </div>
+                                </td>
+                                <td>{b.tx_data.child_id}</td>
+                              </tr>
+                            ) : null;
+                        })
+                        : null}
+                    </tbody>
+                  </Table>
+                )}
+            </div>
+          </Popup>
+        ) : null}
+
+        {this.state.pendingPop ? (
+          <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
+            <div>
+              <h1>Pending Transactions</h1>
+              {this.state.historyLoading ? (
+                <Button filledBtn disabled>
+                  <Loader />
+                </Button>
+              ) : (
+                  <Table marginTop="34px" smallTd textAlign="left">
+                    <tbody>
+                      {
+
+                        this.state.pendingCashierHistory && this.state.pendingCashierHistory.length > 0
+                          ? this.state.pendingCashierHistory.map(function (b) {
+
+                            var fulldate = dis.formatDate(b.created_at);
+                            return <tr key={b._id}>
+                              <td>
+                                <div className="labelGrey">{fulldate}</div>
+                              </td>
+                              <td>
+                                <div
+                                  className="labelBlue"
+                                >
+
+                                  <span onClick={() => dis.showPendingDetails(b._id, JSON.parse(b.transaction_details),b.trans_type,b.interbank,b.status)}>
+                                    Cash sent from{' '}
+                                    {b.sender_name}{' '}
+                                      to{' '}
+                                    {b.receiver_name}
+                                  </span>
+
+                                </div>
+                                <div className="labelSmallGrey">
+                                  {b.status == 1 ?
+                                    <span>Approved</span>
+                                    :
+                                    b.status == 0 ?
+                                      <span>Pending</span>
+
+                                      :
+
+                                      <span className="red">Rejected</span>
+                                  }
+                                </div>
+                              </td>
+                              <td>
+                                <div className="labelGrey">
+                                  {'XOF'}
+                                  {b.amount}
+                                </div>
+                              </td>
+                            </tr>
+                          })
+                          : null
+                      }
+                    </tbody>
+                  </Table>
+                )}
+            </div>
+          </Popup>
+        ) : null}
+
+
+        {this.state.popupClaimMoney ? (
+          <Popup bigBody close={this.closePopup.bind(this)} accentedH1>
+
+            <div>
+              <h1>Transaction Details</h1>
+
+              <Container>
+                <Row vAlign="flex-start">
+                  <Col sm="12" md="4">
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        padding: '13px 0px',
+                        color: '#417505',
+                      }}
+                    >
+                      Sender's Info
+                          </div>
+                    <Row>
+                      <Col className="popInfoLeft">Mobile Number</Col>
+                      <Col className="popInfoRight">
+                        {this.state.mobile}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Given Name</Col>
+                      <Col className="popInfoRight">
+                        {this.state.givenname}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Family Name</Col>
+                      <Col className="popInfoRight">
+                        {this.state.familyname}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Address</Col>
+                      <Col className="popInfoRight">
+                        {this.state.address1}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">State</Col>
+                      <Col className="popInfoRight">
+                        {this.state.state}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Zip Code</Col>
+                      <Col className="popInfoRight">{this.state.zip}</Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Country</Col>
+                      <Col className="popInfoRight">
+                        {this.state.country}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Email ID</Col>
+                      <Col className="popInfoRight">
+                        {this.state.email}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Notes</Col>
+                      <Col className="popInfoRight">
+                        {this.state.note}
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col sm="12" md="4">
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        padding: '13px 0px',
+                        color: '#417505',
+                      }}
+                    >
+                      Receiver's Info
+                          </div>
+                    <Row>
+                      <Col className="popInfoLeft">Mobile Number</Col>
+                      <Col className="popInfoRight">
+                        {this.state.receiverMobile}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Given Name</Col>
+                      <Col className="popInfoRight">
+                        {this.state.receiverGivenName}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Family Name</Col>
+                      <Col className="popInfoRight">
+                        {this.state.receiverFamilyName}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Country</Col>
+                      <Col className="popInfoRight">
+                        {this.state.receiverCountry}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Email ID</Col>
+                      <Col className="popInfoRight">
+                        {this.state.receiverEmail}
+                      </Col>
+                    </Row>
+                    <Row /> <Row /> <Row />
+                  </Col>
+                  <Col sm="12" md="4">
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        padding: '13px 0px',
+                        color: '#417505',
+                      }}
+                    >
+                      &nbsp;
+                          </div>
+                    <Row>
+                      <Col className="popInfoLeft">Amount</Col>
+                      <Col className="popInfoRight">
+                        {this.state.receiverIdentificationAmount}
+                      </Col>
+                    </Row>
+                    <Row>
+                            <Col className="popInfoLeft">Transaction Type</Col>
+                            <Col className="popInfoRight">
+                              {this.state.type}
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="popInfoLeft">Interbank Transaction ?</Col>
+                            <Col className="popInfoRight">
+                              {this.state.interbank ? "Yes" : "No"}
+                            </Col>
+                          </Row>
+                    <Row>
+                      <Col className="popInfoLeft">ID required</Col>
+                      <Col className="popInfoRight">
+                        {this.state.withoutID ? 'No' : 'Yes'}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">OTP required</Col>
+                      <Col className="popInfoRight">
+                        {this.state.requireOTP ? 'Yes' : 'No'}
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row vAlign="flex-start">
+                  <Col>
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        padding: '13px 0px',
+                      }}
+                    >
+                      Sender's Identification
+                          </div>
+                    <Row>
+                      <Col className="popInfoLeft">Country</Col>
+                      <Col className="popInfoRight">
+                        {this.state.senderIdentificationCountry}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Type</Col>
+                      <Col className="popInfoRight">
+                        {this.state.senderIdentificationType}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Number</Col>
+                      <Col className="popInfoRight">
+                        {this.state.senderIdentificationNumber}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Valid till</Col>
+                      <Col className="popInfoRight">
+                        {this.state.senderIdentificationValidTill}
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col>
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: 'bold',
+                        padding: '13px 0px',
+                      }}
+                    >
+                      Receiver's Identification
+                          </div>
+                    <Row>
+                      <Col className="popInfoLeft">Country</Col>
+                      <Col className="popInfoRight">
+                        {this.state.receiverIdentificationCountry}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Type</Col>
+                      <Col className="popInfoRight">
+                        {this.state.receiverIdentificationType}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Number</Col>
+                      <Col className="popInfoRight">
+                        {this.state.receiverIdentificationNumber}
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="popInfoLeft">Valid till</Col>
+                      <Col className="popInfoRight">
+                        {this.state.receiverIdentificationValidTill}
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col>
+                  {this.state.pendingtransStatus === 0 ? (
+                       
+                    <Row>
+                      <Col cW="49%" mR="2%">
+                        {this.state.claimMoneyLoading ? (
+                          <Button filledBtn marginTop="20px" disabled>
+                            <Loader />
+                          </Button>
+                        ) : (
+                            <Button type="button" filledBtn marginTop="20px" onClick={this.approveTransfer}>
+                              <span>
+                                Approve
+                              </span>
+                            </Button>
+                          )}
+                      </Col>
+                      <Col cW="49%">
+                        {this.state.claimMoneyLoading ? (
+                          <Button filledBtn marginTop="20px" disabled style={{ backgroundColor: '#111111' }} >
+                            <Loader />
+                          </Button>
+                        ) : (
+                            <Button type="button" filledBtn marginTop="20px" style={{ backgroundColor: '#111111' }} onClick={this.rejectTransfer}>
+                              <span>
+                                Reject
+                              </span>
+                            </Button>
+                          )}
+                      </Col>
+                    </Row>
+                  ): null}
+
+                    <br />
+                    {/* <p className="note">
+                      <span style={{ color: 'red' }}>* </span>
+                      Total fee $200 will be charged
+                    </p> */}
+                  </Col>
+                </Row>
+              </Container>
+
+            </div>
+
+          </Popup>
+        ) : null}
+        {this.state.assignPop ? (
           <Popup close={this.closePopup.bind(this)} accentedH1>
             <h1>Assign User</h1>
             <form action="" method="post" onSubmit={this.assignUser}>
@@ -1842,11 +2342,11 @@ export default class BranchDashboard extends Component {
                 <label>Cashier Code*</label>
                 <TextInput
                   type="text"
-                  name="bcode"
+                  name="code"
                   autoFocus
                   onFocus={inputFocus}
                   onBlur={inputBlur}
-                  value={this.state.bcode}
+                  value={this.state.code}
                   onChange={this.handleInputChange}
                   readOnly
                   required
@@ -1883,409 +2383,7 @@ export default class BranchDashboard extends Component {
             </form>
           </Popup>
         ) : null}
-
-        {this.state.historyPop ? (
-          <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
-            <div>
-              <h1>Transaction Details ({this.state.popmaster})</h1>
-              {this.state.historyLoading ? (
-                <Button filledBtn disabled>
-                  <Loader />
-                </Button>
-              ) : (
-                <Table marginTop="34px" smallTd textAlign="left">
-                  <tbody>
-                    {this.state.popresult && this.state.popresult.length > 0
-                      ? this.state.popresult.map(function(b) {
-                          var isoformat = new Date(
-                            b.tx_data.tx_timestamp.seconds * 1000,
-                          ).toISOString();
-                          var fulldate = dis.formatDate(isoformat);
-
-                          return dis.state.filter == b.tx_data.tx_type ||
-                            dis.state.filter == '' ? (
-                            <tr key={b.tx_data.tx_id}>
-                              <td>
-                                <div className="labelGrey">{fulldate}</div>
-                              </td>
-                              <td>
-                                <div className="labelBlue">
-                                  {b.tx_data.tx_details}
-                                </div>{' '}
-                                <div className="labelSmallGrey">Completed</div>
-                              </td>
-                              <td className="right">
-                                <div className="labelGrey">
-                                  {b.tx_data.tx_type == 'DR' ? (
-                                    <span>
-                                      {CURRENCY} -{b.amount}
-                                    </span>
-                                  ) : (
-                                    <span>
-                                      {CURRENCY} {b.amount}
-                                    </span>
-                                  )}
-                                </div>
-                              </td>
-                              <td>{b.tx_data.child_id}</td>
-                            </tr>
-                          ) : null;
-                        })
-                      : null}
-                  </tbody>
-                </Table>
-              )}
-            </div>
-          </Popup>
-        ) : null}
-
-        {this.state.pendingPop ? (
-          <Popup close={this.closePopup.bind(this)} accentedH1 bigBody>
-            <div>
-              <h1>Pending Transactions</h1>
-              {this.state.historyLoading ? (
-                <Button filledBtn disabled>
-                  <Loader />
-                </Button>
-              ) : (
-                <Table marginTop="34px" smallTd textAlign="left">
-                  <tbody>
-                {
-
-                      this.state.pendingCashierHistory && this.state.pendingCashierHistory.length > 0
-                      ? this.state.pendingCashierHistory.map(function(b) {
-
-                        var fulldate = dis.formatDate(b.created_at);
-                        return  <tr key={b._id}>
-                              <td>
-                                <div className="labelGrey">{fulldate}</div>
-                              </td>
-                              <td>
-                                <div
-                                  className="labelBlue"
-                                >
-
-                                    <span onClick={() => dis.showPendingDetails(b._id, JSON.parse(b.transaction_details),b.trans_type,b.interbank,b.status)}>
-                                      Cash sent from{' '}
-                                      {b.sender_name}{' '}
-                                      to{' '}
-                                      {b.receiver_name}
-                                    </span>
-
-                                </div>
-                                <div className="labelSmallGrey">
-                                  {b.status == 1 ?
-                                    <span>Approved</span>
-                                  :
-                                  b.status == 0 ?
-                                    <span>Pending</span>
-
-                                  :
-
-                                    <span className="red">Rejected</span>
-                                  }
-                                </div>
-                              </td>
-                              <td>
-                                <div className="labelGrey">
-                                  {'XOF'}
-                                  {b.amount}
-                                </div>
-                              </td>
-                            </tr>
-                      })
-                      : null
-                    }
-                      </tbody>
-                </Table>
-              )}
-            </div>
-          </Popup>
-        ) : null}
-
-
-         {this.state.popupClaimMoney ? (
-          <Popup bigBody close={this.closePopup.bind(this)} accentedH1>
-
-                <div>
-                  <h1>Transaction Details</h1>
-
-                    <Container>
-                      <Row vAlign="flex-start">
-                        <Col sm="12" md="4">
-                          <div
-                            style={{
-                              fontSize: '24px',
-                              fontWeight: 'bold',
-                              padding: '13px 0px',
-                              color: '#417505',
-                            }}
-                          >
-                            Sender's Info
-                          </div>
-                          <Row>
-                            <Col className="popInfoLeft">Mobile Number</Col>
-                            <Col className="popInfoRight">
-                              {this.state.mobile}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Given Name</Col>
-                            <Col className="popInfoRight">
-                              {this.state.givenname}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Family Name</Col>
-                            <Col className="popInfoRight">
-                              {this.state.familyname}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Address</Col>
-                            <Col className="popInfoRight">
-                              {this.state.address1}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">State</Col>
-                            <Col className="popInfoRight">
-                              {this.state.state}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Zip Code</Col>
-                            <Col className="popInfoRight">{this.state.zip}</Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Country</Col>
-                            <Col className="popInfoRight">
-                              {this.state.country}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Email ID</Col>
-                            <Col className="popInfoRight">
-                              {this.state.email}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Notes</Col>
-                            <Col className="popInfoRight">
-                              {this.state.note}
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col sm="12" md="4">
-                          <div
-                            style={{
-                              fontSize: '24px',
-                              fontWeight: 'bold',
-                              padding: '13px 0px',
-                              color: '#417505',
-                            }}
-                          >
-                            Receiver's Info
-                          </div>
-                          <Row>
-                            <Col className="popInfoLeft">Mobile Number</Col>
-                            <Col className="popInfoRight">
-                              {this.state.receiverMobile}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Given Name</Col>
-                            <Col className="popInfoRight">
-                              {this.state.receiverGivenName}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Family Name</Col>
-                            <Col className="popInfoRight">
-                              {this.state.receiverFamilyName}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Country</Col>
-                            <Col className="popInfoRight">
-                              {this.state.receiverCountry}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Email ID</Col>
-                            <Col className="popInfoRight">
-                              {this.state.receiverEmail}
-                            </Col>
-                          </Row>
-                          <Row /> <Row /> <Row />
-                        </Col>
-                        <Col sm="12" md="4">
-                          <div
-                            style={{
-                              fontSize: '24px',
-                              fontWeight: 'bold',
-                              padding: '13px 0px',
-                              color: '#417505',
-                            }}
-                          >
-                            &nbsp;
-                          </div>
-                          <Row>
-                            <Col className="popInfoLeft">Amount</Col>
-                            <Col className="popInfoRight">
-                              {this.state.receiverIdentificationAmount}
-                            </Col>
-                          </Row>
-                          {/* <Row>
-                            <Col className="popInfoLeft">Date</Col>
-                            <Col className="popInfoRight">
-                              {this.state.dateClaimMoney}
-                            </Col>
-                          </Row> */}
-                          <Row>
-                            <Col className="popInfoLeft">Transaction Type</Col>
-                            <Col className="popInfoRight">
-                              {this.state.type}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Interbank Transaction ?</Col>
-                            <Col className="popInfoRight">
-                              {this.state.interbank ? "Yes" : "No"}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">ID required</Col>
-                            <Col className="popInfoRight">
-                              {this.state.withoutID ? 'No' : 'Yes'}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">OTP required</Col>
-                            <Col className="popInfoRight">
-                              {this.state.requireOTP ? 'Yes' : 'No'}
-                            </Col>
-                          </Row>
-                        </Col>
-                      </Row>
-                      <Row vAlign="flex-start">
-                        <Col>
-                          <div
-                            style={{
-                              fontSize: '24px',
-                              fontWeight: 'bold',
-                              padding: '13px 0px',
-                            }}
-                          >
-                            Sender's Identification
-                          </div>
-                          <Row>
-                            <Col className="popInfoLeft">Country</Col>
-                            <Col className="popInfoRight">
-                              {this.state.senderIdentificationCountry}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Type</Col>
-                            <Col className="popInfoRight">
-                              {this.state.senderIdentificationType}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Number</Col>
-                            <Col className="popInfoRight">
-                              {this.state.senderIdentificationNumber}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Valid till</Col>
-                            <Col className="popInfoRight">
-                              {this.state.senderIdentificationValidTill}
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col>
-                          <div
-                            style={{
-                              fontSize: '24px',
-                              fontWeight: 'bold',
-                              padding: '13px 0px',
-                            }}
-                          >
-                            Receiver's Identification
-                          </div>
-                          <Row>
-                            <Col className="popInfoLeft">Country</Col>
-                            <Col className="popInfoRight">
-                              {this.state.receiverIdentificationCountry}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Type</Col>
-                            <Col className="popInfoRight">
-                              {this.state.receiverIdentificationType}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Number</Col>
-                            <Col className="popInfoRight">
-                              {this.state.receiverIdentificationNumber}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col className="popInfoLeft">Valid till</Col>
-                            <Col className="popInfoRight">
-                              {this.state.receiverIdentificationValidTill}
-                            </Col>
-                          </Row>
-                        </Col>
-                        <Col>
-                        {this.state.pendingtransStatus === 0 ? (
-                       <Row>
-                       <Col cW="49%" mR="2%">
-                       {this.state.claimMoneyLoading ? (
-                            <Button filledBtn marginTop="20px" disabled>
-                              <Loader />
-                            </Button>
-                          ) : (
-                            <Button type="button" filledBtn marginTop="20px" onClick={this.approveTransfer}>
-                              <span>
-                                Approve
-                              </span>
-                            </Button>
-                          )}
-                       </Col>
-                       <Col cW="49%">
-                       {this.state.claimMoneyLoading ? (
-                            <Button filledBtn marginTop="20px" disabled  style={{backgroundColor: '#111111'}} >
-                              <Loader />
-                            </Button>
-                          ) : (
-                            <Button type="button" filledBtn marginTop="20px" style={{backgroundColor: '#111111'}} onClick={this.rejectTransfer}>
-                              <span>
-                                Reject
-                              </span>
-                            </Button>
-                          )}
-                       </Col>
-                       </Row>
-                        ):null}
-
-
-                          <br />
-                          {/* <p className="note">
-                      <span style={{ color: 'red' }}>* </span>
-                      Total fee $200 will be charged
-                    </p> */}
-                        </Col>
-                      </Row>
-                    </Container>
-
-                </div>
-
-          </Popup>
-        ) : null}
-
+          <Footer bankname={this.state.bankName} banklogo={this.state.bankLogo}/>
       </Wrapper>
     );
   }

@@ -525,9 +525,9 @@ getTransactions = async(after,before) => {
                     textAlign="center"
                     col
                   >
-                    <h4>Commision</h4>
-                    <div>
-                      {CURRENCY}  {this.state.commissionGenerated.toFixed(2)}
+                    <h4>Commission</h4>
+                    <div className="cardValue">
+                      {CURRENCY} {this.state.commissionGenerated.toFixed(2)}
                     </div>
                   </Card>
                 </Col>
