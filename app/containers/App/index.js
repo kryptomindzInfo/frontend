@@ -292,6 +292,12 @@ export default function App(props) {
             path="/bank/merchants/commision/:id"
             component={CommissionFeesPage}
           />
+           <BankRoute
+            apitype={"bank"}
+            exact
+            path="/bank/branchdashboard/:id?"
+            component={BranchDashboard}
+          />
           <BankRoute
             exact
             path="/bank/merchants/interbankcommision/:id"

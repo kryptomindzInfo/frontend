@@ -368,8 +368,8 @@ getTransactions = async(after,before) => {
       allRow: transactions.data,
       receivedRow: transactions.data.filter(val=> val.txType === 'Non Wallet To Non Wallet'),
       sentRow: transactions.data.filter(val=> val.txType === 'Non Wallet to Wallet' || val.txType === 'Non Wallet To Non Wallet'),
-      invoiceRow: transactions.data.filter(val=> val.txType === 'Non Wallet To Merchant' || val.txType === 'Inter Bank Non Wallet To Merchant'),
-      invoiceAmount: (transactions.data.filter(val=> val.txType === 'Non Wallet To Merchant' || val.txType === 'Inter Bank Non Wallet To Merchant').reduce(
+      invoiceRow: transactions.data.filter(val=> val.txType === 'Non Wallet to Merchant' || val.txType === 'Inter Bank Non Wallet To Merchant'),
+      invoiceAmount: (transactions.data.filter(val=> val.txType === 'Non Wallet to Merchant' || val.txType === 'Inter Bank Non Wallet To Merchant').reduce(
         function(a, b){
           return a + (b.childTx[0].transaction.amount);
         }, 0)),

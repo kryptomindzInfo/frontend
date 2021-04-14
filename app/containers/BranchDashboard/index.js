@@ -946,6 +946,7 @@ export default class BranchDashboard extends Component {
   }
 
   componentDidMount() {
+    console.log('qfwf');
     this.getData()
     this.getStats()
   }
@@ -1246,10 +1247,10 @@ export default class BranchDashboard extends Component {
                                 {(b.fee_generated+b.commission_generated).toFixed(2)}
                               </td>
                               <td>
-                                {this.state.cashierStats[i][0].bills_paid}
+                                {this.state.cashierStats[i].length > 0  ? this.state.cashierStats[i][0].bills_paid : 0}
                               </td>
                               <td>
-                                {this.state.cashierStats[i][0].amount_collected}
+                                {this.state.cashierStats[i].length > 0 ? this.state.cashierStats[i][0].amount_collected : 0}
                               </td>
                               <td className="tac">
                                 {b.cash_in_hand.toFixed(2)}

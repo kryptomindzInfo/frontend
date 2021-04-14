@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
-
+import history from 'utils/history.js';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
@@ -494,28 +494,107 @@ export default class BankBranchList extends Component {
 
   };
 
-  getBranches = () => {
-    axios
-      .post(`${API_URL}/getBranches`, { token })
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res.data);
-          this.setState({ loading: false, branches: res.data.branches, copybranches: res.data.branches });
-        }
-      })
-      .catch(err => { });
+  getBranches = async() => {
+    try {
+      const res = await axios.post(`${API_URL}/getBranches`, { token });
+      if (res.status == 200) {
+        return ({branches:res.data.branches,loading:false});
+      }
+    } catch(err){
+      console.log(err);
+    }
+  }
+
+  getBranchDashStats = async(id) => {
+    try {
+      const res = await axios.post(`${API_URL}/bank/getBranchDashStats`, { token,branch_id:id });
+      if (res.status == 200) {
+        return (res.data);
+      }
+    } catch(err){
+      console.log(err);
+    }
+  }
+
+  getBranchStats = async(blist) => {
+    const stats = blist.map(async (branch) => {
+      const branchstats = await this.getBranchDashStats(branch._id);
+      return (branchstats);
+    });
+    const result= await Promise.all(stats);
+    return({res:result,loading:false});
+  }
+  getData = async() => {
+    this.setState(
+      {
+        loading:true,
+      }
+    );
+    const branches = await this.getBranches();
+    console.log(branches.branches);
+    const branchstats = await this.getBranchStats(branches.branches);
+    console.log(branchstats);
+    this.setState(
+      {
+        branches: branches.branches,
+        branchStats:branchstats.res,
+        loading:branchstats.loading,
+        totalCashier: branchstats.res.reduce(
+          (a, b) => a + b.totalCashier, 0
+        ),
+        openingBalance: branchstats.res.reduce(
+          (a, b) => a + b.openingBalance, 0
+        ).toFixed(2),
+        cashInHand: branchstats.res.reduce(
+          (a, b) => a + b.cashInHand, 0
+        ).toFixed(2),
+        feeGenerated: branchstats.res.reduce(
+          (a, b) => a + b.feeGenerated, 0
+        ).toFixed(2),
+        commissionGenerated: branchstats.res.reduce(
+          (a, b) => a + b.commissionGenerated, 0
+        ).toFixed(2),
+        invoicePaid: branchstats.res.reduce(
+          (a, b) => a + b.invoicePaid, 0
+        ),
+        amountPaid: branchstats.res.reduce(
+          (a, b) => a + b.amountPaid, 0
+        ),
+        accepted: branchstats.res.reduce(
+          (a, b) => a + b.accepted, 0
+        ),
+        declined: branchstats.res.reduce(
+          (a, b) => a + b.cancelled, 0
+        ),
+        pending: branchstats.res.reduce(
+          (a, b) => a + b.pending, 0
+        ),
+        cashReceived: branchstats.res.reduce(
+          (a, b) => a + b.cashReceived, 0
+        ).toFixed(2),
+        cashPaid: branchstats.res.reduce(
+          (a, b) => a + b.cashPaid, 0
+        ).toFixed(2),
+        closingBalance: branchstats.res.reduce(
+          (a, b) => a + b.closingBalance, 0
+        ).toFixed(2),
+      }
+    );
+    
   }
 
   componentDidMount() {
     // this.setState({ bank: this.state.bank_id });
     if (token !== undefined && token !== null) {
-      this.getBank();
-      //this.getBranches();
+      // this.getBank();
+      this.getData();
+      // this.getBranches();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
     }
   }
+
 
   searchlistfunction = (value) => {
     console.log(value)
@@ -560,24 +639,169 @@ export default class BankBranchList extends Component {
         <Container verticalMargin>
           <SidebarBank />
           <Main>
-            <ActionBar
-              marginBottom="33px"
-              inputWidth="calc(100% - 241px)"
-              className="clr"
-            >
-              <div className="iconedInput fl">
-                <i className="material-icons">search</i>
-                <input type="text" placeholder="Search Branches" onChange={(e) => {
-                  this.searchlistfunction(e.target.value)
-                }} />
-              </div>
-
-              <Button className="addBankButton" flex onClick={this.showPopup}>
-                <i className="material-icons">add</i>
-                <span>Add Branch</span>
-              </Button>
-            </ActionBar>
+          <Row>
+              <Col  cW='33%'>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  textAlign="center"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Number of Branch</h4>
+                  <div className="cardValue">{this.state.branches.length}</div>
+                </Card>
+              </Col>
+              <Col  cW='33%'>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Opening Balance</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.openingBalance}</div>
+                </Card>
+              </Col>
+              <Col  cW='33%'>
+                <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash Received</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.cashReceived}</div>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+            <Col  cW='20%'>
+                <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash Paid</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.cashPaid}</div>
+                </Card>
+              </Col>
+            <Col cW='35%'>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Invoices Paid</h4>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Number</h5>
+                      <div className="cardValue">{this.state.invoicePaid}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.amountPaid}</div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+              <Col cW='45%'>
+              <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  textAlign="center"
+                  smallValue
+                >
+                  <h4>Revenue Collected</h4>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Fee</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.feeGenerated}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Commission</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.commissionGenerated}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Total</h5>
+                      <div className="cardValue">{CURRENCY}: {(parseFloat(this.state.commissionGenerated,10)+ parseFloat(this.state.feeGenerated,10)).toFixed(2)}</div>
+                    </Col>
+                  </Row>
+                  
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+            <Col  cW='33%'>
+                <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash In Hand</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.cashInHand}</div>
+                </Card>
+              </Col>
+              <Col  cW='33%'>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Closing Balance</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.closingBalance}</div>
+                </Card>
+              </Col>
+              <Col  cW='33%'>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  textAlign="center"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Discripancy</h4>
+                  <div className="cardValue">{CURRENCY}: 0</div>
+                </Card>
+              </Col>
+            </Row>
+            
+          </Main>
+          <Main fullWidth>
             <Card bigPadding>
+            <Button
+              className="addBankButton"
+              flex
+              style={{
+                float:"right",
+                marginBottom:'10px',
+                display: this.state.admin === true ? 'none' : '',
+              }}
+              onClick={() => this.showPopup()}
+            >
+               <i className="material-icons">add</i>
+              <span>Add Branch</span>
+            </Button>
               <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>
@@ -593,36 +817,52 @@ export default class BankBranchList extends Component {
                     <tr>
                       <th>Branch Name</th>
                       <th>Total Cashier</th>
-                      <th>Credit limit ({CURRENCY})</th>
+                      <th>Opening Balance ({CURRENCY})</th>
+                      <th>Cash Received ({CURRENCY})</th>
+                      <th>Cash Paid ({CURRENCY})</th>
+                      <th>Invoice Paid </th>
+                      <th>Amount Collected ({CURRENCY})</th>
+                      <th>Fee Collected ({CURRENCY})</th>
+                      <th>Commission Collected ({CURRENCY})</th>
+                      <th>Revenue Collected ({CURRENCY})</th>
                       <th>Cash in Hand ({CURRENCY})</th>
-                      <th className="tal">
-                        No. of Transaction
-                        <Row className="small">
-                          <Col>Yearly</Col>
-                          <Col>Monthly</Col>
-                          <Col>Weekly</Col>
-                          <Col>Daily</Col>
-                        </Row>
-                      </th>
+                      <th>Closing Balance ({CURRENCY})</th>
+                      <th>Discripancy ({CURRENCY})</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
                     {this.state.branches && this.state.branches.length > 0
-                      ? this.state.branches.map(function (b) {
+                      ? this.state.branches.map(function (b,i) {
                         return (
                           <tr key={b._id}>
                             <td>{b.name}</td>
                             <td className="tac">{b.total_cashiers}</td>
-                            <td className="tac">{b.credit_limit}</td>
-                            <td className="tac">{b.cash_in_hand}</td>
-
-                            <td className="tac bold">
-                              <Row className="green">
-                                <Col>0</Col>
-                                <Col>0</Col>
-                                <Col>0</Col>
-                                <Col>0</Col>
-                              </Row>
+                            <td className="tac">{dis.state.branchStats[i].openingBalance.toFixed(2)}</td>
+                            <td className="tac">{dis.state.branchStats[i].cashReceived.toFixed(2)}</td>
+                            <td className="tac">{dis.state.branchStats[i].cashPaid.toFixed(2)}</td>
+                            <td className="tac">{dis.state.branchStats[i].invoicePaid}</td>
+                            <td className="tac">{dis.state.branchStats[i].amountPaid}</td>
+                            <td className="tac">{dis.state.branchStats[i].feeGenerated.toFixed(2)}</td>
+                            <td className="tac">{dis.state.branchStats[i].commissionGenerated.toFixed(2)}</td>
+                            <td className="tac">{(dis.state.branchStats[i].feeGenerated + dis.state.branchStats[i].commissionGenerated).toFixed(2)}</td>
+                            <td className="tac">{dis.state.branchStats[i].cashInHand}</td>
+                            <td className="tac">{dis.state.branchStats[i].closingBalance.toFixed(2)}</td>
+                            <td className="tac">0</td>
+                            <td className="tac bold green">
+                              
+                              <Button
+                                style={{minWidth:'90%', marginRight:'5px'}}
+                                onClick={() => {
+                                  localStorage.setItem(
+                                    'selectedBranch',
+                                    JSON.stringify(b),
+                                  );
+                                history.push(`/bank/branchdashboard/${b._id}`);
+                                }}
+                              >                    
+                                View                   
+                              </Button>
                               <span className="absoluteMiddleRight primary popMenuTrigger">
                                 <i className="material-icons ">more_vert</i>
                                 <div className="popMenu">
@@ -661,6 +901,7 @@ export default class BankBranchList extends Component {
               </div>
             </Card>
           </Main>
+        
         </Container>
         {this.state.popup ? (
           <Popup close={this.closePopup.bind(this)} accentedH1>
