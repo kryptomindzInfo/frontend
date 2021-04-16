@@ -89,8 +89,8 @@ const SearchTransactionList = props => {
                                 color: 'green',
                               }}
                             >
-                              <span onClick={() => props.handletransactionreceipt(b.transaction,child[0].transaction.master_code)}>
-                                Pay Bill
+                              <span onClick={() => props.handletransactionreceipt(b.transaction,child[0].transaction.master_code,b.txType)}>
+                                Receipt
                               </span>
                             </div>
                           </td>

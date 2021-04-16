@@ -33,6 +33,7 @@ import CashierPopupToggle from './CashierPopupToggle';
 import messages from './messages';
 import TypeSelectBox from '../Form/TypeSelectBox';
 import getCountryDialCode from '../../utils/CountryUtil';
+import SearchInvoicePopup from './SearchInvoicePopup';
 
 toast.configure({
   position: 'bottom-right',
@@ -82,6 +83,7 @@ class CashierTransactionLimit extends Component {
       interbank: true,
       interbankclaim: true,
       receiptpopup: false,
+      searchBillsPopup: false,
       receiptvalues: {},
     };
     this.success = this.success.bind(this);
@@ -1050,6 +1052,19 @@ class CashierTransactionLimit extends Component {
     }
   };
 
+  onSearchBillsPopupClose = () => {
+    this.setState({
+      searchBillsPopup:false,
+    });
+  };
+
+  onSearchBillsPopupOpen = () => {
+    this.setState({
+      searchBillsPopup:true,
+    });
+  };
+
+
   componentDidMount() {
     console.log(maxTransAmt);
     this.getTransLimit();
@@ -1309,6 +1324,13 @@ class CashierTransactionLimit extends Component {
               </Button>
           </Col>
         </Row>
+        <Row>
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+            <Button dashBtn onClick={() => { this.onSearchBillsPopupOpen() }}>
+              Search Paid Invoices
+            </Button>
+          </Col>
+        </Row>
         
         
         {this.state.receiptpopup ? (
@@ -1323,6 +1345,14 @@ class CashierTransactionLimit extends Component {
             close={this.closeOperationalPopup}
           />
         ) : null}
+
+        {this.state.searchBillsPopup ? (
+          <SearchInvoicePopup
+            close={() => this.onSearchBillsPopupClose()}
+          />
+        ) : (
+          ''
+        )}
 
         
         {this.state.showSearchTransactionPopup ? (

@@ -6,6 +6,7 @@ import Col from 'components/Col';
 import SelectInput from 'components/SelectInput';
 import FormGroup from 'components/FormGroup';
 import TextInput from 'components/TextInput';
+
 import Loader from 'components/Loader';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -33,7 +34,7 @@ const SearchTransactionPopup = props => {
   const token =  localStorage.getItem('cashierLogged');
  
 
-  const getHistory = async(after,before,type) => {
+  const getHistory = async(after,before,mobile) => {
       console.log(type);
     try{
       const res = await axios.post(`${API_URL}/cashier/queryCashierTransactionStates`, {
@@ -47,26 +48,20 @@ const SearchTransactionPopup = props => {
         limit: 100
       });
       if (res.status == 200) {
-        if(type === "Non Wallet to Wallet Send Money"){
-          console.log('fwf');
           return ({
-            transactions:res.data.transactions.filter(trans => trans.txType === "Non Wallet to Wallet" || trans.txType === "Inter Bank Non Wallet To Wallet"),
+            transactions:res.data.transactions.filter(trans => (trans.transaction ? trans.transaction.mobile === mobile : null) || trans.childTx[0].transaction.master_code === mobile),
           });
-        } else if (type === "Non Wallet To Non Wallet Send Money" || type === "Claim Money"){
-          return ({
-            transactions:res.data.transactions.filter(trans => trans.txType === "Non Wallet To Non Wallet" || trans.txType === "Inter Bank Non Wallet To Non Wallet"),
-          });
-        }
       }
     } catch (err){
       console.log(err);
     }
   }
 
-  const handleTransactionReceipt = (values,code) => {
+  const handleTransactionReceipt = (values,code,type) => {
     setValues(values);
     setDisplayTransactionList(false);
     setMastercode(code);
+    setType(type);
     setDisplayReceipt(true);
   };
 
@@ -82,21 +77,20 @@ const SearchTransactionPopup = props => {
             {!displayTransactionList && !displayReceipt ? (
               <Formik
                 initialValues={{
-                  trans_type: '',
+                  mobile: '',
                 }}
                 onSubmit={async (values) => {
-                    setType(values.trans_type);
                     const after = new Date(formdate);
                     const before = new Date(formdate);
                     after.setHours(0,0,0,0);
                     before.setHours(23,59,59,0);
-                    const res = await getHistory(after,before,values.trans_type);
+                    const res = await getHistory(after,before,values.mobile);
                     console.log(res.transactions);
                     setTransactionList(res.transactions);
                     setDisplayTransactionList(true);
                 }}
                 validationSchema={Yup.object().shape({
-                    trans_type: Yup.string().required('Required'),
+                  mobile: Yup.string().required('Required'),
                 })}
               >
                 {formikProps => {
@@ -142,22 +136,25 @@ const SearchTransactionPopup = props => {
                             </FormGroup>
                         </Col>
                         <Col cW="65%">
-                            <FormGroup>
-                                <SelectInput
-                                    type="text"
-                                    name="trans_type"
-                                    value={values.trans_type}
-                                    onChange={handleChange}
-                                    required
-                                    list="ttype"
-                                    >
-                                        <option value="">Transaction Type*</option>
-                                        <option value="Non Wallet to Wallet Send Money">Non Wallet to Wallet Send Money</option>
-                                        <option value="Non Wallet To Non Wallet Send Money">Non Wallet to Non Wallet Send Money</option>
-                                        <option value="Claim Money">Claim Money</option>
-                                       
-                                </SelectInput>
-                            </FormGroup>
+                        <FormGroup>
+                            <label htmlFor="invoiceIdOrMobile">
+                              Mobile/Transaction Code
+                            </label>
+                            <TextInput
+                              type="text"
+                              name="mobile"
+                              onFocus={e => {
+                                inputFocus(e);
+                                handleChange(e);
+                              }}
+                              onBlur={e => {
+                                inputBlur(e);
+                                handleBlur(e);
+                              }}
+                              onChange={handleChange}
+                              value={values.mobile}
+                            />
+                          </FormGroup>
                         </Col>
                       </Row>
                       <FormGroup>
@@ -176,7 +173,7 @@ const SearchTransactionPopup = props => {
               <SearchTransactionList
                 transactionList={transactionList}
                 type={type}
-                handletransactionreceipt={(values,mastercode) => handleTransactionReceipt(values,mastercode)}
+                handletransactionreceipt={(values,mastercode,type) => handleTransactionReceipt(values,mastercode,type)}
                 close={props.close}
               />
             ) : (
