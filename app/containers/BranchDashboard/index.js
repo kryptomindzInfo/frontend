@@ -989,18 +989,18 @@ export default class BranchDashboard extends Component {
         />
 
         )}
-         {this.state.apiType === 'partner' ? (
+         {this.state.apiType === 'bank' ? (
         <Card >
           <div style={{display:'flex'}}>
             <button  style={{border:"none",width:"100px",marginLeft:"150px"}} onClick={() => {
-                history.push(`/dashboard`);
+                history.push(`/bank/dashboard`);
               }}>
                 <A>
                   Back
               </A>
             </button>
             <button style={{border:"none",width:"100px"}} onClick={() => {
-              history.push(`/partner/branch/reports/${this.state.bid}`);
+              history.push(`/bank/branchreports/${this.state.bid}`);
             }}>
                 <A>
                   Reports
@@ -1020,7 +1020,7 @@ export default class BranchDashboard extends Component {
       ):''}
        
         <Container verticalMargin>
-        {this.state.apiType === 'partner' ? (
+        {this.state.apiType === 'bank' ? (
           <Sidebar marginRight>
              <BranchOperationalWallet branchId={this.state.bid} bankName={this.props.bankName}/>
             <BranchMasterWallet branchId={this.state.bid} bankName={this.props.bankName}/>
@@ -1269,7 +1269,7 @@ export default class BranchDashboard extends Component {
                               <span onClick={() => this.showPending(b._id)}> {b.pending_trans}</span>
 
                             </td>
-                            {this.state.apiType === 'partner' ? (
+                            {this.state.apiType === 'bank' ? (
                               <td className="tac bold green">
                                  <Button
                                 className="sendMoneyButton"
@@ -1287,7 +1287,7 @@ export default class BranchDashboard extends Component {
                                 </A> */}
                                 <A
                                   href={
-                                    '/partner/branch/cashier/reports/' +
+                                    '/bank/branchcashier/reports/' +
                                     b._id
                                   }
                                 >

@@ -217,13 +217,10 @@ class BankOperationalWallet extends Component {
       }
     }
     return (
-      <Card marginBottom="54px" buttonMarginTop="32px" bigPadding>
+      <Card marginBottom="12px" buttonMarginTop="12px" bigPadding>
         <h3>
           <FormattedMessage {...messages.operational} />
         </h3>
-        <h5>
-          <FormattedMessage {...messages.available} />
-        </h5>
         <div className="cardValue">
           {CURRENCY} {this.state.balance}
         </div>

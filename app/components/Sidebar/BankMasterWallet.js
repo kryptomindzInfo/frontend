@@ -91,13 +91,10 @@ class BankMasterWallet extends Component {
 
   render() {
     return (
-      <Card buttonMarginTop="32px" bigPadding>
+      <Card buttonMarginTop="12px" bigPadding>
         <h3>
           <FormattedMessage {...messages.master} />
         </h3>
-        <h5>
-          <FormattedMessage {...messages.available} />
-        </h5>
         <div className="cardValue">{CURRENCY} {this.state.balance}</div>
         <A href={'/bank/masterHistory'}>
           <span className="history">History</span>

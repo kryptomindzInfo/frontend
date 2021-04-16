@@ -77,7 +77,8 @@ import BankEditFee from 'containers/BankEditFee';
 import BankEditInterBankFee from 'containers/BankEditInterBankFee';
 import FeeList from 'containers/FeeList';
 import InterBankFeeList from 'containers/InterBankFeeList';
-
+import PartnerReports from 'containers/PartnerReports';
+import MerchantReports from 'containers/MerchantReports';
 import { ThemeProvider } from 'styled-components';
 import AllRoutes from './AllRoutes';
 import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
@@ -199,7 +200,7 @@ export default function App(props) {
           />
           <Route exact path="/bank/otp" component={BankOTPPage} />
 
-          <BankRoute exact path="/bank/dashboard" component={BankDashboard} />
+          <BankRoute exact path="/bank/dashboard" component={BankBranchList} />
           <BankRoute path="/bank/info" component={BankInfo} />
           <BankRoute path="/bank/fees" component={BankFees} />
           <BankRoute path="/bank/interBankFees" component={InterBankFees} />
@@ -209,6 +210,12 @@ export default function App(props) {
           <BankRoute
             path="/bank/cashiers/:branch?"
             component={BankCashierList}
+          />
+           <BankRoute
+            apitype='bank'
+            exact
+            path="/bank/branchcashier/reports/:id"
+            component={CashierReports}
           />
           <BankRoute path="/bank/users" component={BankUser} />
           <BankRoute path="/bank/create-fee" component={BankCreateFee} />
@@ -287,6 +294,18 @@ export default function App(props) {
             path="/bank/merchants/info/:id"
             component={MerchantSettingsPage}
           />
+           <BankRoute
+            exact
+            path="/bank/partnerreports/:id"
+            component={PartnerReports}
+          />
+           <BankRoute
+            exact
+            path="/bank/merchantreports/:id"
+            component={MerchantReports}
+          />
+          
+          
           <BankRoute
             exact
             path="/bank/merchants/commision/:id"
@@ -298,6 +317,13 @@ export default function App(props) {
             path="/bank/branchdashboard/:id?"
             component={BranchDashboard}
           />
+           <BankRoute
+            apitype={"bank"}
+            exact
+            path="/bank/branchreports/:id?"
+            component={BranchReports}
+          />
+         
           <BankRoute
             exact
             path="/bank/merchants/interbankcommision/:id"

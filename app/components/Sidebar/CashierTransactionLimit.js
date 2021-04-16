@@ -19,7 +19,7 @@ import TransactionReciept from '../TransactionReciept';
 import FormDialog from '../../components/FormDialog';
 import history from 'utils/history';
 import { API_URL, CONTRACT_URL, CURRENCY, STATIC_URL } from 'containers/App/constants';
-
+import SearchTransactionPopup from './SearchTransactionsPopup';
 import 'react-toastify/dist/ReactToastify.css';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
@@ -74,6 +74,7 @@ class CashierTransactionLimit extends Component {
       country: '',
       receiverCountry: '',
       showSendMoneyOTP: false,
+      showSearchTransactionPopup: false,
       isWallet: false,
       toWalletFormValues: {},
       isValidFee: true,
@@ -103,6 +104,12 @@ class CashierTransactionLimit extends Component {
     });
   };
 
+  openSearchPopup = () => {
+    this.setState({
+      showSearchTransactionPopup: true,
+    });
+  };
+
   openCashier = e => {
     this.setState({
       openCashierPopup: true
@@ -120,6 +127,12 @@ class CashierTransactionLimit extends Component {
   closeOperationalPopup = () => {
     this.setState({
       sendtooperationalpopup: false,
+    });
+  };
+
+  closeSearchPopup = () => {
+    this.setState({
+      showSearchTransactionPopup: false,
     });
   };
 
@@ -1285,6 +1298,17 @@ class CashierTransactionLimit extends Component {
               )}
           </Col>
         </Row>
+        <Row>
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+           
+              <Button
+                dashBtn
+                onClick={this.openSearchPopup}
+              >
+                Search Transactions
+              </Button>
+          </Col>
+        </Row>
         
         
         {this.state.receiptpopup ? (
@@ -1297,6 +1321,13 @@ class CashierTransactionLimit extends Component {
         {this.state.sendtooperationalpopup ? (
           <CashierToOperationalForm
             close={this.closeOperationalPopup}
+          />
+        ) : null}
+
+        
+        {this.state.showSearchTransactionPopup ? (
+          <SearchTransactionPopup
+            close={this.closeSearchPopup}
           />
         ) : null}
 

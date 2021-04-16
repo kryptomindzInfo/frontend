@@ -242,19 +242,6 @@ export default class CashierDashboard extends Component {
     this.showHistory();
   };
 
-  getBranchByName = () => {
-    try{
-      const res = axios.post(`${API_URL}/getBranchByName`, {
-        name: this.props.match.params.bank,
-      })
-      if(res.status == 200) {
-        return res.data.banks; 
-      }
-    }catch(err){
-      console.log(res);
-    }
-  };
-
   formatDate = date => {
     var months = [
       'Jan',

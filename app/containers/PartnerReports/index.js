@@ -14,7 +14,6 @@ import startOfDay from 'date-fns/startOfDay';
 import { toast } from 'react-toastify';
 import BankHeader from 'components/Header/BankHeader';
 import Wrapper from 'components/Wrapper';
-import BranchHeader from 'components/Header/BranchHeader';
 import Container from 'components/Container';
 import Loader from 'components/Loader';
 import Card from 'components/Card';
@@ -43,13 +42,6 @@ toast.configure({
   pauseOnHover: true,
   draggable: true,
 });
-
-const token = localStorage.getItem('branchLogged');
-const bid = localStorage.getItem('branchId');
-const logo = localStorage.getItem('bankLogo');
-const email = localStorage.getItem('cashierEmail');
-const mobile = localStorage.getItem('cashierMobile');
-const bankId = localStorage.getItem('bankId');
 //enable the following line and disable the next line to test for tomorrow
 var today = new Date(new Date().setDate(new Date().getDate() + 1));
 //var today =new Date();
@@ -59,17 +51,16 @@ today = today.getTime();
 
 
 
-export default class BranchReports extends Component {
+export default class PartnerReports extends Component {
   constructor(props) {
     super();
     this.state = {
-      token: props.apitype === 'bank' ? localStorage.getItem('bankLogged') : localStorage.getItem('branchLogged'),
-      bid: props.apitype === 'bank' ? props.match.params.id : localStorage.getItem('branchId'),
-      apiType: props.apitype,
+      token: localStorage.getItem('bankLogged'),
+      partner_id: props.match.params.id,
       bankName: localStorage.getItem('bankName'),
       bankLogo: localStorage.getItem('bankLogo'),
       cashiers:[],
-      branchName: props.apitype === 'bank' ?   JSON.parse(localStorage.getItem('selectedBranch')).name  : localStorage.getItem('branchName'),
+      partnerName: localStorage.getItem('partnerName'),
       selectedCashierDetails: {},
       datearray:[],
       cancelled: 0,
@@ -94,6 +85,7 @@ export default class BranchReports extends Component {
       closingTime: null,
       history: [],
       datelist: [],
+      branches:[],
       filter: '',
     };
     this.success = this.success.bind(this);
@@ -118,62 +110,16 @@ export default class BranchReports extends Component {
     );
   }
 
-  getCashiers = async() => {
-    let apiType = "";
-    if (this.props.apitype === 'partner'){
-      if( localStorage.getItem('admin') === true){
-        apiType = 'partnerUser';
-      }else{
-        apiType = 'partner';
-      }
-    }else{
-      apiType = this.props.apitype;
-    }
+  getBranches = async() => {
     try {
-      const res = await axios.post(`${API_URL}/${this.props.apitype}/getAll`, {
-        page: 'cashier',
-        type: this.state.apiType,
-        token: this.state.token,
-        where: { branch_id: this.state.bid },
-      })
-      if (res.status === 200){
-        return ({
-          cashiers: res.data.rows
-        });
-      } 
-    }catch(err){
+      const res = await axios.post(`${API_URL}/bank/listPartnerBranches`, { token:this.state.token, partner_id:this.state.partner_id });
+      if (res.status == 200) {
+        return ({branches:res.data.branches,loading:false});
+      }
+    } catch(err){
       console.log(err);
     }
-  };
-
-  getCashierDetails = async(id) => {
-    let apiType = "";
-    if (this.props.apitype === 'partner'){
-      if( localStorage.getItem('admin') === true){
-        apiType = 'partnerUser';
-      }else{
-        apiType = 'partner';
-      }
-    }else{
-      apiType = this.props.apitype;
-    }
-    try {
-      const res = await axios.post(`${API_URL}/${this.props.apitype}/getCashierDetails`, {
-        cashier_id: id,
-        token: this.state.token,
-      })
-      if (res.status === 200){
-        this.setState({
-          selectedCashierDetails: res.data.cashier,
-          accepted:res.data.accepted,
-          pending:res.data.pending,
-          cancelled:res.data.cancelled,
-        });
-      } 
-    }catch(err){
-      console.log(err);
-    }
-  };
+  }
 
   getdays = async(from,to) => {
     function addDays(date, days) {
@@ -205,27 +151,17 @@ export default class BranchReports extends Component {
     return dates;
   };
 
-  getCashierDailyReport = async(after,before,cashier) => {
-    let apiType = "";
-    if (this.props.apitype === 'partner'){
-      if( localStorage.getItem('admin') === true){
-        apiType = 'partnerUser';
-      }else{
-        apiType = 'partner';
-      }
-    }else{
-      apiType = this.props.apitype;
-    }
+  getBranchDailyReport = async(after,before,branch) => {
     try{
-      const res = await axios.post(`${API_URL}/${apiType}/getCashierDailyReport`, {
+      const res = await axios.post(`${API_URL}/bank/getPartnerBranchDailyReport`, {
         token: this.state.token,
-        cashier_id: cashier._id,
+        branch_id: branch._id,
         start:after,
         end: before,
       });
       if (res.status == 200) {
         return ({
-          cashier: cashier,
+          branch: branch,
           reports: res.data.reports,
           accepted: res.data.accepted,
           pending: res.data.pending,
@@ -242,22 +178,22 @@ export default class BranchReports extends Component {
   };
   
 
-  getCashierStatsByDate = async(date,clist) => {
-    const stats = clist.map(async (cashier) => {
+  getBranchStatsByDate = async(date,blist) => {
+    const stats = blist.map(async (branch) => {
       const after = new Date(date);
       const before = new Date(date);
       after.setHours(0,0,0,0);
       before.setHours(23,59,59,0);
-      const cashiedatestats = await this.getCashierDailyReport(after,before,cashier);
+      const cashiedatestats = await this.getBranchDailyReport(after,before,branch);
       return ({cashiedatestats:cashiedatestats});
     });
     const result= await Promise.all(stats);
     return(result);
   }
 
-  getDateStats = async(dlist,clist) => {
+  getDateStats = async(dlist,blist) => {
     const stats = dlist.map(async (date) => {
-      const cashiedatestats = await this.getCashierStatsByDate(date,clist);
+      const cashiedatestats = await this.getBranchStatsByDate(date,blist);
       console.log(cashiedatestats);
       return ({
         cashiedatestats: cashiedatestats,
@@ -270,17 +206,17 @@ export default class BranchReports extends Component {
         totalCb: cashiedatestats.reduce(
           (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].closing_balance : 0), 0
         ).toFixed(2),
-        totalDis: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].descripency : 0), 0
-        ).toFixed(2),
+        // totalDis: cashiedatestats.reduce(
+        //   (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].descripency : 0), 0
+        // ).toFixed(2),
         totalCr: cashiedatestats.reduce(
           (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_received : 0), 0
         ).toFixed(2),
-        totalCb: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].closing_balance : 0), 0
+        totalCp: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_paid : 0), 0
         ).toFixed(2),
         totalDis: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].descripency : 0), 0
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].discripancy : 0), 0
         ).toFixed(2),
         totalFee: cashiedatestats.reduce(
           (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].fee_generated : 0), 0
@@ -288,9 +224,9 @@ export default class BranchReports extends Component {
         totalComm: cashiedatestats.reduce(
           (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].comm_generated : 0), 0
         ).toFixed(2),
-        totalPic: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].paid_in_cash : 0), 0
-        ),
+        // totalPic: cashiedatestats.reduce(
+        //   (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].paid_in_cash : 0), 0
+        // ),
         totalRa: cashiedatestats.reduce(
           (a, b) => a + b.cashiedatestats.accepted, 0
         ),
@@ -353,52 +289,55 @@ export default class BranchReports extends Component {
         loading:true,
       }
     );
-    const cashiers = await this.getCashiers();
+    const branches = await this.getBranches();
     const start = startOfDay(new Date(this.state.from));
     const end = endOfDay(new Date(this.state.to));
     const datelist = await this.getDatesBetweenDates(start, end);
-    const datestats =  await this.getDateStats(datelist,cashiers.cashiers);
+    const datestats =  await this.getDateStats(datelist,branches.branches);
     console.log(datestats);
     this.setState(
       {
-        cashiers: cashiers.cashiers,
+        branches: branches.branches,
         datelist: datelist,
         datestats: datestats.res,
         openingBalance: datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalOb), 0
+          (a, b) => a + parseFloat(b.totalOb,10), 0
         ),
         closingBalance: datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalCb), 0
+          (a, b) => a + parseFloat(b.totalCb,10), 0
         ),
         paidInCash: datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalPic), 0
+          (a, b) => a + parseFloat(b.totalPic,10), 0
         ),
         cashReceived: datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalCr), 0
+          (a, b) => a + parseFloat(b.totalCr,10), 0
+        ),
+        cashPaid: datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalCp,10), 0
         ),
         cashInhand: datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalCih), 0
+          (a, b) => a + parseFloat(b.totalCih,10), 0
         ),
         feeGenerated: datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalFee), 0
+          (a, b) => a + parseFloat(b.totalFee,10), 0
         ),
         commissionGenerated: datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalComm), 0
+          (a, b) => a + parseFloat(b.totalComm,10), 0
         ),
         pending : datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalRp), 0
+          (a, b) => a + parseFloat(b.totalRp,10), 0
         ),
         accepted: datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalRa), 0
+          (a, b) => a + parseFloat(b.totalRa,10), 0
         ),
         declined: datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalRd), 0
+          (a, b) => a + parseFloat(b.totalRd,10), 0
         ),
         invoicePaid: datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalInvoice), 0
+          (a, b) => a + parseFloat(b.totalInvoice,10), 0
         ),
         invoiceAmount:datestats.res.reduce(
-          (a, b) => a + parseInt(b.totalInvoiceAmount), 0
+          (a, b) => a + parseFloat(b.totalInvoiceAmount,10), 0
         ),
         loading:datestats.loading,
       }
@@ -406,7 +345,6 @@ export default class BranchReports extends Component {
   }
 
   componentDidMount= async() => {
-    console.log(localStorage.getItem('admin') === true);
     this.getData();
   };
 
@@ -460,36 +398,8 @@ export default class BranchReports extends Component {
           <meta charSet="utf-8" />
           <title>Reports | AGENCY | E-WALLET</title>
         </Helmet>
-        {this.state.apiType === 'bank' ?   (
+       
           <BankHeader />
-        ) : (
-        <BranchHeader
-          active="reports"
-          bankName={this.props.match.params.bank}
-          bankLogo={STATIC_URL + logo}
-        />
-        )}
-         {this.state.apiType === 'bank' ? (
-        
-        <Card >
-        <div style={{display:'flex'}}>
-          <button style={{border:"none",width:"100px",marginLeft:"150px"}} >
-              <A>
-                <u>Reports</u>
-              </A>
-          </button>
-          <button style={{border:"none",width:"100px"}} onClick={() => {
-             history.push(`/bank/branchdashboard/${this.state.bid}`);
-            }}>
-              <A>
-                DashBoard
-            </A>
-          </button>
-        <h2 style={{color:"green", marginLeft:"320px"  }}><b>{this.state.branchName}</b> </h2> 
-        
-        </div>
-      </Card>
-      ):''}
         <Container verticalMargin>
         <ActionBar
               marginBottom="15px"
@@ -596,7 +506,7 @@ export default class BranchReports extends Component {
                   <h4 style={{color:"green",marginBottom:"20px" }}><b>Bank Name : </b>{this.state.bankName} </h4> 
                 </Col>
                 <Col>
-                  <h4 style={{color:"green", marginBottom:"20px"}}><b>Branch Name : </b>{this.state.branchName}</h4>      
+                  <h4 style={{color:"green",marginBottom:"20px" }}><b>Partner Name : </b>{this.state.partnerName}</h4> 
                 </Col>
               </Row>
       
@@ -659,7 +569,7 @@ export default class BranchReports extends Component {
               </Col>
             </Row>
           <Row style={{marginTop:'5px',marginBottom:'0px'}}>
-          <Col cW='25%'>
+          <Col cW='40%'>
                 <Card
                   style={{height:'120px'}}
                   marginBottom="10px"
@@ -681,7 +591,7 @@ export default class BranchReports extends Component {
                   </Row>
                 </Card>
               </Col>   
-              <Col cW='45%'>
+              <Col cW='60%'>
               <Card
                   style={{height:'140px'}}
                   marginBottom="10px"
@@ -702,12 +612,12 @@ export default class BranchReports extends Component {
                     </Col>
                     <Col>
                       <h5>Total</h5>
-                      <div className="cardValue">{CURRENCY}: {parseInt(this.state.commissionGenerated, 10)+parseInt(this.state.feeGenerated, 10)}</div>
+                      <div className="cardValue">{CURRENCY}: {parseFloat(this.state.commissionGenerated, 10)+parseFloat(this.state.feeGenerated, 10)}</div>
                     </Col>
                   </Row>
                 </Card>
               </Col>
-              <Col cW='30%'>
+              {/* <Col cW='30%'>
               <Card
                    style={{height:'140px'}}
                   marginBottom="10px"
@@ -733,7 +643,7 @@ export default class BranchReports extends Component {
                   </Row>
                   
                 </Card>
-              </Col>
+              </Col> */}
             </Row>
             
             </div>
@@ -751,21 +661,22 @@ export default class BranchReports extends Component {
               >
                 <thead>
                       <tr>
-                        <th>Cashier</th>
-                        <th>Opening Time</th>
+                        <th>Branch</th>
                         <th>Opening Balance</th>
-                        <th>Cash in Hand</th>
-                        <th>Paid in cash</th>
                         <th>Cash Received</th>
+                        <th>Cash Paid</th>
+                        <th>Invoice Paid</th>
+                        <th>Amount of Invoice Paid</th>
                         <th>Fee Generated</th>
                         <th>Commission Generated</th>
                         <th>Revenue Generated</th>
-                        <th>Closing Time</th>
+                        <th>Cash in Hand</th>
                         <th>Closing Balance</th>
                         <th>Discripancy</th>
-                        <th>Requests Approved</th>
+                        {/* <th>Requests Approved</th>
                         <th>Requests Declined</th>
-                        <th>Requests Pending</th></tr>
+                        <th>Requests Pending</th> */}
+                      </tr>
                     </thead>
                     <tbody>
                     {this.state.datestats[i].cashiedatestats.length > 0 
@@ -774,22 +685,25 @@ export default class BranchReports extends Component {
                           <tr key={index} >
                             
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{b.cashiedatestats.cashier.name}</div>
-                            </td>
-                            <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? `${new Date(b.cashiedatestats.reports[0].opening_time).getHours()}:${new Date(b.cashiedatestats.reports[0].opening_time).getMinutes()}` : "-:--"}</div>
+                              <div className="labelGrey">{b.cashiedatestats.branch.name}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
                               <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].opening_balance.toFixed(2) : "-"}</div>
                             </td>
-                            <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_in_hand.toFixed(2) : "-"}</div>
-                            </td>
-                            <td style={{textAlign:"center"}}>
+                            {/* <td style={{textAlign:"center"}}>
                               <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].paid_in_cash.toFixed(2) : "-"}</div>
-                            </td>
+                            </td> */}
                             <td style={{textAlign:"center"}}>
                               <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_received.toFixed(2) : "-"}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_paid.toFixed(2) : "-"}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.paid : "-"}</div>
+                            </td>
+                            <td style={{textAlign:"center"}}>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.amountpaid : "-"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
                               <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].fee_generated.toFixed(2) : "-"}</div>
@@ -801,15 +715,16 @@ export default class BranchReports extends Component {
                               <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? (b.cashiedatestats.reports[0].fee_generated + b.cashiedatestats.reports[0].comm_generated).toFixed(2) : ""}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? `${new Date(b.cashiedatestats.reports[0].closing_time).getHours()}:${new Date(b.cashiedatestats.reports[0].closing_time).getMinutes()}` : "-:--"}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_in_hand.toFixed(2) : "-"}</div>
                             </td>
+                          
                             <td style={{textAlign:"center"}}>
                               <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].closing_balance.toFixed(2) : "-"}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
-                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].descripency.toFixed(2) : "-"}</div>
+                              <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].discripancy.toFixed(2) : "-"}</div>
                             </td>
-                            <td style={{textAlign:"center"}}>
+                            {/* <td style={{textAlign:"center"}}>
                               <div className="labelGrey">{b.cashiedatestats.accepted}</div>
                             </td>
                             <td style={{textAlign:"center"}}>
@@ -817,7 +732,7 @@ export default class BranchReports extends Component {
                             </td>
                             <td style={{textAlign:"center"}}>
                               <div className="labelGrey">{b.cashiedatestats.pending}</div>
-                            </td>
+                            </td> */}
                             
                           </tr>
                           )
@@ -828,19 +743,22 @@ export default class BranchReports extends Component {
                       <tr style={{textAlign:"center", backgroundColor:'green'}}>
                           <td style={{textAlign:"center", color:'white'}}><b>Total</b></td>
                           <td style={{textAlign:"center"}}>
-                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}></div>
-                          </td>
-                          <td style={{textAlign:"center"}}>
                             <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalOb}</b></div>
                           </td>
-                          <td style={{textAlign:"center"}}>
-                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCih}</b></div>
-                          </td>
-                          <td style={{textAlign:"center"}}>
+                          {/* <td style={{textAlign:"center"}}>
                             <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalPic}</b></div>
-                          </td>
+                          </td> */}
                           <td style={{textAlign:"center"}}>
                             <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCr}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCp}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalInvoice}</b></div>
+                          </td>
+                          <td style={{textAlign:"center"}}>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalInvoiceAmount}</b></div>
                           </td>
                           <td style={{textAlign:"center"}}>
                             <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalFee}</b></div>
@@ -852,7 +770,7 @@ export default class BranchReports extends Component {
                             <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {parseInt(this.state.datestats[i].totalComm) + parseInt(this.state.datestats[i].totalFee)}</b></div>
                           </td>
                           <td style={{textAlign:"center"}}>
-                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}></div>
+                            <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCih}</b></div>
                           </td>
                           <td style={{textAlign:"center"}}>
                             <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCb}</b></div>
@@ -860,7 +778,7 @@ export default class BranchReports extends Component {
                           <td style={{textAlign:"center"}}>
                             <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalDis}</b></div>
                           </td>
-                          <td style={{textAlign:"center"}}>
+                          {/* <td style={{textAlign:"center"}}>
                             <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>{this.state.datestats[i].totalRa}</b></div>
                           </td>
                           <td style={{textAlign:"center"}}>
@@ -868,7 +786,8 @@ export default class BranchReports extends Component {
                           </td>
                           <td style={{textAlign:"center"}}>
                             <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>{this.state.datestats[i].totalRp}</b></div>
-                          </td>
+                          </td> */}
+                          
                         </tr>
                   </tbody>
               

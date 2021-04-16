@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
-
+import Footer from 'components/Footer';
 import Wrapper from 'components/Wrapper';
 import A from 'components/A';
 import BankHeader from 'components/Header/BankHeader';
@@ -58,6 +58,8 @@ export default class BankBranchList extends Component {
       sid: '',
       bank: bid,
       name: '',
+      bankName: localStorage.getItem('bankName'),
+      bankLogo: localStorage.getItem('bankLogo'),
       address1: '',
       html: '',
       popname: '',
@@ -635,7 +637,7 @@ export default class BankBranchList extends Component {
           <meta charSet="utf-8" />
           <title>Banks | INFRA | E-WALLET</title>
         </Helmet>
-        <BankHeader active="branches" />
+        <BankHeader active="dashboard" />
         <Container verticalMargin>
           <SidebarBank />
           <Main>
@@ -1879,6 +1881,7 @@ export default class BankBranchList extends Component {
             )}
           </Popup>
         ) : null}
+         <Footer bankname={this.state.bankName} banklogo={this.state.bankLogo}/>
       </Wrapper>
     );
   }
