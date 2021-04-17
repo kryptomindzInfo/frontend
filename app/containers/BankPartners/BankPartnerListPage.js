@@ -353,7 +353,7 @@ function BankPartnerListPage(props) {
                   bigPadding
                   smallValue
                 >
-                  <h4>Number of Branch</h4>
+                  <h4>Number of Agency</h4>
                   <div className="cardValue">{totalBranches}</div>
                 </Card>
               </Col>
@@ -489,7 +489,7 @@ function BankPartnerListPage(props) {
               onClick={() => handlePartnerPopupClick('new', {})}
             >
                <i className="material-icons">add</i>
-              <span>Add Branch</span>
+              <span>Add Partner</span>
             </Button>
             <div className="cardHeader">
               <div className="cardHeaderLeft">
@@ -505,7 +505,7 @@ function BankPartnerListPage(props) {
                   <tr>
                     <th>Logo</th>
                     <th>Name</th>
-                    <th>Total Branches</th>
+                    <th>Total Agencies</th>
                     <th>Opening Balance</th>
                     <th>Cash Received</th>
                     <th>Cash Paid</th>

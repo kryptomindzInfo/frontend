@@ -71,7 +71,7 @@ export default class BranchDashboard extends Component {
     this.state = {
       token: props.apitype === 'bank' ? localStorage.getItem('bankLogged') : localStorage.getItem('branchLogged'),
       bid: props.apitype === 'bank' ? props.match.params.id : localStorage.getItem('branchId'),
-      bankId: props.apitype === 'bank' ?  localStorage.getItem('bankid')  : localStorage.getItem('bankId'),
+      bankId: props.apitype === 'bank' ?  localStorage.getItem('bankId')  : localStorage.getItem('bankId'),
       branchName: props.apitype === 'bank' ?   JSON.parse(localStorage.getItem('selectedBranch')).name  : '',
       apiType:props.apitype,
       otpEmail: email,

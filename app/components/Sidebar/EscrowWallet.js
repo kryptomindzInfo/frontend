@@ -4,6 +4,8 @@ import axios from 'axios';
 import { FormattedMessage } from 'react-intl';
 import A from 'components/A';
 import messages from './messages';
+import Row from 'components/Row';
+import Col from 'components/Col';
 
 
 import Card from 'components/Card';
@@ -58,19 +60,13 @@ constructor() {
           <FormattedMessage {...messages.escrow} />
         </h3>
         <div className="cardValue">{CURRENCY} {this.state.balance}</div>
-        {/* {
-              this.props.activateNeeded ?
-              <button className="fullWidth">
-            <FormattedMessage {...messages.activate} />
-            </button>
-              : */}
-                <A href={'/bank/escrowHistory'}>
-          <span className="history">History</span>
-        </A>
-        <button className="sendMoneyButton">
-          <i className="material-icons">send</i>{' '}
-          <FormattedMessage {...messages.sendmoney} />
-        </button>
+        <Row style={{ height: '30px'}}>
+          <Col style={{ width: '100%', marginTop: '30px'}} cw="100%">
+          <A href={'/bank/masterHistory'}>
+            <span className="history">History</span>
+          </A>
+          </Col>
+        </Row>
         {/* } */}
       </Card>
     );

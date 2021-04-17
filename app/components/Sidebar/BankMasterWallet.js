@@ -6,7 +6,9 @@ import messages from './messages';
 import axios from 'axios';
 import A from 'components/A';
 import SendToOperationalPopup from './SendToOperationalPopup';
-
+import Button from 'components/Button';
+import Row from 'components/Row';
+import Col from 'components/Col';
 import Card from 'components/Card';
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -95,17 +97,26 @@ class BankMasterWallet extends Component {
         <h3>
           <FormattedMessage {...messages.master} />
         </h3>
-        <div className="cardValue">{CURRENCY} {this.state.balance}</div>
-        <A href={'/bank/masterHistory'}>
-          <span className="history">History</span>
-        </A>
-        <button
-          onClick={this.handlePopupOpen}
-          className="sendMoneyButton"
-        >
-          <i className="material-icons">send</i>{' '}
-          <FormattedMessage {...messages.sendmoney} />
-        </button>
+
+          <div className="cardValue">{CURRENCY} {this.state.balance}</div>
+
+        <Row>
+          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+            <Button
+              dashBtn
+              onClick={this.handlePopupOpen}
+            >
+              Transfer from Master to Operational
+            </Button>
+          </Col>
+        </Row>
+        <Row style={{ marginLeft: '30px'}}>
+          <Col style={{ width: '100%', marginTop: '30px'}} cw="100%">
+          <A href={'/bank/masterHistory'}>
+            <span className="history">History</span>
+          </A>
+          </Col>
+        </Row>
         {this.state.popup ? (
           <SendToOperationalPopup
             close={this.handlePopupClose}

@@ -345,7 +345,7 @@ function BankMerchantList(props) {
               onClick={() => handleMerchantPopupClick('new', {})}
             >
                <i className="material-icons">add</i>
-              <span>Add Branch</span>
+              <span>Add Merchant</span>
             </Button>
             <div className="cardHeader">
               <div className="cardHeaderLeft">

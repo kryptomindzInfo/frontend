@@ -60,7 +60,7 @@ export default class PartnerReports extends Component {
       bankName: localStorage.getItem('bankName'),
       bankLogo: localStorage.getItem('bankLogo'),
       cashiers:[],
-      partnerName: localStorage.getItem('partnerName'),
+      partnerName:  JSON.parse(localStorage.getItem('selectedPartner')).name,
       selectedCashierDetails: {},
       datearray:[],
       cancelled: 0,

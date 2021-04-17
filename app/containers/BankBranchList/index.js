@@ -651,7 +651,7 @@ export default class BankBranchList extends Component {
                   bigPadding
                   smallValue
                 >
-                  <h4>Number of Branch</h4>
+                  <h4>Number of Agency</h4>
                   <div className="cardValue">{this.state.branches.length}</div>
                 </Card>
               </Col>
@@ -802,14 +802,14 @@ export default class BankBranchList extends Component {
               onClick={() => this.showPopup()}
             >
                <i className="material-icons">add</i>
-              <span>Add Branch</span>
+              <span>Add Agency</span>
             </Button>
               <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>
                 </div>
                 <div className="cardHeaderRight">
-                  <h3>Branch List</h3>
+                  <h3>Agency List</h3>
                   {/* <h5>Your friends and family</h5> */}
                 </div>
               </div>
