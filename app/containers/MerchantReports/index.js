@@ -214,7 +214,6 @@ const ReportPage = (props) => {
     setLoading(typestats.loading);
   };
 
-
   const getReportByDateRange = async() => { 
   setLoading(true);
   const start = startOfDay(new Date(startDate));
@@ -670,6 +669,7 @@ const toggleType = (type) => {
               </Row>
 
             </div>
+            
             )}
           
             <Card bigPadding style={{width:'100%'}}>  

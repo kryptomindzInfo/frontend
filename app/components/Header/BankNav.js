@@ -71,7 +71,7 @@ class BankNav extends Component {
               <FormattedMessage {...messages.bmenu3} />
             </Link>
           </A> */}
-          <A>
+          <A href="/bank/reports">
             <Link active={reports}>
               <FormattedMessage {...messages.menu4} />
             </Link>

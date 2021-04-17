@@ -78,6 +78,7 @@ import BankEditInterBankFee from 'containers/BankEditInterBankFee';
 import FeeList from 'containers/FeeList';
 import InterBankFeeList from 'containers/InterBankFeeList';
 import PartnerReports from 'containers/PartnerReports';
+import BankReports from 'containers/BankReports';
 import MerchantReports from 'containers/MerchantReports';
 import { ThemeProvider } from 'styled-components';
 import AllRoutes from './AllRoutes';
@@ -207,6 +208,7 @@ export default function App(props) {
           <BankRoute path="/bank/documents" component={BankDocuments} />
           <BankRoute path="/bank/branches" component={BankBranchList} />
           <BankRoute path="/bank/branch/:branch?" component={BankBranchInfo} />
+          <BankRoute exact path="/bank/reports" component={BankReports} />
           <BankRoute
             path="/bank/cashiers/:branch?"
             component={BankCashierList}
