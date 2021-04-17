@@ -470,6 +470,7 @@ export default class PartnerReports extends Component {
     const start = startOfDay(new Date(this.state.from));
     const end = endOfDay(new Date(this.state.to));
     const datelist = await this.getDatesBetweenDates(start, end);
+    console.log(datelist);
     const datestats =  await this.getDateStats(datelist,branches.branches);
     this.setState(
       {
@@ -681,7 +682,7 @@ export default class PartnerReports extends Component {
                         onClick={()=>{this.toggleType('branch')}}
                         style={{marginLeft:'5px'}}
                       >
-                      Branch
+                      Agency
                     </Button>
                   </Col>
                   <Col cW="8%">
@@ -901,7 +902,7 @@ export default class PartnerReports extends Component {
             <Card marginBottom="20px" buttonMarginTop="5px" smallValue style={{height:'90px'}}>
               <Row>
                 <Col>
-                  <h4 style={{color:"green",marginBottom:"20px" }}><b>Bank Name : </b>{this.state.bankName} </h4> 
+                  <h4 style={{color:"green",marginBottom:"20px",textAlign:'center'}}><b>Bank Name : </b>{this.state.bankName} </h4> 
                 </Col>
               </Row>
       
@@ -1023,7 +1024,7 @@ export default class PartnerReports extends Component {
                   return(
                   <Card style={{ marginTop: '10px' }}>
                   
-                    <h3 style={{color:'green'}}><b>{`${new Date(date).getDate()}/${new Date(date).getMonth()-1}/${new Date(date).getFullYear()}`}</b></h3>
+                    <h3 style={{color:'green'}}><b>{`${new Date(date).getDate()}/${new Date(date).getMonth()+1}/${new Date(date).getFullYear()}`}</b></h3>
                     <Table
                     marginTop="34px"
                     marginBottom="34px"
@@ -1032,7 +1033,7 @@ export default class PartnerReports extends Component {
                   >
                     <thead>
                           <tr>
-                            <th>{this.state.type}</th>
+                            <th>{this.state.type === 'branch' ? 'Agency' : 'Partner'}</th>
                             <th>Opening Balance</th>
                             <th>Cash Received</th>
                             <th>Cash Paid</th>

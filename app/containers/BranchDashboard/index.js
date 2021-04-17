@@ -1425,7 +1425,7 @@ export default class BranchDashboard extends Component {
               </div>
             ) : (
                 <div>
-                  <h1>Add Branch</h1>
+                  <h1>Add Agncy</h1>
                   <form action="" method="post" onSubmit={this.addBranch}>
                     <FormGroup>
                       <label>Branch Name*</label>
@@ -1811,7 +1811,7 @@ export default class BranchDashboard extends Component {
                       </Button>
                     ) : (
                         <Button filledBtn marginTop="10px">
-                          <span>Add Branch</span>
+                          <span>Add Agency</span>
                         </Button>
                       )}
                   </form>
