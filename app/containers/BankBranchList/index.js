@@ -817,7 +817,7 @@ export default class BankBranchList extends Component {
                 <Table marginTop="34px" smallTd>
                   <thead>
                     <tr>
-                      <th>Branch Name</th>
+                      <th>Agency Name</th>
                       <th>Total Cashier</th>
                       <th>Opening Balance ({CURRENCY})</th>
                       <th>Cash Received ({CURRENCY})</th>
