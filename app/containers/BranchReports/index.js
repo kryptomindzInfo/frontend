@@ -270,6 +270,9 @@ export default class BranchReports extends Component {
         totalCb: cashiedatestats.reduce(
           (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].closing_balance : 0), 0
         ).toFixed(2),
+        totalCp: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].paid_in_cash : 0), 0
+        ).toFixed(2),
         totalDis: cashiedatestats.reduce(
           (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].descripency : 0), 0
         ).toFixed(2),
@@ -366,6 +369,9 @@ export default class BranchReports extends Component {
         datestats: datestats.res,
         openingBalance: datestats.res.reduce(
           (a, b) => a + parseInt(b.totalOb), 0
+        ),
+        cashPaid: datestats.res.reduce(
+          (a, b) => a + parseInt(b.totalCp), 0
         ),
         closingBalance: datestats.res.reduce(
           (a, b) => a + parseInt(b.totalCb), 0
