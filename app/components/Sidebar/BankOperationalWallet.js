@@ -228,7 +228,7 @@ class BankOperationalWallet extends Component {
         </div>
         <Row style={{ height: '30px'}}>
           <Col style={{ width: '100%', marginTop: '30px'}} cw="100%">
-          <A href={'/bank/masterHistory'}>
+          <A href={'/bank/operationalHistory'}>
             <span className="history">History</span>
           </A>
           </Col>

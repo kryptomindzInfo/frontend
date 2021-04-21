@@ -82,7 +82,6 @@ export default class BankOperationalHistory extends Component {
     this.warn = this.warn.bind(this);
 
     this.onChange = this.onChange.bind(this);
-    this.fileUpload = this.fileUpload.bind(this);
     this.showHistory = this.showHistory.bind(this);
   }
 
@@ -141,63 +140,6 @@ export default class BankOperationalHistory extends Component {
     input.click();
   };
 
-  onChange(e) {
-    if (e.target.files && e.target.files[0] != null) {
-      this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
-    }
-  }
-
-  fileUpload(file, key) {
-    const formData = new FormData();
-    //  formData.append('token',token);
-    formData.append('file', file);
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data',
-      },
-    };
-
-    axios
-      .post(`${API_URL}/fileUpload?token=${token}`, formData, config)
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              [key]: res.data.name,
-            });
-          }
-        } else {
-          throw res.data.error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
-  }
-
-  getBanks = () => {
-    axios
-      .post(`${API_URL}/getBank`, {
-        token: token,
-        bank_id: this.props.match.params.bank,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({
-            loading: false,
-            banks: res.data.banks,
-            logo: res.data.banks.logo,
-            bank_id: this.props.match.params.bank,
-          });
-        }
-      })
-      .catch(err => { });
-  };
 
   showHistory = () => {
     this.setState({ history: [] }, () => {
@@ -271,12 +213,8 @@ export default class BankOperationalHistory extends Component {
   componentDidMount() {
     // this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-
-      // this.getBanks();
-      let dis = this;
-      setInterval(function () {
-        dis.getHistory();
-      }, 2000);
+      this.getData();
+      // this.getHistory();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -426,9 +364,9 @@ export default class BankOperationalHistory extends Component {
                                   {
                                     b.Value.tx_data.tx_type == 'DR'
                                       ?
-                                      <span>{CURRENCY} -{b.Value.amount.toFixed(2)}</span>
+                                      <span>{CURRENCY} -{b.Value[0].tx_data[0].amount.toFixed(2)}</span>
                                       :
-                                      <span>{CURRENCY} {b.Value.amount.toFixed(2)}</span>
+                                      <span>{CURRENCY} {b.Value[0].tx_data[0].amount.toFixed(2)}</span>
                                   }
 
                                 </div>

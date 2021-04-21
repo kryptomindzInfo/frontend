@@ -31,6 +31,7 @@ class BranchMasterWallet extends Component {
     this.state = {
       bank: '',
       popup: false,
+      admin: localStorage.getItem('admin'),
       from: '',
       to: '',
       amount: '',
@@ -166,6 +167,7 @@ class BranchMasterWallet extends Component {
         <div className="cardValue">
           {CURRENCY} {this.state.balance.toFixed(2)}
         </div>
+        {this.state.admin === false || this.state.admin === 'false' ? (
         <Row>
           <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
             <Button
@@ -176,6 +178,7 @@ class BranchMasterWallet extends Component {
             </Button>
           </Col>
         </Row>
+        ) :""}
         {this.state.popup ? (
           <SendToOperationalPopup
             close={this.handlePopupClose}

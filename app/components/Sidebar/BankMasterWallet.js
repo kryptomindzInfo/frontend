@@ -28,6 +28,7 @@ class BankMasterWallet extends Component {
     this.state = {
       popup: false,
       balance: 0,
+      admin: localStorage.getItem('admin'),
     };
 
     this.success = this.success.bind(this);
@@ -99,7 +100,7 @@ class BankMasterWallet extends Component {
         </h3>
 
           <div className="cardValue">{CURRENCY} {this.state.balance}</div>
-
+        { this.state.admin === false || this.state.admin === 'false' ? (
         <Row>
           <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
             <Button
@@ -110,6 +111,7 @@ class BankMasterWallet extends Component {
             </Button>
           </Col>
         </Row>
+        ):""}
         <Row style={{ marginLeft: '30px'}}>
           <Col style={{ width: '100%', marginTop: '30px'}} cw="100%">
           <A href={'/bank/masterHistory'}>

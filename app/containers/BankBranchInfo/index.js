@@ -71,6 +71,10 @@ export default class BankBranchInfo extends Component {
     this.state = {
       sid: '',
       bank: bid,
+      bank_id: localStorage.getItem('bankId'), 
+      bankName: localStorage.getItem('bankName'),
+      bankLogo: localStorage.getItem('bankLogo'),
+      admin: localStorage.getItem('admin'),
       name: '',
       address1: '',
       popname: '',
@@ -132,7 +136,13 @@ export default class BankBranchInfo extends Component {
   };
   getBanks = () => {
     axios
-      .post(`${API_URL}/getOne`, { page: 'branch', type: 'bank', token: token, page_id: this.state.branch_id })
+      .post(`${API_URL}/getOne`,
+      { 
+        page: 'branch',
+        type: this.state.admin === false || this.state.admin === 'false' ? 'bank' : 'bankuser',
+        token: token,
+        page_id:this.state.branch_id
+      })
       .then(res => {
         if (res.status == 200) {
           console.log(res.data);

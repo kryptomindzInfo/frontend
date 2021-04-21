@@ -219,7 +219,7 @@ function BankPartnerListPage(props) {
     setPartnerList(partners.list);
     setCopyPartnerList(partnerstats.list);
     setOpeningBalance(partnerstats.res.reduce((a, b) => a + b.openingBalance, 0).toFixed(2));
-    setTotalBranches(partners.list.reduce((a, b) => a + b.total_branches, 0).toFixed(2));
+    setTotalBranches(partners.list.reduce((a, b) => a + b.total_branches, 0));
     setCashReceived(partnerstats.res.reduce((a, b) => a + b.cashReceived, 0).toFixed(2));
     setCashPaid(partnerstats.res.reduce((a, b) => a + b.cashPaid, 0).toFixed(2));
     setFeeGenerated(partnerstats.res.reduce((a, b) => a + b.feeGenerated, 0).toFixed(2));
