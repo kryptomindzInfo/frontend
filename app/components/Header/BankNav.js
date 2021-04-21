@@ -38,27 +38,22 @@ class BankNav extends Component {
               active={dashboard}
             // style={`${props => props.theme.secondary}`}
             >
-              <FormattedMessage {...messages.menu1} />
+              Agencies
             </Link>
           </A>
-          {/* <A href="/bank/branches">
-            <Link active={branches}>
-              <FormattedMessage {...messages.bmenu1} />
+          <A href="/bank/partners">
+            <Link active={partners}>
+              <FormattedMessage {...messages.menu5} />
             </Link>
-          </A> */}
-          <A href="/bank/users">
-            <Link active={bankusers}>Users</Link>
           </A>
-
           <A href="/bank/merchants">
             <Link active={merchants}>
               <FormattedMessage {...messages.menu3} />
             </Link>
           </A>
-
-          <A href="/bank/partners">
-            <Link active={partners}>
-              <FormattedMessage {...messages.menu5} />
+          <A href="/bank/reports">
+            <Link active={reports}>
+              <FormattedMessage {...messages.menu4} />
             </Link>
           </A>
           <A href="/bank/customers">
@@ -66,15 +61,8 @@ class BankNav extends Component {
               Announcements
             </Link>
           </A>
-          {/* <A href="/bank/backoffice">
-            <Link active={backoffice}>
-              <FormattedMessage {...messages.bmenu3} />
-            </Link>
-          </A> */}
-          <A href="/bank/reports">
-            <Link active={reports}>
-              <FormattedMessage {...messages.menu4} />
-            </Link>
+          <A href="/bank/users">
+            <Link active={bankusers}>Users</Link>
           </A>
         </NavTag>
       </React.Fragment>
