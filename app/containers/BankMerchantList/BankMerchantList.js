@@ -31,6 +31,7 @@ toast.configure({
 });
 
 function BankMerchantList(props) {
+
   const [addMerchantPopup, setAddMerchantPopup] = React.useState(false);
   const [merchantList, setMerchantList] = React.useState([]);
   const [copyMerchantList, setCopyMerchantList] = React.useState([]);
@@ -54,6 +55,8 @@ function BankMerchantList(props) {
   const [amountcreated, setamountCreated] = React.useState(0);
   const bankName = localStorage.getItem('bankName');
   const bankLogo = localStorage.getItem('bankLogo');
+  const bank_id = localStorage.getItem('bankId'); 
+  const admin =  localStorage.getItem('admin');
 
   const handleMerchantPopupClick = (type, merchant) => {
     setEditingMerchant(merchant);
@@ -145,7 +148,7 @@ function BankMerchantList(props) {
 
   const getData = async () => {
     setLoading(true);
-    const merchants = await fetchMerchantList();
+    const merchants = await fetchMerchantList(bank_id);
     const merchantstats = await getMerchantStats(merchants.list);
     setMerchantStats(merchantstats.res)
     setMerchantList(merchants.list);
@@ -335,18 +338,22 @@ function BankMerchantList(props) {
         </Main>
         <Main fullWidth>
           <Card bigPadding>
-          <Button
-              className="addBankButton"
-              flex
-              style={{
-                float:"right",
-                marginBottom:'10px',
-              }}
-              onClick={() => handleMerchantPopupClick('new', {})}
-            >
-               <i className="material-icons">add</i>
-              <span>Add Merchant</span>
-            </Button>
+          { admin === false || admin === 'false' ? (
+                <Button
+                className="addBankButton"
+                flex
+                style={{
+                  float:"right",
+                  marginBottom:'10px',
+                }}
+                onClick={() => handleMerchantPopupClick('new', {})}
+              >
+                 <i className="material-icons">add</i>
+                <span>Add Merchant</span>
+              </Button>
+
+            ): ''}
+        
             <div className="cardHeader">
               <div className="cardHeaderLeft">
                 <i className="material-icons">supervised_user_circle</i>

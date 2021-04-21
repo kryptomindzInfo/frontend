@@ -589,6 +589,7 @@ export default class BankBranchList extends Component {
 
   componentDidMount() {
     // this.setState({ bank: this.state.bank_id });
+    console.log(localStorage.getItem('admin'));
     if (token !== undefined && token !== null) {
       // this.getBank();
       this.getData();
@@ -793,14 +794,13 @@ export default class BankBranchList extends Component {
           </Main>
           <Main fullWidth>
             <Card bigPadding>
-            { this.state.admin === true ? (
+            { this.state.admin === false || this.state.admin === 'false' ? (
                <Button
                className="addBankButton"
                flex
                style={{
                  float:"right",
                  marginBottom:'10px',
-                 display: this.state.admin === true ? 'none' : '',
                }}
                onClick={() => this.showPopup()}
              >

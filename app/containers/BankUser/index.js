@@ -506,7 +506,7 @@ export default class BankUser extends Component {
       return <Redirect to="/" />;
     }
 
-
+    const dis = this;
 
     return (
       <Wrapper from="bank">
@@ -529,7 +529,7 @@ export default class BankUser extends Component {
                   this.searchlistfunction(e.target.value)
                 }} />
               </div>
-              {this.state.admin === true ? (
+              { this.state.admin === false || this.state.admin === 'false' ? (
                 <Button className="addBankButton" flex onClick={this.showPopup}>
                   <i className="material-icons">add</i>
                   <span>Add Bank User</span>
@@ -560,7 +560,7 @@ export default class BankUser extends Component {
                             <h4 className="hh">{b.name}</h4>
                           </Col>
                           <Col cW="20%">
-                          {this.state.admin === true ? (
+                          { dis.state.admin === false || dis.state.admin === 'false' ? (
                             <Button
                               noMin
                               className="fr"

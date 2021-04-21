@@ -57,9 +57,10 @@ const editMerchant = async (props, values, token) => {
 };
 
 
-const fetchMerchantList = async () => {
+const fetchMerchantList = async (id) => {
   try {
     const res = await axios.post(`${API_URL}/bank/listMerchants`, {
+      bank_id:id,
       token,
     });
     if (res.status === 200) {

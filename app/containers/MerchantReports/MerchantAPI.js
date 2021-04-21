@@ -213,9 +213,9 @@ const checkStatsbyperiod = async (id,period,type) => {
   }
 };
 
-const getBillPeriods = async (id) => {
+const getBillPeriods = async (id,type) => {
   try {
-    const res = await axios.post(`${API_URL}/bank/getMerchantSettings`, {
+    const res = await axios.post(`${API_URL}/${type}/getMerchantSettings`, {
       token,
       merchant_id:id
     });

@@ -54,6 +54,8 @@ function BankPartnerListPage(props) {
   const token = localStorage.getItem('bankLogged');
   const bankName = localStorage.getItem('bankName');
   const bankLogo = localStorage.getItem('bankLogo');
+  const bank_id = localStorage.getItem('bankId'); 
+  const admin =  localStorage.getItem('admin');
 
   const handlePartnerPopupClick = (type, partner) => {
     setEditingPartner(partner);
@@ -67,7 +69,7 @@ function BankPartnerListPage(props) {
   };
 
   const fetchPartnerList = async () => {
-    const res = await postRequest("bank/listPartners", token, {})
+    const res = await postRequest("bank/listPartners", token, {bank_id: bank_id})
     if (res.data.data.status === 0) {
       toast.error(res.data.data.message);
       return { list: [], loading: false };
@@ -479,6 +481,7 @@ function BankPartnerListPage(props) {
         <Main fullWidth>
           
           <Card bigPadding>
+          { admin === false || admin === 'false' ? (
           <Button
               className="addBankButton"
               flex
@@ -491,6 +494,7 @@ function BankPartnerListPage(props) {
                <i className="material-icons">add</i>
               <span>Add Partner</span>
             </Button>
+          ):''}
             <div className="cardHeader">
               <div className="cardHeaderLeft">
                 <i className="material-icons">supervised_user_circle</i>

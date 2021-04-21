@@ -59,6 +59,8 @@ const ReportPage = (props) => {
   const [selectedZone, setSelectedZone] = useState();
   const [selectedSubZone, setSelectedSubZone] = useState();
   const [filter, setFilter] = useState('daterange');
+  const bank_id = localStorage.getItem('bankId'); 
+  const admin =  localStorage.getItem('admin');
   const [type, setType] = useState('zone');
   const [csvData, setcsvData] = useState([
     ["BillNo","Name","Amount","Mobile","DueDate"]
@@ -74,7 +76,8 @@ const ReportPage = (props) => {
 
   const refreshMerchantSettings = async () => {
     setLoading(true);
-    getBillPeriods(merchantid).then((data) => {
+    const type = admin === false || admin === 'false'? 'bank' : 'bankuser';
+    getBillPeriods(merchantid, type).then((data) => {
       setPeriodList(data.list);
     });
   };
