@@ -70,7 +70,7 @@ class BankMasterWallet extends Component {
           } else {
             this.setState(
               {
-                balance: res.data.balance.toFixed(2),
+                balance: res.data.balance ? res.data.balance.toFixed(2) : 0,
               },
               () => {
                 var dis = this;

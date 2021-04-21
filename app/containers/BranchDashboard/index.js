@@ -842,8 +842,8 @@ export default class BranchDashboard extends Component {
   getCashiers = async() => {
     let apiType = "";
     if (this.props.apitype === 'bank' || this.props.apitype === 'branch'){
-      if( localStorage.getItem('admin') === true){
-        apiType = 'partnerUser';
+      if( localStorage.getItem('admin') === true || localStorage.getItem('admin') === 'true'){
+        apiType = 'bankuser';
       }else{
         apiType = this.props.apitype;
       }
@@ -851,7 +851,7 @@ export default class BranchDashboard extends Component {
       apiType = this.props.apitype;
     }
     try {
-      const res = await axios.post(`${API_URL}/${this.props.apitype}/getAll`, {
+      const res = await axios.post(`${API_URL}/${apiType}/getAll`, {
         page: 'cashier',
         token: this.state.token,
         where: { branch_id: this.state.bid },
@@ -867,9 +867,9 @@ export default class BranchDashboard extends Component {
 
   getUsers = async() => {
     let apiType = "";
-    if (this.props.apitype === 'partner' || this.props.apitype === 'partnerBranch'){
-      if( localStorage.getItem('admin') === true){
-        apiType = 'partnerUser';
+    if (this.props.apitype === 'bank' || this.props.apitype === 'branch'){
+      if( localStorage.getItem('admin') === true  || localStorage.getItem('admin') === 'true'){
+        apiType = 'bankuser';
       }else{
         apiType = this.props.apitype;
       }
@@ -878,7 +878,7 @@ export default class BranchDashboard extends Component {
     }
     try {
       const res = await axios
-      .post(`${API_URL}/${this.props.apitype}/getAll`, {
+      .post(`${API_URL}/${apiType}/getAll`, {
         page: 'bankuser',
         type: 'branch',
         token: this.state.token,
@@ -946,7 +946,6 @@ export default class BranchDashboard extends Component {
   }
 
   componentDidMount() {
-    console.log('qfwf');
     this.getData()
     this.getStats()
   }
