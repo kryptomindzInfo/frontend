@@ -61,6 +61,8 @@ export default class PartnerReports extends Component {
       bankName: localStorage.getItem('bankName'),
       bankLogo: localStorage.getItem('bankLogo'),
       cashiers:[],
+      admin: localStorage.getItem('admin'),
+      bank_id: localStorage.getItem('bankId'),
       selectedCashierDetails: {},
       datearray:[],
       cancelled: 0,
@@ -154,7 +156,7 @@ export default class PartnerReports extends Component {
       api = 'bank/listPartners';
     }
     try {
-      const res = await axios.post(`${API_URL}/${api}`, { token: this.state.token, });
+      const res = await axios.post(`${API_URL}/${api}`, { token: this.state.token, bank_id: this.state.bank_id });
       if (res.status == 200) {
         if(this.state.type === 'branch'){
           return ({branches:res.data.branches,loading:false});
@@ -170,6 +172,7 @@ export default class PartnerReports extends Component {
   fetchMerchantList = async () => {
     try {
       const res = await axios.post(`${API_URL}/bank/listMerchants`, {
+        bank_id: this.state,bank_id,
         token: this.state.token,
       });
       if (res.status === 200) {
