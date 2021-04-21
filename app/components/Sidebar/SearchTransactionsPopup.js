@@ -21,7 +21,8 @@ import TransactionReciept from './TransactionReceipt';
 const SearchTransactionPopup = props => {
   const [isLoading, setLoading] = useState(false);
   const [type, setType] = useState('');
-  const [formdate, setFormdate] = useState(new Date);
+  const [startdate, setStartdate] = useState(new Date);
+  const [enddate, setEnddate] = useState(new Date);
   const [transactionList, setTransactionList] = useState([]);
   const [displayTransactionReceipt, setDisplayTransactionReceipt] = useState(false);
   const [editingInvoice, setEditingInvoice] = useState({});
@@ -80,8 +81,8 @@ const SearchTransactionPopup = props => {
                   mobile: '',
                 }}
                 onSubmit={async (values) => {
-                    const after = new Date(formdate);
-                    const before = new Date(formdate);
+                    const after = new Date(startdate);
+                    const before = new Date(enddate);
                     after.setHours(0,0,0,0);
                     before.setHours(23,59,59,0);
                     const res = await getHistory(after,before,values.mobile);
@@ -98,8 +99,51 @@ const SearchTransactionPopup = props => {
                   return (
                     <Form>
                       <Row>
-                        <Col cW='35%'>
+                        <Col cW='25%'>
                             <FormGroup style={{marginBottom:'12px'}}>
+                              <label className="focused">
+                                From
+                              </label>
+                                <MuiPickersUtilsProvider
+                                    utils={DateFnsUtils}
+                                >
+                                    <KeyboardDatePicker
+                                        id="date-picker-dialog"
+                                        size="small"
+                                        maxDate={enddate}
+                                        fullWidth
+                                        inputVariant="outlined"
+                                        format="dd/MM/yyyy"
+                                        required
+                                        InputLabelProps={{
+                                        shrink: true,
+                                        }}
+                                        value={startdate}
+                                        onFocus={e => {
+                                            inputFocus(e);
+                                            handleChange(e);
+                                        }}
+                                        onBlur={e => {
+                                            inputBlur(e);
+                                            handleBlur(e);
+                                        }}
+                                        onChange={date => {
+                                            console.log(date);
+                                            setStartdate(date);
+                                        }
+                                        }
+                                        KeyboardButtonProps={{
+                                        'aria-label': 'change date',
+                                                                    }}
+                                    />
+                                </MuiPickersUtilsProvider>
+                            </FormGroup>
+                        </Col>
+                        <Col cW='25%'>
+                            <FormGroup style={{marginBottom:'12px'}}>
+                            <label className="focused">
+                                To
+                              </label>
                                 <MuiPickersUtilsProvider
                                     utils={DateFnsUtils}
                                 >
@@ -114,7 +158,7 @@ const SearchTransactionPopup = props => {
                                         InputLabelProps={{
                                         shrink: true,
                                         }}
-                                        value={formdate}
+                                        value={enddate}
                                         onFocus={e => {
                                             inputFocus(e);
                                             handleChange(e);
@@ -125,7 +169,7 @@ const SearchTransactionPopup = props => {
                                         }}
                                         onChange={date => {
                                             console.log(date);
-                                            setFormdate(date);
+                                            setEnddate(date);
                                         }
                                         }
                                         KeyboardButtonProps={{
@@ -135,7 +179,8 @@ const SearchTransactionPopup = props => {
                                 </MuiPickersUtilsProvider>
                             </FormGroup>
                         </Col>
-                        <Col cW="65%">
+                        
+                        <Col cW="50%">
                         <FormGroup>
                             <label htmlFor="invoiceIdOrMobile">
                               Mobile/Transaction Code
