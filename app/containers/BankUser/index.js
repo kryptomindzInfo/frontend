@@ -63,11 +63,16 @@ export default class BankUser extends Component {
       name: '',
       address1: '',
       state: '',
+      bank_id: localStorage.getItem('bankId'), 
+      bankName: localStorage.getItem('bankName'),
+      bankLogo: localStorage.getItem('bankLogo'),
+      admin: localStorage.getItem('admin'),
       otpMobile: mobile,
       zip: '',
       username: '',
       password: '',
       mobile: '',
+      role:'user',
       email: '',
       logo: '',
       profile_id: '',
@@ -88,6 +93,7 @@ export default class BankUser extends Component {
         edit_bank: false,
         create_fee: false,
       },
+
       create_bank: false,
       edit_bank: false,
       create_fee: false,
@@ -193,6 +199,7 @@ export default class BankUser extends Component {
       ccode: this.state.ccode,
       branch_id: this.state.branch_id,
       logo: this.state.logo,
+      role: this.state.role,
     }
     const res = await postRequest("addBankUser", token, values)
     if (res.data.data.status === 0) {
@@ -328,6 +335,7 @@ export default class BankUser extends Component {
         branch_id: this.state.branch_id,
         user_id: this.state.user_id,
         logo: this.state.logo,
+        role: this.state.role,
         token,
       })
       .then(res => {
@@ -418,7 +426,7 @@ export default class BankUser extends Component {
   }
 
   getUsers = async () => {
-    const res = await postRequest("getBankUsers", token, {})
+    const res = await postRequest("getBankUsers", token, {bank_id: this.state.bank_id })
     if (res.data.data.status === 0) {
       toast.error(res.data.data.message);
     } else {
@@ -427,7 +435,7 @@ export default class BankUser extends Component {
   };
 
   getBranches = async () => {
-    const res = await postRequest("getBranches", token, {})
+    const res = await postRequest("getBranches", token, {bank_id: this.state.bank_id })
     if (res.data.data.status === 0) {
       toast.error(res.data.data.message);
     } else {
@@ -521,11 +529,13 @@ export default class BankUser extends Component {
                   this.searchlistfunction(e.target.value)
                 }} />
               </div>
+              {this.state.admin === true ? (
+                <Button className="addBankButton" flex onClick={this.showPopup}>
+                  <i className="material-icons">add</i>
+                  <span>Add Bank User</span>
+                </Button>
 
-              <Button className="addBankButton" flex onClick={this.showPopup}>
-                <i className="material-icons">add</i>
-                <span>Add Bank User</span>
-              </Button>
+              ) : ''}
             </ActionBar>
             <div className="cardBody clr">
               {this.state.users && this.state.users.length > 0
@@ -550,6 +560,7 @@ export default class BankUser extends Component {
                             <h4 className="hh">{b.name}</h4>
                           </Col>
                           <Col cW="20%">
+                          {this.state.admin === true ? (
                             <Button
                               noMin
                               className="fr"
@@ -557,6 +568,7 @@ export default class BankUser extends Component {
                             >
                               Edit
                               </Button>
+                          ) : ''}
                           </Col>
                         </Row>
                       </Card>
@@ -634,7 +646,24 @@ export default class BankUser extends Component {
                         required
                       />
                     </FormGroup>
+                    <FormGroup mR="10%" mL="10%">
+                      <label className="focused">Role*</label>
+                      <SelectInput
+                        type="text"
+                        name="role"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.role}
+                        onChange={this.handleInputChange}
+                        required
+                      >
 
+                        {/* <option value="">Select Role*</option> */}
+                        <option value="user">User</option>
+                        <option value="bankAdmin">Bank Admin</option>
+                        <option value="branchAdmin">Branch Admin</option>
+                      </SelectInput>
+                    </FormGroup>
                     <Row>
                       <Col cW="30%" mR="2%">
                         <FormGroup>
@@ -703,7 +732,7 @@ export default class BankUser extends Component {
                         required
                       />
                     </FormGroup>
-
+                    {this.state.role !== 'bankAdmin' ? (
                     <FormGroup>
                       <SelectInput
                         type="text"
@@ -720,7 +749,7 @@ export default class BankUser extends Component {
                           : null}
                       </SelectInput>
                     </FormGroup>
-
+                    ):""}
                     <FormGroup>
                       {/* <UploadedFile>
 
@@ -762,6 +791,22 @@ export default class BankUser extends Component {
                         </label>
                         </div>
                       </UploadArea>
+                    </FormGroup>
+                    <FormGroup mR="10%" mL="10%">
+                      <Row>
+                            <Col cW="4%">
+                                <TextInput
+                                  type="checkbox"
+                                  // value={values.read_only}
+                                  // checked={values.read_only}
+                                  name="read_only"
+                                  style={{ margin: 'revert', height:"20px", width:"20px" }}
+                                  // onChange={handleChange}
+                                />
+                            </Col>
+                            <Col cW="1%"></Col>
+                            <Col cW="95%">Read Only</Col>
+                      </Row>
                     </FormGroup>
                     <Icon className="material-icons">fingerprint</Icon>
                     {this.state.addUserLoading ? (
@@ -860,7 +905,24 @@ export default class BankUser extends Component {
                         required
                       />
                     </FormGroup>
+                    <FormGroup mR="10%" mL="10%">
+                      <label className="focused">Role*</label>
+                      <SelectInput
+                        type="text"
+                        name="role"
+                        onFocus={inputFocus}
+                        onBlur={inputBlur}
+                        value={this.state.role}
+                        onChange={this.handleInputChange}
+                        required
+                      >
 
+                        {/* <option value="">Select Role*</option> */}
+                        <option value="user">User</option>
+                        <option value="bankAdmin">Bank Admin</option>
+                        <option value="branchAdmin">Branch Admin</option>
+                      </SelectInput>
+                    </FormGroup>
                     <Row>
                       <Col cW="30%" mR="2%">
                         <FormGroup>
@@ -931,7 +993,7 @@ export default class BankUser extends Component {
                         required
                       />
                     </FormGroup>
-
+                    {this.state.role !== 'bankAdmin' ? (
                     <FormGroup>
                       <SelectInput
                         type="text"
@@ -948,6 +1010,7 @@ export default class BankUser extends Component {
                           : null}
                       </SelectInput>
                     </FormGroup>
+                    ):''}
 
                     <FormGroup>
                       {/* <UploadedFile>
@@ -990,6 +1053,22 @@ export default class BankUser extends Component {
                         </label>
                         </div>
                       </UploadArea>
+                    </FormGroup>
+                    <FormGroup mR="10%" mL="10%">
+                      <Row>
+                            <Col cW="4%">
+                                <TextInput
+                                  type="checkbox"
+                                  // value={values.read_only}
+                                  // checked={values.read_only}
+                                  name="read_only"
+                                  style={{ margin: 'revert', height:"20px", width:"20px" }}
+                                  // onChange={handleChange}
+                                />
+                            </Col>
+                            <Col cW="1%"></Col>
+                            <Col cW="95%">Read Only</Col>
+                      </Row>
                     </FormGroup>
                     <Icon className="material-icons">fingerprint</Icon>
 

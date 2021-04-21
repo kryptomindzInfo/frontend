@@ -58,8 +58,10 @@ export default class BankBranchList extends Component {
       sid: '',
       bank: bid,
       name: '',
+      bank_id: localStorage.getItem('bankId'), 
       bankName: localStorage.getItem('bankName'),
       bankLogo: localStorage.getItem('bankLogo'),
+      admin: localStorage.getItem('admin'),
       address1: '',
       html: '',
       popname: '',
@@ -498,7 +500,7 @@ export default class BankBranchList extends Component {
 
   getBranches = async() => {
     try {
-      const res = await axios.post(`${API_URL}/getBranches`, { token });
+      const res = await axios.post(`${API_URL}/getBranches`, { token, bank_id: this.state.bank_id });
       if (res.status == 200) {
         return ({branches:res.data.branches,loading:false});
       }
@@ -791,19 +793,23 @@ export default class BankBranchList extends Component {
           </Main>
           <Main fullWidth>
             <Card bigPadding>
-            <Button
-              className="addBankButton"
-              flex
-              style={{
-                float:"right",
-                marginBottom:'10px',
-                display: this.state.admin === true ? 'none' : '',
-              }}
-              onClick={() => this.showPopup()}
-            >
-               <i className="material-icons">add</i>
-              <span>Add Agency</span>
-            </Button>
+            { this.state.admin === true ? (
+               <Button
+               className="addBankButton"
+               flex
+               style={{
+                 float:"right",
+                 marginBottom:'10px',
+                 display: this.state.admin === true ? 'none' : '',
+               }}
+               onClick={() => this.showPopup()}
+             >
+                <i className="material-icons">add</i>
+               <span>Add Agency</span>
+             </Button>
+
+            ):''}
+           
               <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>

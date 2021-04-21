@@ -88,6 +88,7 @@ export default class BankLoginPage extends Component {
       localStorage.setItem('bankLogo', res.data.data.logo);
       localStorage.setItem('bankId', res.data.data.id);
       localStorage.setItem('bankPhone', res.data.data.mobile);
+      localStorage.setItem('admin', res.data.admin);
       console.log(localStorage.getItem('bankLogged'));
       console.log(res);
       if (res.data.data.status == 0 && res.data.data.message === "Incorrect username or password") {
