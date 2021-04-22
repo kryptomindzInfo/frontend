@@ -8,32 +8,20 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
-
 import { toast } from 'react-toastify';
-
-import { FormattedMessage } from 'react-intl';
-import messages from './messages';
-
 import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
-import Logo from 'components/Header/Logo';
-import Nav from 'components/Header/Nav';
 import Loader from 'components/Loader';
 import SidebarBank from 'components/Sidebar/SidebarBank';
 import Main from 'components/Main';
-import ActionBar from 'components/ActionBar';
 import Card from 'components/Card';
-import Button from 'components/Button';
 import Table from 'components/Table';
-import Popup from 'components/Popup';
-import FormGroup from 'components/FormGroup';
-import TextInput from 'components/TextInput';
-import SelectInput from 'components/SelectInput';
 import Pagination from 'react-js-pagination';
-import Row from 'components/Row';
-import A from 'components/A';
 import styled from 'styled-components';
+import { API_URL, CURRENCY } from '../App/constants';
+import ReactPaginate from 'react-paginate';
+import 'react-toastify/dist/ReactToastify.css';
 
 const H4 = styled.h4`
   > span {
@@ -42,9 +30,6 @@ const H4 = styled.h4`
   }
 `;
 
-import { API_URL, STATIC_URL, CURRENCY } from '../App/constants';
-
-import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
   position: 'bottom-right',
   autoClose: 4000,
@@ -56,47 +41,23 @@ toast.configure({
 
 const token = localStorage.getItem('bankLogged');
 
-export default class BankEscrowHistory extends Component {
+export default class History extends Component {
   constructor() {
     super();
     this.state = {
-      bank_id: '',
-      bank: '',
-      logo: null,
-      contract: null,
-      loading: true,
-      redirect: false,
-      name: '',
-      trans_type: '',
-      perPage: 5,
-      totalCount: 100,
-      allhistory: [],
-      activePage: 1,
-      active: 'Active',
-      trans_from: '',
-      trans_to: '',
-      transcount_from: '',
-      history: [],
-      filter: '',
-      transcount_to: '',
-      fixed_amount: '',
-      percentage: '',
-      notification: '',
-      popup: false,
-      user_id: token,
-      banks: [],
-      otp: '',
-      showOtp: false,
+      loading:false,
       token: token,
+      selectedRow: [],
+      selectedRowCopy: [],
+      allRow: [],
+      receivedRow: [],
+      sentRow: [],
+      pagecount: 0,
     };
 
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
     this.warn = this.warn.bind(this);
-
-    this.onChange = this.onChange.bind(this);
-    this.fileUpload = this.fileUpload.bind(this);
-    this.showHistory = this.showHistory.bind(this);
   }
 
   success = () => toast.success(this.state.notification);
@@ -105,190 +66,82 @@ export default class BankEscrowHistory extends Component {
 
   warn = () => toast.warn(this.state.notification);
 
-  handleInputChange = event => {
-    console.log(event);
-    const { value, name } = event.target;
-    this.setState({
-      [name]: value,
-    });
-  };
 
-  showPopup = () => {
-    //this.setState({ popup: true });
-    this.props.history.push('/createfee/' + this.props.match.params.bank);
-  };
-
-  closePopup = () => {
-    this.setState({
-      popup: false,
-      name: '',
-      address1: '',
-      state: '',
-      zip: '',
-      ccode: '',
-      country: '',
-      email: '',
-      mobile: '',
-      logo: null,
-      contract: null,
-      otp: '',
-      showOtp: false,
-    });
-  };
-
-  logout = () => {
-    localStorage.removeItem('logged');
-    localStorage.removeItem('name');
-    this.setState({ redirect: true });
-  };
-
-  removeFile = key => {
-    this.setState({
-      [key]: null,
-    });
-  };
-
-  triggerBrowse = inp => {
-    const input = document.getElementById(inp);
-    input.click();
-  };
-
-  onChange(e) {
-    if (e.target.files && e.target.files[0] != null) {
-      this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
-    }
-  }
-
-  fileUpload(file, key) {
-    const formData = new FormData();
-    //  formData.append('token',token);
-    formData.append('file', file);
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data',
-      },
-    };
-
-    axios
-      .post(`${API_URL}/fileUpload?token=${token}`, formData, config)
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
-          } else {
-            this.setState({
-              [key]: res.data.name,
-            });
-          }
-        } else {
-          throw res.data.error;
-        }
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-        });
-        this.error();
-      });
-  }
-
-  getBanks = () => {
-    axios
-      .post(`${API_URL}/getBank`, {
-        token: token,
-        bank_id: this.props.match.params.bank,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          this.setState({
-            loading: false,
-            banks: res.data.banks,
-            logo: res.data.banks.logo,
-            bank_id: this.props.match.params.bank,
-          });
-        }
-      })
-      .catch(err => { });
-  };
-
-  showHistory = () => {
-    this.setState({ history: [] }, () => {
-      var out = [];
-      var start = (this.state.activePage - 1) * this.state.perPage;
-      var end = this.state.perPage * this.state.activePage;
-      if (end > this.state.totalCount) {
-        end = this.state.totalCount;
-      }
-      for (var i = start; i < end; i++) {
-        out.push(this.state.allhistory[i]);
-      }
-      this.setState({ history: out });
-    });
-  };
-
-  getHistory = () => {
-    axios
-      .post(`${API_URL}/getBankHistory`, {
+  getHistory = async() => {
+    try {
+      const res = await axios.post(`${API_URL}/getBankHistory`, {
         token: token,
         from: 'escrow',
         page: this.state.activePage,
         offset: this.state.perPage,
-      })
-      .then(res => {
-        if (res.status == 200) {
-          // console.log(res.data);
-          const history = res.data.history.reverse();
-          this.setState(
-            {
-              loading: false,
-              allhistory: history,
-              totalCount: res.data.history.length,
-            },
-            () => {
-              this.showHistory();
-            },
-          );
-        }
-      })
-      .catch(err => { });
+      });
+      if (res.status === 200){
+        return({history: res.data.history, loading: false})
+      }
+    }catch(err){
+      console.log(err);
+    }
   };
 
-  getHistoryTotal = () => {
-    axios
-      .post(`${API_URL}/getBankHistoryTotal`, {
-        token: token,
-        from: 'Escrow',
-      })
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res.data);
-          this.setState({ loading: false, totalCount: res.data.total }, () => {
-            this.getHistory();
-          });
-        }
-      })
-      .catch(err => { });
+  handlePageClick = (data) =>{
+    console.log(this.state.selectedRowCopy);
+    const start = data.selected*10;
+    const end = data.selected*10 + 10;
+    console.log(start,end);
+    const array = this.state.selectedRowCopy.slice(start, end);
+    console.log(array);
+    this.setState({
+      selectedRow: array,
+    });
   };
 
-  filterData = e => {
-    this.setState({ filter: e });
-  };
+  filterData = (type) => {
+    if(type==='ALL'){
+      this.setState({
+        selectedRow: this.state.allRow.slice(0, 10),
+        selectedRowCopy: this.state.allRow,
+        pagecount: Math.ceil(this.state.allRow.length / 10),
+      });
+    } else if(type==='DR'){
+      this.setState({
+        selectedRow: this.state.sentRow.slice(0, 10),
+        selectedRowCopy: this.state.sentRow,
+        pagecount: Math.ceil(this.state.sentRow.length / 10),
+      });
+    }else {
+      this.setState({
+        selectedRow: this.state.receivedRow.slice(0, 10),
+        selectedRowCopy: this.state.receivedRow,
+        pagecount: Math.ceil(this.state.receivedRow.length / 10),
+      });
 
-  handlePageChange = pageNumber => {
-    console.log(`active page is ${pageNumber}`);
-    this.setState({ activePage: pageNumber });
-    this.showHistory();
-  };
+    }
+  }
+
+  getData = async() => {
+    this.setState({
+      loading: true,
+    });
+    const allhistory =  await this.getHistory();
+    this.setState({
+      selectedRow: allhistory.history.slice(0, 10),
+      selectedRowCopy: allhistory.history,
+      pagecount: Math.ceil(allhistory.history.length / 10),
+      allRow: allhistory.history,
+      receivedRow: allhistory.history.filter(val=> val.Value.tx_data[0].tx_type === 'CR'),
+      sentRow: allhistory.history.filter(val=> val.Value.tx_data[0].tx_type === 'DR'),
+      loading: allhistory.loading,
+    });
+
+
+  }
+
 
   componentDidMount() {
     // this.setState({ bank: this.props.match.params.bank });
     if (token !== undefined && token !== null) {
-
-      // this.getBanks();
-      let dis = this;
-      setInterval(function () {
-        dis.getHistory();
-      }, 2000);
+      this.getData();
+      // this.getHistory();
     } else {
       // alert('Login to continue');
       // this.setState({loading: false, redirect: true });
@@ -296,24 +149,6 @@ export default class BankEscrowHistory extends Component {
   }
 
   render() {
-    function inputFocus(e) {
-      const { target } = e;
-      target.parentElement.querySelector('label').classList.add('focused');
-    }
-
-    function inputBlur(e) {
-      const { target } = e;
-      if (target.value == '') {
-        target.parentElement.querySelector('label').classList.remove('focused');
-      }
-    }
-
-    function onChange(event) {
-      console.log(event);
-      // this.setState({
-      //   trans_type: event.target.value
-      // });
-    }
 
     const { loading, redirect } = this.state;
     if (loading) {
@@ -341,12 +176,12 @@ export default class BankEscrowHistory extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>Escrow History | BANK | E-WALLET</title>
+          <title>History | INFRA | E-WALLET</title>
         </Helmet>
         <BankHeader />
         <Container verticalMargin>
-          <SidebarBank />
-          <Main>
+          {/* <SidebarBank /> */}
+          <Main fullWidth>
             <Card bigPadding>
               <div className="cardHeader">
                 <div className="cardHeaderLeft">
@@ -359,7 +194,7 @@ export default class BankEscrowHistory extends Component {
               </div>
               <div className="cardBody">
                 <div className="clr">
-                  <div className="menuTabs" onClick={() => this.filterData('')}>
+                  <div className="menuTabs" onClick={() => this.filterData('ALL')}>
                     All
                   </div>
                   <div
@@ -376,38 +211,41 @@ export default class BankEscrowHistory extends Component {
                   </div>
                 </div>
                 <Table marginTop="34px" smallTd textAlign="left">
+                  <thead>
+                    <tr>
+                      <th>Date</th><th>Details</th><th>Amount</th><th>Balance</th>
+                    </tr>
+                  </thead>
                   <tbody>
-                    {this.state.history && this.state.history.length > 0
-                      ? this.state.history.map(function (b) {
+                    {this.state.selectedRow && this.state.selectedRow.length > 0
+                      ? this.state.selectedRow.map(function (b) {
                         var isoformat = b.Timestamp;
                         var readable = new Date(isoformat);
                         var m = readable.getMonth(); // returns 6
-                        var d = readable.getDate(); // returns 15
-                        var y = readable.getFullYear();
+                        var d = readable.toDateString(); // returns 15
                         var h = readable.getHours();
                         var mi = readable.getMinutes();
                         var mlong = months[m];
                         var fulldate =
-                          d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
+                          d + ' ' + h + ':' + mi;
 
-                        return dis.state.filter == b.Value.tx_data.tx_type ||
-                          dis.state.filter == '' ? (
+                        return (
                             <tr key={b.TxId}>
                               <td>
                                 <div className="labelGrey">{fulldate}</div>
                               </td>
                               <td>
                                 <div className="labelBlue">
-                                  {b.Value.tx_data.tx_details}
-                                </div>
+                                  {b.Value.tx_data[0].tx_details}
+                                </div>{' '}
                                 <div className="labelSmallGrey">
-                                  {/* Completed */}
-                                  {b.Value.tx_data.tx_type == 'DR' &&
+                                  {b.Value.tx_data[0].tx_type == 'DR' &&
                                     "Debit"
                                   }
-                                  {b.Value.tx_data.tx_type == 'CR' &&
+                                  {b.Value.tx_data[0].tx_type == 'CR' &&
                                     "Credit"
                                   }
+
                                 </div>
                               </td>
                               <td className="right">
@@ -415,28 +253,40 @@ export default class BankEscrowHistory extends Component {
                                   {
                                     b.Value.tx_data.tx_type == 'DR'
                                       ?
-                                      <span>{CURRENCY} -{b.Value.amount}</span>
+                                      <span>{CURRENCY} -{b.Value.tx_data[0].amount.toFixed(2)}</span>
                                       :
-                                      <span>{CURRENCY} {b.Value.amount}</span>
+                                      <span>{CURRENCY} {b.Value.tx_data[0].amount.toFixed(2)}</span>
                                   }
 
                                 </div>
                               </td>
+                              <td className="right">
+                                <div className="labelGrey">
+                                 
+                                      <span>{CURRENCY} {b.Value.balance.toFixed(2)}</span>
+                                     
+
+                                </div>
+                              </td>
                             </tr>
-                          ) : null;
+                          )
                       })
                       : null}
                   </tbody>
                 </Table>
-                <div>
-                  <Pagination
-                    activePage={this.state.activePage}
-                    itemsCountPerPage={this.state.perPage}
-                    totalItemsCount={this.state.totalCount}
-                    pageRangeDisplayed={5}
-                    onChange={this.handlePageChange}
-                  />
-                </div>
+                <ReactPaginate
+               previousLabel={'previous'}
+               nextLabel={'next'}
+               breakLabel={'...'}
+               breakClassName={'break-me'}
+               pageCount={this.state.pagecount}
+               marginPagesDisplayed={10}
+               pageRangeDisplayed={10}
+               onPageChange={this.handlePageClick}
+               containerClassName={'pagination'}
+               subContainerClassName={'pages pagination'}
+               activeClassName={'active'}
+             />
               </div>
             </Card>
           </Main>

@@ -102,6 +102,7 @@
     "react-intl": "2.8.0",
     "react-js-pagination": "^3.0.3",
     "react-modal": "^3.11.2",
+    "react-paginate": "^7.1.2",
     "react-pdf": "^4.1.0",
     "react-redux": "^6.0.1",
     "react-router-dom": "5.0.0",

@@ -71,7 +71,7 @@ export default class History extends Component {
     try {
       const res = await axios.post(`${API_URL}/getBankHistory`, {
         token: token,
-        from: 'master',
+        from: 'operational',
         page: this.state.activePage,
         offset: this.state.perPage,
       });

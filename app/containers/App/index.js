@@ -44,7 +44,7 @@ import MasterHistory from 'containers/MasterHistory/Loadable';
 import InfraProfile from 'containers/InfraProfile/Loadable';
 import InfraCurrency from 'containers/InfraCurrency/Loadable';
 import InfraCountry from 'containers/InfraCountry/InfraCountry';
-import BankOperationalHistory from 'containers/BankOperationalHistory/Loadable';
+import History from 'containers/History/Loadable';
 import BankMasterHistory from 'containers/BankMasterHistory/Loadable';
 import BankEscrowHistory from 'containers/BankEscrowHistory/Loadable';
 import BankBranchList from 'containers/BankBranchList/Loadable';
@@ -230,7 +230,7 @@ export default function App(props) {
           />
           <BankRoute
             path="/bank/operationalHistory"
-            component={BankOperationalHistory}
+            component={History}
           />
           <BankRoute
             exact
@@ -245,11 +245,6 @@ export default function App(props) {
             component={BankTheme}
             setTheme={setTheme}
             appTheme={theme}
-          />
-          <BankRoute
-            exact
-            path="/bank/operationalHistory"
-            component={BankOperationalHistory}
           />
           <BankRoute
             exact
