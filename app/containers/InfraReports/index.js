@@ -597,6 +597,7 @@ export default class PartnerReports extends Component {
               <Row>No. {date.bill_generated-date.bill_paid}</Row>
               <Row>XOF {date.amount_generated-date.amount_paid}</Row>
             </td>
+            <th><Row>XOF 0</Row></th>
           </tr>
         );
     });
@@ -1157,17 +1158,50 @@ export default class PartnerReports extends Component {
               </Row>
               <Row>
                 <Col>
-                  <DashCards title='Invoice Paid By Bank' no={this.state.billPaidBC} amount={this.state.amountPaidBC}/>
+                  <DashCards title='Invoice Paid By Bank' no={this.state.billPaidBC} amount={this.state.amountPaidBC} row={3}/>
                 </Col>
                 <Col>
-                <DashCards title='Invoice Paid By Partner' no={this.state.billPaidPC} amount={this.state.amountPaidPC}/>
+                <DashCards title='Invoice Paid By Partner' no={this.state.billPaidPC} amount={this.state.amountPaidPC} row={3}/>
                 </Col>
                 <Col>
-                  <DashCards title='Invoice Paid By Merchant' no={this.state.billPaidMC} amount={this.state.amountPaidMC}/>
+                  <DashCards title='Invoice Paid By Merchant' no={this.state.billPaidMC} amount={this.state.amountPaidMC} row={3}/>
                 </Col>
                 <Col>
-                  <DashCards title='Invoice Paid By User' no={this.state.billPaidUS} amount={this.state.amountPaidUS}/>
+                  <DashCards title='Invoice Paid By User' no={this.state.billPaidUS} amount={this.state.amountPaidUS} row={3}/>
                 </Col>      
+              </Row>
+              <Row>
+                <Col>
+                <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
+                      <h4>Total Revenue</h4>
+                      <Row>
+                          <Col >
+                              <Row>
+                                  Fee:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue" > 0</span>
+                              </Row>
+                          </Col>
+                          <Col >
+                              <Row>
+                                  Commission:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">0</span>
+                              </Row>
+                          </Col>
+                          <Col >
+                              <Row>
+                                  Total:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">0</span>
+                              </Row>
+                          </Col> 
+                      </Row>
+                      </Card>
+                  </Col>
               </Row>
               <Card bigPadding style={{width:'100%'}}>  
             {this.state.merchantstats && this.state.merchantstats.length > 0 ? (
@@ -1189,6 +1223,7 @@ export default class PartnerReports extends Component {
                           <th>Invoice Paid By User</th>
                           <th>Invoice Paid By Merchant</th>
                           <th>Invoice Pending</th>
+                          <th>Total Revenue</th>
                         </tr>
                     </thead> 
                     <tbody>
@@ -1224,6 +1259,7 @@ export default class PartnerReports extends Component {
                           <Row>No. {this.state.merchantstats[index].bill_generated-this.state.merchantstats[index].bill_paid}</Row>
                           <Row>XOF {this.state.merchantstats[index].amount_generated-this.state.merchantstats[index].amount_paid}</Row>
                         </td>
+                        <td className="green"> XOF 0</td>
                       </tr>
     
                     </tbody>

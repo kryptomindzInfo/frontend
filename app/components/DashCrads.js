@@ -8,6 +8,7 @@ const DashCards = (props) => {
   const no = props.no ? props.no : 0;
   const amount = props.amount ? props.amount : 0;
   const title = props.title ? props.title: 0;
+  const row = props.row ? props.row: 0;
   return (
     <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
         <h4>{title}</h4>
@@ -27,8 +28,36 @@ const DashCards = (props) => {
                 <Row>
                     <span className="cardValue">{amount}</span>
                 </Row>
-            </Col>  
+            </Col> 
         </Row>
+        {row === 3 ? (
+             <Row>
+             <Col >
+                 <Row>
+                     Fee:
+                 </Row>
+                 <Row>
+                     <span className="cardValue" > 0</span>
+                 </Row>
+             </Col>
+             <Col >
+                 <Row>
+                     Commission:
+                 </Row>
+                 <Row>
+                     <span className="cardValue">0</span>
+                 </Row>
+             </Col>
+             <Col >
+                 <Row>
+                     Revenue:
+                 </Row>
+                 <Row>
+                     <span className="cardValue">0</span>
+                 </Row>
+             </Col> 
+         </Row>
+        ):''}
     </Card>
   );
 };

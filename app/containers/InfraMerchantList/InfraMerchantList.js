@@ -233,6 +233,9 @@ function InfraMerchant(props) {
         <Row> Amount. {merchantStats[i].amount_pending}</Row>
       </td>
       <td className="tac">
+        <Row> XOF 0</Row>
+      </td>
+      <td className="tac">
         <div
           style={{
             display: 'flex',
@@ -336,18 +339,52 @@ function InfraMerchant(props) {
         </Row>
         <Row>
           <Col>
-            <DashCards title='Paid by bank' no={billPaidByBC} amount={amountPaidByBC}/>
+            <DashCards title='Paid by bank' no={billPaidByBC} amount={amountPaidByBC} row={3}/>
           </Col>
           <Col>
-            <DashCards title='Paid by partner' no={billPaidByPC} amount={amountPaidByPC}/>
+            <DashCards title='Paid by partner' no={billPaidByPC} amount={amountPaidByPC}  row={3}/>
           </Col>
           <Col>
-            <DashCards title='Paid by merchant' no={billPaidByMC} amount={amountPaidByMC}/>
+            <DashCards title='Paid by merchant' no={billPaidByMC} amount={amountPaidByMC}  row={3}/>
           </Col>
           <Col>
-            <DashCards title='Paid by user' no={billPaidByUS} amount={amountPaidByUS}/>
+            <DashCards title='Paid by user' no={billPaidByUS} amount={amountPaidByUS}  row={3}/>
           </Col>
         </Row>
+        <Row>
+                <Col>
+                <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
+                      <h4>Total Revenue</h4>
+                      <Row>
+                          <Col >
+                              <Row>
+                                  Fee:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue" > 0</span>
+                              </Row>
+                          </Col>
+                          <Col >
+                              <Row>
+                                  Commission:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">0</span>
+                              </Row>
+                          </Col>
+                          <Col >
+                              <Row>
+                                  Total:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">0</span>
+                              </Row>
+                          </Col> 
+                      </Row>
+                      </Card>
+                  </Col>
+              </Row>
+
           
         </Main>
         <Main fullWidth>
@@ -376,6 +413,7 @@ function InfraMerchant(props) {
                     <th>Invoice Paid By User</th>
                     <th>Invoice Paid By Merchant</th>
                     <th>Invoice Pending</th>
+                    <th>Total Revenue</th>
                     <th></th>
                   </tr>
                 </thead>

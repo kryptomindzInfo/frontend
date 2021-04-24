@@ -289,6 +289,7 @@ const getData = (i) => {
               <Row>No. {date.bill_generated-date.bill_paid}</Row>
               <Row>XOF {date.amount_generated-date.amount_paid}</Row>
             </td>
+            <td><Row>XOF 0</Row></td>
           </tr>
         );
     });
@@ -626,18 +627,52 @@ const toggleType = (type) => {
               </Row>
               <Row>
                 <Col>
-                  <DashCards title='Invoice Paid By Bank' no={billPaidBC} amount={amountPaidBC}/>
+                  <DashCards title='Invoice Paid By Bank' no={billPaidBC} amount={amountPaidBC}  row={3}/>
                 </Col>
                 <Col>
-                <DashCards title='Invoice Paid By Partner' no={billPaidPC} amount={amountPaidPC}/>
+                <DashCards title='Invoice Paid By Partner' no={billPaidPC} amount={amountPaidPC}  row={3}/>
                 </Col>
                 <Col>
-                  <DashCards title='Invoice Paid By Merchant' no={billPaidMC} amount={amountPaidMC}/>
+                  <DashCards title='Invoice Paid By Merchant' no={billPaidMC} amount={amountPaidMC} row={3}/>
                 </Col>
                 <Col>
-                  <DashCards title='Invoice Paid By User' no={billPaidUS} amount={amountPaidUS}/>
+                  <DashCards title='Invoice Paid By User' no={billPaidUS} amount={amountPaidUS} row={3}/>
                 </Col>      
               </Row>
+              <Row>
+                <Col>
+                <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
+                      <h4>Total Revenue</h4>
+                      <Row>
+                          <Col >
+                              <Row>
+                                  Fee:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue" > 0</span>
+                              </Row>
+                          </Col>
+                          <Col >
+                              <Row>
+                                  Commission:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">0</span>
+                              </Row>
+                          </Col>
+                          <Col >
+                              <Row>
+                                  Total:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">0</span>
+                              </Row>
+                          </Col> 
+                      </Row>
+                      </Card>
+                  </Col>
+              </Row>
+
             </div>
             
             ): (
@@ -658,18 +693,52 @@ const toggleType = (type) => {
               </Row>
               <Row>
                 <Col>
-                  <DashCards title='Invoice Paid By Bank' no={billPaidBC} amount={amountPaidBC}/>
+                  <DashCards title='Invoice Paid By Bank' no={billPaidBC} amount={amountPaidBC} row={3}/>
                 </Col>
                 <Col>
-                <DashCards title='Invoice Paid By Partner' no={billPaidPC} amount={amountPaidPC}/>
+                <DashCards title='Invoice Paid By Partner' no={billPaidPC} amount={amountPaidPC} row={3}/>
                 </Col>
                 <Col>
-                  <DashCards title='Invoice Paid By Merchant' no={billPaidMC} amount={amountPaidMC}/>
+                  <DashCards title='Invoice Paid By Merchant' no={billPaidMC} amount={amountPaidMC} row={3}/>
                 </Col>
                 <Col>
-                  <DashCards title='Invoice Paid By User' no={billPaidUS} amount={amountPaidUS}/>
+                  <DashCards title='Invoice Paid By User' no={billPaidUS} amount={amountPaidUS} row={3}/>
                 </Col>      
               </Row>
+              <Row>
+                <Col>
+                <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
+                      <h4>Total Revenue</h4>
+                      <Row>
+                          <Col >
+                              <Row>
+                                  Fee:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue" > 0</span>
+                              </Row>
+                          </Col>
+                          <Col >
+                              <Row>
+                                  Commission:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">0</span>
+                              </Row>
+                          </Col>
+                          <Col >
+                              <Row>
+                                  Total:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">0</span>
+                              </Row>
+                          </Col> 
+                      </Row>
+                      </Card>
+                  </Col>
+              </Row>
+
 
             </div>
             
@@ -697,6 +766,7 @@ const toggleType = (type) => {
                           <th>Invoice Paid By User</th>
                           <th>Invoice Paid By Merchant</th>
                           <th>Invoice Pending</th>
+                          <th>Total Revenue</th>
                         </tr>
                     </thead> 
                     <tbody>
@@ -732,6 +802,7 @@ const toggleType = (type) => {
                           <Row>No. {typeStats[index].bill_generated-typeStats[index].bill_paid}</Row>
                           <Row>XOF {typeStats[index].amount_generated-typeStats[index].amount_paid}</Row>
                         </td>
+                        <td className="green"> XOF 0</td>
                       </tr>
     
                     </tbody>
