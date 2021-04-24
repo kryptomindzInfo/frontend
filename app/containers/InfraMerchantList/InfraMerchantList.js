@@ -247,7 +247,7 @@ function InfraMerchant(props) {
                                     'selectedMerchant',
                                     JSON.stringify(merchant),
                                   );
-                                history.push(`/bank/merchantreports/${merchant._id}`);
+                                history.push(`/infra/merchantreports/${merchant._id}`);
                                 }}
                               >                    
                                 Reports                  

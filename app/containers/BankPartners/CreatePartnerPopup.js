@@ -16,6 +16,7 @@ import Button from '../../components/Button';
 import { API_URL, CONTRACT_URL, STATIC_URL } from '../App/constants';
 import messages from '../BankPage/messages';
 import UploadArea from '../../components/UploadArea';
+import TextInput from 'components/TextInput';
 
 function CreatePartnerPopup(props) {
   const token = localStorage.getItem('bankLogged');
@@ -412,6 +413,22 @@ function CreatePartnerPopup(props) {
                       : ''}
                   </Typography>
                 </FormGroup>
+                <FormGroup mR="10%" mL="10%">
+                      <Row>
+                            <Col cW="4%">
+                                <TextInput
+                                  type="checkbox"
+                                  // value={values.read_only}
+                                  // checked={values.read_only}
+                                  name="read_only"
+                                  style={{ margin: 'revert', height:"20px", width:"20px" }}
+                                  // onChange={handleChange}
+                                />
+                            </Col>
+                            <Col cW="1%"></Col>
+                            <Col cW="95%">Verify User Access</Col>
+                      </Row>
+                    </FormGroup>
                 <Button
                   type="submit"
                   disabled={isSubmitting}

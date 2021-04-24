@@ -82,6 +82,7 @@ import PartnerReports from 'containers/PartnerReports';
 import BankReports from 'containers/BankReports';
 import InfraMerchant from 'containers/InfraMerchantList/InfraMerchantList';
 import MerchantReports from 'containers/MerchantReports';
+import InfraMerchantReports from 'containers/InfraMerchantReports';
 import { ThemeProvider } from 'styled-components';
 import AllRoutes from './AllRoutes';
 import BankCreationConfirmationPage from '../../components/BankCreationConfirmationPage';
@@ -182,6 +183,11 @@ export default function App(props) {
             component={p => (
               <InfraMerchantFeeListPage active='interbankfees' bank='interbank' feeType="fee" {...p} />
             )}
+          />
+           <InfraRoute
+            exact
+            path="/infra/merchantreports/:id"
+            component={InfraMerchantReports}
           />
           <InfraRoute
             exact
