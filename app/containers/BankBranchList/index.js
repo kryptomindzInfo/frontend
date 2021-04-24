@@ -81,6 +81,7 @@ export default class BankBranchList extends Component {
       totalBanks: 0,
       notification: 'Welcome',
       popup: false,
+      token: localStorage.getItem('bankLogged'),
       user_id: token,
       banks: [],
       branches: [],
@@ -224,7 +225,7 @@ export default class BankBranchList extends Component {
         mobile: this.state.mobile,
         working_from: this.state.working_from,
         working_to: this.state.working_to,
-        token,
+        token: this.state.token,
       })
       .then(res => {
         if (res.status == 200) {
@@ -275,7 +276,7 @@ export default class BankBranchList extends Component {
         branch_id: this.state.branch_id,
         working_from: this.state.eworking_from,
         working_to: this.state.eworking_to,
-        token,
+        token: this.state.token,
       })
       .then(res => {
         if (res.status == 200) {
@@ -314,7 +315,7 @@ export default class BankBranchList extends Component {
     var dis = this;
     axios
       .post(`${API_URL}/branchStatus`, {
-        token,
+        token: this.state.token,
         branch_id: e,
         status: s,
       })
@@ -351,7 +352,7 @@ export default class BankBranchList extends Component {
     axios
       .post(`${API_URL}/approveFee`, {
         id: this.state.sid,
-        token,
+        token: this.state.token,
       })
       .then(res => {
         if (res.status == 200) {
@@ -394,7 +395,7 @@ export default class BankBranchList extends Component {
     axios
       .post(`${API_URL}/declineFee`, {
         id: this.state.sid,
-        token,
+        token: this.state.token,
       })
       .then(res => {
         if (res.status == 200) {
@@ -461,7 +462,7 @@ export default class BankBranchList extends Component {
     };
 
     axios
-      .post(`${API_URL}/fileUpload?token=${token}`, formData, config)
+      .post(`${API_URL}/fileUpload?token=${this.state.token}`, formData, config)
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {
@@ -484,23 +485,10 @@ export default class BankBranchList extends Component {
   }
 
 
-  getBank = () => {
-    axios
-      .post(`${API_URL}/getOne`, { token, page: 'bank', type: 'bank', page_id: bid })
-      .then(res => {
-        if (res.status == 200) {
-          console.log(res.data);
-          this.setState({ loading: false, working_from: res.data.row.working_from == 0 ? '00:00' : res.data.row.working_from, working_to: res.data.row.working_to == 0 ? '00:00' : res.data.row.working_to });
-          this.getBranches();
-        }
-      })
-      .catch(err => { });
-
-  };
 
   getBranches = async() => {
     try {
-      const res = await axios.post(`${API_URL}/getBranches`, { token, bank_id: this.state.bank_id });
+      const res = await axios.post(`${API_URL}/getBranches`, { token:this.state.token, bank_id: this.state.bank_id });
       if (res.status == 200) {
         return ({branches:res.data.branches,loading:false});
       }
@@ -511,7 +499,7 @@ export default class BankBranchList extends Component {
 
   getBranchDashStats = async(id) => {
     try {
-      const res = await axios.post(`${API_URL}/bank/getBranchDashStats`, { token,branch_id:id });
+      const res = await axios.post(`${API_URL}/bank/getBranchDashStats`, { token:this.state.token,branch_id:id });
       if (res.status == 200) {
         return (res.data);
       }

@@ -31,9 +31,20 @@ class Nav extends Component {
     return (
       <React.Fragment>
         <NavTag>
-          <A href="/dashboard">
+          {/* <A href="/dashboard">
             <Link active={dashboard}>
               <FormattedMessage {...messages.menu1} />
+            </Link>
+          </A> */}
+         
+          <A href="/banks">
+            <Link active={bank}>
+              <FormattedMessage {...messages.menu2} />
+            </Link>
+          </A>
+          <A href="/merchantlist">
+            <Link active={merchants}>
+              <FormattedMessage {...messages.menu3} />
             </Link>
           </A>
           {isAdmin != 'false' ? (
@@ -41,21 +52,11 @@ class Nav extends Component {
               <Link active={user}>Infra User</Link>
             </A>
           ) : null}
-          <A href="/banks">
-            <Link active={bank}>
-              <FormattedMessage {...messages.menu2} />
-            </Link>
-          </A>
-          {/* <A >
-            <Link active={merchants}>
-              <FormattedMessage {...messages.menu3} />
-            </Link>
-          </A>
-          <A >
+          <A href="/reports">
             <Link active={reports}>
               <FormattedMessage {...messages.menu4} />
             </Link>
-          </A> */}
+          </A>
         </NavTag>
       </React.Fragment>
     );

@@ -12,7 +12,7 @@ import { Helmet } from 'react-helmet';
 import endOfDay from 'date-fns/endOfDay';
 import startOfDay from 'date-fns/startOfDay';
 import { toast } from 'react-toastify';
-import BankHeader from 'components/Header/BankHeader';
+import Header from 'components/Header/index';
 import Wrapper from 'components/Wrapper';
 import Container from 'components/Container';
 import Loader from 'components/Loader';
@@ -57,11 +57,8 @@ export default class PartnerReports extends Component {
   constructor(props) {
     super();
     this.state = {
-      token: localStorage.getItem('bankLogged'),
-      bankName: localStorage.getItem('bankName'),
-      bankLogo: localStorage.getItem('bankLogo'),
+      token: localStorage.getItem('logged'),
       cashiers:[],
-      admin: localStorage.getItem('admin'),
       bank_id: localStorage.getItem('bankId'),
       selectedCashierDetails: {},
       datearray:[],
@@ -149,20 +146,10 @@ export default class PartnerReports extends Component {
   };
 
   getBranches = async() => {
-    let api = '';
-    if(this.state.type === 'branch'){
-      api = 'getBranches';
-    } else {
-      api = 'bank/listPartners';
-    }
     try {
-      const res = await axios.post(`${API_URL}/${api}`, { token: this.state.token, bank_id: this.state.bank_id });
+      const res = await axios.post(`${API_URL}/getBanks`, { token: this.state.token, bank_id: this.state.bank_id });
       if (res.status == 200) {
-        if(this.state.type === 'branch'){
-          return ({branches:res.data.branches,loading:false});
-        } else {
-          return ({branches:res.data.partners,loading:false});
-        }
+          return ({branches:res.data.banks,loading:false});
       }
     } catch(err){
       console.log(err);
@@ -171,8 +158,7 @@ export default class PartnerReports extends Component {
 
   fetchMerchantList = async () => {
     try {
-      const res = await axios.post(`${API_URL}/bank/listMerchants`, {
-        bank_id: this.state.bank_id,
+      const res = await axios.post(`${API_URL}/infra/listMerchants`, {
         token: this.state.token,
       });
       if (res.status === 200) {
@@ -218,14 +204,8 @@ export default class PartnerReports extends Component {
   };
 
   getBranchDailyReport = async(after,before,branch) => {
-    let api = '';
-    if(this.state.type === 'branch'){
-      api = 'bank/getPartnerBranchDailyReport';
-    } else {
-      api = 'bank/getPartnerDailyReport';
-    }
     try{
-      const res = await axios.post(`${API_URL}/${api}`, {
+      const res = await axios.post(`${API_URL}/infra/getBankDailyReport`, {
         token: this.state.token,
         partner_id: branch._id,
         branch_id: branch._id,
@@ -339,6 +319,7 @@ export default class PartnerReports extends Component {
     ];
     var isoformat = date;
 
+
     var readable = new Date(isoformat);
     var m = readable.getMonth(); // returns 6
     var d = readable.getDate(); // returns 15
@@ -356,7 +337,7 @@ export default class PartnerReports extends Component {
 
   checkStatsbydate = async (id,date) => {
     try {
-      const res = await axios.post(`${API_URL}/bank/getBankMerchantStatsBydate`,{
+      const res = await axios.post(`${API_URL}/infra/getMerchantStatsBydate`,{
         token: this.state.token, 
         merchant_id:id,
         date:date,
@@ -543,6 +524,7 @@ export default class PartnerReports extends Component {
 }
 
   getMerchantData = async() => {
+    console.log('wfwf');
     this.setState(
       {
         loading:true,
@@ -675,7 +657,7 @@ export default class PartnerReports extends Component {
           <title>Reports | AGENCY | E-WALLET</title>
         </Helmet>
        
-          <BankHeader />
+          <Header activ={'reports'} />
         <Container verticalMargin>
 
         <Row>
@@ -685,17 +667,8 @@ export default class PartnerReports extends Component {
                         onClick={()=>{this.toggleType('branch')}}
                         style={{marginLeft:'5px'}}
                       >
-                      Agency
+                      Bank
                     </Button>
-                  </Col>
-                  <Col cW="8%">
-                      <Button
-                        className={this.state.type === 'partner' ? 'active' : ''}
-                        onClick={()=>{this.toggleType('partner')}}
-                        style={{marginLeft:'5px'}}
-                      >
-                        Partner
-                      </Button>
                   </Col>
                   <Col cW="8%">
                     <Button
@@ -706,7 +679,7 @@ export default class PartnerReports extends Component {
                         Merchant
                       </Button>
                   </Col>
-                  <Col cW='76%'></Col>
+                  <Col cW='84%'></Col>
                 </Row>
             {this.state.type === 'merchant' ? (
                   <ActionBar
@@ -902,17 +875,9 @@ export default class PartnerReports extends Component {
             </ActionBar>
             )}
            <div ref={this.componentRef}>
-            <Card marginBottom="20px" buttonMarginTop="5px" smallValue style={{height:'90px'}}>
-              <Row>
-                <Col>
-                  <h4 style={{color:"green",marginBottom:"20px",textAlign:'center'}}><b>Bank Name : </b>{this.state.bankName} </h4> 
-                </Col>
-              </Row>
-      
-          </Card>
           {this.state.empty === false ? (
             <div>
-              {this.state.type === 'branch' || this.state.type === 'partner'  ? (
+              {this.state.type === 'branch' ? (
                 <div>
                   <div className="clr">
                   <Row>
@@ -1036,7 +1001,7 @@ export default class PartnerReports extends Component {
                   >
                     <thead>
                           <tr>
-                            <th>{this.state.type === 'branch' ? 'Agency' : 'Partner'}</th>
+                            <th>Bank</th>
                             <th>Opening Balance</th>
                             <th>Cash Received</th>
                             <th>Cash Paid</th>

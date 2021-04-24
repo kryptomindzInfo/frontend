@@ -41,6 +41,7 @@ import {
   CONTRACT_URL,
   SERVER_URL,
   STATIC_URL,
+  CURRENCY,
 } from '../App/constants';
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -78,7 +79,7 @@ export default class BankPage extends Component {
       popup: false,
       username: '',
       editPopup: false,
-
+      bankstats: [],
       edit: false,
       user_id: token,
       otpId: '',
@@ -91,6 +92,17 @@ export default class BankPage extends Component {
       data: [],
       filteredData: [],
       banksforfilter: [],
+      openingBalance: 0,
+      totalBranches: 0,
+      totalPartners: 0,
+      cashReceived: 0,
+      cashPaid: 0,
+      feeGenerated: 0,
+      commissionGenerated: 0,
+      cashInHand: 0,
+      closingBalance: 0,
+      invoicePaid: 0,
+      amountPaid: 0,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -216,6 +228,7 @@ export default class BankPage extends Component {
     localStorage.removeItem('name');
     this.setState({ redirect: true });
   };
+
 
   generateOTP = () => {
     this.setState({ resend: false, timer: 30 });
@@ -474,7 +487,94 @@ export default class BankPage extends Component {
 
   getBanks = async () => {
     const res = await postRequest("getBanks", token, {})
-    this.setState({ loading: false, banks: res.data.data.banks, banksforfilter: res.data.data.banks });
+    return({ loading: false, banks: res.data.data.banks, banksforfilter: res.data.data.banks });
+  };
+
+  getBankDashStats = async(id) => {
+    try {
+      const res = await axios.post(`${API_URL}/infra/getBankDashStats`, { token,bank_id:id });
+      if (res.status == 200) {
+        return (res.data);
+      }
+    } catch(err){
+      console.log(err);
+    }
+  }
+
+  getBankStats = async(plist) => {
+    const stats = plist.map(async (bank) => {
+      const partnerstats = await this.getBankDashStats(bank._id);
+      return (partnerstats);
+    });
+    const result= await Promise.all(stats);
+    return({res:result,loading:false});
+  }
+
+  getData = async () => {
+    this.setState({
+      loading: true,
+    });
+    const banks = await this.getBanks();
+    const bankstats = await this.getBankStats(banks.banks);
+    console.log(bankstats);
+    this.setState({
+      banks: banks.banks,
+      loading: bankstats.loading,
+      bankstats: bankstats.res,
+      openingBalance:  bankstats.res.reduce((a, b) => a + b.openingBalance, 0).toFixed(2),
+      cashReceived: bankstats.res.reduce((a, b) => a + b.cashReceived, 0).toFixed(2),
+      cashPaid: bankstats.res.reduce((a, b) => a + b.cashPaid, 0).toFixed(2),
+      feeGenerated: bankstats.res.reduce((a, b) => a + b.feeGenerated, 0).toFixed(2),
+      commissionGenerated: bankstats.res.reduce((a, b) => a + b.commissionGenerated, 0).toFixed(2),
+      cashInHand: bankstats.res.reduce((a, b) => a + b.cashInHand, 0).toFixed(2),
+      closingBalance: bankstats.res.reduce((a, b) => a + b.closingBalance, 0).toFixed(2),
+      invoicePaid: bankstats.res.reduce((a, b) => a + b.invoicePaid, 0).toFixed(2),
+      amountPaid: bankstats.res.reduce((a, b) => a + b.amountPaid, 0).toFixed(2),
+      totalPartners: banks.banks.reduce((a, b) => a + b.total_partners, 0),
+    })
+  }
+
+  loginRequest = async (username,bankid) => {
+    this.setState({
+      loading: true,
+    }, async () => {
+      const res = await await axios.post(`${API_URL}/infra/bankAccess`, {
+        token,
+        username:username,
+        bank_id:bankid,
+      });
+      localStorage.setItem('bankLogged', res.data.token);
+      localStorage.setItem('bankName', res.data.name);
+      localStorage.setItem('bankUserName', res.data.username);
+      localStorage.setItem('bankContract', res.data.contract);
+      localStorage.setItem('bankLogo', res.data.logo);
+      localStorage.setItem('bankId', res.data.id);
+      localStorage.setItem('bankPhone', res.data.mobile);
+      localStorage.setItem('admin', res.data.admin);
+      // console.log(res);
+      if (res.data.status == 0 && res.data.message === "Incorrect username or password") {
+        toast.error(res.data.message);
+      }
+      else if (!res.data.initial_setup) {
+        window.location.href = '/bank/setup';
+      }
+      else if (
+        !res.data.status ||
+        res.data.status == 0 ||
+        res.data.status == ''
+      ) {
+        window.location.href = '/bank/activate';
+      } else {
+        window.open("/bank/dashboard", "_blank")
+        // window.location.href = '/bank/dashboard';
+      }
+
+
+    });
+    this.setState({
+      loading: false,
+    })
+
   };
 
   async componentDidMount() {
@@ -495,7 +595,7 @@ export default class BankPage extends Component {
         }
       }
     }
-    this.getBanks();
+    this.getData();
   };
 
   render() {
@@ -530,6 +630,138 @@ export default class BankPage extends Component {
         <Header active="bank" />
         <Container verticalMargin>
           <Main fullWidth>
+          <Row>
+              <Col>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  textAlign="center"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Number of Partners</h4>
+                  <div className="cardValue">{this.state.totalPartners}</div>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Opening Balance</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.openingBalance}</div>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash Received</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.cashReceived}</div>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash Paid</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.cashPaid}</div>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash In Hand</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.cashInHand}</div>
+                </Card>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Invoices Paid</h4>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Number</h5>
+                      <div className="cardValue">{this.state.invoicePaid}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.amountPaid}</div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+              <Col>
+              <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  bigPadding
+                  textAlign="center"
+                  smallValue
+                >
+                  <h4>Revenue Collected</h4>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Fee</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.feeGenerated}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Commission</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.commissionGenerated}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Total</h5>
+                      <div className="cardValue">{CURRENCY}: {(parseFloat(this.state.commissionGenerated,10)+ parseFloat(this.state.feeGenerated,10)).toFixed(2)}</div>
+                    </Col>
+                  </Row>
+                  
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Closing Balance</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.closingBalance}</div>
+                </Card>
+              </Col>
+            </Row>
+            
             <ActionBar
               marginBottom="33px"
               inputWidth="calc(100% - 241px)"
@@ -580,7 +812,7 @@ export default class BankPage extends Component {
                       <th>
                         <FormattedMessage {...messages.th1} />
                       </th>
-                      <th>
+                      {/* <th>
                         <FormattedMessage {...messages.th2} />
                       </th>
                       <th>
@@ -588,15 +820,22 @@ export default class BankPage extends Component {
                       </th>
                       <th>
                         <FormattedMessage {...messages.th4} />
-                      </th>
-                      <th>
-                        <FormattedMessage {...messages.th5} />
-                      </th>
+                      </th> */}
+                      <th>Opening Balance</th>
+                      <th>Cash Received</th>
+                      <th>Cash Paid</th>
+                      <th>Invoice Paid</th>
+                      <th>Amount of Invoice Paid</th>
+                      <th>Fee Collected</th>
+                      <th>Commission Collected</th>
+                      <th>Revenue Collected</th>
+                      <th>Cash In Hand</th>
+                      <th>Closing Balance</th>
                     </tr>
                   </thead>
                   <tbody>
                     {this.state.banks && this.state.banks.length > 0
-                      ? this.state.banks.map(function (b) {
+                      ? this.state.banks.map(function (b,i) {
                         return (
                           <tr key={b._id}>
                             <td>
@@ -607,15 +846,30 @@ export default class BankPage extends Component {
                             </td>
                             {/* <td><img src={b.logo} /></td> */}
                             <td>{b.name}</td>
-                            <td className="tac">{b.total_branches}</td>
+                            {/* <td className="tac">{b.total_branches}</td>
                             <td className="tac">{b.total_partners}</td>
-                            <td className="tac">{b.total_cashiers}</td>
+                            <td className="tac">{b.total_cashiers}</td> */}
+                            <td className="tac">{ep.state.bankstats[i].openingBalance.toFixed(2)}</td>
+                            <td className="tac">{ep.state.bankstats[i].cashReceived.toFixed(2)}</td>
+                            <td className="tac">{ep.state.bankstats[i].cashPaid.toFixed(2)}</td>
+                            <td className="tac">{ep.state.bankstats[i].invoicePaid}</td>
+                            <td className="tac">{ep.state.bankstats[i].amountPaid}</td>
+                            <td className="tac">{ep.state.bankstats[i].feeGenerated.toFixed(2)}</td>
+                            <td className="tac">{ep.state.bankstats[i].commissionGenerated.toFixed(2)}</td>
+                            <td className="tac">{(ep.state.bankstats[i].feeGenerated+ep.state.bankstats[i].commissionGenerated).toFixed(2)}</td>
+                            <td className="tac">{ep.state.bankstats[i].cashInHand.toFixed(2)}</td>
                             <td className="tac bold">
-                              {b.total_trans}
+                              {ep.state.bankstats[i].closingBalance.toFixed(2)}
                               {b.status != 0 ? (
                                 <span className="absoluteRight primary popMenuTrigger">
                                   <i className="material-icons ">more_vert</i>
                                   <div className="popMenu">
+                                    <span
+                                        onClick={() => ep.loginRequest(`infra${b.name}admin`,b._id)}
+                                      >
+                                        Access
+                                    </span>
+                                  
                                     {perms == 'all' || perms.edit_bank ? (
                                       <span
                                         onClick={() => ep.showEditPopup(b)}

@@ -33,6 +33,8 @@ class BankOperationalWallet extends Component {
     this.state = {
       bank: '',
       popup: false,
+      token: localStorage.getItem('bankLogged'),
+      admin: localStorage.getItem('admin'),
       from: '',
       to: '',
       amount: '',
@@ -162,11 +164,17 @@ class BankOperationalWallet extends Component {
   };
 
   getBalance = () => {
+    let user = '';
+    if(this.state.admin === false || this.state.admin === 'false' ){
+      user='bank'
+    }else{
+      user='bankuser'
+    }
     axios
-    .post(`${API_URL}/bank/getWalletBalance?page=operational`,
+    .post(`${API_URL}/${user}/getWalletBalance?page=operational&wallet_id=BAO@${bname}@${bname}`,
     { page: 'operational',
       wallet_id: `BAO@${bname}@${bname}`,
-      token
+      token:this.state.token,
     })
       .then(res => {
         if (res.status == 200) {

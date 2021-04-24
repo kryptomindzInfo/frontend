@@ -83,7 +83,7 @@ class BranchMasterWallet extends Component {
           } else {
             this.setState(
               {
-                balance: res.data.balance,
+                balance: res.data.balance ? res.data.balance.toFixed(2) : 0,
               },
               () => {
                 var dis = this;
@@ -113,7 +113,7 @@ class BranchMasterWallet extends Component {
           } else {
             this.setState(
               {
-                balance: res.data.balance,
+                balance: res.data.balance ? res.data.balance.toFixed(2) : 0,
               },
               () => {
                 var dis = this;
@@ -165,7 +165,7 @@ class BranchMasterWallet extends Component {
         </h5>
 
         <div className="cardValue">
-          {CURRENCY} {this.state.balance.toFixed(2)}
+          {CURRENCY} {this.state.balance}
         </div>
         {this.state.admin === false || this.state.admin === 'false' ? (
         <Row>

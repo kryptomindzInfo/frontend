@@ -97,6 +97,7 @@ export default class BranchLogin extends Component {
           localStorage.setItem('bankId', res.data.bank_id);
           localStorage.setItem('branchEmail', res.data.email);
           localStorage.setItem('branchMobile', res.data.mobile);
+          localStorage.setItem('admin', res.data.admin);
           if (res.data.status == 0 && res.data.message === "Incorrect username or password") {
             throw res.data.message;
           }

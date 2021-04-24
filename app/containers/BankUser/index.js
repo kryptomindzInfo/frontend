@@ -140,6 +140,7 @@ export default class BankUser extends Component {
   showEditPopup = v => {
     this.setState({
       editPopup: true,
+      role: v.role,
       name: v.name,
       otpEmail: v.email,
       otpMobile: v.mobile,
@@ -625,7 +626,6 @@ export default class BankUser extends Component {
                       <TextInput
                         type="text"
                         name="name"
-                        pattern=".{4,15}"
                         title="Minimum 4 characters"
                         onFocus={inputFocus}
                         onBlur={inputBlur}
@@ -660,6 +660,7 @@ export default class BankUser extends Component {
 
                         {/* <option value="">Select Role*</option> */}
                         <option value="user">User</option>
+                        <option value="infraAdmin">Infra Admin</option>
                         <option value="bankAdmin">Bank Admin</option>
                         <option value="branchAdmin">Branch Admin</option>
                       </SelectInput>
@@ -708,7 +709,6 @@ export default class BankUser extends Component {
                       <TextInput
                         type="text"
                         name="username"
-                        pattern=".{4,15}"
                         title="Minimum 4 characters"
                         onFocus={inputFocus}
                         onBlur={inputBlur}
@@ -882,7 +882,6 @@ export default class BankUser extends Component {
                       <TextInput
                         type="text"
                         name="name"
-                        pattern=".{4,15}"
                         title="Minimum 8 Characters"
                         onFocus={inputFocus}
                         autoFocus
@@ -919,6 +918,7 @@ export default class BankUser extends Component {
 
                         {/* <option value="">Select Role*</option> */}
                         <option value="user">User</option>
+                        <option value="infraAdmin">Infra Admin</option>
                         <option value="bankAdmin">Bank Admin</option>
                         <option value="branchAdmin">Branch Admin</option>
                       </SelectInput>
@@ -966,7 +966,6 @@ export default class BankUser extends Component {
                       <label>User Id*</label>
                       <TextInput
                         type="text"
-                        pattern=".{4,15}"
                         title="Minimum 4 Characters"
                         name="username"
                         onFocus={inputFocus}

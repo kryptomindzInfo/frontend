@@ -15,12 +15,21 @@ class EscrowWallet extends Component {
 constructor() {
     super();
     this.state = {
-      balance: 0
+      balance: 0,
+      token: localStorage.getItem('bankLogged'),
+      admin: localStorage.getItem('admin'),
+      bname: localStorage.getItem("bankName"),
     };
   }
   getBalance = () => {
+    let user = '';
+    if(this.state.admin === false || this.state.admin === 'false' ){
+      user='bank'
+    }else{
+      user='bankuser'
+    }
     axios
-      .post(`${API_URL}/bank/getWalletBalance?page=escrow`,
+      .post(`${API_URL}/${user}/getWalletBalance?page=escrow&wallet_id=BAM@${this.state.bname}@${this.state.bname}`,
         { 
           page: 'escrow',
           token,

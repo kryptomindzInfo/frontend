@@ -89,7 +89,7 @@ export default class HomePage extends Component {
       localStorage.setItem('logged', res.data.data.token);
       localStorage.setItem('name', res.data.data.name);
       localStorage.setItem('isAdmin', res.data.data.isAdmin);
-      window.location.href = '/dashboard';
+      window.location.href = '/banks';
     }
     this.setState({
       loginLoading: false,

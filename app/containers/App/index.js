@@ -42,6 +42,7 @@ import Documents from 'containers/Documents/Loadable';
 import OperationalHistory from 'containers/OperationalHistory/Loadable';
 import MasterHistory from 'containers/MasterHistory/Loadable';
 import InfraProfile from 'containers/InfraProfile/Loadable';
+import InfraReports from 'containers/InfraReports/Loadable';
 import InfraCurrency from 'containers/InfraCurrency/Loadable';
 import InfraCountry from 'containers/InfraCountry/InfraCountry';
 import History from 'containers/History/Loadable';
@@ -79,6 +80,7 @@ import FeeList from 'containers/FeeList';
 import InterBankFeeList from 'containers/InterBankFeeList';
 import PartnerReports from 'containers/PartnerReports';
 import BankReports from 'containers/BankReports';
+import InfraMerchant from 'containers/InfraMerchantList/InfraMerchantList';
 import MerchantReports from 'containers/MerchantReports';
 import { ThemeProvider } from 'styled-components';
 import AllRoutes from './AllRoutes';
@@ -139,7 +141,9 @@ export default function App(props) {
 
           <InfraRoute exact path="/dashboard" component={DashboardPage} />
           <InfraRoute exact path="/banks" component={BankPage} />
+          <InfraRoute exact path="/reports" component={InfraReports} />
           <InfraRoute exact path="/profile" component={InfraProfile} />
+          <InfraRoute exact path="/merchantlist" component={InfraMerchant} />
           <InfraRoute exact path="/currency" component={InfraCurrency} />
           <InfraRoute exact path="/country" component={InfraCountry} />
           <InfraRoute exact path="/user" component={UserPage} />
