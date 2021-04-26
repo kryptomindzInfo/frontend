@@ -147,8 +147,8 @@ function BankPartnerListPage(props) {
       const res = await axios.post(`${API_URL}/bank/generateOTP`,
         {
           token: token,
-          username: '',
-          page: 'addPartner',
+          username:  obj.mobile,
+          page: 'editPartner',
           name: obj.name,
           email: obj.email,
           mobile: obj.mobile,

@@ -29,6 +29,7 @@ function CreatePartnerPopup(props) {
           address: props.partner.address || '',
           state: props.partner.state || '',
           zip: props.partner.zip || '',
+          verify_user_access: props.partner.verify_user_access || false,
           country: props.partner.country || '',
           ccode: props.partner.code || '',
           mobile: props.partner.mobile || '',
@@ -37,6 +38,7 @@ function CreatePartnerPopup(props) {
           contract: props.partner.contract || '',
         }}
         onSubmit={async values => {
+          values.partner_id= props.partner._id;
           props.submit(values);
         }}
         validationSchema={Yup.object().shape({
@@ -418,11 +420,11 @@ function CreatePartnerPopup(props) {
                             <Col cW="4%">
                                 <TextInput
                                   type="checkbox"
-                                  // value={values.read_only}
-                                  // checked={values.read_only}
-                                  name="read_only"
+                                  name="verify_user_access"
+                                  value={values.verify_user_access}
+                                  checked={values.verify_user_access}
                                   style={{ margin: 'revert', height:"20px", width:"20px" }}
-                                  // onChange={handleChange}
+                                  onChange={handleChange}
                                 />
                             </Col>
                             <Col cW="1%"></Col>
