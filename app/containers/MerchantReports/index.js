@@ -48,6 +48,14 @@ const ReportPage = (props) => {
   const [amountPaidMC, setAmountPaidMC] = useState();
   const [amountPaidPC, setAmountPaidPC] = useState();
   const [amountPaidUS, setAmountPaidUS] = useState();
+  const [feeGeneratedByUS, setFeeGeneratedByUS] = React.useState(0);
+  const [commissionGeneratedByUS, setCommissionGeneratedByUS] = React.useState(0);
+  const [feeGeneratedByBC, setFeeGeneratedByBC] = React.useState(0);
+  const [commissionGeneratedByBC, setCommissionGeneratedByBC] = React.useState(0);
+  const [feeGeneratedByPC, setFeeGeneratedByPC] = React.useState(0);
+  const [commissionGeneratedByPC, setCommissionGeneratedByPC] = React.useState(0);
+  const [feeGeneratedByMC, setFeeGeneratedByMC] = React.useState(0);
+  const [commissionGeneratedByMC, setCommissionGeneratedByMC] = React.useState(0);
   const [billGenerated, setBillGenerated] = useState();
   const [billPaid, setBillPaid] = useState();
   const [billPaidBC, setBillPaidBC] = useState();
@@ -116,7 +124,6 @@ const ReportPage = (props) => {
         const tomorrow = new Date(date)
         tomorrow.setDate(tomorrow.getDate() + 1)
         const data = await getStatsBydate(typelist,tomorrow);
-        console.log(data.res);
         return ({
             date:date,
             data:data.res,
@@ -132,6 +139,14 @@ const ReportPage = (props) => {
             bill_paid_US: data.res.reduce((a, b) => a + b.bill_paid_by_US, 0),
             amount_paid_MC: data.res.reduce((a, b) => a + b.amount_paid_by_MC, 0),
             bill_paid_MC: data.res.reduce((a, b) => a + b.bill_paid_by_MC, 0),
+            fee_generated_by_US: data.res.reduce((a, b) => a + b.fee_generated_by_US, 0),
+            commission_generated_by_US: data.res.reduce((a, b) => a + b.commission_generated_by_US, 0),
+            fee_generated_by_BC: data.res.reduce((a, b) => a + b.fee_generated_by_BC, 0),
+            commission_generated_by_BC: data.res.reduce((a, b) => a + b.commission_generated_by_BC, 0),
+            fee_generated_by_PC: data.res.reduce((a, b) => a + b.fee_generated_by_PC, 0),
+            commission_generated_by_PC: data.res.reduce((a, b) => a + b.commission_generated_by_PC, 0),
+            fee_generated_by_MC: data.res.reduce((a, b) => a + b.fee_generated_by_US, 0),
+            commission_generated_by_MC: data.res.reduce((a, b) => a + b.commission_generated_by_MC, 0),
         });
     })
     const result= await Promise.all(statlistbydate);
@@ -141,7 +156,6 @@ const ReportPage = (props) => {
   const getTypeStatsByperiod = async(periodlist,typelist) => {
     const statlistbyperiod = periodlist.map(async (period) => {
         const data = await getStatsByPeriod(typelist,period);
-        // console.log(data.res);
         return ({
             period:period.period_name,
             data:data.res,
@@ -157,6 +171,14 @@ const ReportPage = (props) => {
             bill_paid_US: data.res.reduce((a, b) => a + b.bill_paid_by_US, 0),
             amount_paid_MC: data.res.reduce((a, b) => a + b.amount_paid_by_MC, 0),
             bill_paid_MC: data.res.reduce((a, b) => a + b.bill_paid_by_MC, 0),
+            fee_generated_by_US: data.res.reduce((a, b) => a + b.fee_generated_by_US, 0),
+            commission_generated_by_US: data.res.reduce((a, b) => a + b.commission_generated_by_US, 0),
+            fee_generated_by_BC: data.res.reduce((a, b) => a + b.fee_generated_by_BC, 0),
+            commission_generated_by_BC: data.res.reduce((a, b) => a + b.commission_generated_by_BC, 0),
+            fee_generated_by_PC: data.res.reduce((a, b) => a + b.fee_generated_by_PC, 0),
+            commission_generated_by_PC: data.res.reduce((a, b) => a + b.commission_generated_by_PC, 0),
+            fee_generated_by_MC: data.res.reduce((a, b) => a + b.fee_generated_by_US, 0),
+            commission_generated_by_MC: data.res.reduce((a, b) => a + b.commission_generated_by_MC, 0),
         });
     })
     const result= await Promise.all(statlistbyperiod);
@@ -164,6 +186,7 @@ const ReportPage = (props) => {
   };
 
   const getCardValues = (list) => {
+    console.log(list);
       return ({
         amount_generated: list.reduce((a, b) => a + b.amount_generated, 0),
         bill_generated: list.reduce((a, b) => a + b.bill_generated, 0),
@@ -177,13 +200,20 @@ const ReportPage = (props) => {
         bill_paid_US: list.reduce((a, b) => a + b.bill_paid_US, 0),
         amount_paid_MC: list.reduce((a, b) => a + b.amount_paid_MC, 0),
         bill_paid_MC: list.reduce((a, b) => a + b.bill_paid_MC, 0),
+        fee_generated_by_US: list.reduce((a, b) => a + b.fee_generated_by_US, 0),
+        commission_generated_by_US: list.reduce((a, b) => a + b.commission_generated_by_US, 0),
+        fee_generated_by_BC: list.reduce((a, b) => a + b.fee_generated_by_BC, 0),
+        commission_generated_by_BC: list.reduce((a, b) => a + b.commission_generated_by_BC, 0),
+        fee_generated_by_PC: list.reduce((a, b) => a + b.fee_generated_by_PC, 0),
+        commission_generated_by_PC: list.reduce((a, b) => a + b.commission_generated_by_PC, 0),
+        fee_generated_by_MC: list.reduce((a, b) => a + b.fee_generated_by_US, 0),
+        commission_generated_by_MC: list.reduce((a, b) => a + b.commission_generated_by_MC, 0),
       });
   }
 
   const getReportByPeriod = async() => {
     setLoading(true);
     const periodlist = await periodList.slice(periodStart,periodEnd+1);
-    console.log(periodlist);
     const zonelist = await fetchTypeList(merchantid,'zone');
     setZoneList(zonelist.list);
     const subzonelist = await fetchTypeList(merchantid,'subzone');
@@ -199,6 +229,7 @@ const ReportPage = (props) => {
     setTypeList(typelist.list);
     const typestats = await getTypeStatsByperiod(periodlist,typelist.list);
     const cardValues = await getCardValues(typestats.res);
+    console.log(cardValues);
     setAmountGenerated(cardValues.amount_generated);
     setAmountPaid(cardValues.amount_paid);
     setBillGenerated(cardValues.bill_generated);
@@ -211,6 +242,14 @@ const ReportPage = (props) => {
     setAmountPaidPC(cardValues.amount_paid_PC);
     setAmountPaidMC(cardValues.amount_paid_MC);
     setAmountPaidUS(cardValues.amount_paid_US);
+    setFeeGeneratedByUS(cardValues.fee_generated_by_US);
+    setCommissionGeneratedByUS(cardValues.commission_generated_by_US);
+    setFeeGeneratedByBC(cardValues.fee_generated_by_BC);
+    setCommissionGeneratedByBC(cardValues.commission_generated_by_BC);
+    setFeeGeneratedByPC(cardValues.fee_generated_by_PC);
+    setCommissionGeneratedByPC(cardValues.commission_generated_by_PC);
+    setFeeGeneratedByMC(cardValues.fee_generated_by_MC);
+    setCommissionGeneratedByMC(cardValues.commission_generated_by_MC);
     setBillPending(cardValues.bill_generated-cardValues.bill_paid);
     setAmountPending(cardValues.amount_generated-cardValues.amount_paid);
     setTypeStats(typestats.res);
@@ -236,7 +275,6 @@ const ReportPage = (props) => {
   }
   setTypeList(typelist.list);
   const typestats = await getTypeStatsBydate(dateslist,typelist.list);
-  console.log(typestats);
   const cardValues = await getCardValues(typestats.res);
   setAmountGenerated(cardValues.amount_generated);
   setAmountPaid(cardValues.amount_paid);
@@ -250,6 +288,14 @@ const ReportPage = (props) => {
   setBillPaidMC(cardValues.bill_paid_MC);
   setBillPaidPC(cardValues.bill_paid_PC);
   setBillPaidUS(cardValues.bill_paid_US);
+  setFeeGeneratedByUS(cardValues.fee_generated_by_US);
+    setCommissionGeneratedByUS(cardValues.commission_generated_by_US);
+    setFeeGeneratedByBC(cardValues.fee_generated_by_BC);
+    setCommissionGeneratedByBC(cardValues.commission_generated_by_BC);
+    setFeeGeneratedByPC(cardValues.fee_generated_by_PC);
+    setCommissionGeneratedByPC(cardValues.commission_generated_by_PC);
+    setFeeGeneratedByMC(cardValues.fee_generated_by_MC);
+    setCommissionGeneratedByMC(cardValues.commission_generated_by_MC);
   setTypeStats(typestats.res);
   setLoading(typestats.loading);
 };
@@ -289,7 +335,18 @@ const getData = (i) => {
               <Row>No. {date.bill_generated-date.bill_paid}</Row>
               <Row>XOF {date.amount_generated-date.amount_paid}</Row>
             </td>
-            <td><Row>XOF 0</Row></td>
+            <td>
+            {
+              date.fee_generated_by_BC +
+              date.commission_generated_by_BC +
+              date.fee_generated_by_PC +
+              date.commission_generated_by_PC +
+              date.fee_generated_by_MC +
+              date.commission_generated_by_MC +
+              date.fee_generated_by_US +
+              date.commission_generated_by_US
+            }
+            </td>
           </tr>
         );
     });
@@ -609,8 +666,7 @@ const toggleType = (type) => {
               <Col  cW='30%'>
               </Col>
             </Row>
-            {filter === 'period' ? (
-            <div>
+           
               <Row>
                 <Col>
                   <DashCards title='Invoice Created' no={billGenerated} amount={amountGenerated}/>
@@ -627,16 +683,16 @@ const toggleType = (type) => {
               </Row>
               <Row>
                 <Col>
-                  <DashCards title='Invoice Paid By Bank' no={billPaidBC} amount={amountPaidBC} row={3}/>
+                  <DashCards title='Invoice Paid By Bank' no={billPaidBC} amount={amountPaidBC} row={3} fee={feeGeneratedByBC} commission={commissionGeneratedByBC}/>
                 </Col>
                 <Col>
-                <DashCards title='Invoice Paid By Partner' no={billPaidPC} amount={amountPaidPC} row={3}/>
+                <DashCards title='Invoice Paid By Partner' no={billPaidPC} amount={amountPaidPC} row={3} fee={feeGeneratedByPC} commission={commissionGeneratedByPC}/>
                 </Col>
                 <Col>
-                  <DashCards title='Invoice Paid By Merchant' no={billPaidMC} amount={amountPaidMC} row={3}/>
+                  <DashCards title='Invoice Paid By Merchant' no={billPaidMC} amount={amountPaidMC} row={3} fee={feeGeneratedByMC} commission={commissionGeneratedByMC}/>
                 </Col>
                 <Col>
-                  <DashCards title='Invoice Paid By User' no={billPaidUS} amount={amountPaidUS} row={3}/>
+                  <DashCards title='Invoice Paid By User' no={billPaidUS} amount={amountPaidUS} row={3} fee={feeGeneratedByUS} commission={commissionGeneratedByUS}/>
                 </Col>      
               </Row>
               <Row>
@@ -649,7 +705,14 @@ const toggleType = (type) => {
                                   Fee:
                               </Row>
                               <Row>
-                                  <span className="cardValue" > 0</span>
+                                  <span className="cardValue">
+                                    {
+                                      feeGeneratedByBC +
+                                      feeGeneratedByPC+
+                                      feeGeneratedByMC +
+                                      feeGeneratedByUS
+                                    }
+                                  </span>
                               </Row>
                           </Col>
                           <Col >
@@ -657,7 +720,14 @@ const toggleType = (type) => {
                                   Commission:
                               </Row>
                               <Row>
-                                  <span className="cardValue">0</span>
+                                  <span className="cardValue">
+                                    {
+                                      commissionGeneratedByBC +
+                                      commissionGeneratedByPC+
+                                      commissionGeneratedByMC +
+                                      commissionGeneratedByUS
+                                    }
+                                  </span>
                               </Row>
                           </Col>
                           <Col >
@@ -665,84 +735,26 @@ const toggleType = (type) => {
                                   Total:
                               </Row>
                               <Row>
-                                  <span className="cardValue">0</span>
+                                  <span className="cardValue">
+                                    {
+                                      feeGeneratedByBC +
+                                      feeGeneratedByPC+
+                                      feeGeneratedByMC +
+                                      feeGeneratedByUS +
+                                      commissionGeneratedByBC +
+                                      commissionGeneratedByPC+
+                                      commissionGeneratedByMC +
+                                      commissionGeneratedByUS
+                                    }
+                                  </span>
                               </Row>
                           </Col> 
                       </Row>
+                  
                       </Card>
                   </Col>
               </Row>
 
-            </div>
-            
-            ): (
-              <div>
-              <Row>
-                <Col>
-                  <DashCards title='Invoice Created' no={billGenerated} amount={amountGenerated}/>
-                </Col>
-                <Col>
-                  <DashCards title='Invoice Uploaded' no={0} amount={0}/>
-                </Col>
-                <Col>
-                  <DashCards title='Invoice Paid' no={billPaid} amount={amountPaid}/>
-                </Col>
-                <Col>
-                  <DashCards title='Invoice Pending' no={billGenerated-billPaid} amount={amountGenerated-amountPaid}/>
-                </Col>        
-              </Row>
-              <Row>
-                <Col>
-                  <DashCards title='Invoice Paid By Bank' no={billPaidBC} amount={amountPaidBC} row={3}/>
-                </Col>
-                <Col>
-                <DashCards title='Invoice Paid By Partner' no={billPaidPC} amount={amountPaidPC} row={3}/>
-                </Col>
-                <Col>
-                  <DashCards title='Invoice Paid By Merchant' no={billPaidMC} amount={amountPaidMC} row={3}/>
-                </Col>
-                <Col>
-                  <DashCards title='Invoice Paid By User' no={billPaidUS} amount={amountPaidUS} row={3}/>
-                </Col>      
-              </Row>
-              <Row>
-                <Col>
-                <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
-                      <h4>Total Revenue</h4>
-                      <Row>
-                          <Col >
-                              <Row>
-                                  Fee:
-                              </Row>
-                              <Row>
-                                  <span className="cardValue" > 0</span>
-                              </Row>
-                          </Col>
-                          <Col >
-                              <Row>
-                                  Commission:
-                              </Row>
-                              <Row>
-                                  <span className="cardValue">0</span>
-                              </Row>
-                          </Col>
-                          <Col >
-                              <Row>
-                                  Total:
-                              </Row>
-                              <Row>
-                                  <span className="cardValue">0</span>
-                              </Row>
-                          </Col> 
-                      </Row>
-                      </Card>
-                  </Col>
-              </Row>
-
-            </div>
-            
-            )}
-          
             <Card bigPadding style={{width:'100%'}}>  
             {typeStats && typeStats.length > 0 ? (
               typeStats.map((filtertype,index)=>{
@@ -801,7 +813,18 @@ const toggleType = (type) => {
                           <Row>No. {typeStats[index].bill_generated-typeStats[index].bill_paid}</Row>
                           <Row>XOF {typeStats[index].amount_generated-typeStats[index].amount_paid}</Row>
                         </td>
-                        <td className="green"> XOF 0</td>
+                        <td className="green">
+                        {
+                          typeStats[index].fee_generated_by_BC +
+                          typeStats[index].commission_generated_by_BC +
+                          typeStats[index].fee_generated_by_PC +
+                          typeStats[index].commission_generated_by_PC +
+                          typeStats[index].fee_generated_by_MC +
+                          typeStats[index].commission_generated_by_MC +
+                          typeStats[index].fee_generated_by_US +
+                          typeStats[index].commission_generated_by_US
+                        }
+                        </td>
                       </tr>
     
                     </tbody>

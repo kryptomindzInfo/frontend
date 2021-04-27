@@ -9,6 +9,8 @@ const DashCards = (props) => {
   const amount = props.amount ? props.amount : 0;
   const title = props.title ? props.title: 0;
   const row = props.row ? props.row: 0;
+  const fee = props.fee ? props.fee: 0;
+  const commission = props.commission ? props.commission: 0;
   return (
     <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
         <h4>{title}</h4>
@@ -37,7 +39,7 @@ const DashCards = (props) => {
                      Fee:
                  </Row>
                  <Row>
-                     <span className="cardValue" > 0</span>
+                     <span className="cardValue" > {fee}</span>
                  </Row>
              </Col>
              <Col >
@@ -45,7 +47,7 @@ const DashCards = (props) => {
                      Commission:
                  </Row>
                  <Row>
-                     <span className="cardValue">0</span>
+                     <span className="cardValue">{commission}</span>
                  </Row>
              </Col>
              <Col >
@@ -53,7 +55,7 @@ const DashCards = (props) => {
                      Revenue:
                  </Row>
                  <Row>
-                     <span className="cardValue">0</span>
+                     <span className="cardValue">{(parseFloat(fee)+parseFloat(commission)).toFixed(2)}</span>
                  </Row>
              </Col> 
          </Row>

@@ -47,6 +47,14 @@ function BankMerchantList(props) {
   const [amountPaidByBC, setAmountPaidByBC] = React.useState(0);
   const [billPaidByUS, setBillPaidByUS] = React.useState(0);
   const [amountPaidByUS, setAmountPaidByUS] = React.useState(0);
+  const [feeGeneratedByUS, setFeeGeneratedByUS] = React.useState(0);
+  const [commissionGeneratedByUS, setCommissionGeneratedByUS] = React.useState(0);
+  const [feeGeneratedByBC, setFeeGeneratedByBC] = React.useState(0);
+  const [commissionGeneratedByBC, setCommissionGeneratedByBC] = React.useState(0);
+  const [feeGeneratedByPC, setFeeGeneratedByPC] = React.useState(0);
+  const [commissionGeneratedByPC, setCommissionGeneratedByPC] = React.useState(0);
+  const [feeGeneratedByMC, setFeeGeneratedByMC] = React.useState(0);
+  const [commissionGeneratedByMC, setCommissionGeneratedByMC] = React.useState(0);
   const [billPaid, setBillPaid] = React.useState(0);
   const [amountPaid, setAmountPaid] = React.useState(0);
   const [billPending, setBillPending] = React.useState(0);
@@ -160,6 +168,14 @@ function BankMerchantList(props) {
     setAmountPaidByBC(merchantstats.res.reduce((a, b) => a + b.amount_paid_by_BC, 0).toFixed(2));
     setBillPaidByUS(merchantstats.res.reduce((a, b) => a + b.bill_paid_by_US, 0));
     setAmountPaidByUS(merchantstats.res.reduce((a, b) => a + b.amount_paid_by_US, 0).toFixed(2));
+    setFeeGeneratedByUS(merchantstats.res.reduce((a, b) => a + b.fee_generated_by_US, 0).toFixed(2));
+    setCommissionGeneratedByUS(merchantstats.res.reduce((a, b) => a + b.commission_generated_by_US, 0).toFixed(2));
+    setFeeGeneratedByBC(merchantstats.res.reduce((a, b) => a + b.fee_generated_by_BC, 0).toFixed(2));
+    setCommissionGeneratedByBC(merchantstats.res.reduce((a, b) => a + b.commission_generated_by_BC, 0).toFixed(2));
+    setFeeGeneratedByPC(merchantstats.res.reduce((a, b) => a + b.fee_generated_by_PC, 0).toFixed(2));
+    setCommissionGeneratedByPC(merchantstats.res.reduce((a, b) => a + b.commission_generated_by_PC, 0).toFixed(2));
+    setFeeGeneratedByMC(merchantstats.res.reduce((a, b) => a + b.fee_generated_by_MC, 0).toFixed(2));
+    setCommissionGeneratedByMC(merchantstats.res.reduce((a, b) => a + b.commission_generated_by_MC, 0).toFixed(2));
     setBillPaid(merchantstats.res.reduce((a, b) => a + b.bill_paid, 0));
     setAmountPaid(merchantstats.res.reduce((a, b) => a + b.amount_paid, 0).toFixed(2));
     setBillCreated(merchantstats.res.reduce((a, b) => a + b.bills_created, 0));
@@ -220,7 +236,18 @@ function BankMerchantList(props) {
       </td>
      
       <td className="tac">{merchant.creator === 0 ? 'Bank' : 'Infra'}</td>
-      <td>0</td>
+      <td>
+        {
+          merchantStats[i].fee_generated_by_BC +
+          merchantStats[i].commission_generated_by_BC +
+          merchantStats[i].fee_generated_by_PC +
+          merchantStats[i].commission_generated_by_PC +
+          merchantStats[i].fee_generated_by_MC +
+          merchantStats[i].commission_generated_by_MC +
+          merchantStats[i].fee_generated_by_US +
+          merchantStats[i].commission_generated_by_US
+        }
+      </td>
       <td className="tac">
         <div
           style={{
@@ -324,16 +351,16 @@ function BankMerchantList(props) {
         </Row>
         <Row>
           <Col>
-            <DashCards title='Paid by bank' no={billPaidByBC} amount={amountPaidByBC} row={3}/>
+            <DashCards title='Paid by bank' no={billPaidByBC} amount={amountPaidByBC} fee={feeGeneratedByBC} commission={commissionGeneratedByBC} row={3}/>
           </Col>
           <Col>
-            <DashCards title='Paid by partner' no={billPaidByPC} amount={amountPaidByPC} row={3}/>
+            <DashCards title='Paid by partner' no={billPaidByPC} amount={amountPaidByPC} fee={feeGeneratedByPC} commission={commissionGeneratedByPC} row={3}/>
           </Col>
           <Col>
-            <DashCards title='Paid by merchant' no={billPaidByMC} amount={amountPaidByMC} row={3}/>
+            <DashCards title='Paid by merchant' no={billPaidByMC} amount={amountPaidByMC} fee={feeGeneratedByMC} commission={commissionGeneratedByMC} row={3}/>
           </Col>
           <Col>
-            <DashCards title='Paid by user' no={billPaidByUS} amount={amountPaidByUS} row={3}/>
+            <DashCards title='Paid by user' no={billPaidByUS} amount={amountPaidByUS} fee={feeGeneratedByUS} commission={commissionGeneratedByUS} row={3}/>
           </Col>
         </Row>
         <Row>
@@ -346,7 +373,14 @@ function BankMerchantList(props) {
                                   Fee:
                               </Row>
                               <Row>
-                                  <span className="cardValue" > 0</span>
+                                  <span className="cardValue">
+                                    {
+                                      parseFloat(feeGeneratedByBC) +
+                                      parseFloat(feeGeneratedByPC)+
+                                        parseFloat(feeGeneratedByMC) +
+                                          parseFloat(feeGeneratedByUS)
+                                    }
+                                  </span>
                               </Row>
                           </Col>
                           <Col >
@@ -354,7 +388,14 @@ function BankMerchantList(props) {
                                   Commission:
                               </Row>
                               <Row>
-                                  <span className="cardValue">0</span>
+                                  <span className="cardValue">
+                                    {
+                                      parseFloat(commissionGeneratedByBC) +
+                                        parseFloat(commissionGeneratedByPC)+
+                                          parseFloat(commissionGeneratedByMC) +
+                                            parseFloat(commissionGeneratedByUS)
+                                    }
+                                  </span>
                               </Row>
                           </Col>
                           <Col >
@@ -362,13 +403,25 @@ function BankMerchantList(props) {
                                   Total:
                               </Row>
                               <Row>
-                                  <span className="cardValue">0</span>
+                                  <span className="cardValue">
+                                    {
+                                      parseFloat(feeGeneratedByBC) +
+                                      parseFloat(feeGeneratedByPC)+
+                                      parseFloat(feeGeneratedByMC) +
+                                      parseFloat(feeGeneratedByUS) +
+                                        parseFloat(commissionGeneratedByBC) +
+                                          parseFloat(commissionGeneratedByPC)+
+                                            parseFloat(commissionGeneratedByMC) +
+                                              parseFloat(commissionGeneratedByUS)
+                                    }
+                                  </span>
                               </Row>
                           </Col> 
                       </Row>
-                      </Card>
-                  </Col>
-              </Row>
+                  
+                </Card>
+              </Col>
+        </Row>
 
           
         </Main>

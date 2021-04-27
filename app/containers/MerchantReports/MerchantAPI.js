@@ -69,7 +69,6 @@ const checkStatsbydate = async (id,date,type) => {
       date:date,
     });
     if (res.status === 200) {
-      console.log(res);
       if (res.data.status === 0) {
         notify(res.data.message, 'error');
         return { 
@@ -85,6 +84,14 @@ const checkStatsbydate = async (id,date,type) => {
           amount_paid_by_PC:0,
           bill_paid_by_US:0,
           amount_paid_by_US:0,
+          fee_generated_by_US:0,
+          commission_generated_by_US:0,
+          fee_generated_by_BC:0,
+          commission_generated_by_BC:0,
+          fee_generated_by_PC:0,
+          commission_generated_by_PC:0,
+          fee_generated_by_MC:0,
+          commission_generated_by_MC:0,
         };
       }
       return { 
@@ -100,6 +107,14 @@ const checkStatsbydate = async (id,date,type) => {
         amount_paid_by_PC:res.data.amount_paid_by_PC,
         bill_paid_by_US:res.data.bill_paid_by_US,
         amount_paid_by_US:res.data.amount_paid_by_US,
+        fee_generated_by_US:res.data.fee_generated_by_US,
+        commission_generated_by_US:res.data.commission_generated_by_US,
+        fee_generated_by_BC:res.data.fee_generated_by_BC,
+        commission_generated_by_BC:res.data.commission_generated_by_BC,
+        fee_generated_by_PC:res.data.fee_generated_by_PC,
+        commission_generated_by_PC:res.data.commission_generated_by_PC,
+        fee_generated_by_MC:res.data.fee_generated_by_MC,
+        commission_generated_by_MC:res.data.commission_generated_by_MC,
         
       };
     }
@@ -117,6 +132,14 @@ const checkStatsbydate = async (id,date,type) => {
       amount_paid_by_PC:0,
       bill_paid_by_US:0,
       amount_paid_by_US:0,
+      fee_generated_by_US:0,
+      commission_generated_by_US:0,
+      fee_generated_by_BC:0,
+      commission_generated_by_BC:0,
+      fee_generated_by_PC:0,
+      commission_generated_by_PC:0,
+      fee_generated_by_MC:0,
+      commission_generated_by_MC:0,
     };
   } catch (err) {
     notify('Something went wrong', 'error');
@@ -133,6 +156,14 @@ const checkStatsbydate = async (id,date,type) => {
       amount_paid_by_PC:0,
       bill_paid_by_US:0,
       amount_paid_by_US:0,
+      fee_generated_by_US:0,
+      commission_generated_by_US:0,
+      fee_generated_by_BC:0,
+      commission_generated_by_BC:0,
+      fee_generated_by_PC:0,
+      commission_generated_by_PC:0,
+      fee_generated_by_MC:0,
+      commission_generated_by_MC:0,
     };
   }
 };
@@ -145,7 +176,6 @@ const checkStatsbyperiod = async (id,period,type) => {
       period_name:period,
     });
     if (res.status === 200) {
-      console.log(res);
       if (res.data.status === 0) {
         notify(res.data.message, 'error');
         return { 
@@ -161,6 +191,14 @@ const checkStatsbyperiod = async (id,period,type) => {
           amount_paid_by_PC:0,
           bill_paid_by_US:0,
           amount_paid_by_US:0,
+          fee_generated_by_US:0,
+          commission_generated_by_US:0,
+          fee_generated_by_BC:0,
+          commission_generated_by_BC:0,
+          fee_generated_by_PC:0,
+          commission_generated_by_PC:0,
+          fee_generated_by_MC:0,
+          commission_generated_by_MC:0,
         };
       }
       return { 
@@ -176,6 +214,14 @@ const checkStatsbyperiod = async (id,period,type) => {
         amount_paid_by_PC:res.data.amount_paid_by_PC,
         bill_paid_by_US:res.data.bill_paid_by_US,
         amount_paid_by_US:res.data.amount_paid_by_US,
+        fee_generated_by_US:res.data.fee_generated_by_US,
+        commission_generated_by_US:res.data.commission_generated_by_US,
+        fee_generated_by_BC:res.data.fee_generated_by_BC,
+        commission_generated_by_BC:res.data.commission_generated_by_BC,
+        fee_generated_by_PC:res.data.fee_generated_by_PC,
+        commission_generated_by_PC:res.data.commission_generated_by_PC,
+        fee_generated_by_MC:res.data.fee_generated_by_MC,
+        commission_generated_by_MC:res.data.commission_generated_by_MC,
         
       };
     }
@@ -186,13 +232,21 @@ const checkStatsbyperiod = async (id,period,type) => {
 			bill_generated: 0,
 			amount_paid: 0,
       bill_paid_by_MC:0,
-          amount_paid_by_MC:0,
-          bill_paid_by_BC:0,
-          amount_paid_by_BC:0,
-          bill_paid_by_PC:0,
-          amount_paid_by_PC:0,
-          bill_paid_by_US:0,
-          amount_paid_by_US:0,
+      amount_paid_by_MC:0,
+      bill_paid_by_BC:0,
+      amount_paid_by_BC:0,
+      bill_paid_by_PC:0,
+      amount_paid_by_PC:0,
+      bill_paid_by_US:0,
+      amount_paid_by_US:0,
+      fee_generated_by_US:0,
+      commission_generated_by_US:0,
+      fee_generated_by_BC:0,
+      commission_generated_by_BC:0,
+      fee_generated_by_PC:0,
+      commission_generated_by_PC:0,
+      fee_generated_by_MC:0,
+      commission_generated_by_MC:0,
     };
   } catch (err) {
     notify('Something went wrong', 'error');
@@ -209,6 +263,14 @@ const checkStatsbyperiod = async (id,period,type) => {
       amount_paid_by_PC:0,
       bill_paid_by_US:0,
       amount_paid_by_US:0,
+      fee_generated_by_US:0,
+      commission_generated_by_US:0,
+      fee_generated_by_BC:0,
+      commission_generated_by_BC:0,
+      fee_generated_by_PC:0,
+      commission_generated_by_PC:0,
+      fee_generated_by_MC:0,
+      commission_generated_by_MC:0,
     };
   }
 };

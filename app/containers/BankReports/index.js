@@ -101,6 +101,14 @@ export default class PartnerReports extends Component {
       amountPaidPC:0,
       amountPaidUS:0,
       billGenerated:0,
+      feeGeneratedByUS :0,
+      commissionGeneratedByUS:0,
+      feeGeneratedByBC:0,
+      commissionGeneratedByBC:0,
+      feeGeneratedByPC:0,
+      commissionGeneratedByPC:0,
+      feeGeneratedByMC:0,
+      commissionGeneratedByMC:0,
       billPaid:0,
       billPaidBC:0,
       billPaidMC:0,
@@ -376,6 +384,14 @@ export default class PartnerReports extends Component {
             amount_paid_by_PC:0,
             bill_paid_by_US:0,
             amount_paid_by_US:0,
+            fee_generated_by_US:0,
+            commission_generated_by_US:0,
+            fee_generated_by_BC:0,
+            commission_generated_by_BC:0,
+            fee_generated_by_PC:0,
+            commission_generated_by_PC:0,
+            fee_generated_by_MC:0,
+            commission_generated_by_MC:0,
           };
         }
         return { 
@@ -391,7 +407,14 @@ export default class PartnerReports extends Component {
           amount_paid_by_PC:res.data.amount_paid_by_PC,
           bill_paid_by_US:res.data.bill_paid_by_US,
           amount_paid_by_US:res.data.amount_paid_by_US,
-          
+          fee_generated_by_US:res.data.fee_generated_by_US,
+          commission_generated_by_US:res.data.commission_generated_by_US,
+          fee_generated_by_BC:res.data.fee_generated_by_BC,
+          commission_generated_by_BC:res.data.commission_generated_by_BC,
+          fee_generated_by_PC:res.data.fee_generated_by_PC,
+          commission_generated_by_PC:res.data.commission_generated_by_PC,
+          fee_generated_by_MC:res.data.fee_generated_by_MC,
+          commission_generated_by_MC:res.data.commission_generated_by_MC,
         };
       }
       notify(res.data.message, 'error');
@@ -408,6 +431,14 @@ export default class PartnerReports extends Component {
         amount_paid_by_PC:0,
         bill_paid_by_US:0,
         amount_paid_by_US:0,
+        fee_generated_by_US:0,
+        commission_generated_by_US:0,
+        fee_generated_by_BC:0,
+        commission_generated_by_BC:0,
+        fee_generated_by_PC:0,
+        commission_generated_by_PC:0,
+        fee_generated_by_MC:0,
+        commission_generated_by_MC:0,
       };
     } catch (err) {
       return { 
@@ -423,6 +454,14 @@ export default class PartnerReports extends Component {
         amount_paid_by_PC:0,
         bill_paid_by_US:0,
         amount_paid_by_US:0,
+        fee_generated_by_US:0,
+        commission_generated_by_US:0,
+        fee_generated_by_BC:0,
+        commission_generated_by_BC:0,
+        fee_generated_by_PC:0,
+        commission_generated_by_PC:0,
+        fee_generated_by_MC:0,
+        commission_generated_by_MC:0,
       };
     }
   };
@@ -456,6 +495,14 @@ export default class PartnerReports extends Component {
             bill_paid_US: data.res.reduce((a, b) => a + b.bill_paid_by_US, 0),
             amount_paid_MC: data.res.reduce((a, b) => a + b.amount_paid_by_MC, 0),
             bill_paid_MC: data.res.reduce((a, b) => a + b.bill_paid_by_MC, 0),
+            fee_generated_by_US: data.res.reduce((a, b) => a + b.fee_generated_by_US, 0),
+            commission_generated_by_US: data.res.reduce((a, b) => a + b.commission_generated_by_US, 0),
+            fee_generated_by_BC: data.res.reduce((a, b) => a + b.fee_generated_by_BC, 0),
+            commission_generated_by_BC: data.res.reduce((a, b) => a + b.commission_generated_by_BC, 0),
+            fee_generated_by_PC: data.res.reduce((a, b) => a + b.fee_generated_by_PC, 0),
+            commission_generated_by_PC: data.res.reduce((a, b) => a + b.commission_generated_by_PC, 0),
+            fee_generated_by_MC: data.res.reduce((a, b) => a + b.fee_generated_by_US, 0),
+            commission_generated_by_MC: data.res.reduce((a, b) => a + b.commission_generated_by_MC, 0),
         });
     })
     const result= await Promise.all(statlistbydate);
@@ -539,6 +586,14 @@ export default class PartnerReports extends Component {
       bill_paid_US: list.reduce((a, b) => a + b.bill_paid_US, 0),
       amount_paid_MC: list.reduce((a, b) => a + b.amount_paid_MC, 0),
       bill_paid_MC: list.reduce((a, b) => a + b.bill_paid_MC, 0),
+      fee_generated_by_US: list.reduce((a, b) => a + b.fee_generated_by_US, 0),
+      commission_generated_by_US: list.reduce((a, b) => a + b.commission_generated_by_US, 0),
+      fee_generated_by_BC: list.reduce((a, b) => a + b.fee_generated_by_BC, 0),
+      commission_generated_by_BC: list.reduce((a, b) => a + b.commission_generated_by_BC, 0),
+      fee_generated_by_PC: list.reduce((a, b) => a + b.fee_generated_by_PC, 0),
+      commission_generated_by_PC: list.reduce((a, b) => a + b.commission_generated_by_PC, 0),
+      fee_generated_by_MC: list.reduce((a, b) => a + b.fee_generated_by_US, 0),
+      commission_generated_by_MC: list.reduce((a, b) => a + b.commission_generated_by_MC, 0),
     });
 }
 
@@ -570,6 +625,14 @@ export default class PartnerReports extends Component {
         billPaidMC:cardValues.bill_paid_MC,
         billPaidPC:cardValues.bill_paid_PC,
         billPaidUS:cardValues.bill_paid_US,
+        feeGeneratedByUS: cardValues.fee_generated_by_US,
+        commissionGeneratedByUS: cardValues.commission_generated_by_US,
+        feeGeneratedByBC:cardValues.fee_generated_by_BC,
+        commissionGeneratedByBC:cardValues.commission_generated_by_BC,
+        feeGeneratedByPC:cardValues.fee_generated_by_PC,
+        commissionGeneratedByPC:cardValues.commission_generated_by_PC,
+        feeGeneratedByMC:cardValues.fee_generated_by_MC,
+        commissionGeneratedByMC:cardValues.commission_generated_by_MC,
         billPending:cardValues.bill_generated-cardValues.bill_paid,
         amountPending:cardValues.amount_generated-cardValues.amount_paid,
         merchantstats:merchantstats.res,
@@ -1193,21 +1256,21 @@ export default class PartnerReports extends Component {
               </Row>
               <Row>
                 <Col>
-                  <DashCards title='Invoice Paid By Bank' no={this.state.billPaidBC} amount={this.state.amountPaidBC} row={3}/>
+                  <DashCards title='Invoice Paid By Bank' no={this.state.billPaidBC} amount={this.state.amountPaidBC} row={3} fee={this.state.feeGeneratedByBC} commission={this.state.commissionGeneratedByBC}/>
                 </Col>
                 <Col>
-                <DashCards title='Invoice Paid By Partner' no={this.state.billPaidPC} amount={this.state.amountPaidPC}  row={3}/>
+                <DashCards title='Invoice Paid By Partner' no={this.state.billPaidPC} amount={this.state.amountPaidPC} row={3}  fee={this.state.feeGeneratedByPC} commission={this.state.commissionGeneratedByPC}/>
                 </Col>
                 <Col>
-                  <DashCards title='Invoice Paid By Merchant' no={this.state.billPaidMC} amount={this.state.amountPaidMC}  row={3}/>
+                  <DashCards title='Invoice Paid By Merchant' no={this.state.billPaidMC} amount={this.state.amountPaidMC}  row={3}  fee={this.state.feeGeneratedByMC} commission={this.state.commissionGeneratedByMC}/>
                 </Col>
                 <Col>
-                  <DashCards title='Invoice Paid By User' no={this.state.billPaidUS} amount={this.state.amountPaidUS}  row={3}/>
+                  <DashCards title='Invoice Paid By User' no={this.state.billPaidUS} amount={this.state.amountPaidUS}  row={3}  fee={this.state.feeGeneratedByUS} commission={this.state.commissionGeneratedByUS}/>
                 </Col>      
               </Row>
               <Row>
                 <Col>
-                <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
+                  <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
                       <h4>Total Revenue</h4>
                       <Row>
                           <Col >
@@ -1215,7 +1278,14 @@ export default class PartnerReports extends Component {
                                   Fee:
                               </Row>
                               <Row>
-                                  <span className="cardValue" > 0</span>
+                                  <span className="cardValue">
+                                    {
+                                      this.state.feeGeneratedByBC +
+                                      this.state.feeGeneratedByPC+
+                                      this.state.feeGeneratedByMC +
+                                      this.state.feeGeneratedByUS
+                                    }
+                                  </span>
                               </Row>
                           </Col>
                           <Col >
@@ -1223,7 +1293,14 @@ export default class PartnerReports extends Component {
                                   Commission:
                               </Row>
                               <Row>
-                                  <span className="cardValue">0</span>
+                                  <span className="cardValue">
+                                    {
+                                      this.state.commissionGeneratedByBC +
+                                      this.state.commissionGeneratedByPC+
+                                      this.state.commissionGeneratedByMC +
+                                      this.state.commissionGeneratedByUS
+                                    }
+                                  </span>
                               </Row>
                           </Col>
                           <Col >
@@ -1231,12 +1308,24 @@ export default class PartnerReports extends Component {
                                   Total:
                               </Row>
                               <Row>
-                                  <span className="cardValue">0</span>
+                                  <span className="cardValue">
+                                    {
+                                      this.state.feeGeneratedByBC +
+                                      this.state.feeGeneratedByPC+
+                                      this.state.feeGeneratedByMC +
+                                      this.state.feeGeneratedByUS +
+                                      this.state.commissionGeneratedByBC +
+                                      this.state.commissionGeneratedByPC+
+                                      this.state.commissionGeneratedByMC +
+                                      this.state.commissionGeneratedByUS
+                                    }
+                                  </span>
                               </Row>
                           </Col> 
                       </Row>
-                      </Card>
-                  </Col>
+                  
+                  </Card>
+                </Col>
               </Row>
 
               <Card bigPadding style={{width:'100%'}}>  
