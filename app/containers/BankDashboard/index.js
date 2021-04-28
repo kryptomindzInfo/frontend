@@ -384,7 +384,7 @@ export default class BankDashboard extends Component {
             <DashCards title='Invoice Paid' no={this.state.mechantstats.bills_paid} amount={this.state.mechantstats.amount_paid}/>
           </Col>
           <Col>
-            <DashCards title='Invoice Pending' no={this.state.mechantstats.bills_pending} amount={this.state.mechantstats.amount_pending}/>
+            <DashCards title='Invoice Pending' no={this.state.mechantstats.bills_created-this.state.mechantstats.bills_paid} amount={(this.state.mechantstats.amount_created-this.state.mechantstats.amount_paid).toFixed(2)}/>
           </Col>
         </Row>
         <Row>
