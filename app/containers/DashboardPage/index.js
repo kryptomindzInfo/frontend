@@ -49,6 +49,8 @@ export default class DashboardPage extends Component {
       totalCashiers: 0,
       totalBranches: 0,
       totalMerchantBranches: 0,
+      totalPartnrBranches: 0,
+      totalPartnrCashiers: 0,
       totalPartners: 0,
       notification: '',
       popup: false,
@@ -85,6 +87,8 @@ export default class DashboardPage extends Component {
           totalCashiers: res.data.data.totalcashiers,
           totalBranches: res.data.data.totalbranches,
           totalMerchantBranches: res.data.data.totalmerchantbranches,
+          totalPartnerBranches: res.data.data.totalpartnrbranches,
+          totalPartnerCashiers: res.data.data.totalpartnrcashiers,
           totalPartners: res.data.data.totalpartners,
         });
       }

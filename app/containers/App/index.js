@@ -210,8 +210,8 @@ export default function App(props) {
             component={BankForgotPasswordPage}
           />
           <Route exact path="/bank/otp" component={BankOTPPage} />
-
-          <BankRoute exact path="/bank/dashboard" component={BankBranchList} />
+          <BankRoute exact path="/bank/dashboard" component={BankDashboard} />
+          <BankRoute exact path="/bank/agencies" component={BankBranchList} />
           <BankRoute path="/bank/info" component={BankInfo} />
           <BankRoute path="/bank/fees" component={BankFees} />
           <BankRoute path="/bank/interBankFees" component={InterBankFees} />

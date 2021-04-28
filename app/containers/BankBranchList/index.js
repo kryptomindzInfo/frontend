@@ -628,7 +628,7 @@ export default class BankBranchList extends Component {
           <meta charSet="utf-8" />
           <title>Banks | INFRA | E-WALLET</title>
         </Helmet>
-        <BankHeader active="dashboard" />
+        <BankHeader active="branches" />
         <Container verticalMargin>
           <SidebarBank />
           <Main>

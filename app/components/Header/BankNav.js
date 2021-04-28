@@ -38,6 +38,14 @@ class BankNav extends Component {
               active={dashboard}
             // style={`${props => props.theme.secondary}`}
             >
+              DashBoard
+            </Link>
+          </A>
+          <A href="/bank/agencies">
+            <Link
+              active={branches}
+            // style={`${props => props.theme.secondary}`}
+            >
               Agencies
             </Link>
           </A>

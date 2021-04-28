@@ -31,11 +31,11 @@ class Nav extends Component {
     return (
       <React.Fragment>
         <NavTag>
-          {/* <A href="/dashboard">
+          <A href="/dashboard">
             <Link active={dashboard}>
               <FormattedMessage {...messages.menu1} />
             </Link>
-          </A> */}
+          </A>
          
           <A href="/banks">
             <Link active={bank}>

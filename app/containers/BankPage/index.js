@@ -812,7 +812,7 @@ export default class BankPage extends Component {
                       <th>
                         <FormattedMessage {...messages.th1} />
                       </th>
-                      {/* <th>
+                      <th>
                         <FormattedMessage {...messages.th2} />
                       </th>
                       <th>
@@ -820,8 +820,8 @@ export default class BankPage extends Component {
                       </th>
                       <th>
                         <FormattedMessage {...messages.th4} />
-                      </th> */}
-                      <th>Opening Balance</th>
+                      </th>
+                      {/* <th>Opening Balance</th> */}
                       <th>Cash Received</th>
                       <th>Cash Paid</th>
                       <th>Invoice Paid</th>
@@ -830,7 +830,7 @@ export default class BankPage extends Component {
                       <th>Commission Collected</th>
                       <th>Revenue Collected</th>
                       <th>Cash In Hand</th>
-                      <th>Closing Balance</th>
+                      {/* <th>Closing Balance</th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -846,10 +846,10 @@ export default class BankPage extends Component {
                             </td>
                             {/* <td><img src={b.logo} /></td> */}
                             <td>{b.name}</td>
-                            {/* <td className="tac">{b.total_branches}</td>
+                            <td className="tac">{b.total_branches}</td>
                             <td className="tac">{b.total_partners}</td>
-                            <td className="tac">{b.total_cashiers}</td> */}
-                            <td className="tac">{ep.state.bankstats[i].openingBalance.toFixed(2)}</td>
+                            <td className="tac">{b.total_cashiers}</td>
+                            {/* <td className="tac">{ep.state.bankstats[i].openingBalance.toFixed(2)}</td> */}
                             <td className="tac">{ep.state.bankstats[i].cashReceived.toFixed(2)}</td>
                             <td className="tac">{ep.state.bankstats[i].cashPaid.toFixed(2)}</td>
                             <td className="tac">{ep.state.bankstats[i].invoicePaid}</td>
@@ -857,9 +857,9 @@ export default class BankPage extends Component {
                             <td className="tac">{ep.state.bankstats[i].feeGenerated.toFixed(2)}</td>
                             <td className="tac">{ep.state.bankstats[i].commissionGenerated.toFixed(2)}</td>
                             <td className="tac">{(ep.state.bankstats[i].feeGenerated+ep.state.bankstats[i].commissionGenerated).toFixed(2)}</td>
-                            <td className="tac">{ep.state.bankstats[i].cashInHand.toFixed(2)}</td>
+                            {/* <td className="tac">{ep.state.bankstats[i].cashInHand.toFixed(2)}</td> */}
                             <td className="tac bold">
-                              {ep.state.bankstats[i].closingBalance.toFixed(2)}
+                              {ep.state.bankstats[i].cashInHand.toFixed(2)}
                               {b.status != 0 ? (
                                 <span className="absoluteRight primary popMenuTrigger">
                                   <i className="material-icons ">more_vert</i>
