@@ -103,6 +103,8 @@ export default class BankPage extends Component {
       closingBalance: 0,
       invoicePaid: 0,
       amountPaid: 0,
+      totalAgencies:0,
+      totalCashiers:0,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -521,7 +523,8 @@ export default class BankPage extends Component {
       banks: banks.banks,
       loading: bankstats.loading,
       bankstats: bankstats.res,
-      openingBalance:  bankstats.res.reduce((a, b) => a + b.openingBalance, 0).toFixed(2),
+      totalAgencies:  banks.banks.reduce((a, b) => a + b.total_branches, 0),
+      totalCashiers:  banks.banks.reduce((a, b) => a + b.total_cashiers, 0),
       cashReceived: bankstats.res.reduce((a, b) => a + b.cashReceived, 0).toFixed(2),
       cashPaid: bankstats.res.reduce((a, b) => a + b.cashPaid, 0).toFixed(2),
       feeGenerated: bankstats.res.reduce((a, b) => a + b.feeGenerated, 0).toFixed(2),
@@ -653,8 +656,21 @@ export default class BankPage extends Component {
                   bigPadding
                   smallValue
                 >
-                  <h4>Opening Balance</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.openingBalance}</div>
+                  <h4>Number of Agencies</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.totalAgencies}</div>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Number of Cashiers</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.totalCashiers}</div>
                 </Card>
               </Col>
               <Col>
@@ -683,7 +699,10 @@ export default class BankPage extends Component {
                   <div className="cardValue">{CURRENCY}: {this.state.cashPaid}</div>
                 </Card>
               </Col>
-              <Col>
+              
+            </Row>
+            <Row>
+            <Col cW='25%'>
                 <Card
                    style={{height:'130px'}}
                   marginBottom="10px"
@@ -696,9 +715,7 @@ export default class BankPage extends Component {
                   <div className="cardValue">{CURRENCY}: {this.state.cashInHand}</div>
                 </Card>
               </Col>
-            </Row>
-            <Row>
-              <Col>
+              <Col cW='35%'>
                 <Card
                   style={{height:'130px'}}
                   marginBottom="10px"
@@ -720,7 +737,7 @@ export default class BankPage extends Component {
                   </Row>
                 </Card>
               </Col>
-              <Col>
+              <Col cW='40%'>
               <Card
                    style={{height:'130px'}}
                   marginBottom="10px"
@@ -747,7 +764,7 @@ export default class BankPage extends Component {
                   
                 </Card>
               </Col>
-              <Col>
+              {/* <Col>
                 <Card
                   style={{height:'130px'}}
                   marginBottom="10px"
@@ -759,7 +776,7 @@ export default class BankPage extends Component {
                   <h4>Closing Balance</h4>
                   <div className="cardValue">{CURRENCY}: {this.state.closingBalance}</div>
                 </Card>
-              </Col>
+              </Col> */}
             </Row>
             
             <ActionBar
@@ -813,7 +830,7 @@ export default class BankPage extends Component {
                         <FormattedMessage {...messages.th1} />
                       </th>
                       <th>
-                        <FormattedMessage {...messages.th2} />
+                        Total Agencies
                       </th>
                       <th>
                         <FormattedMessage {...messages.th3} />
