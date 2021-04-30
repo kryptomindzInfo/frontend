@@ -29,8 +29,11 @@ import Button from 'components/Button';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import DashCards from 'components/DashCrads'
+import { makeStyles, useTheme, withStyles} from '@material-ui/core/styles';
 import history from 'utils/history.js';
 import SelectInput from 'components/SelectInput';
+import classNames from 'classnames';
+import Drawer from '@material-ui/core/Drawer';
 
 import { API_URL, CURRENCY, STATIC_URL } from '../App/constants';
 
@@ -50,10 +53,35 @@ var today = new Date(new Date().setDate(new Date().getDate() + 1));
 today.setHours(0, 0, 0, 0);
 today = today.getTime();
 
+const styles = () => ({
+  root: {
+    display: 'block',
+    marginTop: '20px',
+  },
+  appBar: {
+    backgroundColor:'goldenrod',
+    padding:'15px',
+    color: "white",
+    fontSize:'30px',
+  },
+  drawer: {
+    zIndex: 0,
+    position: "relative",
+    width: '100%',
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: '100%',
+    position: "relative",
+
+  }
+});
 
 
 
-export default class PartnerReports extends Component {
+
+
+class PartnerReports extends Component {
   constructor(props) {
     super();
     this.state = {
@@ -62,34 +90,46 @@ export default class PartnerReports extends Component {
       bank_id: localStorage.getItem('bankId'),
       selectedCashierDetails: {},
       datearray:[],
-      cancelled: 0,
-      pending: 0,
       datestats: [],
       merchantlist:[],
-      accepted: 0,
       from:new Date(),
       to:new Date(),
-      cashReceived: 0,
-      openingBalance: 0,
-      paidInCash:0,
-      closingBalance: 0,
-      cashPaid: 0,
-      feeGenerated: 0,
       type:'branch',
-      cashInhand: 0,
-      pending: 0,
-      accepted: 0,
-      declined: 0,
-      invoicePaid: 0,
-      invoiceAmount:0,
+  
+      totalBranches: 0,
+      totalCashiers:0,
+      bankTrans:0,
+      feeGenerated: 0,
+      cashInHand: 0,
       commissionGenerated: 0,
-      closingTime: null,
+      cashReceived: 0,
+      crfeeGenerated: 0,
+      crcommissionGenerated: 0,
+      cashPaid: 0,
+      cpfeeGenerated: 0,
+      cpcommissionGenerated: 0,
+  
+      totalPartners: 0,
+      totalPartnerBranches: 0,
+      totalPartnerCashiers:0,
+      partnerTrans:0,
+      partnerFee:0,
+      partnerCommission:0,
+
+      totalBankMerchants:0,
+      totalMerchantBranches:0,
+      totalMerchantStaff:0,
+      totalMerchantCashier:0,
+      merchantFee:0,
+      merchantCommission:0,
+      merchantInvoiceCreated:0,
+      invoicePaid: 0,
+      amountPaid: 0,
+      
       history: [],
       datelist: [],
       branches:[],
       filter: 'daterange',
-      periodstart: '',
-      periodend: '',
       empty:false,
       amountGenerated:0,
       amountPaid:0,
@@ -208,19 +248,29 @@ export default class PartnerReports extends Component {
       const res = await axios.post(`${API_URL}/infra/getBankDailyReport`, {
         token: this.state.token,
         partner_id: branch._id,
-        branch_id: branch._id,
+        bank_id: branch._id,
         start:after,
         end: before,
       });
       if (res.status == 200) {
         return ({
           branch: branch,
-          reports: res.data.reports,
-          accepted: res.data.accepted,
-          pending: res.data.pending,
-          declined: res.data.decline,
+          reports: res.data.bankreport,
+          partnerreports: res.data.partnerreport,
+          totalbranch: res.data.totalBranch,
+          totalcashier: res.data.totalCashier,
+          totalpartner: res.data.totalPartner,
+          totalpartnercashier:res.data.partnerCashier,
+          totalpartnerbranch:res.data.partnerBranch,
+          totalmerchant: res.data.totalMerchant,
+          totalmerchantcashier:res.data.merchantCashiers,
+          totalmerchantstaff:res.data.merchantStaff,
+          totalmerchantbranch:res.data.merchantBranch,
+          merchantfee:res.data.merchantFeeGenerated,
+          merchantcommission:res.data.merchantCommissionGenerated,
           paid: res.data.invoicePaid,
           amountpaid : res.data.amountPaid,
+          invoicecreated: res.data.invoiceCreated,
         });
       }
     } catch (err){
@@ -249,49 +299,88 @@ export default class PartnerReports extends Component {
       return ({
         cashiedatestats: cashiedatestats,
         totalCih: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_in_hand : 0), 0
-        ).toFixed(2),
-        totalOb: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].opening_balance : 0), 0
-        ).toFixed(2),
-        totalCb: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].closing_balance : 0), 0
-        ).toFixed(2),
-        // totalDis: cashiedatestats.reduce(
-        //   (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].descripency : 0), 0
-        // ).toFixed(2),
-        totalCr: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_received : 0), 0
-        ).toFixed(2),
-        totalCp: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_paid : 0), 0
-        ).toFixed(2),
-        totalDis: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].discripancy : 0), 0
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cashInHand : 0), 0
         ).toFixed(2),
         totalFee: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].fee_generated : 0), 0
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalFee : 0), 0
         ).toFixed(2),
         totalComm: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].comm_generated : 0), 0
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalCommission : 0), 0
         ).toFixed(2),
-        // totalPic: cashiedatestats.reduce(
-        //   (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].paid_in_cash : 0), 0
-        // ),
-        totalRa: cashiedatestats.reduce(
-          (a, b) => a + b.cashiedatestats.accepted, 0
+        totalCr: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cashReceived : 0), 0
+        ).toFixed(2),
+        totalCrf: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cashReceivedFee : 0), 0
+        ).toFixed(2),
+        totalCrc: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cashReceivedComm : 0), 0
+        ).toFixed(2),
+        totalCp: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cashPaid : 0), 0
+        ).toFixed(2),
+        totalCpf: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cashPaidFee : 0), 0
+        ).toFixed(2),
+        totalCpc: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cashPaidComm : 0), 0
+        ).toFixed(2),
+        totalBankTrans: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalTrans : 0), 0
+        ).toFixed(2),
+        totalBranch: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.totalbranch, 0
         ),
-        totalRp: cashiedatestats.reduce(
-          (a, b) => a + b.cashiedatestats.pending, 0
+        totalCashier:cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.totalcashier, 0
         ),
-        totalRd: cashiedatestats.reduce(
-          (a, b) => a + b.cashiedatestats.declined, 0
+
+
+        totalPartnerFee: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.partnerreports[0].totalFee : 0), 0
+        ).toFixed(2),
+        totalPartnerComm: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.partnerreports[0].totalCommission : 0), 0
+        ).toFixed(2),
+        totalPartnerTrans: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.partnerreports[0].totalTrans : 0), 0
+        ).toFixed(2),
+        totalPartnerBranch: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.totalpartnerbranch, 0
         ),
-        totalInvoice:  cashiedatestats.reduce(
+        totalPartnerCashier: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.totalpartnercashier, 0
+        ),
+        totalPartner: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.totalpartner, 0
+        ),
+
+        totalMerchant: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.totalmerchant, 0
+        ),
+        totalMerchantFee: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.merchantfee, 0
+        ).toFixed(2),
+        totalMerchantComm:cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.merchantcommission, 0
+        ).toFixed(2),
+        totalInvoicePaid:  cashiedatestats.reduce(
           (a, b) => a + b.cashiedatestats.paid, 0
         ),
         totalInvoiceAmount:  cashiedatestats.reduce(
           (a, b) => a + b.cashiedatestats.amountpaid, 0
+        ),
+        totalInvoiceCreated:  cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.invoicecreated, 0
+        ),
+        totalMerchantBranch: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.totalmerchantbranch, 0
+        ),
+        totalMerchantCashier: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.totalmerchantcashier, 0
+        ),
+        totalMerchantStaff: cashiedatestats.reduce(
+          (a, b) => a + b.cashiedatestats.totalmerchantstaff, 0
         ),
       })
     });
@@ -456,54 +545,92 @@ export default class PartnerReports extends Component {
     const datelist = await this.getDatesBetweenDates(start, end);
     console.log(datelist);
     const datestats =  await this.getDateStats(datelist,branches.branches);
+    console.log(datestats)
     this.setState(
       {
         branches: branches.branches,
         datelist: datelist,
         datestats: datestats.res,
-        openingBalance: datestats.res.reduce(
-          (a, b) => a + parseFloat(b.totalOb,10), 0
+        totalBranches: datestats.res[0].totalBranch,
+        totalCashiers:datestats.res[0].totalCashier,
+        bankTrans: datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalBankTrans,10), 0
         ),
-        closingBalance: datestats.res.reduce(
-          (a, b) => a + parseFloat(b.totalCb,10), 0
+        feeGenerated:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalFee,10), 0
         ),
-        paidInCash: datestats.res.reduce(
-          (a, b) => a + parseFloat(b.totalPic,10), 0
+        commissionGenerated:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalComm,10), 0
         ),
         cashReceived: datestats.res.reduce(
           (a, b) => a + parseFloat(b.totalCr,10), 0
         ),
-        cashPaid: datestats.res.reduce(
+        crfeeGenerated:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalCrf,10), 0
+        ),
+        crcommissionGenerated:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalCrc,10), 0
+        ),
+        cashPaid:  datestats.res.reduce(
           (a, b) => a + parseFloat(b.totalCp,10), 0
         ),
-        cashInhand: datestats.res.reduce(
+        cpfeeGenerated:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalCpf,10), 0
+        ),
+        cpcommissionGenerated:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalCpc,10), 0
+        ),
+        cashInHand: datestats.res.reduce(
           (a, b) => a + parseFloat(b.totalCih,10), 0
         ),
-        feeGenerated: datestats.res.reduce(
-          (a, b) => a + parseFloat(b.totalFee,10), 0
+  
+        totalPartners: datestats.res[0].totalPartner,
+         
+        totalPartnerBranches:datestats.res[0].totalPartnerBranch,
+          
+        totalPartnerCashiers:datestats.res[0].totalPartnerCashier,
+        partnerTrans:datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalPartnerTrans,10), 0
         ),
-        commissionGenerated: datestats.res.reduce(
-          (a, b) => a + parseFloat(b.totalComm,10), 0
+        partnerFee:datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalPartnerFee,10), 0
         ),
-        pending : datestats.res.reduce(
-          (a, b) => a + parseFloat(b.totalRp,10), 0
+        partnerCommission:datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalPartnerComm,10), 0
         ),
-        accepted: datestats.res.reduce(
-          (a, b) => a + parseFloat(b.totalRa,10), 0
+
+        
+
+
+
+
+
+
+
+        totalBankMerchants:datestats.res[0].totalMerchant,
+        totalMerchantBranches:datestats.res[0].totalMerchantBranch,
+        totalMerchantStaff:datestats.res[0].totalMerchantStaff,
+        totalMerchantCashier:datestats.res[0].totalMerchantCashier,
+        merchantFee:datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalMerchantFee,10), 0
         ),
-        declined: datestats.res.reduce(
-          (a, b) => a + parseFloat(b.totalRd,10), 0
+        merchantCommission:datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalMerchantComm,10), 0
         ),
-        invoicePaid: datestats.res.reduce(
-          (a, b) => a + parseFloat(b.totalInvoice,10), 0
+        merchantInvoiceCreated:datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalInvoiceCreated,10), 0
         ),
-        invoiceAmount:datestats.res.reduce(
+        invoicePaid:datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalInvoicePaid,10), 0
+        ),
+        amountPaid: datestats.res.reduce(
           (a, b) => a + parseFloat(b.totalInvoiceAmount,10), 0
         ),
         loading:datestats.loading,
         empty:datestats.loading
       }
     );
+  
   }
 
   getCardValues = (list) => {
@@ -608,6 +735,7 @@ export default class PartnerReports extends Component {
   };
 
   render() {
+    const { classes } = this.props;
     function inputFocus(e) {
       const { target } = e;
       target.parentElement.querySelector('label').classList.add('focused');
@@ -880,121 +1008,457 @@ export default class PartnerReports extends Component {
             <div>
               {this.state.type === 'branch' ? (
                 <div>
-                  <div className="clr">
-                  <Row>
-                  <Col>
-                    <Card
-                      style={{height:'120px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Opening Balance</h4>
-                      <div className="cardValue">{CURRENCY}: {this.state.openingBalance}</div>
-                    </Card>
-                  </Col>
-                  <Col>
-                  <Card
-                      style={{height:'120px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Paid in Cash</h4>
-                      <div className="cardValue">{CURRENCY}: {this.state.cashPaid}</div>
-                    </Card>
-                  </Col>
-                  <Col>
-                  <Card
-                      style={{height:'120px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Cash Recieved</h4>
-
-                      <div className="cardValue">{CURRENCY}: {this.state.cashReceived}</div>
-                    </Card>
-                  </Col>
-                  <Col>
-                    <Card
-                      style={{height:'120px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Cash in Hand</h4>
-
-                      <div className="cardValue">{CURRENCY}: {this.state.cashInhand}</div>
-                    </Card>
-                  </Col>
-                </Row>
-                  <Row style={{marginTop:'5px',marginBottom:'0px'}}>
-                    <Col cW='40%'>
-                    <Card
-                      style={{height:'120px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Invoices Paid</h4>
-                      <Row>
-                        <Col style={{textAlign:'center'}}>
-                          <h5>Number</h5>
-                          <div className="cardValue">{this.state.invoicePaid}</div>
+                   <div style={{backgroundColor:"goldenrod", padding:'10px'}}>
+                      <Row style={{marginTop:'15px'}}>
+                        <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            h4FontSize="16px"
+                            textAlign="center"
+                            smallValue
+                            col
+                            style={{height:'120px',marginLeft:'20px'}}
+                          >
+                            <h4>
+                              Bank Agencies
+                            </h4>
+                            <div className="cardValue">{this.state.totalBranches}</div>
+                          </Card>
                         </Col>
-                        <Col style={{textAlign:'center'}}>
-                          <h5>Amount</h5>
-                          <div className="cardValue">{CURRENCY}: {this.state.invoiceAmount}</div>
+                        <Col> 
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px'}}
+                          >
+                            <h4>
+                              Bank Cashiers
+                            </h4>
+                            <div className="cardValue">{this.state.totalCashiers}</div>
+                          </Card>
+                        </Col>
+                        <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px'}}
+                          >
+                            <h4>
+                              Bank Transactions
+                            </h4>
+                            <div className="cardValue">{this.state.bankTrans}</div>
+                          </Card>
+                        </Col>
+                        <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px'}}
+                          >
+                            <h4>
+                              Cash In Hand
+                            </h4>
+                            <div className="cardValue">{this.state.cashInHand}</div>
+                          </Card>
+                        </Col>
+                      
+                      
+                        <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="300px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px', marginRight:'20px'}}
+                          >
+                            <h4>Revenue</h4>
+                            <Row>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Fee</h5>
+                                <div className="cardValue">{this.state.feeGenerated}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Commission</h5>
+                                <div className="cardValue">{this.state.commissionGenerated}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Total</h5>
+                                <div className="cardValue"> {(parseFloat(this.state.feeGenerated)+parseFloat(this.state.commissionGenerated)).toFixed(2)}</div>
+                              </Col>
+                            </Row>
+                          </Card>
+                        </Col>
+                      
+                      </Row>
+                      <Row style={{marginTop:'20px'}}>
+                      <Col >
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="300px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px',marginLeft:'20px'}}
+                          >
+                            <h4>Cash Paid</h4>
+                            <Row>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Amount</h5>
+                                <div className="cardValue"> {this.state.cashPaid}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Fee</h5>
+                                <div className="cardValue">{this.state.cpfeeGenerated}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Commission</h5>
+                                <div className="cardValue">{this.state.cpcommissionGenerated}</div>
+                              </Col>
+                              
+                            </Row>
+                          </Card>
+                        </Col>
+                      <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="300px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px', marginRight:'20px'}}
+                          >
+                            <h4>Cash Received</h4>
+                            <Row>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Amount</h5>
+                                <div className="cardValue"> {this.state.cashReceived}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Fee</h5>
+                                <div className="cardValue">{this.state.crfeeGenerated}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Commission</h5>
+                                <div className="cardValue">{this.state.crcommissionGenerated}</div>
+                              </Col>
+                              
+                            </Row>
+                          </Card>
+                        </Col>
+                      <Col></Col>
+                      <Col></Col>
+                      <Col></Col>
+                      </Row>
+                      <Row style={{marginTop:'20px'}}>
+                        <Col>
+                        
+                            <Card
+                              horizontalMargin="0px"
+                              cardWidth="180px"
+                              textAlign="center"
+                              col
+                              smallValue
+                              style={{height:'120px',marginLeft:'20px'}}
+                            >
+                              <h4>
+                                Partners
+                              </h4>
+                              <div className="cardValue">{this.state.totalPartners}</div>
+                            </Card>
+                          
+                          
+                        </Col>
+                        <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            h4FontSize="16px"
+                            textAlign="center"
+                            smallValue
+                            col
+                            style={{height:'120px'}}
+                          >
+                            <h4>
+                              Partner Agencies
+                            </h4>
+                            <div className="cardValue">{this.state.totalPartnerBranches}</div>
+                          </Card>
+                        </Col>
+                        <Col> 
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px'}}
+                          >
+                            <h4>
+                              Partner Cashiers
+                            </h4>
+                            <div className="cardValue">{this.state.totalPartnerCashiers}</div>
+                          </Card>
+                        </Col>
+                        <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px'}}
+                          >
+                            <h4>
+                              Partner Transactions
+                            </h4>
+                            <div className="cardValue">{this.state.partnerTrans}</div>
+                          </Card>
+                        </Col>
+                        <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="300px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px', marginRight:'20px'}}
+                          >
+                            <h4>Revenue</h4>
+                            <Row>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Fee</h5>
+                                <div className="cardValue">{this.state.partnerFee}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Commission</h5>
+                                <div className="cardValue">{this.state.partnerCommission}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Total</h5>
+                                <div className="cardValue"> {(parseFloat(this.state.partnerFee)+parseFloat(this.state.partnerCommission)).toFixed(2)}</div>
+                              </Col>
+                            </Row>
+                          </Card>
                         </Col>
                       </Row>
-                    </Card>
-                  </Col>   
-                  <Col cW='60%'>
-                  <Card
-                      style={{height:'140px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Revenue Collected</h4>
-                      <Row>
+                      <Row style={{marginTop:'20px'}}>
                         <Col>
-                          <h5>Fee</h5>
-                          <div className="cardValue">{CURRENCY}: {this.state.feeGenerated}</div>
+                        
+                            <Card
+                              horizontalMargin="0px"
+                              cardWidth="180px"
+                              textAlign="center"
+                              col
+                              smallValue
+                              style={{height:'120px',marginLeft:'20px'}}
+                            >
+                              <h4>
+                                Merchants
+                              </h4>
+                              <div className="cardValue">{this.state.totalBankMerchants}</div>
+                            </Card>
                         </Col>
                         <Col>
-                          <h5>Commission</h5>
-                          <div className="cardValue">{CURRENCY}: {this.state.commissionGenerated}</div>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            h4FontSize="16px"
+                            textAlign="center"
+                            smallValue
+                            col
+                            style={{height:'120px'}}
+                          >
+                            <h4>
+                            Bank Merchant Branches
+                            </h4>
+                            <div className="cardValue">{this.state.totalMerchantBranches}</div>
+                          </Card>
+                        </Col>
+                        <Col> 
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px'}}
+                          >
+                            <h4>
+                              Bank Merchant Staff
+                            </h4>
+                            <div className="cardValue">{this.state.totalMerchantStaff}</div>
+                          </Card>
                         </Col>
                         <Col>
-                          <h5>Total</h5>
-                          <div className="cardValue">{CURRENCY}: {(parseFloat(this.state.commissionGenerated, 10)+parseFloat(this.state.feeGenerated, 10)).toFixed(2)}</div>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px'}}
+                          >
+                            <h4>
+                              Bank Merchant Cashier
+                            </h4>
+                            <div className="cardValue">{this.state.totalMerchantCashier}</div>
+                          </Card>
+                        </Col>
+                        <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="300px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px', marginRight:'20px'}}
+                          >
+                            <h4>Revenue</h4>
+                            <Row>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Fee</h5>
+                                <div className="cardValue">{this.state.merchantFee}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Commission</h5>
+                                <div className="cardValue">{this.state.merchantCommission}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Total</h5>
+                                <div className="cardValue">{(parseFloat(this.state.merchantFee)+parseFloat(this.state.merchantCommission)).toFixed(2)}</div>
+                              </Col>
+                            </Row>
+                          </Card>
                         </Col>
                       </Row>
-                    </Card>
-                  </Col>
-                </Row>
-                </div>
+                      <Row style={{marginTop:'20px',marginBottom:'15px'}}>
+                        <Col cW='40%'>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="300px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px', marginLeft:'20px'}}
+                          >
+                            <h4>Invoices</h4>
+                            <Row>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Created</h5>
+                                <div className="cardValue">{this.state.merchantInvoiceCreated}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Paid</h5>
+                                <div className="cardValue">{this.state.invoicePaid}</div>
+                              </Col>
+                            </Row>
+                          </Card>
+                        </Col>
+                        <Col cW='45%'></Col>
+                        <Col cW='15%' style={{ marginRight:'30px', marginTop:'30px'}}>
+                        
+                          
+                        </Col>
+                      </Row>
+                      
+                    </div>
+                  
                 {this.state.datelist.length > 0 
                   ? this.state.datelist.map( (date,i) => {
                   return(
                   <Card style={{ marginTop: '10px' }}>
                   
                     <h3 style={{color:'green'}}><b>{`${new Date(date).getDate()}/${new Date(date).getMonth()+1}/${new Date(date).getFullYear()}`}</b></h3>
-                    <Table
+                    
+
+                    <div>
+                    {this.state.datestats[i].cashiedatestats.length > 0 
+                            ? this.state.datestats[i].cashiedatestats.map( (b, index) => {
+                              return (
+                              <div className={classNames(classes.root)} onClick={()=>{ep.handleDrawerOpen(i)}} >
+                              <div className={classNames(classes.appBar)} >
+                                    <Row>
+                                      <Col cW="5%">
+                                        <img
+                                          style={{ height: '40px' }}
+                                          src={`${STATIC_URL}${b.cashiedatestats.branch.logo}`}
+                                        />
+                                      </Col>
+                                      <Col cW="15%">
+                                        {b.cashiedatestats.branch.name}
+                                      </Col>
+                                      <Col cW="75%"></Col>
+                                      <Col cW="5%">
+                                      </Col>
+                                    </Row>
+                              </div>
+                              <Drawer
+                                className={classNames(classes.drawer)}
+                                transitionDuration={0}
+                                variant="persistent"
+                                anchor="top"
+                                open={true}
+                                // open={ep.state.drawer[`drawer${i}`]}
+                                classes={{
+                                  paper: classNames(classes.drawerPaper),
+                                }}
+                                
+                              >
+                                <h2 style={{marginTop:'20px'}}>Agencies:</h2>
+                                <Row style={{fontSize:'15px'}}>
+                                  <Col>Number: {b.cashiedatestats.totalbranch}</Col>
+                                  <Col>Cashiers: {b.cashiedatestats.totalcashier}</Col>
+                                  <Col>Transactions: {b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalTrans : 0}</Col>
+                                  <Col>Fee: {b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalFee.toFixed(2) : 0}</Col>
+                                  <Col>Commission: {b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalCommission.toFixed(2) : 0}</Col>
+                                  <Col>Revenue: {b.cashiedatestats.reports.length > 0 ? (b.cashiedatestats.reports[0].totalFee + b.cashiedatestats.reports[0].totalCommission).toFixed(2) : 0}</Col>
+                                </Row>
+                                <h2 style={{marginTop:'20px'}}>Partners:</h2>
+                                <Row style={{fontSize:'15px'}}>
+                                  <Col>Number: {b.cashiedatestats.totalpartner}</Col>
+                                  <Col>Agencies: {b.cashiedatestats.totalpartnerbranch}</Col>
+                                  <Col>Cashiers: {b.cashiedatestats.totalpartnercashier}</Col>
+                                  <Col>Transactions: {b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalTrans : 0}</Col>
+                                  <Col>Fee:  {b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalFee.toFixed(2) : 0}</Col>
+                                  <Col>Commission: {b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalCommission.toFixed(2) : 0}</Col>
+                                  <Col>Revenue: {b.cashiedatestats.partnerreports.length > 0 ? (b.cashiedatestats.partnerreports[0].totalFee + b.cashiedatestats.reports[0].totalCommission).toFixed(2) : 0}</Col>
+                                </Row>
+                                <h2 style={{marginTop:'20px'}}> Merchants:</h2>
+                                <Row style={{fontSize:'15px'}}>
+                                  <Col>Number:  {b.cashiedatestats.totalmerchant}</Col>
+                                  <Col>Agencies:  {b.cashiedatestats.totalmerchantbranch}</Col>
+                                  <Col>Cashiers: {b.cashiedatestats.totalmerchantcashier}</Col>
+                                  <Col>Staffs:  {b.cashiedatestats.totalmerchantstaff}</Col>
+                                  <Col>Fee: {b.cashiedatestats.merchantfee.toFixed(2)}</Col>
+                                  <Col>Commission: {b.cashiedatestats.merchantcommission.toFixed(2)}</Col>
+                                  <Col>Revenue: {(b.cashiedatestats.merchantfee + b.cashiedatestats.merchantcommission).toFixed(2)}</Col>
+                                </Row>
+                                <Row style={{marginTop:'20px', fontSize:'15px'}}>
+                                  <Col>Invoice Created:{b.cashiedatestats.invoicecreated}</Col>
+                                  <Col>Invoice Paid: {b.cashiedatestats.paid}</Col>
+                                </Row>
+                              </Drawer>
+                              
+                            </div>
+                            
+
+                          );
+                        })
+                      : null}
+                    </div>
+                    
+                    {/* <Table
                     marginTop="34px"
                     marginBottom="34px"
                     smallTd
@@ -1014,9 +1478,6 @@ export default class PartnerReports extends Component {
                             <th>Cash in Hand</th>
                             <th>Closing Balance</th>
                             <th>Discripancy</th>
-                            {/* <th>Requests Approved</th>
-                            <th>Requests Declined</th>
-                            <th>Requests Pending</th> */}
                           </tr>
                         </thead>
                         <tbody>
@@ -1031,9 +1492,6 @@ export default class PartnerReports extends Component {
                                 <td style={{textAlign:"center"}}>
                                   <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].opening_balance.toFixed(2) : "-"}</div>
                                 </td>
-                                {/* <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].paid_in_cash.toFixed(2) : "-"}</div>
-                                </td> */}
                                 <td style={{textAlign:"center"}}>
                                   <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_received.toFixed(2) : "-"}</div>
                                 </td>
@@ -1065,15 +1523,6 @@ export default class PartnerReports extends Component {
                                 <td style={{textAlign:"center"}}>
                                   <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].discripancy.toFixed(2) : "-"}</div>
                                 </td>
-                                {/* <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.accepted}</div>
-                                </td>
-                                <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.declined}</div>
-                                </td>
-                                <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.pending}</div>
-                                </td> */}
                                 
                               </tr>
                               )
@@ -1086,9 +1535,6 @@ export default class PartnerReports extends Component {
                               <td style={{textAlign:"center"}}>
                                 <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalOb}</b></div>
                               </td>
-                              {/* <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalPic}</b></div>
-                              </td> */}
                               <td style={{textAlign:"center"}}>
                                 <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCr}</b></div>
                               </td>
@@ -1119,20 +1565,11 @@ export default class PartnerReports extends Component {
                               <td style={{textAlign:"center"}}>
                                 <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalDis}</b></div>
                               </td>
-                              {/* <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>{this.state.datestats[i].totalRa}</b></div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>{this.state.datestats[i].totalRd}</b></div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>{this.state.datestats[i].totalRp}</b></div>
-                              </td> */}
-                              
                             </tr>
+                      
                       </tbody>
                   
-                  </Table>
+                  </Table> */}
             
                     
                 </Card>
@@ -1140,6 +1577,7 @@ export default class PartnerReports extends Component {
                 })
                 :null}
                 </div>
+              
               ):(
                 <div>
               <Row>
@@ -1294,3 +1732,5 @@ export default class PartnerReports extends Component {
     );
   }
 }
+
+export default withStyles(styles)(PartnerReports);

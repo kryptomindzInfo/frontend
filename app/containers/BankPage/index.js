@@ -1,9 +1,4 @@
-/*
- * HomePage
- *
- * This is the first thing users see of our App, at the '/' route
- *
- */
+
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import axios from 'axios';
@@ -30,11 +25,15 @@ import UploadArea from 'components/UploadArea';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import A from 'components/A';
+import classNames from 'classnames';
 import messages from './messages';
 import { postRequest, getRequest } from '../App/ApiCall';
 import documentFileIcon from '../../images/pdf_icon.png';
-import imageIcon from '../../images/document_icon.png'
+import { makeStyles, useTheme, withStyles} from '@material-ui/core/styles';
+import Toolbar from '@material-ui/core/Toolbar';
 import pdfIcon from '../../images/pdf_icon.png'
+import Typography from '@material-ui/core/Typography';
+import Drawer from '@material-ui/core/Drawer';
 
 import {
   API_URL,
@@ -57,7 +56,33 @@ toast.configure({
 const token = localStorage.getItem('logged');
 const isAdmin = localStorage.getItem('isAdmin');
 
-export default class BankPage extends Component {
+const styles = () => ({
+  root: {
+    display: 'block',
+    marginTop: '20px',
+  },
+  appBar: {
+    backgroundColor:'goldenrod',
+    padding:'15px',
+    color: "white",
+    fontSize:'30px',
+  },
+  drawer: {
+    zIndex: 0,
+    position: "relative",
+    width: '100%',
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: '100%',
+    position: "relative",
+
+  }
+});
+
+
+
+class BankPage extends Component {
   constructor() {
     super();
     this.state = {
@@ -93,18 +118,45 @@ export default class BankPage extends Component {
       filteredData: [],
       banksforfilter: [],
       openingBalance: 0,
+
       totalBranches: 0,
-      totalPartners: 0,
-      cashReceived: 0,
-      cashPaid: 0,
+      totalCashiers:0,
+      bankTrans:0,
       feeGenerated: 0,
       commissionGenerated: 0,
+      cashReceived: 0,
+      crfeeGenerated: 0,
+      crcommissionGenerated: 0,
+      cashPaid: 0,
+      cpfeeGenerated: 0,
+      cpcommissionGenerated: 0,
       cashInHand: 0,
-      closingBalance: 0,
+      
+      totalPartners: 0,
+      totalPartnerBranches: 0,
+      totalPartnerCashiers:0,
+      partnerTrans:0,
+      partnerFee:0,
+      partnerCommission:0,
+      
+      totalBankMerchants:0,
+      totalMerchantBranches:0,
+      totalMerchantStaff:0,
+      totalMerchantCashier:0,
+      merchantFee:0,
+      merchantCommission:0,
+      merchantInvoiceCreated:0,
       invoicePaid: 0,
       amountPaid: 0,
       totalAgencies:0,
-      totalCashiers:0,
+      
+      drawer:{
+        drawer0: true,
+        drawer1: true,
+        drawer2: true,
+        drawer3: true,
+        drawer4: true,
+      },
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -131,6 +183,19 @@ export default class BankPage extends Component {
         [name]: value,
       });
     }
+  };
+
+  handleDrawerOpen = (number) => {
+    const obj = {...this.state.drawer}
+    if (obj[`drawer${number}`] === false){
+      obj[`drawer${number}`] = true;
+    }else{
+      obj[`drawer${number}`] = false;
+    }
+    console.log(obj);
+    this.setState({
+      drawer:obj,
+    });
   };
 
   handleSearchInputChange = event => {
@@ -523,17 +588,34 @@ export default class BankPage extends Component {
       banks: banks.banks,
       loading: bankstats.loading,
       bankstats: bankstats.res,
+      bankTrans: bankstats.res.reduce((a, b) => a + b.totalTrans, 0),
       totalAgencies:  banks.banks.reduce((a, b) => a + b.total_branches, 0),
       totalCashiers:  banks.banks.reduce((a, b) => a + b.total_cashiers, 0),
       cashReceived: bankstats.res.reduce((a, b) => a + b.cashReceived, 0).toFixed(2),
       cashPaid: bankstats.res.reduce((a, b) => a + b.cashPaid, 0).toFixed(2),
       feeGenerated: bankstats.res.reduce((a, b) => a + b.feeGenerated, 0).toFixed(2),
       commissionGenerated: bankstats.res.reduce((a, b) => a + b.commissionGenerated, 0).toFixed(2),
+      crfeeGenerated: bankstats.res.reduce((a, b) => a + b.cashReceivedFee, 0).toFixed(2),
+      crcommissionGenerated: bankstats.res.reduce((a, b) => a + b.cashReceivedComm, 0).toFixed(2),
+      cpfeeGenerated: bankstats.res.reduce((a, b) => a + b.cashPaidFee, 0).toFixed(2),
+      cpcommissionGenerated: bankstats.res.reduce((a, b) => a + b.cashPaidComm, 0).toFixed(2),
       cashInHand: bankstats.res.reduce((a, b) => a + b.cashInHand, 0).toFixed(2),
       closingBalance: bankstats.res.reduce((a, b) => a + b.closingBalance, 0).toFixed(2),
       invoicePaid: bankstats.res.reduce((a, b) => a + b.invoicePaid, 0).toFixed(2),
-      amountPaid: bankstats.res.reduce((a, b) => a + b.amountPaid, 0).toFixed(2),
+      amountPaid: bankstats.res.reduce((a, b) => a + b.amountPaid, 0),
+      merchantInvoiceCreated:bankstats.res.reduce((a, b) => a + b.invoiceCreated, 0),
       totalPartners: banks.banks.reduce((a, b) => a + b.total_partners, 0),
+      totalPartnerBranches: bankstats.res.reduce((a, b) => a + b.partnerBranch, 0),
+      totalBankMerchants: bankstats.res.reduce((a, b) => a + b.totalMerchant, 0),
+      totalMerchantBranches: bankstats.res.reduce((a, b) => a + b.merchantBranch, 0),
+      totalMerchantStaff: bankstats.res.reduce((a, b) => a + b.merchantStaff, 0),
+      totalMerchantCashier: bankstats.res.reduce((a, b) => a + b.merchantCashiers, 0),
+      totalPartnerCashiers: bankstats.res.reduce((a, b) => a + b.partnerCashier, 0),
+      partnerTrans: bankstats.res.reduce((a, b) => a + b.partnerTotalTrans, 0),
+      partnerFee : bankstats.res.reduce((a, b) => a + b.partnerFeeGenerated, 0).toFixed(2),
+      partnerCommission : bankstats.res.reduce((a, b) => a + b.partnerCommissionGenerated, 0).toFixed(2),
+      merchantFee: bankstats.res.reduce((a, b) => a + b.merchantFeeGenerated, 0).toFixed(2),
+      merchantCommission: bankstats.res.reduce((a, b) => a + b.merchantCommissionGenerated, 0).toFixed(2),
     })
   }
 
@@ -606,6 +688,7 @@ export default class BankPage extends Component {
       const { target } = e;
       target.parentElement.querySelector('label').classList.add('focused');
     }
+    const { classes } = this.props;
 
     function inputBlur(e) {
       const { target } = e;
@@ -633,178 +716,507 @@ export default class BankPage extends Component {
         <Header active="bank" />
         <Container verticalMargin>
           <Main fullWidth>
-          <Row>
-              <Col>
-                <Card
-                  style={{height:'130px'}}
-                  marginBottom="10px"
-                  textAlign="center"
-                  buttonMarginTop="32px"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Number of Partners</h4>
-                  <div className="cardValue">{this.state.totalPartners}</div>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                  style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Number of Agencies</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.totalAgencies}</div>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                  style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Number of Cashiers</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.totalCashiers}</div>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                   style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Cash Received</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.cashReceived}</div>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                   style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Cash Paid</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.cashPaid}</div>
-                </Card>
-              </Col>
+          <div style={{backgroundColor:"goldenrod", padding:'10px'}}>
+              <Row style={{marginTop:'15px'}}>
+                <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="180px"
+                    h4FontSize="16px"
+                    textAlign="center"
+                    smallValue
+                    col
+                    style={{height:'120px',marginLeft:'20px'}}
+                  >
+                    <h4>
+                      Bank Agencies
+                    </h4>
+                    <div className="cardValue">{this.state.totalAgencies}</div>
+                  </Card>
+                </Col>
+                <Col> 
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="180px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px'}}
+                  >
+                    <h4>
+                      Bank Cashiers
+                    </h4>
+                    <div className="cardValue">{this.state.totalCashiers}</div>
+                  </Card>
+                </Col>
+                <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="180px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px'}}
+                  >
+                    <h4>
+                      Bank Transactions
+                    </h4>
+                    <div className="cardValue">{this.state.bankTrans}</div>
+                  </Card>
+                </Col>
+                <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="180px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px'}}
+                          >
+                            <h4>
+                              Cash In Hand
+                            </h4>
+                            <div className="cardValue">{this.state.cashInHand}</div>
+                          </Card>
+                        </Col>
+               
               
-            </Row>
-            <Row>
-            <Col cW='25%'>
-                <Card
-                   style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Cash In Hand</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.cashInHand}</div>
-                </Card>
-              </Col>
-              <Col cW='35%'>
-                <Card
-                  style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Invoices Paid</h4>
-                  <Row>
-                    <Col style={{textAlign:'center'}}>
-                      <h5>Number</h5>
-                      <div className="cardValue">{this.state.invoicePaid}</div>
-                    </Col>
-                    <Col style={{textAlign:'center'}}>
-                      <h5>Amount</h5>
-                      <div className="cardValue">{CURRENCY}: {this.state.amountPaid}</div>
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-              <Col cW='40%'>
-              <Card
-                   style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  bigPadding
-                  textAlign="center"
-                  smallValue
-                >
-                  <h4>Revenue Collected</h4>
-                  <Row>
-                    <Col style={{textAlign:'center'}}>
-                      <h5>Fee</h5>
-                      <div className="cardValue">{CURRENCY}: {this.state.feeGenerated}</div>
-                    </Col>
-                    <Col style={{textAlign:'center'}}>
-                      <h5>Commission</h5>
-                      <div className="cardValue">{CURRENCY}: {this.state.commissionGenerated}</div>
-                    </Col>
-                    <Col style={{textAlign:'center'}}>
-                      <h5>Total</h5>
-                      <div className="cardValue">{CURRENCY}: {(parseFloat(this.state.commissionGenerated,10)+ parseFloat(this.state.feeGenerated,10)).toFixed(2)}</div>
-                    </Col>
-                  </Row>
+                <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="300px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginRight:'20px'}}
+                  >
+                    <h4>Revenue</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.feeGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.commissionGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue"> {(parseFloat(this.state.feeGenerated)+parseFloat(this.state.commissionGenerated)).toFixed(2)}</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+              
+              </Row>
+               <Row style={{marginTop:'20px'}}>
+               <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="300px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px',marginLeft:'20px'}}
+                  >
+                    <h4>Cash Paid</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Amount</h5>
+                        <div className="cardValue"> {this.state.cashPaid}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.cpfeeGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.cpcommissionGenerated}</div>
+                      </Col>
+                      
+                    </Row>
+                  </Card>
+                </Col>
+               <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="300px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginRight:'20px'}}
+                  >
+                    <h4>Cash Received</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Amount</h5>
+                        <div className="cardValue"> {this.state.cashReceived}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.crfeeGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.crcommissionGenerated}</div>
+                      </Col>
+                      
+                    </Row>
+                  </Card>
+                </Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col> 
+              </Row>
+              <Row style={{marginTop:'20px'}}>
+                <Col>
+                 
+                    <Card
+                      horizontalMargin="0px"
+                      cardWidth="180px"
+                      textAlign="center"
+                      col
+                      smallValue
+                      style={{height:'120px',marginLeft:'20px'}}
+                    >
+                      <h4>
+                        Partners
+                      </h4>
+                      <div className="cardValue">{this.state.totalPartners}</div>
+                    </Card>
                   
-                </Card>
-              </Col>
-              {/* <Col>
-                <Card
-                  style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Closing Balance</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.closingBalance}</div>
-                </Card>
-              </Col> */}
-            </Row>
-            
-            <ActionBar
-              marginBottom="33px"
-              inputWidth="calc(100% - 241px)"
-              className="clr"
-            >
-              <div className="iconedInput fl">
-                <i className="material-icons">search</i>
-                <input
-                  type="text"
-                  placeholder="Search Bank"
-                  value={this.state.query}
-                  onChange={this.handleSearchInputChange}
-                />
-              </div>
+                  
+                </Col>
+                <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="180px"
+                    h4FontSize="16px"
+                    textAlign="center"
+                    smallValue
+                    col
+                    style={{height:'120px'}}
+                  >
+                    <h4>
+                      Partner Agencies
+                    </h4>
+                    <div className="cardValue">{this.state.totalPartnerBranches}</div>
+                  </Card>
+                </Col>
+                <Col> 
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="180px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px'}}
+                  >
+                    <h4>
+                      Partner Cashiers
+                    </h4>
+                    <div className="cardValue">{this.state.totalPartnerCashiers}</div>
+                  </Card>
+                </Col>
+                <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="180px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px'}}
+                  >
+                    <h4>
+                      Partner Transactions
+                    </h4>
+                    <div className="cardValue">{this.state.partnerTrans}</div>
+                  </Card>
+                </Col>
+                <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="300px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginRight:'20px'}}
+                  >
+                    <h4>Revenue</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.partnerFee}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.partnerCommission}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue"> {(parseFloat(this.state.partnerFee)+parseFloat(this.state.partnerCommission)).toFixed(2)}</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+              </Row>
+              <Row style={{marginTop:'20px'}}>
+                <Col>
+                 
+                    <Card
+                      horizontalMargin="0px"
+                      cardWidth="180px"
+                      textAlign="center"
+                      col
+                      smallValue
+                      style={{height:'120px',marginLeft:'20px'}}
+                    >
+                      <h4>
+                        Merchants
+                      </h4>
+                      <div className="cardValue">{this.state.totalBankMerchants}</div>
+                    </Card>
+                </Col>
+                <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="180px"
+                    h4FontSize="16px"
+                    textAlign="center"
+                    smallValue
+                    col
+                    style={{height:'120px'}}
+                  >
+                    <h4>
+                    Bank Merchant Branches
+                    </h4>
+                    <div className="cardValue">{this.state.totalMerchantBranches}</div>
+                  </Card>
+                </Col>
+                <Col> 
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="180px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px'}}
+                  >
+                    <h4>
+                      Bank Merchant Staff
+                    </h4>
+                    <div className="cardValue">{this.state.totalMerchantStaff}</div>
+                  </Card>
+                </Col>
+                <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="180px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px'}}
+                  >
+                    <h4>
+                      Bank Merchant Cashier
+                    </h4>
+                    <div className="cardValue">{this.state.totalMerchantCashier}</div>
+                  </Card>
+                </Col>
+                <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="300px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginRight:'20px'}}
+                  >
+                    <h4>Revenue</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.merchantFee}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.merchantCommission}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue">{(parseFloat(this.state.merchantFee)+parseFloat(this.state.merchantCommission)).toFixed(2)}</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+              </Row>
+              <Row style={{marginTop:'20px',marginBottom:'15px'}}>
+                <Col cW='40%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="300px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'20px'}}
+                  >
+                    <h4>Invoices</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Created</h5>
+                        <div className="cardValue">{this.state.merchantInvoiceCreated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Paid</h5>
+                        <div className="cardValue">{this.state.invoicePaid}</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+                <Col cW='45%'></Col>
+                <Col cW='15%' style={{ marginRight:'30px', marginTop:'30px'}}>
+                
+                    <Button
+                      style={{
+                        padding:'10px',
+                        backgroundColor:'green',
+                        color:'white',
+                      }}
+                      onClick={this.showPopup}
+                    >
+                      <h4>Add Bank</h4>
+                    </Button>
+                  
+                </Col>
+              </Row>
+              
+            </div> 
 
-              {this.state.permissions == 'all' ||
-                this.state.permissions.create_bank ? (
-                  <Button className="addBankButton" flex onClick={this.showPopup}>
-                    <i className="material-icons">add</i>
-                    <span>
-                      <FormattedMessage {...messages.addbank} />
-                    </span>
-                  </Button>
-                ) : null}
-            </ActionBar>
-            <Card bigPadding>
+            <div>
+              {this.state.banks && this.state.banks.length > 0
+                ? this.state.banks.map(function (b,i) {
+                  return (
+                    <div className={classNames(classes.root)} onClick={()=>{ep.handleDrawerOpen(i)}} >
+                      <div className={classNames(classes.appBar)} >
+                            <Row>
+                              <Col cW="5%">
+                                <img
+                                  style={{ height: '40px' }}
+                                  src={`${STATIC_URL}${b.logo}`}
+                                />
+                              </Col>
+                              <Col cW="15%">
+                                {b.name}
+                              
+                              </Col>
+                              <Col cW="75%"></Col>
+                              <Col cW="5%">
+                                <Table style={{marginBottom:'50px'}}>
+                                  <span className="absoluteRight primary popMenuTrigger">
+                                      <i className="material-icons ">more_vert</i>
+                                      <div className="popMenu">
+                                        <span
+                                            onClick={() => ep.loginRequest(`infra${b.name}admin`,b._id)}
+                                          >
+                                            Access
+                                        </span>
+                                      
+                                        {perms == 'all' || perms.edit_bank ? (
+                                          <span
+                                            onClick={() => ep.showEditPopup(b)}
+                                          >
+                                            Edit
+                                          </span>
+                                        ) : null}
+                                        <A href={`/info/${b._id}`}>
+                                          <FormattedMessage {...messages.menu1} />
+                                        </A>
+                                        <A href={`/documents/${b._id}`}>
+                                          <FormattedMessage {...messages.menu2} />
+                                        </A>
+                                        <A href={`/fees/${b._id}`}>
+                                          <FormattedMessage {...messages.menu3} />
+                                        </A>
+                                        {b.status == -1 ? (
+                                          <span
+                                            onClick={() => ep.blockBank(b._id, 1)}
+                                          >
+                                            Unblock
+                                          </span>
+                                        ) : (
+                                            <span
+                                              onClick={() =>
+                                                ep.blockBank(b._id, -1)
+                                              }
+                                            >
+                                              Block
+                                            </span>
+                                          )}
+                                      </div>
+                                    </span>
+                                </Table> 
+                              </Col>
+                            
+                            </Row>
+                            
+                          
+                          
+                      </div>
+                      <Drawer
+                        className={classNames(classes.drawer)}
+                        transitionDuration={0}
+                        variant="persistent"
+                        anchor="top"
+                        open={ep.state.drawer[`drawer${i}`]}
+                        classes={{
+                          paper: ep.state.drawer[`drawer${i}`] ? classNames(classes.drawerPaper) : null,
+                        }}
+                        
+                      >
+                        <h2 style={{marginTop:'20px'}}>Agencies:</h2>
+                        <Row style={{fontSize:'15px'}}>
+                          <Col>Number: {b.total_branches}</Col>
+                          <Col>Cashiers: {b.total_cashiers}</Col>
+                          <Col>Transactions: {ep.state.bankstats[i].totalTrans}</Col>
+                          <Col>Fee: {ep.state.bankstats[i].feeGenerated.toFixed(2)}</Col>
+                          <Col>Commission: {ep.state.bankstats[i].commissionGenerated.toFixed(2)}</Col>
+                          <Col>Revenue: {(ep.state.bankstats[i].feeGenerated+ep.state.bankstats[i].commissionGenerated).toFixed(2)}</Col>
+                        </Row>
+                        <h2 style={{marginTop:'20px'}}>Partners:</h2>
+                        <Row style={{fontSize:'15px'}}>
+                          <Col>Number: {b.total_partners}</Col>
+                          <Col>Agencies: {ep.state.bankstats[i].partnerBranch}</Col>
+                          <Col>Cashiers: {ep.state.bankstats[i].partnerCashier}</Col>
+                          <Col>Transactions: {ep.state.bankstats[i].partnerTotalTrans}</Col>
+                          <Col>Fee: {ep.state.bankstats[i].partnerFeeGenerated.toFixed(2)}</Col>
+                          <Col>Commission:{ep.state.bankstats[i].partnerCommissionGenerated.toFixed(2)}</Col>
+                          <Col>Revenue: {(ep.state.bankstats[i].partnerFeeGenerated+ep.state.bankstats[i].partnerCommissionGenerated).toFixed(2)}</Col>
+                        </Row>
+                        <h2 style={{marginTop:'20px'}}> Merchants:</h2>
+                        <Row style={{fontSize:'15px'}}>
+                          <Col>Number:  {ep.state.bankstats[i].totalMerchant}</Col>
+                          <Col>Agencies:  {ep.state.bankstats[i].merchantBranch}</Col>
+                          <Col>Cashiers: {ep.state.bankstats[i].merchantCashiers}</Col>
+                          <Col>Staffs:  {ep.state.bankstats[i].merchantStaff}</Col>
+                          <Col>Fee: {ep.state.bankstats[i].merchantFeeGenerated.toFixed(2)}</Col>
+                          <Col>Commission: {ep.state.bankstats[i].merchantCommissionGenerated.toFixed(2)}</Col>
+                          <Col>Revenue: {(ep.state.bankstats[i].merchantFeeGenerated+ep.state.bankstats[i].merchantCommissionGenerated).toFixed(2)}</Col>
+                        </Row>
+                        <Row style={{marginTop:'20px', fontSize:'15px'}}>
+                          <Col>Invoice Created:{ep.state.bankstats[i].invoiceCreated}</Col>
+                          <Col>Invoice Paid: {ep.state.bankstats[i].invoicePaid}</Col>
+                        </Row>
+                      </Drawer>
+                      
+                  </div>
+                    
+
+                  );
+                })
+              : null}
+            </div>
+            
+            {/* <Card bigPadding>
               <div className="cardHeader">
                 <div className="cardHeaderLeft">
                   <i className="material-icons">supervised_user_circle</i>
@@ -813,9 +1225,6 @@ export default class BankPage extends Component {
                   <h3>
                     <FormattedMessage {...messages.title} />
                   </h3>
-                  {/* <h5>
-                    <FormattedMessage {...messages.subtitle} />
-                  </h5> */}
                 </div>
               </div>
               <div className="cardBody">
@@ -823,7 +1232,6 @@ export default class BankPage extends Component {
                   <thead>
                     <tr>
                       <th>
-                        {/* <FormattedMessage {...messages.th0} /> */}
                         <span>Bank Logo</span>
                       </th>
                       <th>
@@ -838,7 +1246,6 @@ export default class BankPage extends Component {
                       <th>
                         <FormattedMessage {...messages.th4} />
                       </th>
-                      {/* <th>Opening Balance</th> */}
                       <th>Cash Received</th>
                       <th>Cash Paid</th>
                       <th>Invoice Paid</th>
@@ -847,7 +1254,6 @@ export default class BankPage extends Component {
                       <th>Commission Collected</th>
                       <th>Revenue Collected</th>
                       <th>Cash In Hand</th>
-                      {/* <th>Closing Balance</th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -861,12 +1267,10 @@ export default class BankPage extends Component {
                                 src={`${STATIC_URL}${b.logo}`}
                               />
                             </td>
-                            {/* <td><img src={b.logo} /></td> */}
                             <td>{b.name}</td>
                             <td className="tac">{b.total_branches}</td>
                             <td className="tac">{b.total_partners}</td>
                             <td className="tac">{b.total_cashiers}</td>
-                            {/* <td className="tac">{ep.state.bankstats[i].openingBalance.toFixed(2)}</td> */}
                             <td className="tac">{ep.state.bankstats[i].cashReceived.toFixed(2)}</td>
                             <td className="tac">{ep.state.bankstats[i].cashPaid.toFixed(2)}</td>
                             <td className="tac">{ep.state.bankstats[i].invoicePaid}</td>
@@ -874,7 +1278,6 @@ export default class BankPage extends Component {
                             <td className="tac">{ep.state.bankstats[i].feeGenerated.toFixed(2)}</td>
                             <td className="tac">{ep.state.bankstats[i].commissionGenerated.toFixed(2)}</td>
                             <td className="tac">{(ep.state.bankstats[i].feeGenerated+ep.state.bankstats[i].commissionGenerated).toFixed(2)}</td>
-                            {/* <td className="tac">{ep.state.bankstats[i].cashInHand.toFixed(2)}</td> */}
                             <td className="tac bold">
                               {ep.state.bankstats[i].cashInHand.toFixed(2)}
                               {b.status != 0 ? (
@@ -934,6 +1337,7 @@ export default class BankPage extends Component {
                 </Table>
               </div>
             </Card>
+             */}
             <div>
               {this.state.filteredData.map(i => (
                 <p>{i.name}</p>
@@ -1980,3 +2384,5 @@ export default class BankPage extends Component {
     );
   }
 }
+
+export default withStyles(styles)(BankPage);
