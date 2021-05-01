@@ -15,6 +15,7 @@ import DetailsPopup from './DetailsPopup';
 import EnterOTPPopup from './EnterOTPPopup';
 import { STATIC_URL, API_URL } from '../App/constants';
 import Loader from '../../components/Loader';
+import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 import { postRequest, getRequest } from '../App/ApiCall';
 import 'react-toastify/dist/ReactToastify.css';
 toast.configure({
@@ -285,7 +286,7 @@ function BankPartnerListPage(props) {
       </Helmet>
       <BankHeader active="partnerss" />
       <Container verticalMargin>
-        <SidebarBank />
+      <BankSidebarTwo active="backoffice" />
         <Main>
           <ActionBar
             marginBottom="33px"
@@ -331,7 +332,7 @@ function BankPartnerListPage(props) {
                   </tr>
                 </thead>
                 <tbody>
-                  {partnerList && partnerList.length > 0 ? partners : null}
+                  {/* {partnerList && partnerList.length > 0 ? partners : null} */}
                 </tbody>
               </Table>
             </div>

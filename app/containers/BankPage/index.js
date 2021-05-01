@@ -138,6 +138,12 @@ class BankPage extends Component {
       partnerTrans:0,
       partnerFee:0,
       partnerCommission:0,
+      pcashReceived: 0,
+      pcrfeeGenerated: 0,
+      pcrcommissionGenerated: 0,
+      pcashPaid: 0,
+      pcpfeeGenerated: 0,
+      pcpcommissionGenerated: 0,
       
       totalBankMerchants:0,
       totalMerchantBranches:0,
@@ -599,6 +605,14 @@ class BankPage extends Component {
       crcommissionGenerated: bankstats.res.reduce((a, b) => a + b.cashReceivedComm, 0).toFixed(2),
       cpfeeGenerated: bankstats.res.reduce((a, b) => a + b.cashPaidFee, 0).toFixed(2),
       cpcommissionGenerated: bankstats.res.reduce((a, b) => a + b.cashPaidComm, 0).toFixed(2),
+
+      pcrfeeGenerated: bankstats.res.reduce((a, b) => a + b.partnerCashReceivedFee, 0).toFixed(2),
+      pcrcommissionGenerated: bankstats.res.reduce((a, b) => a + b.partnerCashReceivedComm, 0).toFixed(2),
+      pcpfeeGenerated: bankstats.res.reduce((a, b) => a + b.partnerCashPaidFee, 0).toFixed(2),
+      pcpcommissionGenerated: bankstats.res.reduce((a, b) => a + b.partnerCashPaidComm, 0).toFixed(2),
+      pcashReceived: bankstats.res.reduce((a, b) => a + b.partnerCashReceived, 0).toFixed(2),
+      pcashPaid: bankstats.res.reduce((a, b) => a + b.partnerCashPaid, 0).toFixed(2),
+
       cashInHand: bankstats.res.reduce((a, b) => a + b.cashInHand, 0).toFixed(2),
       closingBalance: bankstats.res.reduce((a, b) => a + b.closingBalance, 0).toFixed(2),
       invoicePaid: bankstats.res.reduce((a, b) => a + b.invoicePaid, 0).toFixed(2),
@@ -764,7 +778,7 @@ class BankPage extends Component {
                     <div className="cardValue">{this.state.bankTrans}</div>
                   </Card>
                 </Col>
-                <Col>
+                {/* <Col>
                           <Card
                             horizontalMargin="0px"
                             cardWidth="180px"
@@ -778,7 +792,7 @@ class BankPage extends Component {
                             </h4>
                             <div className="cardValue">{this.state.cashInHand}</div>
                           </Card>
-                        </Col>
+                        </Col> */}
                
               
                 <Col>
@@ -959,6 +973,65 @@ class BankPage extends Component {
                     </Row>
                   </Card>
                 </Col>
+              </Row>
+              <Row style={{marginTop:'20px'}}>
+               <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="300px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px',marginLeft:'20px'}}
+                  >
+                    <h4>Partner Cash Paid</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Amount</h5>
+                        <div className="cardValue"> {this.state.pcashPaid}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.pcpfeeGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.pcpcommissionGenerated}</div>
+                      </Col>
+                      
+                    </Row>
+                  </Card>
+                </Col>
+               <Col>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="300px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginRight:'20px'}}
+                  >
+                    <h4>Partner Cash Received</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Amount</h5>
+                        <div className="cardValue"> {this.state.pcashReceived}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.pcrfeeGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.pcrcommissionGenerated}</div>
+                      </Col>
+                      
+                    </Row>
+                  </Card>
+                </Col>
+                <Col></Col>
+                <Col></Col>
+                <Col></Col> 
               </Row>
               <Row style={{marginTop:'20px'}}>
                 <Col>
@@ -1176,6 +1249,7 @@ class BankPage extends Component {
                         <h2 style={{marginTop:'20px'}}>Agencies:</h2>
                         <Row style={{fontSize:'15px'}}>
                           <Col>Number: {b.total_branches}</Col>
+                          <Col></Col>
                           <Col>Cashiers: {b.total_cashiers}</Col>
                           <Col>Transactions: {ep.state.bankstats[i].totalTrans}</Col>
                           <Col>Fee: {ep.state.bankstats[i].feeGenerated.toFixed(2)}</Col>
@@ -1205,6 +1279,11 @@ class BankPage extends Component {
                         <Row style={{marginTop:'20px', fontSize:'15px'}}>
                           <Col>Invoice Created:{ep.state.bankstats[i].invoiceCreated}</Col>
                           <Col>Invoice Paid: {ep.state.bankstats[i].invoicePaid}</Col>
+                          <Col></Col>
+                          <Col></Col>
+                          <Col></Col>
+                          <Col></Col>
+                          <Col></Col>
                         </Row>
                       </Drawer>
                       

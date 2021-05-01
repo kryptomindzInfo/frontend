@@ -105,9 +105,9 @@ export default class BankDashboard extends Component {
             <h1 style={{color:'green',textAlign:'center'}}>Agencies</h1>
             <hr></hr> 
             <Row>
-              <Col>
+              <Col cW='25%'>
                 <Card
-                  style={{height:'100px'}}
+                  style={{height:'130px'}}
                   marginBottom="10px"
                   textAlign="center"
                   buttonMarginTop="32px"
@@ -118,9 +118,9 @@ export default class BankDashboard extends Component {
                   <div className="cardValue">{this.state.agencystats.totalAgencies}</div>
                 </Card>
               </Col>
-              <Col>
+              <Col cW='25%'>
                 <Card
-                  style={{height:'100px'}}
+                  style={{height:'130px'}}
                   marginBottom="10px"
                   buttonMarginTop="32px"
                   textAlign="center"
@@ -131,9 +131,9 @@ export default class BankDashboard extends Component {
                   <div className="cardValue">{CURRENCY}: {this.state.agencystats.openingBalance}</div>
                 </Card>
               </Col>
-              <Col>
+              <Col  cW='50%'>
                 <Card
-                   style={{height:'100px'}}
+                   style={{height:'130px'}}
                   marginBottom="10px"
                   buttonMarginTop="32px"
                   textAlign="center"
@@ -141,62 +141,53 @@ export default class BankDashboard extends Component {
                   smallValue
                 >
                   <h4>Cash Received</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.agencystats.cashReceived}</div>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                   style={{height:'100px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Cash Paid</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.agencystats.cashPaid}</div>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                   style={{height:'100px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Cash In Hand</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.agencystats.cashInHand}</div>
-                </Card>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Card
-                  style={{height:'100px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Invoices Paid</h4>
                   <Row>
                     <Col style={{textAlign:'center'}}>
-                      <h5>Number</h5>
-                      <div className="cardValue">{this.state.agencystats.invoicePaid}</div>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}:{this.state.agencystats.cashReceived}</div>
                     </Col>
                     <Col style={{textAlign:'center'}}>
-                      <h5>Amount</h5>
-                      <div className="cardValue">{CURRENCY}: {this.state.agencystats.amountPaid}</div>
+                      <h5>Fee</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.agencystats.cashReceivedFee}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Commission</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.agencystats.cashReceivedComm}</div>
                     </Col>
                   </Row>
                 </Card>
               </Col>
-              <Col>
+            </Row>
+            <Row>
+              <Col  cW='50%'>
+                  <Card
+                    style={{height:'130px'}}
+                    marginBottom="10px"
+                    buttonMarginTop="32px"
+                    textAlign="center"
+                    bigPadding
+                    smallValue
+                  >
+                    <h4>Cash Paid</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Amount</h5>
+                        <div className="cardValue">{CURRENCY}:{this.state.agencystats.cashPaid}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{CURRENCY}:{this.state.agencystats.cashPaidFee}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{CURRENCY}:{this.state.agencystats.cashPaidFeeComm}</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col> 
+              <Col cW='50%'>
               <Card
-                   style={{height:'100px'}}
+                   style={{height:'130px'}}
                   marginBottom="10px"
                   buttonMarginTop="32px"
                   bigPadding
@@ -221,9 +212,46 @@ export default class BankDashboard extends Component {
                   
                 </Card>
               </Col>
-              <Col>
+            </Row>
+            <Row>
+            <Col cW='45%'>
                 <Card
-                  style={{height:'100px'}}
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Invoices Paid</h4>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Number</h5>
+                      <div className="cardValue">{this.state.agencystats.invoicePaid}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.agencystats.amountPaid}</div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+              <Col  cW='33%'>
+                <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash In Hand</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.agencystats.cashInHand}</div>
+                </Card>
+              </Col>
+              <Col  cW='33%'>
+                <Card
+                  style={{height:'130px'}}
                   marginBottom="10px"
                   buttonMarginTop="32px"
                   textAlign="center"
@@ -235,14 +263,13 @@ export default class BankDashboard extends Component {
                 </Card>
               </Col>
             </Row>
-            
             <hr></hr> 
             <h1 style={{color:'green',textAlign:'center'}}>Partners</h1>
             <hr></hr> 
             <Row>
-              <Col>
+              <Col cW='25%'>
                 <Card
-                  style={{height:'100px'}}
+                  style={{height:'130px'}}
                   marginBottom="10px"
                   textAlign="center"
                   buttonMarginTop="32px"
@@ -253,9 +280,9 @@ export default class BankDashboard extends Component {
                   <div className="cardValue">{this.state.partnerstats.totalPartners}</div>
                 </Card>
               </Col>
-              <Col>
+              <Col cW='25%'>
                 <Card
-                  style={{height:'100px'}}
+                  style={{height:'130px'}}
                   marginBottom="10px"
                   buttonMarginTop="32px"
                   textAlign="center"
@@ -266,9 +293,9 @@ export default class BankDashboard extends Component {
                   <div className="cardValue">{CURRENCY}: {this.state.partnerstats.openingBalance}</div>
                 </Card>
               </Col>
-              <Col>
+              <Col cW='50%'>
                 <Card
-                   style={{height:'100px'}}
+                   style={{height:'130px'}}
                   marginBottom="10px"
                   buttonMarginTop="32px"
                   textAlign="center"
@@ -276,12 +303,29 @@ export default class BankDashboard extends Component {
                   smallValue
                 >
                   <h4>Cash Received</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.partnerstats.cashReceived}</div>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.partnerstats.cashReceived}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Fee</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.partnerstats.cashReceivedFee}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Commission</h5>
+                      <div className="cardValue">{CURRENCY}:{this.state.partnerstats.cashReceivedComm}</div>
+                    </Col>
+                  </Row>
                 </Card>
               </Col>
-              <Col>
+              
+              
+            </Row>
+            <Row>
+              <Col cW='50%'>
                 <Card
-                   style={{height:'100px'}}
+                   style={{height:'130px'}}
                   marginBottom="10px"
                   buttonMarginTop="32px"
                   textAlign="center"
@@ -289,49 +333,25 @@ export default class BankDashboard extends Component {
                   smallValue
                 >
                   <h4>Cash Paid</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.partnerstats.cashPaid}</div>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                   style={{height:'100px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Cash In Hand</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.partnerstats.cashInHand}</div>
-                </Card>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Card
-                  style={{height:'100px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Invoices Paid</h4>
                   <Row>
                     <Col style={{textAlign:'center'}}>
-                      <h5>Number</h5>
-                      <div className="cardValue">{this.state.partnerstats.invoicePaid}</div>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.partnerstats.cashPaid}</div>
                     </Col>
                     <Col style={{textAlign:'center'}}>
-                      <h5>Amount</h5>
-                      <div className="cardValue">{CURRENCY}: {this.state.partnerstats.amountPaid}</div>
+                      <h5>Fee</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.partnerstats.cashPaidFee}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Commission</h5>
+                      <div className="cardValue">{CURRENCY}:{this.state.partnerstats.cashPaidComm}</div>
                     </Col>
                   </Row>
                 </Card>
               </Col>
-              <Col>
+              <Col cW='50%'>
               <Card
-                   style={{height:'100px'}}
+                   style={{height:'130px'}}
                   marginBottom="10px"
                   buttonMarginTop="32px"
                   bigPadding
@@ -356,9 +376,47 @@ export default class BankDashboard extends Component {
                   
                 </Card>
               </Col>
+              
+            </Row>
+            <Row>
               <Col>
                 <Card
-                  style={{height:'100px'}}
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Invoices Paid</h4>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Number</h5>
+                      <div className="cardValue">{this.state.partnerstats.invoicePaid}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.partnerstats.amountPaid}</div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash In Hand</h4>
+                  <div className="cardValue">{CURRENCY}: {this.state.partnerstats.cashInHand}</div>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                  style={{height:'130px'}}
                   marginBottom="10px"
                   buttonMarginTop="32px"
                   textAlign="center"

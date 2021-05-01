@@ -115,6 +115,12 @@ class PartnerReports extends Component {
       partnerTrans:0,
       partnerFee:0,
       partnerCommission:0,
+      pcashReceived: 0,
+      pcrfeeGenerated: 0,
+      pcrcommissionGenerated: 0,
+      pcashPaid: 0,
+      pcpfeeGenerated: 0,
+      pcpcommissionGenerated: 0,
 
       totalBankMerchants:0,
       totalMerchantBranches:0,
@@ -337,13 +343,13 @@ class PartnerReports extends Component {
 
 
         totalPartnerFee: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.partnerreports[0].totalFee : 0), 0
+          (a, b) => a + (b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalFee : 0), 0
         ).toFixed(2),
         totalPartnerComm: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.partnerreports[0].totalCommission : 0), 0
+          (a, b) => a + (b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalCommission : 0), 0
         ).toFixed(2),
         totalPartnerTrans: cashiedatestats.reduce(
-          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.partnerreports[0].totalTrans : 0), 0
+          (a, b) => a + (b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalTrans : 0), 0
         ).toFixed(2),
         totalPartnerBranch: cashiedatestats.reduce(
           (a, b) => a + b.cashiedatestats.totalpartnerbranch, 0
@@ -354,6 +360,24 @@ class PartnerReports extends Component {
         totalPartner: cashiedatestats.reduce(
           (a, b) => a + b.cashiedatestats.totalpartner, 0
         ),
+        totalPCr: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].cashReceived : 0), 0
+        ).toFixed(2),
+        totalPCrf: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].cashReceivedFee : 0), 0
+        ).toFixed(2),
+        totalPCrc: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].cashReceivedComm : 0), 0
+        ).toFixed(2),
+        totalPCp: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].cashPaid : 0), 0
+        ).toFixed(2),
+        totalPCpf: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].cashPaidFee : 0), 0
+        ).toFixed(2),
+        totalPCpc: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].cashPaidComm : 0), 0
+        ).toFixed(2),
 
         totalMerchant: cashiedatestats.reduce(
           (a, b) => a + b.cashiedatestats.totalmerchant, 0
@@ -585,9 +609,7 @@ class PartnerReports extends Component {
         ),
   
         totalPartners: datestats.res[0].totalPartner,
-         
         totalPartnerBranches:datestats.res[0].totalPartnerBranch,
-          
         totalPartnerCashiers:datestats.res[0].totalPartnerCashier,
         partnerTrans:datestats.res.reduce(
           (a, b) => a + parseFloat(b.totalPartnerTrans,10), 0
@@ -598,12 +620,24 @@ class PartnerReports extends Component {
         partnerCommission:datestats.res.reduce(
           (a, b) => a + parseFloat(b.totalPartnerComm,10), 0
         ),
-
-        
-
-
-
-
+        pcashReceived: datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalPCr,10), 0
+        ),
+        pcrfeeGenerated:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalPCrf,10), 0
+        ),
+        pcrcommissionGenerated:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalPCrc,10), 0
+        ),
+        pcashPaid:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalPCp,10), 0
+        ),
+        pcpfeeGenerated:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalPCpf,10), 0
+        ),
+        pcpcommissionGenerated:  datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalPCpc,10), 0
+        ),
 
 
 
@@ -1056,7 +1090,7 @@ class PartnerReports extends Component {
                             <div className="cardValue">{this.state.bankTrans}</div>
                           </Card>
                         </Col>
-                        <Col>
+                        {/* <Col>
                           <Card
                             horizontalMargin="0px"
                             cardWidth="180px"
@@ -1070,7 +1104,7 @@ class PartnerReports extends Component {
                             </h4>
                             <div className="cardValue">{this.state.cashInHand}</div>
                           </Card>
-                        </Col>
+                        </Col> */}
                       
                       
                         <Col>
@@ -1160,6 +1194,7 @@ class PartnerReports extends Component {
                       <Col></Col>
                       <Col></Col>
                       </Row>
+                      
                       <Row style={{marginTop:'20px'}}>
                         <Col>
                         
@@ -1252,6 +1287,66 @@ class PartnerReports extends Component {
                           </Card>
                         </Col>
                       </Row>
+                      <Row style={{marginTop:'20px'}}>
+                      <Col >
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="300px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px',marginLeft:'20px'}}
+                          >
+                            <h4>Partner Cash Paid</h4>
+                            <Row>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Amount</h5>
+                                <div className="cardValue"> {this.state.pcashPaid}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Fee</h5>
+                                <div className="cardValue">{this.state.pcpfeeGenerated}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Commission</h5>
+                                <div className="cardValue">{this.state.pcpcommissionGenerated}</div>
+                              </Col>
+                              
+                            </Row>
+                          </Card>
+                        </Col>
+                      <Col>
+                          <Card
+                            horizontalMargin="0px"
+                            cardWidth="300px"
+                            smallValue
+                            textAlign="center"
+                            col
+                            style={{height:'120px', marginRight:'20px'}}
+                          >
+                            <h4>Partner Cash Received</h4>
+                            <Row>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Amount</h5>
+                                <div className="cardValue"> {this.state.pcashReceived}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Fee</h5>
+                                <div className="cardValue">{this.state.pcrfeeGenerated}</div>
+                              </Col>
+                              <Col style={{textAlign:'center'}}>
+                                <h5>Commission</h5>
+                                <div className="cardValue">{this.state.pcrcommissionGenerated}</div>
+                              </Col>
+                              
+                            </Row>
+                          </Card>
+                        </Col>
+                      <Col></Col>
+                      <Col></Col>
+                      <Col></Col>
+                      </Row>
+                      
                       <Row style={{marginTop:'20px'}}>
                         <Col>
                         
@@ -1418,6 +1513,7 @@ class PartnerReports extends Component {
                                 <h2 style={{marginTop:'20px'}}>Agencies:</h2>
                                 <Row style={{fontSize:'15px'}}>
                                   <Col>Number: {b.cashiedatestats.totalbranch}</Col>
+                                  <Col></Col>
                                   <Col>Cashiers: {b.cashiedatestats.totalcashier}</Col>
                                   <Col>Transactions: {b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalTrans : 0}</Col>
                                   <Col>Fee: {b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalFee.toFixed(2) : 0}</Col>
@@ -1447,6 +1543,11 @@ class PartnerReports extends Component {
                                 <Row style={{marginTop:'20px', fontSize:'15px'}}>
                                   <Col>Invoice Created:{b.cashiedatestats.invoicecreated}</Col>
                                   <Col>Invoice Paid: {b.cashiedatestats.paid}</Col>
+                                  <Col></Col>
+                                  <Col></Col>
+                                  <Col></Col>
+                                  <Col></Col>
+                                  <Col></Col>
                                 </Row>
                               </Drawer>
                               

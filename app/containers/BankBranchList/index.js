@@ -564,8 +564,20 @@ export default class BankBranchList extends Component {
         cashReceived: branchstats.res.reduce(
           (a, b) => a + b.cashReceived, 0
         ).toFixed(2),
+        cashReceivedFee: branchstats.res.reduce(
+          (a, b) => a + b.cashReceivedFee, 0
+        ).toFixed(2),
+        cashReceivedComm: branchstats.res.reduce(
+          (a, b) => a + b.cashReceivedComm, 0
+        ).toFixed(2),
         cashPaid: branchstats.res.reduce(
           (a, b) => a + b.cashPaid, 0
+        ).toFixed(2),
+        cashPaid: branchstats.res.reduce(
+          (a, b) => a + b.cashPaidFee, 0
+        ).toFixed(2),
+        cashPaid: branchstats.res.reduce(
+          (a, b) => a + b.cashPaidComm, 0
         ).toFixed(2),
         closingBalance: branchstats.res.reduce(
           (a, b) => a + b.closingBalance, 0
@@ -633,7 +645,7 @@ export default class BankBranchList extends Component {
           <SidebarBank />
           <Main>
           <Row>
-              <Col  cW='33%'>
+              <Col  cW='25%'>
                 <Card
                   style={{height:'130px'}}
                   marginBottom="10px"
@@ -646,7 +658,7 @@ export default class BankBranchList extends Component {
                   <div className="cardValue">{this.state.branches.length}</div>
                 </Card>
               </Col>
-              <Col  cW='33%'>
+              <Col  cW='25%'>
                 <Card
                   style={{height:'130px'}}
                   marginBottom="10px"
@@ -659,7 +671,7 @@ export default class BankBranchList extends Component {
                   <div className="cardValue">{CURRENCY}: {this.state.openingBalance}</div>
                 </Card>
               </Col>
-              <Col  cW='33%'>
+              <Col  cW='50%'>
                 <Card
                    style={{height:'130px'}}
                   marginBottom="10px"
@@ -669,12 +681,26 @@ export default class BankBranchList extends Component {
                   smallValue
                 >
                   <h4>Cash Received</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.cashReceived}</div>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{this.state.cashReceived}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Fee</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.cashReceivedFee}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Commission</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.cashReceivedComm}</div>
+                    </Col>
+                  </Row>
                 </Card>
               </Col>
+            
             </Row>
             <Row>
-            <Col  cW='20%'>
+            <Col  cW='50%'>
                 <Card
                    style={{height:'130px'}}
                   marginBottom="10px"
@@ -684,32 +710,24 @@ export default class BankBranchList extends Component {
                   smallValue
                 >
                   <h4>Cash Paid</h4>
-                  <div className="cardValue">{CURRENCY}: {this.state.cashPaid}</div>
-                </Card>
-              </Col>
-            <Col cW='35%'>
-                <Card
-                  style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Invoices Paid</h4>
                   <Row>
                     <Col style={{textAlign:'center'}}>
-                      <h5>Number</h5>
-                      <div className="cardValue">{this.state.invoicePaid}</div>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{this.state.cashPaid}</div>
                     </Col>
                     <Col style={{textAlign:'center'}}>
-                      <h5>Amount</h5>
-                      <div className="cardValue">{CURRENCY}: {this.state.amountPaid}</div>
+                      <h5>Fee</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.cashPaidFee}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Commission</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.cashPaidFeeComm}</div>
                     </Col>
                   </Row>
                 </Card>
               </Col>
-              <Col cW='45%'>
+            
+              <Col cW='50%'>
               <Card
                    style={{height:'130px'}}
                   marginBottom="10px"
@@ -738,7 +756,29 @@ export default class BankBranchList extends Component {
               </Col>
             </Row>
             <Row>
-            <Col  cW='33%'>
+            <Col cW='35%'>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Invoices Paid</h4>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Number</h5>
+                      <div className="cardValue">{this.state.invoicePaid}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {this.state.amountPaid}</div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+              <Col  cW='33%'>
                 <Card
                    style={{height:'130px'}}
                   marginBottom="10px"

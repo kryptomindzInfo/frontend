@@ -38,7 +38,11 @@ function BankPartnerListPage(props) {
   const [openingBalance, setOpeningBalance] = React.useState(0);
   const [totalBranches, setTotalBranches] = React.useState(0);
   const [cashReceived, setCashReceived] = React.useState(0);
+  const [cashReceivedFee, setCashReceivedFee] = React.useState(0);
+  const [cashReceivedComm, setCashReceivedComm] = React.useState(0);
   const [cashPaid, setCashPaid] = React.useState(0);
+  const [cashPaidFee, setCashPaidFee] = React.useState(0);
+  const [cashPaidComm, setCashPaidComm] = React.useState(0);
   const [feeGenerated, setFeeGenerated] = React.useState(0);
   const [commissionGenerated, setCommissionGenerated] = React.useState(0);
   const [cashInHand, setCashInHand] = React.useState(0);
@@ -221,7 +225,11 @@ function BankPartnerListPage(props) {
     setOpeningBalance(partnerstats.res.reduce((a, b) => a + b.openingBalance, 0).toFixed(2));
     setTotalBranches(partners.list.reduce((a, b) => a + b.total_branches, 0));
     setCashReceived(partnerstats.res.reduce((a, b) => a + b.cashReceived, 0).toFixed(2));
+    setCashReceivedFee(partnerstats.res.reduce((a, b) => a + b.cashReceivedFee, 0).toFixed(2));
+    setCashReceivedComm(partnerstats.res.reduce((a, b) => a + b.cashReceivedComm, 0).toFixed(2));
     setCashPaid(partnerstats.res.reduce((a, b) => a + b.cashPaid, 0).toFixed(2));
+    setCashPaidFee(partnerstats.res.reduce((a, b) => a + b.cashPaidFee, 0).toFixed(2));
+    setCashPaidComm(partnerstats.res.reduce((a, b) => a + b.cashPaidComm, 0).toFixed(2));
     setFeeGenerated(partnerstats.res.reduce((a, b) => a + b.feeGenerated, 0).toFixed(2));
     setCommissionGenerated(partnerstats.res.reduce((a, b) => a + b.commissionGenerated, 0).toFixed(2));
     setCashInHand(partnerstats.res.reduce((a, b) => a + b.cashInHand, 0).toFixed(2));
@@ -346,7 +354,7 @@ function BankPartnerListPage(props) {
       <Container verticalMargin>
         <Main fullWidth>
           <Row>
-              <Col>
+              <Col cW='25%'>
                 <Card
                   style={{height:'130px'}}
                   marginBottom="10px"
@@ -359,7 +367,7 @@ function BankPartnerListPage(props) {
                   <div className="cardValue">{totalBranches}</div>
                 </Card>
               </Col>
-              <Col>
+              <Col  cW='25%'>
                 <Card
                   style={{height:'130px'}}
                   marginBottom="10px"
@@ -372,7 +380,7 @@ function BankPartnerListPage(props) {
                   <div className="cardValue">{CURRENCY}: {openingBalance}</div>
                 </Card>
               </Col>
-              <Col>
+              <Col  cW='50%'>
                 <Card
                    style={{height:'130px'}}
                   marginBottom="10px"
@@ -382,10 +390,25 @@ function BankPartnerListPage(props) {
                   smallValue
                 >
                   <h4>Cash Received</h4>
-                  <div className="cardValue">{CURRENCY}: {cashReceived}</div>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {cashReceived}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Fee</h5>
+                      <div className="cardValue">{CURRENCY}: {cashReceivedFee}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Commission</h5>
+                      <div className="cardValue">{CURRENCY}: {cashReceivedComm}</div>
+                    </Col>
+                  </Row>
                 </Card>
               </Col>
-              <Col>
+            </Row>
+            <Row>
+            <Col  cW='50%'>
                 <Card
                    style={{height:'130px'}}
                   marginBottom="10px"
@@ -395,47 +418,23 @@ function BankPartnerListPage(props) {
                   smallValue
                 >
                   <h4>Cash Paid</h4>
-                  <div className="cardValue">{CURRENCY}: {cashPaid}</div>
-                </Card>
-              </Col>
-              <Col>
-                <Card
-                   style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Cash In Hand</h4>
-                  <div className="cardValue">{CURRENCY}: {cashInHand}</div>
-                </Card>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Card
-                  style={{height:'130px'}}
-                  marginBottom="10px"
-                  buttonMarginTop="32px"
-                  textAlign="center"
-                  bigPadding
-                  smallValue
-                >
-                  <h4>Invoices Paid</h4>
                   <Row>
                     <Col style={{textAlign:'center'}}>
-                      <h5>Number</h5>
-                      <div className="cardValue">{invoicePaid}</div>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {cashPaid}</div>
                     </Col>
                     <Col style={{textAlign:'center'}}>
-                      <h5>Amount</h5>
-                      <div className="cardValue">{CURRENCY}: {amountPaid}</div>
+                      <h5>Fee</h5>
+                      <div className="cardValue">{CURRENCY}: {cashPaidFee}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Commission</h5>
+                      <div className="cardValue">{CURRENCY}: {cashPaidComm}</div>
                     </Col>
                   </Row>
                 </Card>
               </Col>
-              <Col>
+              <Col  cW='50%'>
               <Card
                    style={{height:'130px'}}
                   marginBottom="10px"
@@ -462,6 +461,45 @@ function BankPartnerListPage(props) {
                   
                 </Card>
               </Col>
+              
+            </Row>
+            <Row>
+              <Col>
+                <Card
+                  style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Invoices Paid</h4>
+                  <Row>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Number</h5>
+                      <div className="cardValue">{invoicePaid}</div>
+                    </Col>
+                    <Col style={{textAlign:'center'}}>
+                      <h5>Amount</h5>
+                      <div className="cardValue">{CURRENCY}: {amountPaid}</div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+              <Col>
+                <Card
+                   style={{height:'130px'}}
+                  marginBottom="10px"
+                  buttonMarginTop="32px"
+                  textAlign="center"
+                  bigPadding
+                  smallValue
+                >
+                  <h4>Cash In Hand</h4>
+                  <div className="cardValue">{CURRENCY}: {cashInHand}</div>
+                </Card>
+              </Col>
+              
               <Col>
                 <Card
                   style={{height:'130px'}}
@@ -476,7 +514,6 @@ function BankPartnerListPage(props) {
                 </Card>
               </Col>
             </Row>
-            
           </Main>
         <Main fullWidth>
           

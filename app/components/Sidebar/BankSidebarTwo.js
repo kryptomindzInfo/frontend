@@ -24,6 +24,8 @@ class BankSidebarTwo extends Component {
     const documents = this.props.active == 'documents' ? true : false;
     const fees = this.props.active == 'fees' ? true : false;
     const interbankfees = this.props.active == 'interbankfees' ? true : false;
+    const backoffice = this.props.active == 'backoffice' ? true : false;
+    
     const theme = this.props.active == 'theme' ? true : false;
     return (
       <Sidebar marginRight>
@@ -56,6 +58,12 @@ class BankSidebarTwo extends Component {
           <Card rounded selected={interbankfees} className="sideNav">
             <i className="material-icons">mobile_screen_share</i>
             <h3>Inter Bank Fees</h3>
+          </Card>
+        </A>
+        <A href="/bank/backoffice">
+          <Card rounded selected={backoffice} className="sideNav">
+            <i className="material-icons">mobile_screen_share</i>
+            <h3>Back Office</h3>
           </Card>
         </A>
         <A href="/bank/theme">

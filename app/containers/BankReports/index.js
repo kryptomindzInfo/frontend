@@ -73,10 +73,14 @@ export default class PartnerReports extends Component {
       from:new Date(),
       to:new Date(),
       cashReceived: 0,
+      cashReceivedFee: 0,
+      cashReceivedComm: 0,
       openingBalance: 0,
       paidInCash:0,
       closingBalance: 0,
       cashPaid: 0,
+      cashPaidFee: 0,
+      cashPaidComm: 0,
       feeGenerated: 0,
       type:'branch',
       cashInhand: 0,
@@ -291,8 +295,20 @@ export default class PartnerReports extends Component {
         totalCr: cashiedatestats.reduce(
           (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_received : 0), 0
         ).toFixed(2),
+        totalCrf: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_received_fee : 0), 0
+        ).toFixed(2),
+        totalCrc: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_received_commission : 0), 0
+        ).toFixed(2),
         totalCp: cashiedatestats.reduce(
           (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_paid : 0), 0
+        ).toFixed(2),
+        totalCpf: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_paid_fee : 0), 0
+        ).toFixed(2),
+        totalCpc: cashiedatestats.reduce(
+          (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_paid_commission : 0), 0
         ).toFixed(2),
         totalDis: cashiedatestats.reduce(
           (a, b) => a + (b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].discripancy : 0), 0
@@ -539,8 +555,20 @@ export default class PartnerReports extends Component {
         cashReceived: datestats.res.reduce(
           (a, b) => a + parseFloat(b.totalCr,10), 0
         ),
+        cashReceivedFee: datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalCrf,10), 0
+        ),
+        cashReceivedComm: datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalCrc,10), 0
+        ),
         cashPaid: datestats.res.reduce(
           (a, b) => a + parseFloat(b.totalCp,10), 0
+        ),
+        cashPaidFee: datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalCpf,10), 0
+        ),
+        cashPaidComm: datestats.res.reduce(
+          (a, b) => a + parseFloat(b.totalCpc,10), 0
         ),
         cashInhand: datestats.res.reduce(
           (a, b) => a + parseFloat(b.totalCih,10), 0
@@ -980,85 +1008,89 @@ export default class PartnerReports extends Component {
                 <div>
                   <div className="clr">
                   <Row>
-                  <Col>
-                    <Card
-                      style={{height:'120px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Opening Balance</h4>
-                      <div className="cardValue">{CURRENCY}: {this.state.openingBalance}</div>
-                    </Card>
-                  </Col>
-                  <Col>
-                  <Card
-                      style={{height:'120px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Paid in Cash</h4>
-                      <div className="cardValue">{CURRENCY}: {this.state.cashPaid}</div>
-                    </Card>
-                  </Col>
-                  <Col>
-                  <Card
-                      style={{height:'120px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Cash Recieved</h4>
-
-                      <div className="cardValue">{CURRENCY}: {this.state.cashReceived}</div>
-                    </Card>
-                  </Col>
-                  <Col>
-                    <Card
-                      style={{height:'120px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Cash in Hand</h4>
-
-                      <div className="cardValue">{CURRENCY}: {this.state.cashInhand}</div>
-                    </Card>
-                  </Col>
+                    <Col cW="25%">
+                      <Card
+                        style={{height:'120px'}}
+                        marginBottom="10px"
+                        buttonMarginTop="32px"
+                        textAlign="center"
+                        bigPadding
+                        smallValue
+                      >
+                        <h4>Number of {this.state.type}</h4>
+                        <div className="cardValue">{this.state.length }</div>
+                      </Card>
+                    </Col>
+                    <Col cW="25%"> 
+                      <Card
+                        style={{height:'120px'}}
+                        marginBottom="10px"
+                        buttonMarginTop="32px"
+                        textAlign="center"
+                        bigPadding
+                        smallValue
+                      >
+                        <h4>Opening Balance</h4>
+                        <div className="cardValue">{CURRENCY}: {this.state.openingBalance}</div>
+                      </Card>
+                    </Col>
+                    
+                    <Col cW="50%">
+                      <Card
+                        style={{height:'120px'}}
+                        marginBottom="10px"
+                        buttonMarginTop="32px"
+                        textAlign="center"
+                        bigPadding
+                        smallValue
+                      >
+                        <h4>Cash Recieved</h4>
+                        <Row>
+                          <Col style={{textAlign:'center'}}>
+                            <h5>Amount</h5>
+                            <div className="cardValue">{CURRENCY}: {this.state.cashReceived}</div>
+                          </Col>
+                          <Col style={{textAlign:'center'}}>
+                            <h5>Fee</h5>
+                            <div className="cardValue">{CURRENCY}: {this.state.cashReceivedFee}</div>
+                          </Col>
+                          <Col style={{textAlign:'center'}}>
+                            <h5>Commission</h5>
+                            <div className="cardValue">{CURRENCY}:{this.state.cashReceivedComm}</div>
+                          </Col>
+                        </Row>
+                      </Card>
+                    </Col>
+                   
                 </Row>
-                  <Row style={{marginTop:'5px',marginBottom:'0px'}}>
-                    <Col cW='40%'>
-                    <Card
-                      style={{height:'120px'}}
-                      marginBottom="10px"
-                      buttonMarginTop="32px"
-                      textAlign="center"
-                      bigPadding
-                      smallValue
-                    >
-                      <h4>Invoices Paid</h4>
-                      <Row>
-                        <Col style={{textAlign:'center'}}>
-                          <h5>Number</h5>
-                          <div className="cardValue">{this.state.invoicePaid}</div>
-                        </Col>
-                        <Col style={{textAlign:'center'}}>
-                          <h5>Amount</h5>
-                          <div className="cardValue">{CURRENCY}: {this.state.invoiceAmount}</div>
-                        </Col>
-                      </Row>
-                    </Card>
-                  </Col>   
-                  <Col cW='60%'>
+                <Row style={{marginTop:'5px',marginBottom:'0px'}}>
+                  <Col cW='50%'>
+                      <Card
+                        style={{height:'120px'}}
+                        marginBottom="10px"
+                        buttonMarginTop="32px"
+                        textAlign="center"
+                        bigPadding
+                        smallValue
+                      >
+                        <h4>Cash Paid</h4>
+                        <Row>
+                          <Col style={{textAlign:'center'}}>
+                            <h5>Amount</h5>
+                            <div className="cardValue">{CURRENCY}: {this.state.cashPaid}</div>
+                          </Col>
+                          <Col style={{textAlign:'center'}}>
+                            <h5>Fee</h5>
+                            <div className="cardValue">{CURRENCY}: {this.state.cashPaidFee}</div>
+                          </Col>
+                          <Col style={{textAlign:'center'}}>
+                            <h5>Commission</h5>
+                            <div className="cardValue">{CURRENCY}:{this.state.cashPaidComm}</div>
+                          </Col>
+                        </Row>
+                      </Card>
+                    </Col>
+                  <Col cW='50%'>
                   <Card
                       style={{height:'140px'}}
                       marginBottom="10px"
@@ -1084,6 +1116,57 @@ export default class PartnerReports extends Component {
                       </Row>
                     </Card>
                   </Col>
+                </Row>
+                <Row>
+                  <Col cW='40%'>
+                    <Card
+                      style={{height:'120px'}}
+                      marginBottom="10px"
+                      buttonMarginTop="32px"
+                      textAlign="center"
+                      bigPadding
+                      smallValue
+                    >
+                      <h4>Invoices Paid</h4>
+                      <Row>
+                        <Col style={{textAlign:'center'}}>
+                          <h5>Number</h5>
+                          <div className="cardValue">{this.state.invoicePaid}</div>
+                        </Col>
+                        <Col style={{textAlign:'center'}}>
+                          <h5>Amount</h5>
+                          <div className="cardValue">{CURRENCY}: {this.state.invoiceAmount}</div>
+                        </Col>
+                      </Row>
+                    </Card>
+                  </Col> 
+                  <Col  cW='30%'>
+                    <Card
+                      style={{height:'120px'}}
+                      marginBottom="10px"
+                      buttonMarginTop="32px"
+                      textAlign="center"
+                      bigPadding
+                      smallValue
+                    >
+                      <h4>Cash in Hand</h4>
+                      <div className="cardValue">{CURRENCY}: {this.state.cashInhand}</div>
+                    </Card>
+                  </Col>
+                  <Col  cW='30%'>
+                      <Card
+                        style={{height:'120px'}}
+                        marginBottom="10px"
+                        buttonMarginTop="32px"
+                        textAlign="center"
+                        bigPadding
+                        smallValue
+                      >
+                        <h4>Closing Balance</h4>
+                        <div className="cardValue">{CURRENCY}: {this.state.closingBalance}</div>
+                      </Card>
+                    </Col>
+
                 </Row>
                 </div>
                 {this.state.datelist.length > 0 

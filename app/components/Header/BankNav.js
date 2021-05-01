@@ -72,6 +72,10 @@ class BankNav extends Component {
           <A href="/bank/users">
             <Link active={bankusers}>Users</Link>
           </A>
+          {/* <A href="/bank/backoffice">
+            <Link active={bankusers}>Back Office</Link>
+          </A> */}
+          
         </NavTag>
       </React.Fragment>
     );
