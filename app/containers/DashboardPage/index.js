@@ -438,9 +438,14 @@ export default class DashboardPage extends Component {
                         <div className="cardValue">{this.state.merchantInvoiceCreated}</div>
                       </Col>
                       <Col style={{textAlign:'center'}}>
+                        <h5>Uploaded</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
                         <h5>Paid</h5>
                         <div className="cardValue">{this.state.merchantInvoice}</div>
                       </Col>
+                      
                     </Row>
                   </Card>
                 </Col>
@@ -569,6 +574,10 @@ export default class DashboardPage extends Component {
                      <h5>Created</h5>
                      <div className="cardValue">0</div>
                    </Col>
+                   <Col style={{textAlign:'center'}}>
+                      <h5>Uploaded</h5>
+                      <div className="cardValue">0</div>
+                    </Col>
                    <Col style={{textAlign:'center'}}>
                      <h5>Paid</h5>
                      <div className="cardValue">0</div>
