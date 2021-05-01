@@ -33,18 +33,20 @@ class Nav extends Component {
         <NavTag>
           <A href="/dashboard">
             <Link active={dashboard}>
-              <FormattedMessage {...messages.menu1} />
+              Global Dash
             </Link>
           </A>
          
           <A href="/banks">
             <Link active={bank}>
-              <FormattedMessage {...messages.menu2} />
+              Bank Dash
+              {/* <FormattedMessage {...messages.menu2} />  */}
             </Link>
           </A>
           <A href="/merchantlist">
             <Link active={merchants}>
-              <FormattedMessage {...messages.menu3} />
+              Infra Merchant Dash
+              {/* <FormattedMessage {...messages.menu3} /> */}
             </Link>
           </A>
           {isAdmin != 'false' ? (
