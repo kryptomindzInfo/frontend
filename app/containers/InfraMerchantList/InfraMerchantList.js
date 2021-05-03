@@ -208,6 +208,7 @@ function InfraMerchant(props) {
   }
   const merchants = merchantList.map((merchant,i) => (
     <tr key={merchant._id}>
+       <td className="tac">Axisbank</td>
       <td className="tac">
         <img
           style={{ height: '60px', width: '60px' }}
@@ -215,7 +216,6 @@ function InfraMerchant(props) {
         />
       </td>
       <td className="tac">{merchant.name}</td>
-      <td className="tac">Axisbank</td>
       <td className="tac">
         <Row> No. {merchantStats[i].bills_created}</Row>
         <Row> Amount. {merchantStats[i].amount_created}</Row>
@@ -518,9 +518,9 @@ function InfraMerchant(props) {
               <Table marginTop="34px" smallTd>
                 <thead>
                   <tr>
+                    <th>Bank Name</th>
                     <th>Logo</th>
                     <th>Name</th>
-                    <th>Bank Name</th>
                     <th>Invoice Created</th>
                     <th>Invoice Uploaded</th>
                     <th>Total Invoice Paid</th>
