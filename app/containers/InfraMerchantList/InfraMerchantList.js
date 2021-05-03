@@ -378,8 +378,15 @@ function InfraMerchant(props) {
         </Row>
         <Row>
                 <Col>
+                  <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
+                        <h4>Total Merchants</h4>
+                        <div className="cardValue">{merchantList.length}</div>
+                    
+                  </Card>
+                </Col>
+                <Col>
                 <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
-                      <h4>Total Revenue</h4>
+                      <h4>Total Revenue For Infra</h4>
                       <Row>
                           <Col >
                               <Row>
@@ -434,6 +441,64 @@ function InfraMerchant(props) {
                   
                 </Card>
               </Col>
+              <Col>
+                <Card marginBottom="20px" buttonMarginTop="32px" smallValue style={{textAlign:'center'}}>
+                      <h4>Total Revenue with Bank</h4>
+                      <Row>
+                          <Col >
+                              <Row>
+                                  Fee:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">
+                                    {
+                                      parseFloat(feeGeneratedByBC) +
+                                      parseFloat(feeGeneratedByPC)+
+                                        parseFloat(feeGeneratedByMC) +
+                                          parseFloat(feeGeneratedByUS)
+                                    }
+                                  </span>
+                              </Row>
+                          </Col>
+                          <Col >
+                              <Row>
+                                  Commission:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">
+                                    {
+                                      parseFloat(commissionGeneratedByBC) +
+                                        parseFloat(commissionGeneratedByPC)+
+                                          parseFloat(commissionGeneratedByMC) +
+                                            parseFloat(commissionGeneratedByUS)
+                                    }
+                                  </span>
+                              </Row>
+                          </Col>
+                          <Col >
+                              <Row>
+                                  Total:
+                              </Row>
+                              <Row>
+                                  <span className="cardValue">
+                                    {
+                                      parseFloat(feeGeneratedByBC) +
+                                      parseFloat(feeGeneratedByPC)+
+                                      parseFloat(feeGeneratedByMC) +
+                                      parseFloat(feeGeneratedByUS) +
+                                        parseFloat(commissionGeneratedByBC) +
+                                          parseFloat(commissionGeneratedByPC)+
+                                            parseFloat(commissionGeneratedByMC) +
+                                              parseFloat(commissionGeneratedByUS)
+                                    }
+                                  </span>
+                              </Row>
+                          </Col> 
+                      </Row>
+                  
+                </Card>
+              </Col>
+        
         </Row>
 
           

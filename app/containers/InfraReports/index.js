@@ -1042,588 +1042,581 @@ class PartnerReports extends Component {
             <div>
               {this.state.type === 'branch' ? (
                 <div>
-                   <div style={{backgroundColor:"goldenrod", padding:'10px'}}>
-                      <Row style={{marginTop:'15px'}}>
-                        <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="180px"
-                            h4FontSize="16px"
-                            textAlign="center"
-                            smallValue
-                            col
-                            style={{height:'120px',marginLeft:'20px'}}
-                          >
-                            <h4>
-                              Bank Agencies
-                            </h4>
-                            <div className="cardValue">{this.state.totalBranches}</div>
-                          </Card>
-                        </Col>
-                        <Col> 
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="180px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px'}}
-                          >
-                            <h4>
-                              Bank Cashiers
-                            </h4>
-                            <div className="cardValue">{this.state.totalCashiers}</div>
-                          </Card>
-                        </Col>
-                        <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="180px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px'}}
-                          >
-                            <h4>
-                              Bank Transactions
-                            </h4>
-                            <div className="cardValue">{this.state.bankTrans}</div>
-                          </Card>
-                        </Col>
-                        {/* <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="180px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px'}}
-                          >
-                            <h4>
-                              Cash In Hand
-                            </h4>
-                            <div className="cardValue">{this.state.cashInHand}</div>
-                          </Card>
-                        </Col> */}
+                    <div style={{backgroundColor:"goldenrod", padding:'10px'}}>
+              <Row style={{marginTop:'15px'}}>
+                <Col cW='20%'>
+                <Card
+                      horizontalMargin="0px"
+                      cardWidth="220px"
+                      textAlign="center"
+                      col
+                      smallValue
+                      style={{height:'120px', marginLeft:'20px'}}
+                    >
+                    <h4>
+                      Banks
+                    </h4>
+                    <div className="cardValue">{this.state.branches.length}</div>
+                  </Card>
+                </Col>
+                <Col cW='20%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="220px"
+                    h4FontSize="16px"
+                    textAlign="center"
+                    smallValue
+                    col
+                    style={{height:'120px', marginLeft:'8px'}}
+                  >
+                    <h4>
+                      Bank Agencies
+                    </h4>
+                    <div className="cardValue">{this.state.totalBranches}</div>
+                  </Card>
+                </Col>
+                <Col cW='20%'> 
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="220px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'0px'}}
+                  >
+                    <h4>
+                      Bank Cashiers
+                    </h4>
+                    <div className="cardValue">{this.state.totalCashiers}</div>
+                  </Card>
+                </Col>
+                <Col cW='20%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="220px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'0px'}}
+                  >
+                    <h4>
+                      Bank Transactions
+                    </h4>
+                    <div className="cardValue">{this.state.bankTrans}</div>
+                  </Card>
+                </Col>
+                <Col cW='20%'></Col>
+              </Row>
+              <Row style={{marginTop:'20px'}}>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'20px'}}
+                  >
+                    <h4>Agency Cash Paid</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Amount</h5>
+                        <div className="cardValue"> {this.state.cashPaid}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.cpfeeGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.cpcommissionGenerated}</div>
+                      </Col>
                       
+                    </Row>
+                  </Card>
+                </Col>
+                <Col cW='30%'>
+                  <Card
+                     horizontalMargin="0px"
+                     cardWidth="302px"
+                     smallValue
+                     textAlign="center"
+                     col
+                    style={{height:'120px', marginLeft:'-5px'}}
+                  >
+                    <h4>Agency Cash Reveived</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Amount</h5>
+                        <div className="cardValue"> {this.state.cashReceived}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.crfeeGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.crcommissionGenerated}</div>
+                      </Col>
                       
-                        <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="300px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px', marginRight:'20px'}}
-                          >
-                            <h4>Revenue</h4>
-                            <Row>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Fee</h5>
-                                <div className="cardValue">{this.state.feeGenerated}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Commission</h5>
-                                <div className="cardValue">{this.state.commissionGenerated}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Total</h5>
-                                <div className="cardValue"> {(parseFloat(this.state.feeGenerated)+parseFloat(this.state.commissionGenerated)).toFixed(2)}</div>
-                              </Col>
-                            </Row>
-                          </Card>
-                        </Col>
-                      
-                      </Row>
-                      <Row style={{marginTop:'20px'}}>
-                      <Col >
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="300px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px',marginLeft:'20px'}}
-                          >
-                            <h4>Cash Paid</h4>
-                            <Row>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Amount</h5>
-                                <div className="cardValue"> {this.state.cashPaid}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Fee</h5>
-                                <div className="cardValue">{this.state.cpfeeGenerated}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Commission</h5>
-                                <div className="cardValue">{this.state.cpcommissionGenerated}</div>
-                              </Col>
-                              
-                            </Row>
-                          </Card>
-                        </Col>
-                      <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="300px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px', marginRight:'20px'}}
-                          >
-                            <h4>Cash Received</h4>
-                            <Row>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Amount</h5>
-                                <div className="cardValue"> {this.state.cashReceived}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Fee</h5>
-                                <div className="cardValue">{this.state.crfeeGenerated}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Commission</h5>
-                                <div className="cardValue">{this.state.crcommissionGenerated}</div>
-                              </Col>
-                              
-                            </Row>
-                          </Card>
-                        </Col>
-                      <Col></Col>
-                      <Col></Col>
-                      <Col></Col>
-                      </Row>
-                      
-                      <Row style={{marginTop:'20px'}}>
-                        <Col>
-                        
-                            <Card
-                              horizontalMargin="0px"
-                              cardWidth="180px"
-                              textAlign="center"
-                              col
-                              smallValue
-                              style={{height:'120px',marginLeft:'20px'}}
-                            >
-                              <h4>
-                                Partners
-                              </h4>
-                              <div className="cardValue">{this.state.totalPartners}</div>
-                            </Card>
-                          
-                          
-                        </Col>
-                        <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="180px"
-                            h4FontSize="16px"
-                            textAlign="center"
-                            smallValue
-                            col
-                            style={{height:'120px'}}
-                          >
-                            <h4>
-                              Partner Agencies
-                            </h4>
-                            <div className="cardValue">{this.state.totalPartnerBranches}</div>
-                          </Card>
-                        </Col>
-                        <Col> 
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="180px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px'}}
-                          >
-                            <h4>
-                              Partner Cashiers
-                            </h4>
-                            <div className="cardValue">{this.state.totalPartnerCashiers}</div>
-                          </Card>
-                        </Col>
-                        <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="180px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px'}}
-                          >
-                            <h4>
-                              Partner Transactions
-                            </h4>
-                            <div className="cardValue">{this.state.partnerTrans}</div>
-                          </Card>
-                        </Col>
-                        <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="300px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px', marginRight:'20px'}}
-                          >
-                            <h4>Revenue</h4>
-                            <Row>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Fee</h5>
-                                <div className="cardValue">{this.state.partnerFee}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Commission</h5>
-                                <div className="cardValue">{this.state.partnerCommission}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Total</h5>
-                                <div className="cardValue"> {(parseFloat(this.state.partnerFee)+parseFloat(this.state.partnerCommission)).toFixed(2)}</div>
-                              </Col>
-                            </Row>
-                          </Card>
-                        </Col>
-                      </Row>
-                      <Row style={{marginTop:'20px'}}>
-                      <Col >
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="300px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px',marginLeft:'20px'}}
-                          >
-                            <h4>Partner Cash Paid</h4>
-                            <Row>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Amount</h5>
-                                <div className="cardValue"> {this.state.pcashPaid}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Fee</h5>
-                                <div className="cardValue">{this.state.pcpfeeGenerated}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Commission</h5>
-                                <div className="cardValue">{this.state.pcpcommissionGenerated}</div>
-                              </Col>
-                              
-                            </Row>
-                          </Card>
-                        </Col>
-                      <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="300px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px', marginRight:'20px'}}
-                          >
-                            <h4>Partner Cash Received</h4>
-                            <Row>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Amount</h5>
-                                <div className="cardValue"> {this.state.pcashReceived}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Fee</h5>
-                                <div className="cardValue">{this.state.pcrfeeGenerated}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Commission</h5>
-                                <div className="cardValue">{this.state.pcrcommissionGenerated}</div>
-                              </Col>
-                              
-                            </Row>
-                          </Card>
-                        </Col>
-                      <Col></Col>
-                      <Col></Col>
-                      <Col></Col>
-                      </Row>
-                      
-                      <Row style={{marginTop:'20px'}}>
-                        <Col>
-                        
-                            <Card
-                              horizontalMargin="0px"
-                              cardWidth="180px"
-                              textAlign="center"
-                              col
-                              smallValue
-                              style={{height:'120px',marginLeft:'20px'}}
-                            >
-                              <h4>
-                                Merchants
-                              </h4>
-                              <div className="cardValue">{this.state.totalBankMerchants}</div>
-                            </Card>
-                        </Col>
-                        <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="180px"
-                            h4FontSize="16px"
-                            textAlign="center"
-                            smallValue
-                            col
-                            style={{height:'120px'}}
-                          >
-                            <h4>
-                            Bank Merchant Branches
-                            </h4>
-                            <div className="cardValue">{this.state.totalMerchantBranches}</div>
-                          </Card>
-                        </Col>
-                        <Col> 
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="180px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px'}}
-                          >
-                            <h4>
-                              Bank Merchant Staff
-                            </h4>
-                            <div className="cardValue">{this.state.totalMerchantStaff}</div>
-                          </Card>
-                        </Col>
-                        <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="180px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px'}}
-                          >
-                            <h4>
-                              Bank Merchant Cashier
-                            </h4>
-                            <div className="cardValue">{this.state.totalMerchantCashier}</div>
-                          </Card>
-                        </Col>
-                        <Col>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="300px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px', marginRight:'20px'}}
-                          >
-                            <h4>Revenue</h4>
-                            <Row>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Fee</h5>
-                                <div className="cardValue">{this.state.merchantFee}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Commission</h5>
-                                <div className="cardValue">{this.state.merchantCommission}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Total</h5>
-                                <div className="cardValue">{(parseFloat(this.state.merchantFee)+parseFloat(this.state.merchantCommission)).toFixed(2)}</div>
-                              </Col>
-                            </Row>
-                          </Card>
-                        </Col>
-                      </Row>
-                      <Row style={{marginTop:'20px',marginBottom:'15px'}}>
-                        <Col cW='40%'>
-                          <Card
-                            horizontalMargin="0px"
-                            cardWidth="300px"
-                            smallValue
-                            textAlign="center"
-                            col
-                            style={{height:'120px', marginLeft:'20px'}}
-                          >
-                            <h4>Invoices</h4>
-                            <Row>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Created</h5>
-                                <div className="cardValue">{this.state.merchantInvoiceCreated}</div>
-                              </Col>
-                              <Col style={{textAlign:'center'}}>
-                                <h5>Paid</h5>
-                                <div className="cardValue">{this.state.invoicePaid}</div>
-                              </Col>
-                            </Row>
-                          </Card>
-                        </Col>
-                        <Col cW='45%'></Col>
-                        <Col cW='15%' style={{ marginRight:'30px', marginTop:'30px'}}>
-                        
-                          
-                        </Col>
-                      </Row>
-                      
-                    </div>
+                    </Row>
+                  </Card>
+                </Col>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'-30px'}}
+                  >
+                    <h4>Revenue</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.feeGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.commissionGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue"> {(parseFloat(this.state.feeGenerated)+parseFloat(this.state.commissionGenerated)).toFixed(2)}</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+                <Col cW='10%'></Col>
+              </Row>
+              
+              <Row style={{marginTop:'20px'}}>
+                <Col cW='20%'>
+                 
+                    <Card
+                      horizontalMargin="0px"
+                      cardWidth="220px"
+                      textAlign="center"
+                      col
+                      smallValue
+                      style={{height:'120px', marginLeft:'20px'}}
+                    >
+                      <h4>
+                        Partners
+                      </h4>
+                      <div className="cardValue">{this.state.totalPartners}</div>
+                    </Card>
                   
+                  
+                </Col>
+                <Col cW='20%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="220px"
+                    h4FontSize="16px"
+                    textAlign="center"
+                    smallValue
+                    col
+                    style={{height:'120px', marginLeft:'8px'}}
+                  >
+                    <h4>
+                      Partner Agencies
+                    </h4>
+                    <div className="cardValue">{this.state.totalPartnerBranches}</div>
+                  </Card>
+                </Col>
+                <Col cW='20%'> 
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="220px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'0px'}}
+                  >
+                    <h4>
+                      Partner Cashiers
+                    </h4>
+                    <div className="cardValue">{this.state.totalPartnerCashiers}</div>
+                  </Card>
+                </Col>
+                <Col cW='20%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="220px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'0px'}}
+                  >
+                    <h4>
+                      Partner Transactions
+                    </h4>
+                    <div className="cardValue">{this.state.partnerTrans}</div>
+                  </Card>
+                </Col>
+                <Col cW='20%'></Col>
+              </Row>
+              
+              <Row style={{marginTop:'20px'}}>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'20px'}}
+                  >
+                    <h4>Partner Cash Paid</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Amount</h5>
+                        <div className="cardValue"> {this.state.pcashPaid}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.pcpfeeGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.pcpcommissionGenerated}</div>
+                      </Col>
+                      
+                    </Row>
+                  </Card>
+                </Col>
+                <Col cW='30%'>
+                  <Card
+                     horizontalMargin="0px"
+                     cardWidth="302px"
+                     smallValue
+                     textAlign="center"
+                     col
+                    style={{height:'120px', marginLeft:'-5px'}}
+                  >
+                    <h4>Partner Cash Reveived</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Amount</h5>
+                        <div className="cardValue"> {this.state.pcashReceived}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.pcrfeeGenerated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.pcrcommissionGenerated}</div>
+                      </Col>
+                      
+                    </Row>
+                  </Card>
+                </Col>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'-30px'}}
+                  >
+                    <h4>Revenue</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.partnerFee}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.partnerCommission}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue"> {(parseFloat(this.state.partnerFee)+parseFloat(this.state.partnerCommission)).toFixed(2)}</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+                <Col cW='10%'></Col>
+              </Row>
+              
+              <Row style={{marginTop:'20px'}}>
+                <Col cW='20%'>
+                 
+                    <Card
+                      horizontalMargin="0px"
+                      cardWidth="220px"
+                      textAlign="center"
+                      col
+                      smallValue
+                      style={{height:'120px', marginLeft:'20px'}}
+                    >
+                      <h4>
+                        Bank Merchants
+                      </h4>
+                      <div className="cardValue">{this.state.totalBankMerchants}</div>
+                    </Card>
+                </Col>
+                <Col cW='20%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="220px"
+                    h4FontSize="16px"
+                    textAlign="center"
+                    smallValue
+                    col
+                    style={{height:'120px', marginLeft:'8px'}}
+                  >
+                    <h4>
+                    Bank Merchant Branches
+                    </h4>
+                    <div className="cardValue">{this.state.totalMerchantBranches}</div>
+                  </Card>
+                </Col>
+                <Col cW='20%'> 
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="220px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'0px'}}
+                  >
+                    <h4>
+                      Bank Merchant Staff
+                    </h4>
+                    <div className="cardValue">{this.state.totalMerchantStaff}</div>
+                  </Card>
+                </Col>
+                <Col cW='20%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="220px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'0px'}}
+                  >
+                    <h4>
+                      Bank Merchant Cashier
+                    </h4>
+                    <div className="cardValue">{this.state.totalMerchantCashier}</div>
+                  </Card>
+                </Col>
+                <Col cW='40%'></Col>
+              </Row>
+              <Row style={{marginTop:'20px', marginBottom:'15px'}}>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'20px'}}
+                  >
+                    <h4>Invoice</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Created</h5>
+                        <div className="cardValue">{this.state.merchantInvoiceCreated}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Uploaded</h5>
+                        <div className="cardValue"> 0</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+                <Col cW='30%'>
+                  <Card
+                     horizontalMargin="0px"
+                     cardWidth="302px"
+                     smallValue
+                     textAlign="center"
+                     col
+                    style={{height:'120px', marginLeft:'-5px'}}
+                  >
+                    <h4>Invoice Paid</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Number</h5>
+                        <div className="cardValue"> 0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Amount</h5>
+                        <div className="cardValue"> 0</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'-30px'}}
+                  >
+                    <h4>Revenue</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">{this.state.merchantFee}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">{this.state.merchantCommission}</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue">{(parseFloat(this.state.merchantFee)+parseFloat(this.state.merchantCommission)).toFixed(2)}</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+                
+                <Col cW='10%'></Col>
+               
+              </Row>
+            
+              
+             
+            </div> 
+
                 {this.state.datelist.length > 0 
                   ? this.state.datelist.map( (date,i) => {
                   return(
                   <Card style={{ marginTop: '10px' }}>
                   
                     <h3 style={{color:'green'}}><b>{`${new Date(date).getDate()}/${new Date(date).getMonth()+1}/${new Date(date).getFullYear()}`}</b></h3>
-                    
-
-                    <div>
-                    {this.state.datestats[i].cashiedatestats.length > 0 
-                            ? this.state.datestats[i].cashiedatestats.map( (b, index) => {
-                              return (
-                              <div className={classNames(classes.root)} onClick={()=>{ep.handleDrawerOpen(i)}} >
-                              <div className={classNames(classes.appBar)} >
-                                    <Row>
-                                      <Col cW="5%">
-                                        <img
-                                          style={{ height: '40px' }}
-                                          src={`${STATIC_URL}${b.cashiedatestats.branch.logo}`}
-                                        />
-                                      </Col>
-                                      <Col cW="15%">
-                                        {b.cashiedatestats.branch.name}
-                                      </Col>
-                                      <Col cW="75%"></Col>
-                                      <Col cW="5%">
-                                      </Col>
-                                    </Row>
-                              </div>
-                              <Drawer
-                                className={classNames(classes.drawer)}
-                                transitionDuration={0}
-                                variant="persistent"
-                                anchor="top"
-                                open={true}
-                                // open={ep.state.drawer[`drawer${i}`]}
-                                classes={{
-                                  paper: classNames(classes.drawerPaper),
-                                }}
-                                
-                              >
-                                <h2 style={{marginTop:'20px'}}>Agencies:</h2>
-                                <Row style={{fontSize:'15px'}}>
-                                  <Col>Number: {b.cashiedatestats.totalbranch}</Col>
-                                  <Col></Col>
-                                  <Col>Cashiers: {b.cashiedatestats.totalcashier}</Col>
-                                  <Col>Transactions: {b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalTrans : 0}</Col>
-                                  <Col>Fee: {b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalFee.toFixed(2) : 0}</Col>
-                                  <Col>Commission: {b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalCommission.toFixed(2) : 0}</Col>
-                                  <Col>Revenue: {b.cashiedatestats.reports.length > 0 ? (b.cashiedatestats.reports[0].totalFee + b.cashiedatestats.reports[0].totalCommission).toFixed(2) : 0}</Col>
-                                </Row>
-                                <h2 style={{marginTop:'20px'}}>Partners:</h2>
-                                <Row style={{fontSize:'15px'}}>
-                                  <Col>Number: {b.cashiedatestats.totalpartner}</Col>
-                                  <Col>Agencies: {b.cashiedatestats.totalpartnerbranch}</Col>
-                                  <Col>Cashiers: {b.cashiedatestats.totalpartnercashier}</Col>
-                                  <Col>Transactions: {b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalTrans : 0}</Col>
-                                  <Col>Fee:  {b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalFee.toFixed(2) : 0}</Col>
-                                  <Col>Commission: {b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalCommission.toFixed(2) : 0}</Col>
-                                  <Col>Revenue: {b.cashiedatestats.partnerreports.length > 0 ? (b.cashiedatestats.partnerreports[0].totalFee + b.cashiedatestats.reports[0].totalCommission).toFixed(2) : 0}</Col>
-                                </Row>
-                                <h2 style={{marginTop:'20px'}}> Merchants:</h2>
-                                <Row style={{fontSize:'15px'}}>
-                                  <Col>Number:  {b.cashiedatestats.totalmerchant}</Col>
-                                  <Col>Agencies:  {b.cashiedatestats.totalmerchantbranch}</Col>
-                                  <Col>Cashiers: {b.cashiedatestats.totalmerchantcashier}</Col>
-                                  <Col>Staffs:  {b.cashiedatestats.totalmerchantstaff}</Col>
-                                  <Col>Fee: {b.cashiedatestats.merchantfee.toFixed(2)}</Col>
-                                  <Col>Commission: {b.cashiedatestats.merchantcommission.toFixed(2)}</Col>
-                                  <Col>Revenue: {(b.cashiedatestats.merchantfee + b.cashiedatestats.merchantcommission).toFixed(2)}</Col>
-                                </Row>
-                                <Row style={{marginTop:'20px', fontSize:'15px'}}>
-                                  <Col>Invoice Created:{b.cashiedatestats.invoicecreated}</Col>
-                                  <Col>Invoice Paid: {b.cashiedatestats.paid}</Col>
-                                  <Col></Col>
-                                  <Col></Col>
-                                  <Col></Col>
-                                  <Col></Col>
-                                  <Col></Col>
-                                </Row>
-                              </Drawer>
-                              
-                            </div>
-                            
-
-                          );
-                        })
-                      : null}
-                    </div>
-                    
-                    {/* <Table
+                  
+                    <Card  style={{overflow: 'auto', overflowY: 'hidden'}}>
+                    <Table
                     marginTop="34px"
                     marginBottom="34px"
                     smallTd
                     textAlign="left"
+                   
                   >
-                    <thead>
-                          <tr>
-                            <th>Bank</th>
-                            <th>Opening Balance</th>
-                            <th>Cash Received</th>
-                            <th>Cash Paid</th>
-                            <th>Invoice Paid</th>
-                            <th>Amount of Invoice Paid</th>
-                            <th>Fee Generated</th>
-                            <th>Commission Generated</th>
-                            <th>Revenue Generated</th>
-                            <th>Cash in Hand</th>
-                            <th>Closing Balance</th>
-                            <th>Discripancy</th>
-                          </tr>
-                        </thead>
+                     <thead>
+                    <tr>
+                      <th colspan='2'>
+                        <span>Bank</span>
+                      </th>
+                      <th style={{borderLeft:'5px solid white'}} colspan='6'>
+                        Agency
+                      </th>
+                      <th style={{borderLeft:'5px solid white'}} colspan='7'>
+                        Partner
+                      </th>
+                      <th style={{borderLeft:'5px solid white'}} colspan='9'>
+                        Merchant
+                      </th>
+                    </tr>
+                  </thead>
+                  
+                  <thead>
+                    <tr>
+                      <th>Name</th><th>Logo</th>
+                      <th style={{borderLeft:'5px solid white'}}>Number</th><th>Cashier</th><th>Transaction</th><th>Fee</th><th>Commission</th><th>Revenue</th>
+                      <th style={{borderLeft:'5px solid white'}}>Number</th><th>Agencies</th><th>Cashier</th><th>Transaction</th><th>Fee</th><th>Commission</th><th>Revenue</th>
+                      <th style={{borderLeft:'5px solid white'}}>Number</th><th>Agencies</th><th>Cashier</th><th>Staff</th><th>Fee</th><th>Commission</th><th>Revenue</th><th>Invoice Created</th><th>Invoice Paid</th>
+                      
+                    </tr>
+                  </thead>
                         <tbody>
                         {this.state.datestats[i].cashiedatestats.length > 0 
                             ? this.state.datestats[i].cashiedatestats.map( (b, index) => {
                               return (
                               <tr key={index} >
-                                
+                                <td>
+                                  <img
+                                    style={{ height: '40px' }}
+                                    src={`${STATIC_URL}${b.logo}`}
+                                  />
+                                </td>
                                 <td style={{textAlign:"center"}}>
                                   <div className="labelGrey">{b.cashiedatestats.branch.name}</div>
                                 </td>
+
                                 <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].opening_balance.toFixed(2) : "-"}</div>
+                                  <div className="labelGrey">{b.cashiedatestats.totalbranch}</div>
                                 </td>
                                 <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_received.toFixed(2) : "-"}</div>
+                                  <div className="labelGrey">{b.cashiedatestats.totalcashier}</div>
                                 </td>
                                 <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_paid.toFixed(2) : "-"}</div>
+                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalTrans : 0}</div>
                                 </td>
                                 <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.paid : "-"}</div>
+                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalFee.toFixed(2) : 0}</div>
                                 </td>
                                 <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.amountpaid : "-"}</div>
+                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].totalCommission.toFixed(2) : 0}</div>
                                 </td>
                                 <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].fee_generated.toFixed(2) : "-"}</div>
+                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? (b.cashiedatestats.reports[0].totalFee + b.cashiedatestats.reports[0].totalCommission).toFixed(2) : 0}</div>
+                                </td>
+
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey">{b.cashiedatestats.totalpartner}</div>
                                 </td>
                                 <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].comm_generated.toFixed(2) : "-"}</div>
+                                  <div className="labelGrey">{b.cashiedatestats.totalpartnerbranch}</div>
                                 </td>
                                 <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? (b.cashiedatestats.reports[0].fee_generated + b.cashiedatestats.reports[0].comm_generated).toFixed(2) : ""}</div>
+                                  <div className="labelGrey">{b.cashiedatestats.totalpartnercashier}</div>
                                 </td>
                                 <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].cash_in_hand.toFixed(2) : "-"}</div>
-                                </td>
-                              
-                                <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].closing_balance.toFixed(2) : "-"}</div>
+                                  <div className="labelGrey">{b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalTrans : 0}</div>
                                 </td>
                                 <td style={{textAlign:"center"}}>
-                                  <div className="labelGrey">{b.cashiedatestats.reports.length > 0 ? b.cashiedatestats.reports[0].discripancy.toFixed(2) : "-"}</div>
+                                  <div className="labelGrey">{b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalFee.toFixed(2) : 0}</div>
                                 </td>
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey">{b.cashiedatestats.partnerreports.length > 0 ? b.cashiedatestats.partnerreports[0].totalCommission.toFixed(2) : 0}</div>
+                                </td>
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey">{b.cashiedatestats.partnerreports.length > 0 ? (b.cashiedatestats.partnerreports[0].totalFee + b.cashiedatestats.reports[0].totalCommission).toFixed(2) : 0}</div>
+                                </td>
+
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey">{b.cashiedatestats.totalmerchant}</div>
+                                </td>
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey"> {b.cashiedatestats.totalmerchantbranch}</div>
+                                </td>
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey"> {b.cashiedatestats.totalmerchantcashier}</div>
+                                </td>
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey">{b.cashiedatestats.totalmerchantstaff}</div>
+                                </td>
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey">{b.cashiedatestats.merchantfee.toFixed(2)}</div>
+                                </td>
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey">{b.cashiedatestats.merchantcommission.toFixed(2)}</div>
+                                </td>
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey">{(b.cashiedatestats.merchantfee + b.cashiedatestats.merchantcommission).toFixed(2)}</div>
+                                </td>
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey">{b.cashiedatestats.invoicecreated}</div>
+                                </td>
+                                <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey">{b.cashiedatestats.paid}</div>
+                                </td>
+
+
+
+
+                               
                                 
                               </tr>
                               )
@@ -1632,21 +1625,15 @@ class PartnerReports extends Component {
                             : null
                           }
                           <tr style={{textAlign:"center", backgroundColor:'green'}}>
-                              <td style={{textAlign:"center", color:'white'}}><b>Total</b></td>
+                              <td style={{textAlign:"center", color:'white'}} colspan='2'><b>Total</b></td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalOb}</b></div>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalBranch}</b></div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCr}</b></div>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCashier}</b></div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCp}</b></div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalInvoice}</b></div>
-                              </td>
-                              <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalInvoiceAmount}</b></div>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalBankTrans}</b></div>
                               </td>
                               <td style={{textAlign:"center"}}>
                                 <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalFee}</b></div>
@@ -1655,23 +1642,66 @@ class PartnerReports extends Component {
                                 <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalComm}</b></div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {parseInt(this.state.datestats[i].totalComm) + parseInt(this.state.datestats[i].totalFee)}</b></div>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {parseFloat(this.state.datestats[i].totalFee) + parseFloat(this.state.datestats[i].totalComm)}</b></div>
+                              </td>
+                              
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalPartner}</b></div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCih}</b></div>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalPartnerBranch}</b></div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalCb}</b></div>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalPartnerCashier}</b></div>
                               </td>
                               <td style={{textAlign:"center"}}>
-                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalDis}</b></div>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalPartnerTrans}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalPartnerFee}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalPartnerComm}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF { parseFloat(this.state.datestats[i].totalPartnerFee) + parseFloat(this.state.datestats[i].totalPartnerComm)}</b></div>
+                              </td>
+                            
+                            
+
+                              <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalMerchant}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                  <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalMerchantBranch}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalMerchantCashier}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalMerchantStaff}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalMerchantFee}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalMerchantComm}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {parseFloat(this.state.datestats[i].totalMerchantFee) + parseFloat(this.state.datestats[i].totalMerchantComm)}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalInvoiceCreated}</b></div>
+                              </td>
+                              <td style={{textAlign:"center"}}>
+                                <div className="labelGrey" style={{textAlign:"center", color:'white'}}><b>XOF {this.state.datestats[i].totalInvoicePaid}</b></div>
                               </td>
                             </tr>
                       
                       </tbody>
                   
-                  </Table> */}
-            
+                  </Table>
+                    </Card>
                     
                 </Card>
                   )  
