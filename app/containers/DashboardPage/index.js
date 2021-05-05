@@ -149,10 +149,10 @@ export default class DashboardPage extends Component {
           <Main fullWidth>
             <div style={{backgroundColor:"goldenrod", padding:'10px'}}>
               <Row style={{marginTop:'15px'}}>
-                <Col cW='20%'>
+                <Col cW='15%'>
                     <Card
                       horizontalMargin="0pxx"
-                      cardWidth="220px"
+                      cardWidth="150px"
                       textAlign="center"
                       col
                       smallValue
@@ -166,15 +166,15 @@ export default class DashboardPage extends Component {
                   
                   
                 </Col>
-                <Col cW='20%'>
+                <Col cW='15%'>
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     h4FontSize="16px"
                     textAlign="center"
                     smallValue
                     col
-                    style={{height:'120px', marginLeft:'8px'}}
+                    style={{height:'120px', marginLeft:'-3px'}}
                   >
                     <h4>
                       Bank Agencies
@@ -182,14 +182,14 @@ export default class DashboardPage extends Component {
                     <div className="cardValue">{this.state.totalBranches}</div>
                   </Card>
                 </Col>
-                <Col cW='20%'> 
+                <Col cW='15%'> 
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'0px'}}
+                    style={{height:'120px', marginLeft:'-7px'}}
                   >
                     <h4>
                       Bank Cashiers
@@ -197,19 +197,45 @@ export default class DashboardPage extends Component {
                     <div className="cardValue">{this.state.totalCashiers}</div>
                   </Card>
                 </Col>
-                <Col cW='20%'>
+                <Col cW='15%'>
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'0px'}}
+                    style={{height:'120px', marginLeft:'-10px'}}
                   >
                     <h4>
                       Bank Transactions
                     </h4>
                     <div className="cardValue">{this.state.bankTrans}</div>
+                  </Card>
+                </Col>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'-15px'}}
+                  >
+                    <h4>Revenue For Infra</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue"> 0</div>
+                      </Col>
+                    </Row>
                   </Card>
                 </Col>
                 <Col cW='20%'></Col>
@@ -277,7 +303,7 @@ export default class DashboardPage extends Component {
                     col
                     style={{height:'120px', marginLeft:'-30px'}}
                   >
-                    <h4>Revenue</h4>
+                    <h4>Revenue For Bank</h4>
                     <Row>
                       <Col style={{textAlign:'center'}}>
                         <h5>Fee</h5>
@@ -427,7 +453,7 @@ export default class DashboardPage extends Component {
                     col
                     style={{height:'120px', marginLeft:'-30px'}}
                   >
-                    <h4>Revenue</h4>
+                    <h4>Revenue For Partner</h4>
                     <Row>
                       <Col style={{textAlign:'center'}}>
                         <h5>Fee</h5>
@@ -566,7 +592,7 @@ export default class DashboardPage extends Component {
                     col
                     style={{height:'120px', marginLeft:'-20px'}}
                   >
-                    <h4>Revenue</h4>
+                    <h4>Revenue For Merchant</h4>
                     <Row>
                       <Col style={{textAlign:'center'}}>
                         <h5>Fee</h5>
