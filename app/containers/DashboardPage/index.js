@@ -275,7 +275,7 @@ export default class DashboardPage extends Component {
                      smallValue
                      textAlign="center"
                      col
-                    style={{height:'120px', marginLeft:'-5px'}}
+                    style={{height:'120px', marginLeft:'-6px'}}
                   >
                     <h4>Agency Cash Reveived</h4>
                     <Row>
@@ -301,7 +301,7 @@ export default class DashboardPage extends Component {
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'-30px'}}
+                    style={{height:'120px', marginLeft:'-33px'}}
                   >
                     <h4>Revenue For Bank</h4>
                     <Row>
@@ -323,12 +323,11 @@ export default class DashboardPage extends Component {
                 <Col cW='10%'></Col>
               </Row>
               
-              <Row style={{marginTop:'20px'}}>
-                <Col cW='20%'>
-                 
+              <Row style={{marginTop:'15px'}}>
+                <Col cW='15%'>
                     <Card
-                      horizontalMargin="0px"
-                      cardWidth="220px"
+                      horizontalMargin="0pxx"
+                      cardWidth="150px"
                       textAlign="center"
                       col
                       smallValue
@@ -342,30 +341,30 @@ export default class DashboardPage extends Component {
                   
                   
                 </Col>
-                <Col cW='20%'>
+                <Col cW='15%'>
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     h4FontSize="16px"
                     textAlign="center"
                     smallValue
                     col
-                    style={{height:'120px', marginLeft:'8px'}}
+                    style={{height:'120px', marginLeft:'-3px'}}
                   >
                     <h4>
-                      Partner Agencies
+                     Partner Agencies
                     </h4>
                     <div className="cardValue">{this.state.totalPartnerBranches}</div>
                   </Card>
                 </Col>
-                <Col cW='20%'> 
+                <Col cW='15%'> 
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'0px'}}
+                    style={{height:'120px', marginLeft:'-7px'}}
                   >
                     <h4>
                       Partner Cashiers
@@ -373,19 +372,45 @@ export default class DashboardPage extends Component {
                     <div className="cardValue">{this.state.totalPartnerCashiers}</div>
                   </Card>
                 </Col>
-                <Col cW='20%'>
+                <Col cW='15%'>
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'0px'}}
+                    style={{height:'120px', marginLeft:'-10px'}}
                   >
                     <h4>
                       Partner Transactions
                     </h4>
                     <div className="cardValue">{this.state.partnerTrans}</div>
+                  </Card>
+                </Col>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'-15px'}}
+                  >
+                    <h4>Revenue For Infra</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue"> 0</div>
+                      </Col>
+                    </Row>
                   </Card>
                 </Col>
                 <Col cW='20%'></Col>
@@ -425,7 +450,7 @@ export default class DashboardPage extends Component {
                      smallValue
                      textAlign="center"
                      col
-                    style={{height:'120px', marginLeft:'-5px'}}
+                    style={{height:'120px', marginLeft:'-6px'}}
                   >
                     <h4>Partner Cash Reveived</h4>
                     <Row>
@@ -451,7 +476,7 @@ export default class DashboardPage extends Component {
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'-30px'}}
+                    style={{height:'120px', marginLeft:'-33px'}}
                   >
                     <h4>Revenue For Partner</h4>
                     <Row>
@@ -473,32 +498,34 @@ export default class DashboardPage extends Component {
                 <Col cW='10%'></Col>
               </Row>
               
-              <Row style={{marginTop:'20px'}}>
-                <Col cW='20%'>
-                 
+
+              <Row style={{marginTop:'15px'}}>
+                <Col cW='15%'>
                     <Card
-                      horizontalMargin="0px"
-                      cardWidth="220px"
+                      horizontalMargin="0pxx"
+                      cardWidth="150px"
                       textAlign="center"
                       col
                       smallValue
                       style={{height:'120px', marginLeft:'20px'}}
                     >
                       <h4>
-                        Bank Merchants
+                      Bank Merchants
                       </h4>
                       <div className="cardValue">{this.state.totalBankMerchants}</div>
                     </Card>
+                  
+                  
                 </Col>
-                <Col cW='20%'>
+                <Col cW='15%'>
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     h4FontSize="16px"
                     textAlign="center"
                     smallValue
                     col
-                    style={{height:'120px', marginLeft:'8px'}}
+                    style={{height:'120px', marginLeft:'-3px'}}
                   >
                     <h4>
                     Bank Merchant Branches
@@ -506,14 +533,14 @@ export default class DashboardPage extends Component {
                     <div className="cardValue">{this.state.totalMerchantBranches}</div>
                   </Card>
                 </Col>
-                <Col cW='20%'> 
+                <Col cW='15%'> 
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'0px'}}
+                    style={{height:'120px', marginLeft:'-7px'}}
                   >
                     <h4>
                       Bank Merchant Staff
@@ -521,14 +548,14 @@ export default class DashboardPage extends Component {
                     <div className="cardValue">{this.state.totalMerchantStaff}</div>
                   </Card>
                 </Col>
-                <Col cW='20%'>
+                <Col cW='15%'>
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'0px'}}
+                    style={{height:'120px', marginLeft:'-10px'}}
                   >
                     <h4>
                       Bank Merchant Cashier
@@ -536,8 +563,36 @@ export default class DashboardPage extends Component {
                     <div className="cardValue">{this.state.totalMerchantCashier}</div>
                   </Card>
                 </Col>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'-15px'}}
+                  >
+                    <h4>Revenue For Infra</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue"> 0</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
                 <Col cW='20%'></Col>
               </Row>
+              
+             
               <Row style={{marginTop:'20px', marginBottom:'15px'}}>
                 <Col cW='30%'>
                   <Card
@@ -628,71 +683,99 @@ export default class DashboardPage extends Component {
             
             </div> 
             <div style={{backgroundColor:"goldenrod", padding:'10px', marginTop:'20px'}}>
-            <Row style={{marginTop:'20px'}}>
-                <Col cW='20%'>
-                 
+            <Row style={{marginTop:'15px'}}>
+                <Col cW='15%'>
                     <Card
-                      horizontalMargin="0px"
-                      cardWidth="220px"
+                      horizontalMargin="0pxx"
+                      cardWidth="150px"
                       textAlign="center"
                       col
                       smallValue
                       style={{height:'120px', marginLeft:'20px'}}
                     >
                       <h4>
-                        Infra Merchants
+                      Infra Merchants
                       </h4>
                       <div className="cardValue">{this.state.totalInfraMerchants}</div>
                     </Card>
+                  
+                  
                 </Col>
-                <Col cW='20%'>
+                <Col cW='15%'>
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     h4FontSize="16px"
                     textAlign="center"
                     smallValue
                     col
-                    style={{height:'120px', marginLeft:'8px'}}
+                    style={{height:'120px', marginLeft:'-3px'}}
                   >
                     <h4>
                     Infra Merchant Branches
                     </h4>
-                    <div className="cardValue">0</div>
+                    <div className="cardValue">{this.state.totalMerchantBranches}</div>
                   </Card>
                 </Col>
-                <Col cW='20%'> 
+                <Col cW='15%'> 
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'0px'}}
+                    style={{height:'120px', marginLeft:'-7px'}}
                   >
                     <h4>
                     Infra Merchant Staff
                     </h4>
-                    <div className="cardValue">0</div>
+                    <div className="cardValue">{this.state.totalMerchantStaff}</div>
                   </Card>
                 </Col>
-                <Col cW='20%'>
+                <Col cW='15%'>
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'0px'}}
+                    style={{height:'120px', marginLeft:'-10px'}}
                   >
                     <h4>
                     Infra Merchant Cashier
                     </h4>
-                    <div className="cardValue">0</div>
+                    <div className="cardValue">{this.state.totalMerchantCashier}</div>
                   </Card>
                 </Col>
-                <Col cW='40%'></Col>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'-15px'}}
+                  >
+                    <h4>Revenue For Infra</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue"> 0</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+                <Col cW='20%'></Col>
               </Row>
+              
               <Row style={{marginTop:'20px', marginBottom:'15px'}}>
                 <Col cW='30%'>
                   <Card

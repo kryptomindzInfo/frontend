@@ -731,31 +731,33 @@ class BankPage extends Component {
         <Container verticalMargin>
           <Main fullWidth>
           <div style={{backgroundColor:"goldenrod", padding:'10px'}}>
-              <Row style={{marginTop:'15px'}}>
-                <Col cW='20%'>
-                <Card
-                      horizontalMargin="0px"
-                      cardWidth="220px"
+          <Row style={{marginTop:'15px'}}>
+                <Col cW='15%'>
+                    <Card
+                      horizontalMargin="0pxx"
+                      cardWidth="150px"
                       textAlign="center"
                       col
                       smallValue
                       style={{height:'120px', marginLeft:'20px'}}
                     >
-                    <h4>
-                      Banks
-                    </h4>
-                    <div className="cardValue">{this.state.banks.length}</div>
-                  </Card>
+                      <h4>
+                        Banks
+                      </h4>
+                      <div className="cardValue">{this.state.banks.length}</div>
+                    </Card>
+                  
+                  
                 </Col>
-                <Col cW='20%'>
+                <Col cW='15%'>
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     h4FontSize="16px"
                     textAlign="center"
                     smallValue
                     col
-                    style={{height:'120px', marginLeft:'8px'}}
+                    style={{height:'120px', marginLeft:'-3px'}}
                   >
                     <h4>
                       Bank Agencies
@@ -763,14 +765,14 @@ class BankPage extends Component {
                     <div className="cardValue">{this.state.totalAgencies}</div>
                   </Card>
                 </Col>
-                <Col cW='20%'> 
+                <Col cW='15%'> 
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'0px'}}
+                    style={{height:'120px', marginLeft:'-7px'}}
                   >
                     <h4>
                       Bank Cashiers
@@ -778,14 +780,14 @@ class BankPage extends Component {
                     <div className="cardValue">{this.state.totalCashiers}</div>
                   </Card>
                 </Col>
-                <Col cW='20%'>
+                <Col cW='15%'>
                   <Card
                     horizontalMargin="0px"
-                    cardWidth="220px"
+                    cardWidth="150px"
                     smallValue
                     textAlign="center"
                     col
-                    style={{height:'120px', marginLeft:'0px'}}
+                    style={{height:'120px', marginLeft:'-10px'}}
                   >
                     <h4>
                       Bank Transactions
@@ -793,8 +795,36 @@ class BankPage extends Component {
                     <div className="cardValue">{this.state.bankTrans}</div>
                   </Card>
                 </Col>
+                <Col cW='30%'>
+                  <Card
+                    horizontalMargin="0px"
+                    cardWidth="302px"
+                    smallValue
+                    textAlign="center"
+                    col
+                    style={{height:'120px', marginLeft:'-15px'}}
+                  >
+                    <h4>Revenue For Infra</h4>
+                    <Row>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Fee</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Commission</h5>
+                        <div className="cardValue">0</div>
+                      </Col>
+                      <Col style={{textAlign:'center'}}>
+                        <h5>Total</h5>
+                        <div className="cardValue"> 0</div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
                 <Col cW='20%'></Col>
               </Row>
+              
+             
               <Row style={{marginTop:'20px'}}>
                 <Col cW='30%'>
                   <Card
@@ -1169,19 +1199,20 @@ class BankPage extends Component {
                 </Col>
                 
                 <Col cW='10%' style={{marginTop:'50px',marginRight:'10px'}}>
-                  <A href='/merchantlist'>
+                 
                     <Button
                       style={{
                         padding:'7px',
                         backgroundColor:'green',
                         color:'white',
                         marginRight:'60px'
-                        
+                       
                       }}
+                      onClick={this.showPopup}
                     >
                       <h4>Add Bank</h4>
                     </Button>
-                  </A>
+                 
                 </Col>
                
               </Row>
