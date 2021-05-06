@@ -1348,7 +1348,7 @@ class BankPage extends Component {
               : null}
             </div>
              */}
-            <Card bigPadding style={{overflow: 'auto', overflowY: 'hidden'}}>
+            <Card bigPadding style={{overflow: 'auto', overflowY: 'auto'}}>
               <div className="cardBody">
                 <Table marginTop="34px">
                 <thead>
@@ -1362,7 +1362,7 @@ class BankPage extends Component {
                       <th style={{borderLeft:'5px solid white'}} colspan='7'>
                         Partner
                       </th>
-                      <th style={{borderLeft:'5px solid white'}} colspan='9'>
+                      <th style={{borderLeft:'5px solid white'}} colspan='10'>
                         Merchant
                       </th>
                     </tr>
@@ -1373,7 +1373,7 @@ class BankPage extends Component {
                       <th>Name</th><th>Logo</th>
                       <th style={{borderLeft:'5px solid white'}}>Number</th><th>Cashier</th><th>Transaction</th><th>Fee</th><th>Commission</th><th>Revenue</th>
                       <th style={{borderLeft:'5px solid white'}}>Number</th><th>Agencies</th><th>Cashier</th><th>Transaction</th><th>Fee</th><th>Commission</th><th>Revenue</th>
-                      <th style={{borderLeft:'5px solid white'}}>Number</th><th>Agencies</th><th>Cashier</th><th>Staff</th><th>Fee</th><th>Commission</th><th>Revenue</th><th>Invoice Created</th><th>Invoice Paid</th>
+                      <th style={{borderLeft:'5px solid white'}}>Number</th><th>Agencies</th><th>Cashier</th><th>Staff</th><th>Fee</th><th>Commission</th><th>Revenue</th><th>Invoice Created</th><th>Invoice Paid</th><th></th>
                       
                     </tr>
                   </thead>
@@ -1414,7 +1414,7 @@ class BankPage extends Component {
                             <td className="tac bold">
                               {ep.state.bankstats[i].invoicePaid}
                               {b.status != 0 ? (
-                                <span className="absoluteRight primary popMenuTrigger">
+                                <span className="absoluteRight primary popMenuTrigger" style={{marginLeft:'40px'}}>
                                   <i className="material-icons ">more_vert</i>
                                   <div className="popMenu">
                                     <span
@@ -1462,6 +1462,7 @@ class BankPage extends Component {
                                   </span>
                                 )}
                             </td>
+                                <td></td>
                           </tr>
                         );
                       })

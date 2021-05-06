@@ -83,12 +83,12 @@ margin-top: ${props => props.marginTop ? props.marginTop : '0' };
     .popMenu{
         display: none;
         position: absolute;
-        z-index: 10;
+        z-index: 1;
         font-size: 13px;
         font-weight:normal;
         width: 130px;
         right: 18px;
-        margin-top: -15px;
+        margin-top: -20px;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
   background-color: #ffffff;
         padding: 5px 10px;
@@ -99,6 +99,7 @@ margin-top: ${props => props.marginTop ? props.marginTop : '0' };
             color: #000;
             font-size:13px;
             font-weight:normal;
+            z-index: 1;
         }
     }
     &:hover .popMenu, .popMenu:hover{

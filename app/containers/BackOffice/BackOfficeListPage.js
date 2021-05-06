@@ -52,10 +52,15 @@ function BankPartnerListPage(props) {
 
   const fetchPartnerList = async () => {
     // const res = await postRequest("bank/getFailedTransactions", token, {})
+    // const after = new Date();
+    // const before = new Date();
+    // after.setHours(0,0,0,0);
+  
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 3);
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(23,59,59,0);
     const res = await postRequest('bank/queryTransactionStates', token, {
-      status: '1',
+      status: '2',
       date_after: yesterday,
       date_before: new Date(),
       page_start: 0,
@@ -286,8 +291,8 @@ function BankPartnerListPage(props) {
       </Helmet>
       <BankHeader active="partnerss" />
       <Container verticalMargin>
-      <BankSidebarTwo active="backoffice" />
-        <Main>
+      {/* <BankSidebarTwo active="backoffice" /> */}
+        <Main fullWidth>
           <ActionBar
             marginBottom="33px"
             // inputWidth="calc(100% - 241px)"
