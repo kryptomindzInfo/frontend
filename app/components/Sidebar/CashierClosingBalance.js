@@ -590,6 +590,7 @@ class CashierClosingBalance extends Component {
                         name="note"
                         autoFocus
                         placeholder="Remarks"
+                        required
                         value={this.state.note}
                         onChange={this.handleInputChange}
                       />
@@ -606,6 +607,7 @@ class CashierClosingBalance extends Component {
                         name="agree"
                         value={this.state.agree}
                         checked={this.state.agree}
+                        required
                         onClick={this.handleCheckbox}
                       />{' '}
                     Close accounts for the day?
