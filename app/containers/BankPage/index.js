@@ -458,7 +458,7 @@ class BankPage extends Component {
       });
       this.success();
       this.closePopup();
-      this.getBanks();
+      this.getData();
     }
   };
 
@@ -1878,7 +1878,6 @@ class BankPage extends Component {
                         </label>
                           <TextInput
                             type="text"
-                            pattern="[0-9]{10}"
                             title="10 Digit numeric value"
                             name="mobile"
                             onFocus={inputFocus}
