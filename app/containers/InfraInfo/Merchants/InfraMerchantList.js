@@ -135,7 +135,7 @@ function InfraMerchantList(props) {
               ) : (
                   <span>Block</span>
                 )} */}
-              {merchant.status == 1 ? <span>Unblock</span> : <span>Block</span>}
+              {/* {merchant.status == 1 ? <span>Unblock</span> : <span>Block</span>} */}
             </div>
           </span>
         </div>

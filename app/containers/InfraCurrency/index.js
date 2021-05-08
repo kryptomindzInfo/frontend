@@ -144,7 +144,9 @@ class InfraCurrency extends Component {
       permissions: {},
       showOtp: false,
       currency: 'XOF',
-      currencylable: ''
+      currencylable: '',
+      deleteindex : 0,
+      confirmation:false,
     };
     this.success = this.success.bind(this);
     this.error = this.error.bind(this);
@@ -170,6 +172,27 @@ class InfraCurrency extends Component {
     //, name: v.name, address1: v.address1, state: v.state, zip: v.zip, country: v.country, ccode: v.ccode, mobile: v.mobile, email: v.email, logo: v.logo, contract: v.contract, username: v.username, bank_id: v._id
     this.setState({ popup: true });
   };
+
+  deleteDenomination = () => {
+    console.log("index",this.state.deleteindex);
+    console.log('wfwfwfwf');
+    const data = this.state.denomination;
+    data.splice(this.state.deleteindex, 1);
+    this.setState(prevState => ({
+      ...prevState,
+      denomination: data,
+      confirmation:false,
+    }));
+  }
+
+  showDelete = (index) => {
+    console.log('wfwfwfwf');
+    console.log("index",index);
+    this.setState({
+      deleteindex: index,
+      confirmation:true,
+    });
+  }
 
   closePopup = () => {
     this.setState({
@@ -271,7 +294,6 @@ class InfraCurrency extends Component {
               ccode: res.data.users.ccode,
             },
             () => {
-              console.log(this.state.profile);
             },
           );
         }
@@ -308,7 +330,6 @@ class InfraCurrency extends Component {
     axios
       .get(`${API_URL}/get-currency`)
       .then(d => {
-        console.log(d);
         if (d.data.data.length != 0) {
           this.setState(prevState => ({
             ...prevState,
@@ -328,16 +349,13 @@ class InfraCurrency extends Component {
     });
   };
   showAddDenominationPopup = () => {
-    console.log(currencies)
-    console.log(this.state.currency)
     const filtercurrency = currencies.filter((item) => {
       return item.value == this.state.currency
     })
-    console.log(filtercurrency)
     if (filtercurrency.length) {
       this.setState({ currencylable: filtercurrency[0].label })
     }
-    this.setState({ addDenominationPopup: true });
+    this.setState({ addDenominationPopup: true,confirmation:false });
   };
 
   saveCurrency = () => {
@@ -345,7 +363,6 @@ class InfraCurrency extends Component {
     axios
       .post(`${API_URL}/save-currency`, { value: currency, denomination })
       .then(d => {
-        console.log(d);
         this.success();
       })
       .catch(err => {
@@ -388,7 +405,6 @@ class InfraCurrency extends Component {
       return <Redirect to="/" />;
     }
 
-    console.log(this.state.currency)
 
     return (
       <Wrapper>
@@ -455,93 +471,134 @@ class InfraCurrency extends Component {
         </Container>
 
         {this.state.addDenominationPopup ? (
-          <Popup close={this.closeAddDenominationPopup.bind(this)} accentedH1>
-            <h1>Add Denomination</h1>
-            <form style={{ padding: '4% 0 7% 0' }} onSubmit>
-              <Grid container spacing={8}>
-                <Grid item>
-                  <MaterialButton
-                    variant="outlined"
-                    onClick={() => {
-                      this.setState(prevState => ({
-                        ...prevState,
-                        denomination: [...prevState.denomination, ' '],
-                      }));
+          <div>
+            {this.state.confirmation ? (
+              <Popup close={this.closeAddDenominationPopup.bind(this)} accentedH1>
+                <h1>Delete denomination</h1>
+                <p style={{textAlign:'center'}}>Are you sure you want to delete this denomination?</p>
+                <Row>
+                  <Col cW='20%'></Col>
+                  <Col cW='20%'>
+                  <Button 
+                    style = {{
+                      backgroundColor:'grey',
+                      color:'white',
+                      padding:'10px'
                     }}
+                    onClick={()=>{this.setState({confirmation:false})}}
                   >
-                    Add more
-                  </MaterialButton>
-                </Grid>
-                {this.state.denomination.map((element, index) => (
-                  <Grid
-                    item
-                    key={`text-field-${index}`}
-                    xs={12}
-                    container
-                    alignItems="center"
-                    spacing={2}
+                    Cancel
+                  </Button>
+                  </Col>
+                  <Col cW='20%'></Col>
+                  <Col  cW='20%'>
+                  <Button
+                   style = {{
+                    backgroundColor:'red',
+                    color:'white',
+                    padding:'10px'
+                  }}
+                    onClick={()=>this.deleteDenomination()}
                   >
-                    <Grid item xs={2}>
-                      {this.state.currencylable}
-                    </Grid>
-                    <Grid item xs={7}>
-
-                      <TextField
-                        label="Number"
-                        value={element}
-                        onChange={e => {
-                          const val = e.target.value;
-                          const data = this.state.denomination;
-
-                          data[index] = Number(val);
-                          this.setState(prevState => ({
-                            ...prevState,
-                            denomination: data,
-                          }));
-                        }}
-                        type="number"
-                        className={classes.textFieldModal}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        margin="normal"
-                        variant="outlined"
-                      />
-                    </Grid>
-                    <Grid item xs={3}>
-                      <MaterialButton
-                        onClick={() => {
-                          const data = this.state.denomination;
-                          data.splice(index, 1);
-                          this.setState(prevState => ({
-                            ...prevState,
-                            denomination: data,
-                          }));
-                        }}
-                      >
-                        Delete
-                      </MaterialButton>
-                    </Grid>
+                    Delete
+                  </Button>
+                  </Col>
+                  <Col cW='20%'></Col>
+                </Row>
+              </Popup>
+            ):(
+              <Popup close={this.closeAddDenominationPopup.bind(this)} accentedH1>
+              <h1>Add Denomination</h1>
+              <form style={{ padding: '4% 0 7% 0' }} >
+                <Grid container spacing={8}>
+                  <Grid item>
+                    <MaterialButton
+                      variant="outlined"
+                      onClick={() => {
+                        this.setState(prevState => ({
+                          ...prevState,
+                          denomination: [...prevState.denomination, ' '],
+                        }));
+                      }}
+                    >
+                      Add more
+                    </MaterialButton>
                   </Grid>
-                ))}
-              </Grid>
+                  {this.state.denomination.map((element, index) => (
+                    <Grid
+                      item
+                      key={`text-field-${index}`}
+                      xs={12}
+                      container
+                      alignItems="center"
+                      spacing={2}
+                    >
+                      <Grid item xs={2}>
+                        {this.state.currencylable}
+                      </Grid>
+                      <Grid item xs={7}>
+  
+                        <TextField
+                          label="Number"
+                          value={element}
+                          onChange={e => {
+                            const val = e.target.value;
+                            const data = this.state.denomination;
+  
+                            data[index] = Number(val);
+                            this.setState(prevState => ({
+                              ...prevState,
+                              denomination: data,
+                            }));
+                          }}
+                          type="number"
+                          className={classes.textFieldModal}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          margin="normal"
+                          variant="outlined"
+                        />
+                      </Grid>
+                      <Grid item xs={3}>
+                        <MaterialButton
+                          type="button"
+                          onClick={() => {
+                            this.setState({
+                              deleteindex: index,
+                              confirmation:true,
+                            });
+                          }}
+                        >
+                          Delete
+                        </MaterialButton>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
+  
+                <Button
+                  filledBtn
+                  type="button"
+                  onClick={this.saveCurrency}
+                  // onClick={this.showAddDenominationPopup}
+                  style={{
+                    color: 'white',
+                    background: '#417505',
+                    marginTop: '10%',
+                  }}
+                >
+                  Add Denomination
+                </Button>
+              </form>
+            </Popup>
+          
 
-              <Button
-                filledBtn
-                type="button"
-                onClick={this.saveCurrency}
-                // onClick={this.showAddDenominationPopup}
-                style={{
-                  color: 'white',
-                  background: '#417505',
-                  marginTop: '10%',
-                }}
-              >
-                Add Denomination
-              </Button>
-            </form>
-          </Popup>
+            )}
+          </div>
+         
         ) : null}
+
       </Wrapper>
     );
   }

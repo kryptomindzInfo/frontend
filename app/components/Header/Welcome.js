@@ -144,7 +144,7 @@ class Welcome extends Component {
                     </>
                   )}
           </div>
-          <LanguageSwitch />
+          {/* <LanguageSwitch /> */}
         </WelcomeWrap>
       </>
     );
