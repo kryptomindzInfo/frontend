@@ -690,8 +690,8 @@ export default class BankUser extends Component {
                         </label>
                           <TextInput
                             type="text"
-                            pattern="[0-9]{10}"
-                            title="10 Digit numeric value"
+                           // pattern="[0-9]{10}"
+                            title="Mobile"
                             name="mobile"
 
                             onFocus={inputFocus}
@@ -948,8 +948,8 @@ export default class BankUser extends Component {
                         </label>
                           <TextInput
                             type="text"
-                            pattern="[0-9]{10}"
-                            title="10 Digit numeric value"
+                          // pattern="[0-9]{10}"
+                            title="Mobile"
                             name="mobile"
                             autoFocus
                             onFocus={inputFocus}

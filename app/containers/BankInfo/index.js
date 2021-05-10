@@ -1056,9 +1056,9 @@ export default class BankInfo extends Component {
                         </label>
                           <TextInput
                             type="text"
-                            pattern="[0-9]{10}"
+                          // pattern="[0-9]{10}"
+                             title="Mobile"
                             autoFocus
-                            title="10 Digit numeric value"
                             name="mobile"
                             onFocus={inputFocus}
                             onBlur={inputBlur}

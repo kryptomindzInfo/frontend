@@ -125,8 +125,8 @@ render() {
               <label><FormattedMessage {...messages.mobile} />*</label>
               <TextInput
                   type="text"
-                  pattern="[0-9]{10}"
-                  title="10 Digit numeric value"
+                   // pattern="[0-9]{10}"
+                   title="Mobile"
                   name="mobile"
                   onFocus={inputFocus}
                   onBlur={inputBlur}

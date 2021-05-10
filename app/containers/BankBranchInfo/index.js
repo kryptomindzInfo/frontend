@@ -1228,7 +1228,7 @@ export default class BankBranchInfo extends Component {
                           <label><FormattedMessage {...messages.popup7} />*</label>
                           <TextInput
                             type="text"
-                            pattern="[0-9]{10}"
+                            // pattern="[0-9]{10}"
                             title="10 Digit numeric value"
                             name="mobile"
                             onFocus={inputFocus}

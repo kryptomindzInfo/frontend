@@ -341,8 +341,8 @@ export default class CashierSendMoney extends Component {
                             </label>
                             <TextInput
                               type="text"
-                              pattern="[0-9]{10}"
-                              title="10 Digit numeric value"
+                              // pattern="[0-9]{10}"
+                              title="Mobile"
                               name="mobile"
                               onFocus={inputFocus}
                               onBlur={inputBlur}
@@ -850,8 +850,8 @@ export default class CashierSendMoney extends Component {
                             </label>
                             <TextInput
                               type="text"
-                              pattern="[0-9]{10}"
-                              title="10 Digit numeric value"
+                              // pattern="[0-9]{10}"
+                              title="Mobile"
                               name="receiverMobile"
                               onFocus={inputFocus}
                               onBlur={inputBlur}
@@ -1262,7 +1262,7 @@ export default class CashierSendMoney extends Component {
                         </label>
                         <TextInput
                           type="text"
-                          pattern="[0-9]"
+                          // pattern="[0-9]"
                           name="receiverIdentificationAmount"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
