@@ -1245,8 +1245,16 @@ class CashierTransactionLimit extends Component {
           </Col>
         </Row>
         <Row style={{ marginTop: '25%' }}>
-          <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
-            <FormDialog />
+        <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
+            {this.state.transactionStarted && !this.state.isClosed ? (
+               
+               <FormDialog />
+            
+            ) : (
+                <Button dashBtn disabled>
+                  Enroll Wallet User
+                </Button>
+              )}
           </Col>
         </Row>
         <Row>
@@ -1470,6 +1478,7 @@ class CashierTransactionLimit extends Component {
                                 </label>
                                 <TextInput
                                   type="text"
+                                  disabled
                                   name="transferCode"
                                   pattern=".{3,12}"
                                   // title="Minimum 3 characters"

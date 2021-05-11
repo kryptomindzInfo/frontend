@@ -629,7 +629,7 @@ export default class BankEditFee extends Component {
                     disabled
                     list="ttype"
                   >
-                       <option value="">Transaction Type*</option>
+                       {/* <option value="">Transaction Type*</option> */}
                     <option >Wallet to Wallet </option>
                     <option >Non Wallet to Non Wallet</option>
                     <option >Non Wallet to Wallet</option>

@@ -290,7 +290,7 @@ export default class BankBranchList extends Component {
               function () {
                 this.success();
                 this.closePopup();
-                this.getBranches();
+                this.getData();
               },
             );
           }
@@ -329,7 +329,7 @@ export default class BankBranchList extends Component {
               notification: 'Branch ' + n,
             });
             this.success();
-            this.getBranches();
+            this.getData();
           }
         } else {
           const error = new Error(res.data.error);
@@ -366,7 +366,7 @@ export default class BankBranchList extends Component {
               () => {
                 this.success();
                 this.closeMiniPopUp();
-                this.getBranches();
+                this.getData();
               },
             );
           }
@@ -409,7 +409,7 @@ export default class BankBranchList extends Component {
               () => {
                 this.success();
                 this.closeMiniPopUp();
-                this.getBranches();
+                this.getData();
               },
             );
           }
@@ -1425,7 +1425,7 @@ export default class BankBranchList extends Component {
                             name="working_from"
                             onFocus={inputFocus}
                             onBlur={inputBlur}
-                            min="00:00" max="23:00"
+                            min="00:00" max={this.state.working_to}
                             autoFocus
                             value={this.state.working_from}
                             onChange={this.handleInputChange}

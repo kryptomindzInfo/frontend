@@ -134,6 +134,7 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
   const [isFeeValid, setIsFeeValid] = useState(isValidFee);
 
   const anchorRef = React.useRef(null);
+  const [receivername, setReceivername] = React.useState('');
   const [walletBankName, setWalletBankName] = React.useState('');
   const [availableWallet, setAvailableWallet] = React.useState('');
   const [openWalletPopup, setWalletPopup] = React.useState(false);
@@ -913,6 +914,68 @@ const CashierToWalletForm = ({ onClose, formValues, isValidFee }) => {
                             type="text"
                             size="small"
                             value={walletBankName}
+                          />
+                        ) : (
+                          ''
+                        )}
+                      </Grid>
+                      <Grid
+                        item
+                        xs={4}
+                        md={4}
+                        alignItems="center"
+                        className={classes.dialogTextFieldGrid}
+                      >
+                        {walletBankName ? (
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            id="firstName"
+                            label="First Name"
+                            disabled
+                            fullWidth
+                            className={classes.dialogTextFieldGrid}
+                            variant="outlined"
+                            style={{
+                              color: 'green',
+                              fontSize: '13px',
+                              fontWeight: '600',
+                            }}
+                            type="text"
+                            size="small"
+                            value={receiverGivenName}
+                          />
+                        ) : (
+                          ''
+                        )}
+                      </Grid>
+                      <Grid
+                        item
+                        xs={4}
+                        md={4}
+                        alignItems="center"
+                        className={classes.dialogTextFieldGrid}
+                      >
+                        {walletBankName ? (
+                          <TextField
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            id="Last Name"
+                            label="Last Name"
+                            disabled
+                            fullWidth
+                            className={classes.dialogTextFieldGrid}
+                            variant="outlined"
+                            style={{
+                              color: 'green',
+                              fontSize: '13px',
+                              fontWeight: '600',
+                            }}
+                            type="text"
+                            size="small"
+                            value={receiverFamilyName}
                           />
                         ) : (
                           ''
