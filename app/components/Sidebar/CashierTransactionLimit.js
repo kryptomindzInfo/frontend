@@ -698,6 +698,11 @@ class CashierTransactionLimit extends Component {
         pendingtype: 'send',
         showConfirmPending: true,
       });
+     } else if( this.state.receiverEmail ===  this.state.email){
+        this.setState({
+          notification: "Reciever and Sender emails can't be same",
+        });
+        this.warn();
     } else {
       this.setState(
         {
@@ -885,55 +890,58 @@ class CashierTransactionLimit extends Component {
 
   verifySendMoney = async event => {
     event.preventDefault();
-    this.setState({
-      verifySendMoneyOTPLoading: true,
-    });
-    const values = { ...this.state, type: "Non Wallet to Non Wallet Send Money" }
-    this.setState({
-      receiptvalues: values,
-    });
-    let API = '';
-    if (this.state.interbank) {
-      API = 'cashier/interBank/sendMoneyToNonWallet'
-    } else {
-      API = 'cashierSendMoney'
-    }
-    axios
-      .post(`${API_URL}/${API}`, this.state)
-      .then(res => {
-        if (res.status == 200) {
-          if (res.data.status === 0) {
-            this.closePopupSendMoney();
-            throw res.data.message;
-          } else {
-            this.setState({
-              notification: 'Transaction Successfully Done',
-              receiptpopup: true,
-            });
-            this.success();
-            this.closePopupSendMoney();
-            this.props.refresh();
-          }
-        } else {
-          throw res.data.error;
-        }
+   
+
         this.setState({
-          verifySendMoneyOTPLoading: false,
+          verifySendMoneyOTPLoading: true,
         });
-      })
-      .catch(err => {
-        this.setState(
-          {
-            notification: err.response
-              ? err.response.data.error.toString()
-              : err.toString(),
-            verifySendMoneyOTPLoading: false,
-          },
-          () => {
-            this.error();
-          },
-        );
-      });
+        const values = { ...this.state, type: "Non Wallet to Non Wallet Send Money" }
+        this.setState({
+          receiptvalues: values,
+        });
+        let API = '';
+        if (this.state.interbank) {
+          API = 'cashier/interBank/sendMoneyToNonWallet'
+        } else {
+          API = 'cashierSendMoney'
+        }
+        axios
+          .post(`${API_URL}/${API}`, this.state)
+          .then(res => {
+            if (res.status == 200) {
+              if (res.data.status === 0) {
+                this.closePopupSendMoney();
+                throw res.data.message;
+              } else {
+                this.setState({
+                  notification: 'Transaction Successfully Done',
+                  receiptpopup: true,
+                });
+                this.success();
+                this.closePopupSendMoney();
+                this.props.refresh();
+              }
+            } else {
+              throw res.data.error;
+            }
+            this.setState({
+              verifySendMoneyOTPLoading: false,
+            });
+          })
+          .catch(err => {
+            this.setState(
+              {
+                notification: err.response
+                  ? err.response.data.error.toString()
+                  : err.toString(),
+                verifySendMoneyOTPLoading: false,
+              },
+              () => {
+                this.error();
+              },
+            );
+          });
+        
   };
 
   verifySendMoneyToWallet = event => {

@@ -1425,7 +1425,7 @@ export default class BankBranchList extends Component {
                             name="working_from"
                             onFocus={inputFocus}
                             onBlur={inputBlur}
-                            min="00:00" max={this.state.working_to}
+                            min="00:00" max={`${this.state.working_to.split(":")[0]}:${parseInt(this.state.working_to.split(":")[1])-1}`}
                             autoFocus
                             value={this.state.working_from}
                             onChange={this.handleInputChange}
@@ -1440,7 +1440,8 @@ export default class BankBranchList extends Component {
                           <TextInput
                             type="time"
                             autoFocus
-                            min="00:00" max="23:00"
+                            // min={this.state.working_from}
+                            max="23:00"
                             name="working_to"
                             onFocus={inputFocus}
                             onBlur={inputBlur}
@@ -1873,7 +1874,7 @@ export default class BankBranchList extends Component {
                           name="eworking_from"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
-                          min="00:00" max="23:00"
+                          min="00:00" max="12:00"
                           autoFocus
                           value={this.state.eworking_from}
                           onChange={this.handleInputChange}
@@ -1888,7 +1889,7 @@ export default class BankBranchList extends Component {
                         <TextInput
                           type="time"
                           autoFocus
-                          min="00:00" max="23:00"
+                          min="12:01" max="23:00"
                           name="eworking_to"
                           onFocus={inputFocus}
                           onBlur={inputBlur}

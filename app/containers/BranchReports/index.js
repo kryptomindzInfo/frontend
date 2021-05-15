@@ -548,6 +548,7 @@ export default class BranchReports extends Component {
                         id="date-picker-dialog"
                         label="To"
                         size="small"
+                        minDate={this.state.from}
                         maxDate={new Date()}
                         fullWidth
                         inputVariant="outlined"
