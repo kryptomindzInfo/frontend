@@ -1739,6 +1739,7 @@ class CashierTransactionLimit extends Component {
                               {this.state.withoutID ? null : (
                                 <FormGroup>
                                   <UploadArea
+                                    required
                                     bgImg={`${STATIC_URL}main/pdf-icon.png`}
                                   >
                                     {this.state.proof ? (
@@ -1755,6 +1756,7 @@ class CashierTransactionLimit extends Component {
                                       onClick={() => this.triggerBrowse('proof')}
                                     >
                                       <input
+                                        required
                                         type="file"
                                         id="proof"
                                         onChange={this.onChange}

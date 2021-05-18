@@ -48,7 +48,7 @@ toast.configure({
 });
 const token = localStorage.getItem('bankLogged');
 export default class BankLoginPage extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
       username: '',
@@ -67,6 +67,14 @@ export default class BankLoginPage extends Component {
   error = () => toast.error(this.state.notification);
 
   warn = () => toast.warn(this.state.notification);
+
+  editSignal = (primary,secondary) => {
+    this.props.setTheme({
+      ...this.props.appTheme,
+      secondary:  primary,
+      primary: secondary,
+    });
+  };
 
   handleInputChange = event => {
     const { value, name } = event.target;
@@ -89,8 +97,6 @@ export default class BankLoginPage extends Component {
       localStorage.setItem('bankId', res.data.data.id);
       localStorage.setItem('bankPhone', res.data.data.mobile);
       localStorage.setItem('admin', res.data.data.admin);
-      console.log(localStorage.getItem('bankLogged'));
-      console.log(res);
       if (res.data.data.status == 0 && res.data.data.message === "Incorrect username or password") {
         toast.error(res.data.data.message);
       }

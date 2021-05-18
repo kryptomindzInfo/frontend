@@ -1419,13 +1419,13 @@ export default class BankBranchList extends Component {
                       <Col cW="49%" mR="2%">
 
                         <FormGroup>
-                          <label>From*</label>
+                          <label  className="focused">From*</label>
                           <TextInput
                             type="time"
                             name="working_from"
                             onFocus={inputFocus}
                             onBlur={inputBlur}
-                            min="00:00" max={`${this.state.working_to.split(":")[0]}:${parseInt(this.state.working_to.split(":")[1])-1}`}
+                            min="00:00" max="12:00"
                             autoFocus
                             value={this.state.working_from}
                             onChange={this.handleInputChange}
@@ -1436,11 +1436,11 @@ export default class BankBranchList extends Component {
                       </Col>
                       <Col cW="49%">
                         <FormGroup>
-                          <label>To*</label>
+                          <label className="focused">To*</label>
                           <TextInput
                             type="time"
                             autoFocus
-                            // min={this.state.working_from}
+                            min="12:01"
                             max="23:00"
                             name="working_to"
                             onFocus={inputFocus}

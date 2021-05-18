@@ -201,7 +201,7 @@ export default function App(props) {
             path="/merchants/:id"
             component={p => <InfraMerchantList {...p} />}
           />
-          <Route exact path="/bank" component={BankLoginPage} />
+          <Route  exact path="/bank" setTheme={setTheme} appTheme={theme} component={BankLoginPage} />
           <Route exact path="/bank/setup" component={BankSetupPage} />
           <Route exact path="/bank/activate" component={BankActivate} />
           <Route

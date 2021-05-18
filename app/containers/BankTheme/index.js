@@ -21,18 +21,43 @@ import Card from 'components/Card';
 import Row from 'components/Row';
 import Col from 'components/Col';
 import messages from './messages';
+import Loader from 'components/Loader';
+import { postRequest, getRequest } from '../App/ApiCall';
 
 export function BankTheme(props) {
-  const [primary, setPrimary] = useState('#fff')
-  const [secondary, setSecondary] = useState('#fff')
-  const [showPrimary, setShowPrimary] = useState(false)
-  const [showSecondary, setShowSecondary] = useState(false)
+  const [primary, setPrimary] = useState(props.appTheme.primary);
+  const [secondary, setSecondary] = useState(props.appTheme.secondary);
+  const [showPrimary, setShowPrimary] = useState(false);
+  const [showSecondary, setShowSecondary] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem('bankLogged');
   // useEffect(() => {
   //   console.log(props);
   //   setTimeout(() => {
   //     props.setTheme({ ...props.appTheme, primary: '#ff0000' });
   //   }, 3000);
   // }, []);
+
+  const onSubmit = async()=> {
+    setLoading(true);
+    const res = await postRequest("editBankTheme", token, { theme: {
+      primary: primary,
+      secondary: secondary,
+    }});
+    if (res.data.data.status !== 0) {
+      props.setTheme({
+        ...props.appTheme,
+        secondary: secondary,
+        primary: primary,
+      });
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return <Loader fullPage />;
+  }
+
   return (
     <div>
       <Helmet>
@@ -46,24 +71,25 @@ export function BankTheme(props) {
           {' '}
           <Card bigPadding>
             <Container style={{marginTop:'30px'}}>
-              <Row style={{ paddingBottom: '10px' }}>
-                <Col cW="20%"> <h2>Primary </h2></Col>
-                <Col  cW="30%">
+              <Row >
+                <Col cW="10%"> <h4 style={{marginBottom:'0px'}}>Primary</h4></Col>
+                <Col  cW="20%">
                   <button
-                    style={{backgroundColor:`${primary}`, color:`${primary}`, padding:'10px 100px 10px 100px'}}
+                    style={{backgroundColor:`${primary}`, color:`${primary}`, padding:'10px 50px 10px 50px'}}
                     onClick={()=>setShowPrimary(showPrimary=> !showPrimary)}
                   />
                 </Col>
-                <Col cW="20%"> <h2>Secondary </h2></Col>
-                <Col  cW="30%">
+                <Col cW="15%"> <h4 style={{marginBottom:'0px'}}>Secondary </h4></Col>
+                <Col  cW="20%">
                   <button
-                    style={{backgroundColor:`${secondary}`, color:`${secondary}`, padding:'10px 100px 10px 100px'}}
+                    style={{backgroundColor:`${secondary}`, color:`${secondary}`, padding:'10px 50px 10px 50px'}}
                     onClick={()=>setShowSecondary(showSecondary=> !showSecondary)}
                   ></button>
                 </Col>
+                <Col cW="20%"><Button onClick={()=>onSubmit()}>Apply</Button></Col>
               </Row>
               <Row>
-              <Col cW="20%"></Col>
+              <Col cW="10%"></Col>
               <Col cW="30%">
                   {
                     showPrimary && (
@@ -77,7 +103,7 @@ export function BankTheme(props) {
                     )
                   }
                 </Col>
-                <Col cW="20%"></Col>
+                <Col cW="10%"></Col>
               <Col cW="30%">
                   {
                     showSecondary && (
@@ -91,8 +117,8 @@ export function BankTheme(props) {
                     )
                   }
                 </Col>
+                <Col cW="40%"></Col>
               </Row>
-              
             </Container>
           </Card>
         </Main>

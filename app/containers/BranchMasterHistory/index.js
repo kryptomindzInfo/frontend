@@ -10,7 +10,7 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet';
 import { toast } from 'react-toastify';
 import Wrapper from 'components/Wrapper';
-import BankHeader from 'components/Header/BankHeader';
+import BranchHeader from 'components/Header/BranchHeader';
 import Container from 'components/Container';
 import Loader from 'components/Loader';
 import SidebarBank from 'components/Sidebar/SidebarBank';
@@ -19,7 +19,7 @@ import Card from 'components/Card';
 import Table from 'components/Table';
 import Pagination from 'react-js-pagination';
 import styled from 'styled-components';
-import { API_URL, CURRENCY } from '../App/constants';
+import { API_URL, STATIC_URL, CURRENCY  } from '../App/constants';
 import ReactPaginate from 'react-paginate';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -53,6 +53,7 @@ export default class History extends Component {
       receivedRow: [],
       sentRow: [],
       pagecount: 0,
+      logo: localStorage.getItem('bankLogo'),
     };
 
     this.success = this.success.bind(this);
@@ -178,7 +179,7 @@ export default class History extends Component {
           <meta charSet="utf-8" />
           <title>History | INFRA | E-WALLET</title>
         </Helmet>
-        <BankHeader />
+        <BranchHeader page="branch" goto={"/branch/" + this.props.match.params.bank + "/dashboard"} bankName={this.props.match.params.bank} bankLogo={STATIC_URL + this.state.logo} />
         <Container verticalMargin>
           {/* <SidebarBank /> */}
           <Main fullWidth>
