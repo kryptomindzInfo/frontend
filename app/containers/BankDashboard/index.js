@@ -144,15 +144,15 @@ export default class BankDashboard extends Component {
                   <Row>
                     <Col style={{textAlign:'center'}}>
                       <h5>Amount</h5>
-                      <div className="cardValue">{CURRENCY}:{this.state.agencystats.cashReceived}</div>
+                      <div className="cardValue">{CURRENCY}:{this.state.agencystats.cashReceived.toFixed(2)}</div>
                     </Col>
                     <Col style={{textAlign:'center'}}>
                       <h5>Fee</h5>
-                      <div className="cardValue">{CURRENCY}: {this.state.agencystats.cashReceivedFee}</div>
+                      <div className="cardValue">{CURRENCY}: {this.state.agencystats.cashReceivedFee.toFixed(2)}</div>
                     </Col>
                     <Col style={{textAlign:'center'}}>
                       <h5>Commission</h5>
-                      <div className="cardValue">{CURRENCY}: {this.state.agencystats.cashReceivedComm}</div>
+                      <div className="cardValue">{CURRENCY}: {this.state.agencystats.cashReceivedComm.toFixed(2)}</div>
                     </Col>
                   </Row>
                 </Card>
