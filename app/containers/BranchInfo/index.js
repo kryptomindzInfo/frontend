@@ -835,6 +835,7 @@ export default class BranchInfo extends Component {
                           value={this.state.bcode}
                           onChange={this.handleInputChange}
                           autoFocus
+                          readOnly
                           required
                         />
                       </FormGroup>
@@ -845,6 +846,7 @@ export default class BranchInfo extends Component {
                           name="username"
                           onFocus={inputFocus}
                           onBlur={inputBlur}
+                          readOnly
                           value={this.state.username}
                           onChange={this.handleInputChange}
                           autoFocus

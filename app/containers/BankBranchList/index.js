@@ -1508,6 +1508,7 @@ export default class BankBranchList extends Component {
                       type="text"
                       name="username"
                       onFocus={inputFocus}
+                      readOnly
                       onBlur={inputBlur}
                       value={this.state.username}
                       onChange={this.handleInputChange}

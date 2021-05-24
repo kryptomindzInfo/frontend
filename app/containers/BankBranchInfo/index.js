@@ -884,11 +884,12 @@ export default class BankBranchInfo extends Component {
                         value={this.state.bcode}
                         onChange={this.handleInputChange}
                         autoFocus
+                        readOnly
                         required
                       />
                     </FormGroup>
                     <FormGroup>
-                      <label>Branch Admin: User ID*</label>
+                      <label >Branch Admin: User ID*</label>
                       <TextInput
                         type="text"
                         name="username"
@@ -897,6 +898,7 @@ export default class BankBranchInfo extends Component {
                         value={this.state.username}
                         onChange={this.handleInputChange}
                         autoFocus
+                        readOnly
                         required
                       />
                     </FormGroup>

@@ -536,8 +536,8 @@ export default class BranchDashboard extends Component {
       })
       .then(res => {
         if (res.status == 200) {
-          if (res.data.error) {
-            throw res.data.error;
+          if (res.data.status===0) {
+            throw res.data.message;
           } else {
             this.setState({
               notification: 'User Assigned successfully!',
@@ -545,7 +545,47 @@ export default class BranchDashboard extends Component {
             });
             this.success();
             this.closePopup();
-            this.getCashiers();
+            this.getData();
+          }
+        } else {
+          const error = new Error(res.data.error);
+          throw error;
+        }
+      })
+      .catch(err => {
+        this.setState({
+          notification: err.response ? err.response.data.error : err.toString(),
+          assignLoading: false,
+        });
+        this.error();
+      });
+  };
+
+
+  disassignUser = (event,id) => {
+    event.preventDefault();
+
+    this.setState({
+      assignLoading: true,
+    });
+
+    axios
+      .post(`${API_URL}/branch/disassignUser`, {
+        cashier_id: id,
+        token: token,
+      })
+      .then(res => {
+        if (res.status == 200) {
+          if (res.data.status===0) {
+            throw res.data.message;
+          } else {
+            this.setState({
+              notification: 'User Disssigned successfully!',
+              assignLoading: false,
+            });
+            this.success();
+            this.closePopup();
+            this.getData();
           }
         } else {
           const error = new Error(res.data.error);
@@ -933,11 +973,12 @@ export default class BranchDashboard extends Component {
     );
     const cashiers = await this.getCashiers();
     const users = await this.getUsers();
+    console.log(users);
     const cashierstats = await this.getCashierStats(cashiers);
     this.setState(
       {
         cashiers:cashiers,
-        users:users,
+        users:users.filter(user=> user.role == 'user'),
         cashierStats: cashierstats.res,
         loading:cashierstats.loading,
       }
@@ -1329,10 +1370,16 @@ export default class BranchDashboard extends Component {
                                 <span onClick={() => dis.showEditPopup(b)}>
                                   Edit
                                   </span>
+                                  
                                 <span
                                   onClick={() => dis.showAssignPopup(b)}
                                 >
                                   Assign User
+                                  </span>
+                                  <span
+                                  onClick={(event) => dis.disassignUser(event,b._id)}
+                                >
+                                  Disassign User
                                   </span>
                                 {/* {b.is_closed ? (
                                   <span

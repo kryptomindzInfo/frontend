@@ -34,6 +34,7 @@ import messages from './messages';
 import TypeSelectBox from '../Form/TypeSelectBox';
 import getCountryDialCode from '../../utils/CountryUtil';
 import SearchInvoicePopup from './SearchInvoicePopup';
+import documentFileIcon from '../../images/pdf_icon.png';
 
 toast.configure({
   position: 'bottom-right',
@@ -181,6 +182,7 @@ class CashierTransactionLimit extends Component {
   };
 
   onChange(e) {
+    this.setState({claimMoneyLoading:true});
     if (e.target.files && e.target.files[0] != null) {
       this.fileUpload(e.target.files[0], e.target.getAttribute('data-key'));
     }
@@ -210,6 +212,7 @@ class CashierTransactionLimit extends Component {
           } else {
             this.setState({
               [key]: res.data.hash,
+              claimMoneyLoading:false,
             });
           }
         } else {
@@ -1768,7 +1771,9 @@ class CashierTransactionLimit extends Component {
                                           cloud_upload
                                         </i>
                                       ) : (
-                                          ' '
+                                        <img src={documentFileIcon}
+                                        width="50"
+                                        height="50" />
                                         )}
 
                                       <label>
@@ -3427,9 +3432,8 @@ class CashierTransactionLimit extends Component {
                         :
                     </Col>
                       <Col cW="35%">
-                        {
-                          this.state.cashInHand
-                        }
+                        { `${CURRENCY}: ${this.state.cashInHand.toFixed(2)}`}
+                          
                       </Col>
                     </Row>
                     <Row style={{ marginTop: '5%', marginLeft: '-5%' }}>

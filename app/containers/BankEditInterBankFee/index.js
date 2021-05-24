@@ -400,8 +400,8 @@ export default class BankEditFee extends Component {
                     required
                     list="act"
                   >
-                     <option>Active</option>
-                    <option>Inactive </option>
+                     <option value={1}>Active</option>
+                    <option value={0}>Inactive </option>
                   </SelectInput>
                   </FormGroup>
                   </Col>
