@@ -379,6 +379,7 @@ class CashierTransactionLimit extends Component {
   closePopupSendMoney = () => {
     this.setState({
       proceed: false,
+      proof: null,
       pendingtype: '',
       popupSendMoney: false,
       showSendMoneyOTP: false,
