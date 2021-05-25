@@ -442,15 +442,15 @@ export default function FormDialog() {
               ccode: getCountryDialCode(user.country) || '+221',
               mobile: user.mobile || '',
               name: user.name || '',
-              last_name: '',
+              last_name: user.last_name || '',
               address: user.address || '',
               state: user.state || '',
               receiverZip: user.zip || '',
               country: user.country || 'Senegal',
               email: user.email || '',
-              id_name: '',
-              id_type: '',
-              id_number: '',
+              id_name: user.id_name || '',
+              id_type: user.id_type || '',
+              id_number: user.id_number || '',
               valid_till: '',
               city: '',
               dob: '',
@@ -487,7 +487,11 @@ export default function FormDialog() {
                           toast.error(r.data.error);
                         } else {
                           setUser(null);
-                          toast.success('User verification successful');
+                          if(user.status !== 0){
+                            toast.success('User edited successfully');
+                          }else{
+                            toast.success('User verification successful');
+                          }
                         }
                       })
                       .catch(error => {

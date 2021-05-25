@@ -374,11 +374,11 @@ class OperationalWallet extends Component {
               <Button filledBtn marginTop="50px">
                 <span>Proceed</span>
               </Button>
-              <p className="note">
+              {/* <p className="note">
                 <span style={{ color: 'red' }}>*</span> Total Fee {CURRENCY}0
                 will be charged and receiver will get {CURRENCY}{' '}
                 {this.state.amount}{' '}
-              </p>
+              </p> */}
             </form>
           </Popup>
         ) : null}

@@ -1370,7 +1370,7 @@ class BankPage extends Component {
                   
                   <thead>
                     <tr>
-                      <th>Name</th><th>Logo</th>
+                      <th>Logo</th><th>Name</th>
                       <th style={{borderLeft:'5px solid white'}}>Number</th><th>Cashier</th><th>Transaction</th><th>Fee</th><th>Commission</th><th>Revenue</th>
                       <th style={{borderLeft:'5px solid white'}}>Number</th><th>Agencies</th><th>Cashier</th><th>Transaction</th><th>Fee</th><th>Commission</th><th>Revenue</th>
                       <th style={{borderLeft:'5px solid white'}}>Number</th><th>Agencies</th><th>Cashier</th><th>Staff</th><th>Fee</th><th>Commission</th><th>Revenue</th><th>Invoice Created</th><th>Invoice Paid</th><th></th>
@@ -1385,7 +1385,7 @@ class BankPage extends Component {
                           <tr key={b._id}>
                             <td>
                               <img
-                                style={{ height: '40px' }}
+                                style={{ height: '40px', width: '40px' }}
                                 src={`${STATIC_URL}${b.logo}`}
                               />
                             </td>
