@@ -660,7 +660,7 @@ export default class BankUser extends Component {
 
                         {/* <option value="">Select Role*</option> */}
                         <option value="user">User</option>
-                        <option value="infraAdmin">Infra Admin</option>
+                        {/* <option value="infraAdmin">Infra Admin</option> */}
                         <option value="bankAdmin">Bank Admin</option>
                         <option value="branchAdmin">Branch Admin</option>
                       </SelectInput>
@@ -741,7 +741,7 @@ export default class BankUser extends Component {
                         onChange={this.handleInputChange}
                         required
                       >
-                        <option value="">Select Branch*</option>
+                        <option value="">Select Agency*</option>
                         {this.state.branches && this.state.branches.length > 0
                           ? this.state.branches.map(function (b) {
                             return <option value={b._id} key={b._id}>{b.name}</option>;
@@ -918,7 +918,7 @@ export default class BankUser extends Component {
 
                         {/* <option value="">Select Role*</option> */}
                         <option value="user">User</option>
-                        <option value="infraAdmin">Infra Admin</option>
+                        {/* <option value="infraAdmin">Infra Admin</option> */}
                         <option value="bankAdmin">Bank Admin</option>
                         <option value="branchAdmin">Branch Admin</option>
                       </SelectInput>

@@ -1057,7 +1057,7 @@ export default class BranchCashierList extends Component {
                         required
                       />
                     </FormGroup>
-                    <FormGroup>
+                    {/* <FormGroup>
                       <label>Maximum daily transaction amount*</label>
                       <TextInput
                         type="text"
@@ -1080,7 +1080,7 @@ export default class BranchCashierList extends Component {
                         onChange={this.handleInputChange}
                         required
                       />
-                    </FormGroup>
+                    </FormGroup> */}
 
                     {this.state.addBranchLoading ? (
                       <Button filledBtn marginTop="50px" disabled>
@@ -1221,7 +1221,7 @@ export default class BranchCashierList extends Component {
                         required
                       />
                     </FormGroup>
-                    <FormGroup>
+                    {/* <FormGroup>
                       <label>Maximum daily transaction amount*</label>
                       <TextInput
                         type="text"
@@ -1246,7 +1246,7 @@ export default class BranchCashierList extends Component {
                         onChange={this.handleInputChange}
                         required
                       />
-                    </FormGroup>
+                    </FormGroup> */}
                     {this.state.editBranchLoading ? (
                       <Button filledBtn marginTop="50px" disabled>
                         <Loader />

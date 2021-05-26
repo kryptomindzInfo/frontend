@@ -237,7 +237,7 @@ export default class BankBranchList extends Component {
             });
             this.success();
             this.closePopup();
-            this.getBranches();
+            this.getData();
           }
         } else {
           const error = new Error(res.data.error);
@@ -991,7 +991,7 @@ export default class BankBranchList extends Component {
                   <h1>Add Agency</h1>
                   <form action="" method="post" onSubmit={this.addBranch}>
                     <FormGroup>
-                      <label>Branch Name*</label>
+                      <label>Agency Name*</label>
                       <TextInput
                         type="text"
                         name="name"
@@ -1003,7 +1003,7 @@ export default class BankBranchList extends Component {
                       />
                     </FormGroup>
                     <FormGroup>
-                      <label>Branch ID*</label>
+                      <label>Agency ID*</label>
                       <TextInput
                         type="text"
                         name="bcode"
@@ -1015,7 +1015,7 @@ export default class BankBranchList extends Component {
                       />
                     </FormGroup>
                     <FormGroup>
-                      <label>Branch Admin: User ID*</label>
+                      <label>Agency Admin: User ID*</label>
                       <TextInput
                         type="text"
                         name="username"
@@ -1026,7 +1026,7 @@ export default class BankBranchList extends Component {
                         required
                       />
                     </FormGroup>
-                    <Row>
+                    {/* <Row>
                       <Col cW="20%" mR="2%">
                         <FormGroup>
                           <TextInput
@@ -1053,7 +1053,7 @@ export default class BankBranchList extends Component {
                           />
                         </FormGroup>
                       </Col>
-                    </Row>
+                    </Row> */}
 
                     <Row>
                       <Col cW="20%" mR="2%">
@@ -1476,7 +1476,7 @@ export default class BankBranchList extends Component {
                 <h1>Edit Branch</h1>
                 <form action="" method="post" onSubmit={this.editBranch}>
                   <FormGroup>
-                    <label>Branch Name*</label>
+                    <label>Agency Name*</label>
                     <TextInput
                       type="text"
                       name="name"
@@ -1489,7 +1489,7 @@ export default class BankBranchList extends Component {
                     />
                   </FormGroup>
                   <FormGroup>
-                    <label>Branch ID*</label>
+                    <label>Agency ID*</label>
                     <TextInput
                       type="text"
                       name="bcode"
@@ -1503,7 +1503,7 @@ export default class BankBranchList extends Component {
                     />
                   </FormGroup>
                   <FormGroup>
-                    <label>Branch Admin: User ID*</label>
+                    <label>Agency Admin: User ID*</label>
                     <TextInput
                       type="text"
                       name="username"
@@ -1516,7 +1516,7 @@ export default class BankBranchList extends Component {
                       required
                     />
                   </FormGroup>
-                  <FormGroup>
+                  {/* <FormGroup>
                     <label>Credit Limit</label>
                     <TextInput
                       type="text"
@@ -1527,7 +1527,7 @@ export default class BankBranchList extends Component {
                       onChange={this.handleInputChange}
                       autoFocus
                     />
-                  </FormGroup>
+                  </FormGroup> */}
                   <FormGroup>
                     <label>Address*</label>
                     <TextInput
