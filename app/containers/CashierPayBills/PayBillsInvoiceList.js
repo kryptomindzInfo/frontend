@@ -22,10 +22,50 @@ const PayBillsInvoiceList = props => {
   const [penaltyList, setPenaltyList] = useState([]);
   const [penaltyRule, setPenaltyRule] = useState({});
   const [totalAmount, setTotalAmount] = useState(0);
+  const [all, setall] = useState(false);
   const [payingInvoiceList, setPayingInvoiceList] = useState([]);
   const [invoiceList, setInvoiceList] = useState(
     props.invoiceList.filter(i => i.paid === 0),
   );
+
+  const selectAllInvoice =  () => {
+    const list1 =[];
+    const list2 =[];
+    let  sum=0;
+    invoiceList.map((invoice,index) => {
+      const obj1 = {
+        id: invoice._id,
+        penalty: penaltyList[index],
+        fee: feeList[index],
+      }
+      const obj2 = {
+        invoice: invoice,
+        penalty: penaltyList[index],
+      }
+      list1.push(obj1);
+      list2.push(obj2);
+      sum = sum + invoice.amount + penaltyList[index]
+    });
+    return({list1:list1,list2:list2,sum:sum})
+  };
+
+
+  const selectall = async(e) =>{
+    if (all === false) {
+      const result = await selectAllInvoice();
+      console.log(result);
+      setPayingInvoiceList(result.list2);
+      setSelectedInvoiceList(result.list1);
+      setTotalAmount(result.sum);
+      setall(true);
+    } else {
+      setPayingInvoiceList([]);
+      setSelectedInvoiceList([]);
+      setTotalAmount(0);
+      setall(false);
+    } 
+  };
+
   const handleCheckboxClick = async (e, invoice, index) => {
     setButtonLoading(true);
     if(e.target.checked) {
@@ -298,6 +338,7 @@ const PayBillsInvoiceList = props => {
           </div>
         </div>
         <div />
+        <Button className={all === true ? 'active' : ''} style={{marginTop:"10px"}}onClick={selectall}>Select All</Button>
         {invoiceList && invoiceList.length > 0 ? (
         <Table marginTop="34px" smallTd>
           <thead>

@@ -427,7 +427,7 @@ class CashierClosingBalance extends Component {
             )}
           </Col>
         </Row>
-        <Row>
+        {/* <Row>
           <Col style={{ width: '100%', marginTop: '5px' }} cw="100%">
           <Button
               dashBtn
@@ -436,7 +436,7 @@ class CashierClosingBalance extends Component {
               History
             </Button>
           </Col>
-        </Row>
+        </Row> */}
 
         
 
