@@ -119,6 +119,7 @@ export default class BankLoginPage extends Component {
   };
 
   componentDidMount() {
+    console.log(this.props.appTheme);
     this._isMounted = true;
     if (this._isMounted) {
       this.setState({ loading: false });

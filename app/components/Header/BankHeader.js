@@ -58,7 +58,7 @@ class BankHeader extends Component {
       <TopBar>
         {/* <Welcome from={toUpperCase(`${'bank'}`)} /> */}
         <Welcome from="bank" />
-        <Container>
+        {/* <Container> */}
           {page == 'branch' ? (
               <A href={this.props.goto} float="left">
                 <Link>
@@ -69,7 +69,7 @@ class BankHeader extends Component {
               null
           }
 
-          <A href="/bank/dashboard" float="left">
+          <A href="/bank/dashboard" float="left" style={{marginleft:"20px"}}>
             <div className="bankLogo">
               <img
                 src={STATIC_URL + this.state.logo}
@@ -83,7 +83,7 @@ class BankHeader extends Component {
             <div className="middleTitle">{this.props.middleTitle}</div>
           ) : null}
           {page == 'branch' ? null : <BankNav active={this.props.active} />}
-        </Container>
+        {/* </Container> */}
       </TopBar>
     );
   }

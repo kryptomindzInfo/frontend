@@ -70,6 +70,7 @@ class CashierTransactionLimit extends Component {
       token,
       proceed: false,
       livefee: 0,
+      fee:0,
       receiverIdentificationAmount: '',
       receiverIdentificationCountry: '',
       senderIdentificationCountry: '',
@@ -609,6 +610,8 @@ class CashierTransactionLimit extends Component {
 
               receiverIdentificationAmount: o.amount,
               withoutID: o.without_id,
+              isInclusive: o.is_inclusive,
+              fee: o.fee,
               requireOTP: o.require_otp,
               dateClaimMoney: new Date(o.created_at).toDateString(),
               master_code: o.master_code,
@@ -1636,7 +1639,11 @@ class CashierTransactionLimit extends Component {
                               <Row>
                                 <Col className="popInfoLeft">Amount</Col>
                                 <Col className="popInfoRight">
-                                  {this.state.receiverIdentificationAmount}
+                                  {this.state.isInclusive ? 
+                                    parseFloat(this.state.receiverIdentificationAmount) - parseFloat(this.state.fee) :
+                                    this.state.receiverIdentificationAmount
+                                  }
+
                                 </Col>
                               </Row>
                               <Row>

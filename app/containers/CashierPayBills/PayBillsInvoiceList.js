@@ -32,6 +32,7 @@ const PayBillsInvoiceList = props => {
     const list1 =[];
     const list2 =[];
     let  sum=0;
+    let fee=0;
     invoiceList.map((invoice,index) => {
       const obj1 = {
         id: invoice._id,
@@ -41,12 +42,14 @@ const PayBillsInvoiceList = props => {
       const obj2 = {
         invoice: invoice,
         penalty: penaltyList[index],
+        fee: feeList[index],
       }
       list1.push(obj1);
       list2.push(obj2);
       sum = sum + invoice.amount + penaltyList[index]
+      fee = fee + feeList[index]
     });
-    return({list1:list1,list2:list2,sum:sum})
+    return({list1:list1,list2:list2,sum:sum,fee:fee})
   };
 
 
@@ -57,11 +60,13 @@ const PayBillsInvoiceList = props => {
       setPayingInvoiceList(result.list2);
       setSelectedInvoiceList(result.list1);
       setTotalAmount(result.sum);
+      setTotalFee(result.fee);
       setall(true);
     } else {
       setPayingInvoiceList([]);
       setSelectedInvoiceList([]);
       setTotalAmount(0);
+      setTotalFee(0);
       setall(false);
     } 
   };
@@ -202,10 +207,24 @@ const PayBillsInvoiceList = props => {
               </div>
             ) : (
               <FormGroup onChange={(e) => handleCheckboxClick(e, invoice, index)}>
+                 {selectedInvoiceList.map(a => a.id).includes(invoice._id) ? (
+                     <input
+                      type="checkbox"
+                      checked
+                      value={invoice._id}>
+                    </input>
+                     ):(
+                      <input
+                      type="checkbox"
+                      value={invoice._id}>
+                    </input>
+                     )}
+
+{/* 
                 <input
                   type="checkbox"
                   value={invoice._id}>
-                </input>
+                </input> */}
                 </FormGroup>
             )}
             </Col>
@@ -359,7 +378,7 @@ const PayBillsInvoiceList = props => {
         </Table>
         ):<h3 style={{textAlign:'center'}}>No invoices found</h3>}
         <FormGroup>
-          {totalAmount > 0 ? (
+          {totalAmount > 0 && totalFee > 0 ? (
             <Button onClick={handleMultipleInvoiceSubmit} filledBtn>
               {isButtonLoading ? (
                 <Loader />
