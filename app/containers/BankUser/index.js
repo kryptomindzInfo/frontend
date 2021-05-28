@@ -192,6 +192,7 @@ export default class BankUser extends Component {
       addUserLoading: true,
     });
     const values = {
+      bank_id: this.state.bank_id,
       name: this.state.name,
       email: this.state.email,
       mobile: this.state.mobile,
@@ -390,6 +391,7 @@ export default class BankUser extends Component {
   }
 
   fileUpload(file, key) {
+    let user = 'bank';
     this.setState({
       [key]: 'main/loader.gif',
     });
@@ -401,9 +403,12 @@ export default class BankUser extends Component {
         'content-type': 'multipart/form-data',
       },
     };
+    if(this.state.admin === true || dis.state.admin === 'true'){
+      user='bankuser'
+    }
 
     axios
-      .post(`${API_URL}/fileUpload?token=${token}&from=bank`, formData, config)
+      .post(`${API_URL}/fileUpload?token=${token}&from=${user}`, formData, config)
       .then(res => {
         if (res.status == 200) {
           if (res.data.error) {
@@ -530,13 +535,13 @@ export default class BankUser extends Component {
                   this.searchlistfunction(e.target.value)
                 }} />
               </div>
-              { this.state.admin === false || this.state.admin === 'false' ? (
+             
                 <Button className="addBankButton" flex onClick={this.showPopup}>
                   <i className="material-icons">add</i>
                   <span>Add Bank User</span>
                 </Button>
 
-              ) : ''}
+             
             </ActionBar>
             <div className="cardBody clr">
               {this.state.users && this.state.users.length > 0
@@ -561,7 +566,7 @@ export default class BankUser extends Component {
                             <h4 className="hh">{b.name}</h4>
                           </Col>
                           <Col cW="20%">
-                          { dis.state.admin === false || dis.state.admin === 'false' ? (
+                         
                             <Button
                               noMin
                               className="fr"
@@ -569,7 +574,6 @@ export default class BankUser extends Component {
                             >
                               Edit
                               </Button>
-                          ) : ''}
                           </Col>
                         </Row>
                       </Card>
@@ -659,9 +663,9 @@ export default class BankUser extends Component {
                       >
 
                         {/* <option value="">Select Role*</option> */}
-                        <option value="user">User</option>
+                        <option value="user">Branch User</option>
                         {/* <option value="infraAdmin">Infra Admin</option> */}
-                        <option value="bankAdmin">Bank Admin</option>
+                        <option value="bankAdmin">User</option>
                         <option value="branchAdmin">Branch Admin</option>
                       </SelectInput>
                     </FormGroup>

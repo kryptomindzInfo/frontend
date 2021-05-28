@@ -96,7 +96,7 @@ function BankMerchantList(props) {
           } else {
             const n = type == 'unblock' ? 'Unblocked' : 'Blocked';
             toast.success(`Merchant ${n}`);
-            refreshMerchantList();
+            getData();
           }
         } else {
           toast.error(res.data.message);
@@ -121,7 +121,7 @@ function BankMerchantList(props) {
             throw res.data.message;
           } else {
             toast.success(res.data.message);
-            refreshMerchantList();
+            getData();
           }
         } else {
           toast.error(res.data.message);
@@ -427,7 +427,7 @@ function BankMerchantList(props) {
         </Main>
         <Main fullWidth>
           <Card bigPadding>
-          { admin === false || admin === 'false' ? (
+          {/* { admin === false || admin === 'false' ? ( */}
                 <Button
                 className="addBankButton"
                 flex
@@ -441,7 +441,7 @@ function BankMerchantList(props) {
                 <span>Add Merchant</span>
               </Button>
 
-            ): ''}
+            {/* ): ''} */}
         
             <div className="cardHeader">
               <div className="cardHeaderLeft">
@@ -482,7 +482,7 @@ function BankMerchantList(props) {
         <CreateMerchantPopup
           type={popupType}
           merchant={editingMerchant}
-          refreshMerchantList={() => refreshMerchantList()}
+          refreshMerchantList={() => getData()}
           onClose={() => onPopupClose()}
         />
       ) : null}

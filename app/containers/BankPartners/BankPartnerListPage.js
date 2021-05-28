@@ -102,7 +102,7 @@ function BankPartnerListPage(props) {
           } else {
             const n = type == 'unblock' ? 'Unblocked' : 'Blocked';
             toast.success(`Partner ${n}`);
-            refreshPartnertList();
+            getData();
           }
         } else {
           toast.error(res.data.message);
@@ -131,10 +131,10 @@ function BankPartnerListPage(props) {
         } else {
           if (apiType === 'update') {
             toast.success("Partner Edited");
-            refreshPartnertList();
+            getData();
           } else {
             toast.success("Partner Created");
-            refreshPartnertList();
+            getData();
           }
           setOtpPopup(false);
         }
@@ -152,7 +152,8 @@ function BankPartnerListPage(props) {
         {
           token: token,
           username:  obj.mobile,
-          page: 'editPartner',
+          page: popupType==='update' ? 'editPartner' : 'addPartner',
+          bank_id: bank_id,
           name: obj.name,
           email: obj.email,
           mobile: obj.mobile,
@@ -190,6 +191,7 @@ function BankPartnerListPage(props) {
       ...values,
       token: token,
       otp_id: otpID,
+      bank_id: bank_id,
     };
     await partnerAPI(obj, popupType);
     setLoading(false);
@@ -518,7 +520,7 @@ function BankPartnerListPage(props) {
         <Main fullWidth>
           
           <Card bigPadding>
-          { admin === false || admin === 'false' ? (
+          {/* { admin === false || admin === 'false' ? ( */}
           <Button
               className="addBankButton"
               flex
@@ -531,7 +533,7 @@ function BankPartnerListPage(props) {
                <i className="material-icons">add</i>
               <span>Add Partner</span>
             </Button>
-          ):''}
+          {/* ):''} */}
             <div className="cardHeader">
               <div className="cardHeaderLeft">
                 <i className="material-icons">supervised_user_circle</i>

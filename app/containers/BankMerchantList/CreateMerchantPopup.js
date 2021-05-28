@@ -18,6 +18,7 @@ import documentFileIcon from '../../images/pdf_icon.png';
 
 function CreateMerchantPopup(props) {
   const token = localStorage.getItem('bankLogged');
+  const admin =  localStorage.getItem('admin');
   return (
     <Popup accentedH1 close={props.onClose.bind(this)}>
       <Formik
@@ -84,6 +85,7 @@ function CreateMerchantPopup(props) {
           };
 
           const fileUpload = (file, key) => {
+            let user = 'bank';
             const formData = new FormData();
             formData.append('file', file);
             const config = {
@@ -92,7 +94,10 @@ function CreateMerchantPopup(props) {
               },
             };
             let method = 'fileUpload';
-            let url = `${API_URL}/${method}?token=${token}&from=bank`;
+            if(admin === true || admin === 'true'){
+              user='bankuser'
+            }
+            let url = `${API_URL}/${method}?token=${token}&from=${user}`;
             if (key === 'document_hash') {
               method = 'ipfsUpload';
               url = `${API_URL}/${method}?token=${token}`;

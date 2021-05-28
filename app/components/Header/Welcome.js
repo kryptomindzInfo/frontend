@@ -134,7 +134,7 @@ class Welcome extends Component {
             ) : (
                     <>
                       <Name>
-                        <span>BANK:</span> {name}
+                        <span>{ localStorage.getItem('admin') === true || localStorage.getItem('admin') === 'true' ? 'ADMIN USER :': 'ADMIN : '}</span> {name}
                       </Name>
                       <SubNav className="bankSubNav">
                         <A href="/bank/info">Settings</A>

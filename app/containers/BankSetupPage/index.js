@@ -184,7 +184,7 @@ export default class BankSetupPage extends Component {
                 <TextInput
                   type="password"
                   name="password"
-                  pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{8,16})"
+                  pattern="((?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@$_!]).{4,30})"
                   title= "Minimum 8 Characters"
                   onFocus={inputFocus}
                   onBlur={inputBlur}
