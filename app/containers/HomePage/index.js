@@ -86,6 +86,7 @@ export default class HomePage extends Component {
     if (res.data.data.status === 0 && res.data.data.message === "Incorrect username or password") {
       toast.error(res.data.data.message);
     } else {
+      console.log(res.data);
       localStorage.setItem('logged', res.data.data.token);
       localStorage.setItem('name', res.data.data.name);
       localStorage.setItem('isAdmin', res.data.data.isAdmin);

@@ -155,7 +155,7 @@ class BankPage extends Component {
       invoicePaid: 0,
       amountPaid: 0,
       totalAgencies:0,
-      
+      admin :localStorage.getItem('isAdmin'),
       drawer:{
         drawer0: true,
         drawer1: true,
@@ -1439,7 +1439,9 @@ class BankPage extends Component {
                                     <A href={`/fees/${b._id}`}>
                                       <FormattedMessage {...messages.menu3} />
                                     </A>
-                                    {b.status == -1 ? (
+                                    {ep.state.admin === true || ep.state.admin === 'true'  ? (
+                                      <span>
+                                         {b.status == -1 ? (
                                       <span
                                         onClick={() => ep.blockBank(b._id, 1)}
                                       >
@@ -1454,6 +1456,10 @@ class BankPage extends Component {
                                           Block
                                         </span>
                                       )}
+
+                                      </span>
+                                    ):''}
+                                   
                                   </div>
                                 </span>
                               ) : (
