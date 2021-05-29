@@ -424,7 +424,7 @@ export default class BranchDashboard extends Component {
               function () {
                 this.success();
                  this.closePopup();
-                this.getCashiers();
+                this.getData();
               },
             );
           }
@@ -464,7 +464,7 @@ export default class BranchDashboard extends Component {
               function () {
                 this.success();
                 this.closePopup();
-                this.getCashiers();
+                this.getData();
               },
             );
           }
@@ -492,8 +492,8 @@ export default class BranchDashboard extends Component {
         token,
         type_id: e,
         status: s,
-        page: 'partnerCashier',
-        type: 'partnerBranch'
+        page: 'cashier',
+        type: 'branch'
       })
       .then(res => {
         if (res.status == 200) {
@@ -505,7 +505,7 @@ export default class BranchDashboard extends Component {
               notification: 'Cashier ' + n
             });
             this.success();
-            this.getCashiers();
+            this.getData();
           }
         } else {
           const error = new Error(res.data.error);
@@ -623,7 +623,7 @@ export default class BranchDashboard extends Component {
               () => {
                 this.success();
                 this.closeMiniPopUp();
-                this.getCashiers();
+                this.getData();
               },
             );
           }

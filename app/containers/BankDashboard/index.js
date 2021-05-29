@@ -68,7 +68,17 @@ export default class BankDashboard extends Component {
 
   warn = () => toast.warn(this.state.notification);
 
+
+  editSignal = (primary,secondary) => {
+    this.props.setTheme({
+      ...this.props.appTheme,
+      secondary:  primary,
+      primary: secondary,
+    });
+  };
+
   getData = async() => {
+    this.editSignal(localStorage.getItem('primary'),localStorage.getItem('secondary'))
     const agencystats = await postRequest("getBankDashStatsForAgencies", token, {bank_id:this.state.bank_id});
     const partnerstats = await postRequest("getBankDashStatsForPartners", token, {bank_id:this.state.bank_id});
     const merchantstats = await postRequest("getBankDashStatsForMerchants", token, {bank_id:this.state.bank_id});

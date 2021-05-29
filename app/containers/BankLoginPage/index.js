@@ -52,6 +52,7 @@ export default class BankLoginPage extends Component {
     super();
     this.state = {
       username: '',
+      apptheme: props.appTheme,
       password: '',
       notification: '',
       loading: true,
@@ -97,6 +98,9 @@ export default class BankLoginPage extends Component {
       localStorage.setItem('bankId', res.data.data.id);
       localStorage.setItem('bankPhone', res.data.data.mobile);
       localStorage.setItem('admin', res.data.data.admin);
+      localStorage.setItem('primary', res.data.data.theme.primary);
+      localStorage.setItem('secondary', res.data.data.theme.secondary);
+      console.log(res);
       if (res.data.data.status == 0 && res.data.data.message === "Incorrect username or password") {
         toast.error(res.data.data.message);
       }
@@ -110,6 +114,7 @@ export default class BankLoginPage extends Component {
       ) {
         window.location.href = '/bank/activate';
       } else {
+
         window.location.href = '/bank/dashboard';
       }
 
