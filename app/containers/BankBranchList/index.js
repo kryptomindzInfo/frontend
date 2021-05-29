@@ -822,7 +822,7 @@ export default class BankBranchList extends Component {
           </Main>
           <Main fullWidth>
             <Card bigPadding>
-            { this.state.admin === false || this.state.admin === 'false' ? (
+            {/* { this.state.admin === false || this.state.admin === 'false' ? ( */}
                <Button
                className="addBankButton"
                flex
@@ -836,7 +836,7 @@ export default class BankBranchList extends Component {
                <span>Add Agency</span>
              </Button>
 
-            ):''}
+            {/* ):''} */}
            
               <div className="cardHeader">
                 <div className="cardHeaderLeft">

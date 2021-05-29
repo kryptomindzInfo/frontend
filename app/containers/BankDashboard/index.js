@@ -78,7 +78,7 @@ export default class BankDashboard extends Component {
   };
 
   getData = async() => {
-    this.editSignal(localStorage.getItem('primary'),localStorage.getItem('secondary'))
+    this.editSignal(localStorage.getItem('primary') ? localStorage.getItem('primary') : '#417505',localStorage.getItem('secondary') ? localStorage.getItem('secondary') : '#417505')
     const agencystats = await postRequest("getBankDashStatsForAgencies", token, {bank_id:this.state.bank_id});
     const partnerstats = await postRequest("getBankDashStatsForPartners", token, {bank_id:this.state.bank_id});
     const merchantstats = await postRequest("getBankDashStatsForMerchants", token, {bank_id:this.state.bank_id});

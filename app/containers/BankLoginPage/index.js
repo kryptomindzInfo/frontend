@@ -114,7 +114,6 @@ export default class BankLoginPage extends Component {
       ) {
         window.location.href = '/bank/activate';
       } else {
-
         window.location.href = '/bank/dashboard';
       }
 
