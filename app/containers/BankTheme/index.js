@@ -49,6 +49,9 @@ export function BankTheme(props) {
         ...props.appTheme,
         secondary: secondary,
         primary: primary,
+        accent:secondary,
+        danger:secondary,
+        light:secondary,
       });
       setLoading(false);
     }

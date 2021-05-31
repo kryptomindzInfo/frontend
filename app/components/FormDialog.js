@@ -318,11 +318,13 @@ export default function FormDialog() {
                 .post(`${API_URL}/cashier/getUser`, { token, mobile })
                 .then(res => {
                   if (res.data.status === 0) {
+
                     setUser({
                       docs_hash: [],
                       status: res.data.status,
                       country: 'Senegal',
                     });
+                    setOpen(false);
                     toast.error(res.data.message);
                   } else {
                     setUser(res.data.data);
