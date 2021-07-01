@@ -924,6 +924,7 @@ export default class BranchDashboard extends Component {
         token: this.state.token,
         where: {bank_id:this.state.bankId},
       });
+      console.log(res);
       if (res.status == 200) {
         return(res.data.rows );
       }

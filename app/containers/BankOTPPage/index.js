@@ -25,6 +25,7 @@ import PrimaryBtn from 'components/PrimaryBtn';
 import BackBtn from 'components/BackBtn';
 import A from 'components/A';
 import Loader from 'components/Loader';
+import history from 'utils/history';
 
 
 import { API_URL } from '../App/constants';
@@ -66,39 +67,40 @@ export default class BankOTPPage extends Component {
   };
 
   otpVerify = event => {
-    this.setState({
-      otpLoading: true
-    });
+    // this.setState({
+    //   otpLoading: true
+    // });
     event.preventDefault();
-    axios
-      .post(`${API_URL}/verifyOTP`, this.state)
-      .then(res => {
-        if (res.status == 200) {
-          localStorage.setItem('bankLogged', res.data.token);
+    history.push('/bank/setup');
+    // axios
+    //   .post(`${API_URL}/verifyOTP`, this.state)
+    //   .then(res => {
+    //     if (res.status == 200) {
+    //       localStorage.setItem('bankLogged', res.data.token);
           
-          this.setState({
-            notification: 'OTP Verified!'
-          }, () => {
-            this.success();
-            let history = this.props.history;
-            setTimeout(function(){
-              history.push('/bank/setup');
-            }, 1000);
-        });
-        } else {
-          throw res.data.error;
-        }
-        this.setState({
-          otpLoading: false
-        });
-      })
-      .catch(err => {
-        this.setState({
-          notification: err.response ? err.response.data.error : err.toString(),
-          otpLoading: false
-        });
-        this.error();
-      });
+    //       this.setState({
+    //         notification: 'OTP Verified!'
+    //       }, () => {
+    //         this.success();
+    //         let history = this.props.history;
+    //         setTimeout(function(){
+    //           history.push('/bank/setup');
+    //         }, 1000);
+    //     });
+    //     } else {
+    //       throw res.data.error;
+    //     }
+    //     this.setState({
+    //       otpLoading: false
+    //     });
+    //   })
+    //   .catch(err => {
+    //     this.setState({
+    //       notification: err.response ? err.response.data.error : err.toString(),
+    //       otpLoading: false
+    //     });
+    //     this.error();
+    //   });
   };
 
 render() {

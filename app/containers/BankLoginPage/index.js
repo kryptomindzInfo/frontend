@@ -98,10 +98,10 @@ export default class BankLoginPage extends Component {
       localStorage.setItem('bankId', res.data.data.id);
       localStorage.setItem('bankPhone', res.data.data.mobile);
       localStorage.setItem('admin', res.data.data.admin);
-      localStorage.setItem('primary', res.data.data.theme.primary);
-      localStorage.setItem('secondary', res.data.data.theme.secondary);
+      localStorage.setItem('primary', res.data.data.theme ? res.data.data.theme.primary : "#417505");
+      localStorage.setItem('secondary', res.data.data.theme ? res.data.data.theme.secondary :  "#6cac69");
       console.log(res);
-      if (res.data.data.status == 0 && res.data.data.message === "Incorrect username or password") {
+      if (res.data.data.status == 0 ) {
         toast.error(res.data.data.message);
       }
       else if (!res.data.data.initial_setup) {

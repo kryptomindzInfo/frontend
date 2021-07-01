@@ -25,6 +25,8 @@ class BankSidebarTwo extends Component {
     const fees = this.props.active == 'fees' ? true : false;
     const interbankfees = this.props.active == 'interbankfees' ? true : false;
     const backoffice = this.props.active == 'backoffice' ? true : false;
+    const users = this.props.active == 'users' ? true : false;
+    const announcements = this.props.active == 'announcements' ? true : false;
     
     const theme = this.props.active == 'theme' ? true : false;
     return (
@@ -46,6 +48,18 @@ class BankSidebarTwo extends Component {
           <Card rounded selected={documents} className="sideNav">
             <i className="material-icons">folder</i>
             <h3>Documents</h3>
+          </Card>
+        </A>
+        <A href="/bank/users">
+          <Card rounded selected={users} className="sideNav">
+            <i className="material-icons">folder</i>
+            <h3>Users</h3>
+          </Card>
+        </A>
+        <A href="/bank/customers">
+          <Card rounded selected={announcements} className="sideNav">
+            <i className="material-icons">folder</i>
+            <h3>Announcements</h3>
           </Card>
         </A>
         <A href="/bank/fees">

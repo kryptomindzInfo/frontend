@@ -6,6 +6,7 @@ import BankHeader from '../../components/Header/BankHeader';
 import Wrapper from '../../components/Wrapper';
 import Container from '../../components/Container';
 import SidebarBank from '../../components/Sidebar/SidebarBank';
+import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 import Main from '../../components/Main';
 import ActionBar from '../../components/ActionBar';
 import Button from '../../components/Button';
@@ -90,7 +91,7 @@ function BankCustomerListPage(props) {
       </Helmet>
       <BankHeader active="users" />
       <Container verticalMargin>
-        <SidebarBank />
+      <BankSidebarTwo active="announcements" />
         <Main>
           <ActionBar
             marginBottom="33px"

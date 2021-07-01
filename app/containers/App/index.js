@@ -94,6 +94,8 @@ import GlobalStyle from '../../global-styles';
 import BankMerchantList from '../BankMerchantList/BankMerchantList';
 import BankPartnerListPage from '../BankPartners/BankPartnerListPage';
 import BankerCustomerListPage from '../BankCustomers/BankCustomerListPage';
+import BankerCompensationPage from '../BankCompensation/BankCompensationPage';
+import BankerOverallCompensationPage from '../BankCompensation/BankOverallCompensationPage';
 import BackOfficeListPage from '../BackOffice/BackOfficeListPage';
 import PartnerInfoPage from '../BankPartners/PartnerInfoPage';
 import MerchantFeesPage from '../BankMerchantList/fees/MerchantFeesPage';
@@ -346,6 +348,12 @@ export default function App(props) {
             path="/bank/customers"
             component={BankerCustomerListPage}
           />
+          <BankRoute
+            exact
+            path="/bank/compensation"
+            component={BankerOverallCompensationPage}
+          />
+          
            <BankRoute
             exact
             path="/bank/backoffice"

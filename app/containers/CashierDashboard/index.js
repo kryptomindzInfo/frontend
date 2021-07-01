@@ -406,7 +406,7 @@ getTransactions = async(after,before) => {
   };
 
   componentDidMount() {
-    this.getStats();
+    // this.getStats();
     this.getData();
   }
 

@@ -235,21 +235,21 @@ class CashierTransactionLimit extends Component {
   };
 
   showPopupSendMoney = () => {
-    if (this.state.balance > 0) {
+    // if (this.state.balance > 0) {
       this.setState(
         { popupSendMoney: true, proceed: false, isWallet: false },
         () => this.getLiveFee(45, this.state.isWallet),
       );
-    } else {
-      this.setState(
-        {
-          notification: 'You have already used your limit for today',
-        },
-        () => {
-          this.error();
-        },
-      );
-    }
+    // } else {
+    //   this.setState(
+    //     {
+    //       notification: 'You have already used your limit for today',
+    //     },
+    //     () => {
+    //       this.error();
+    //     },
+    //   );
+    // }
   };
 
   setToWalletFormValues = values => {
@@ -916,6 +916,7 @@ class CashierTransactionLimit extends Component {
         axios
           .post(`${API_URL}/${API}`, this.state)
           .then(res => {
+            console.log(res);
             if (res.status == 200) {
               if (res.data.status === 0) {
                 this.closePopupSendMoney();
@@ -1024,13 +1025,14 @@ class CashierTransactionLimit extends Component {
                 cashInHand: res.data.cashInHand,
                 transactionStarted: res.data.transactionStarted,
                 isClosed: res.data.isClosed,
-              },
-              () => {
-                const dis = this;
-                setTimeout(function () {
-                  dis.getTransLimit();
-                }, 3000);
-              },
+              }
+              // ,
+              // () => {
+              //   const dis = this;
+              //   setTimeout(function () {
+              //     dis.getTransLimit();
+              //   }, 3000);
+              // },
             );
           }
         } else {
@@ -1040,13 +1042,14 @@ class CashierTransactionLimit extends Component {
               closingTime: res.data.closingTime,
               transactionStarted: res.data.transactionStarted,
               isClosed: res.data.isClosed,
-            },
-            () => {
-              const dis = this;
-              setTimeout(function () {
-                dis.getTransLimit();
-              }, 3000);
-            },
+            }
+            // ,
+            // () => {
+            //   const dis = this;
+            //   setTimeout(function () {
+            //     dis.getTransLimit();
+            //   }, 3000);
+            // },
           );
         }
       })

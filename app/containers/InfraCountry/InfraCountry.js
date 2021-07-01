@@ -14,6 +14,7 @@ import Card from '../../components/Card';
 import SidebarThree from '../../components/Sidebar/SidebarThree';
 import Table from '../../components/Table';
 import CreateCountryPopup from './CreateCountryPopup';
+import Loader from '../../components/Loader';
 
 const InfraCountry = props => {
   const [addCountryPopup, setAddCountryPopup] = React.useState(false);
@@ -33,7 +34,25 @@ const InfraCountry = props => {
     setAddCountryPopup(false);
   };
 
+
+  const deleteCountries = async (id) => {
+
+    axios
+      .post(`${API_URL}/delete-country`,{id:id})
+      .then(d => {
+        console.log(d);
+        if ((d.status = 200)) {
+          
+          getCountries();
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   const getCountries = async () => {
+    setLoading(true)
     axios
       .get(`${API_URL}/get-country`)
       .then(d => {
@@ -42,9 +61,9 @@ const InfraCountry = props => {
           console.log(d.data);
           if (d.data.data[0].country_list.length != 0) {
             console.log(d.data.data[0].country_list);
-            setCountryList(d.data.data[0].country_list);
+            setCountryList(d.data.data[0].country_list.slice(0, 3));
             setsearchCountryList(d.data.data[0].country_list);
-
+            setLoading(false)
           }
         }
       })
@@ -73,7 +92,7 @@ const InfraCountry = props => {
               <i className="material-icons ">more_vert</i>
               <div className="popMenu">
                 <span
-                // onClick={() => handleDeleteOfferingPopupClick(offering)}
+                onClick={() => deleteCountries(country._id)}
                 >
                   Delete
                 </span>
@@ -100,6 +119,10 @@ const InfraCountry = props => {
     // const filtervalue = filterMerchantList.filter((value)=>{
     //   return value.name..toLowerCase() == value.
     // })
+  }
+
+  if (isLoading) {
+    return <Loader fullPage />;
   }
 
   return (

@@ -392,7 +392,7 @@ class BankPage extends Component {
         notification: `Bank ${n}`,
       });
       this.success();
-      this.getBanks();
+      this.getData();
     }
   };
 
@@ -492,7 +492,7 @@ class BankPage extends Component {
       });
       this.success();
       this.closePopup();
-      this.getBanks();
+      this.getData();
     } else {
       console.log(res.data.data)
       toast.error(res.data.data.message);

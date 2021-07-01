@@ -13,7 +13,7 @@ import { toast } from 'react-toastify';
 
 import { FormattedMessage } from 'react-intl';
 import messages from './messages';
-
+import BankSidebarTwo from 'components/Sidebar/BankSidebarTwo';
 import Wrapper from 'components/Wrapper';
 import BankHeader from 'components/Header/BankHeader';
 import Container from 'components/Container';
@@ -522,7 +522,7 @@ export default class BankUser extends Component {
         </Helmet>
         <BankHeader active="bankusers" />
         <Container verticalMargin>
-          <SidebarBank />
+        <BankSidebarTwo active="users" />
           <Main>
             <ActionBar
               marginBottom="33px"
