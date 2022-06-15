@@ -53,12 +53,12 @@ import GlobalStyle from '../../global-styles';
 import 'react-toastify/dist/ReactToastify.css';import FeeList from '../FeeList';
 
 const theme = {
-  primary: '#417505',
-  secondary: '#6cac69',
+  primary: '#316B83',
+  secondary: '#6D8299',
   accent: '#f5a623',
-  light: '#9ea0a5',
-  vGradient: 'linear-gradient(to bottom, #6cac6a, #102910)',
-  hGradient: 'linear-gradient(to right, #6cac6a 1%, #102910)',
+  light: '#8CA1A5',
+  vGradient: 'linear-gradient(to bottom, #6D8299, #316B83)',
+  hGradient: 'linear-gradient(to right, #6D8299 1%, #316B83)',
   font: 'Roboto',
   fontSize: '14px',
 };
