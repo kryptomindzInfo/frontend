@@ -121,7 +121,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
             font-size: 28px;
         }
         .material-icons{
-            background: #417505;
+            background: #316B83;
             color: #fff;
             margin-right: 10px;
             font-size: 28px;
@@ -136,7 +136,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
 > .cardHeader > .cardHeaderLeft > .material-icons {
     width: 46px;
     height: 46px;
-    color: #417505;
+    color: #316B83;
     background: transparent;
     border-radius: 50%;
     margin: 3px 17px;
@@ -147,7 +147,7 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
 >h4{
     font-size: ${props => props.h4FontSize ? props.h4FontSize : '18px' };
     font-weight: normal;
-    color: #323c47;
+    color: #316B83;
     margin-top:0;
     margin-bottom: 18px;
 }
@@ -170,13 +170,13 @@ border: ${props => props.bordered ? '1px solid #e4e8ea' : 'sdf' };
 .cardValue{
     font-size: 32px;
     font-weight: bold;
-    color: #417505;
+    color: #316B83;
 }
 
 > button{
     padding: 6px;
     border-radius: 2px;
-    border: solid 1px #417505;
+    border: solid 1px #316B83;
     color: #417505;
     font-size: 11px;
     font-weight: bold;
