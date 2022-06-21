@@ -31,6 +31,7 @@ class BankMasterWallet extends Component {
       token: localStorage.getItem('bankLogged'),
       admin: localStorage.getItem('admin'),
       bname: localStorage.getItem("bankName"),
+      bcode: localStorage.getItem("bankCode"),
     };
 
     this.success = this.success.bind(this);
@@ -65,7 +66,7 @@ class BankMasterWallet extends Component {
     }
     axios
       .post(
-        `${API_URL}/${user}/getWalletBalance?page=master&wallet_id=BAM@${this.state.bname}@${this.state.bname}`,
+        `${API_URL}/${user}/getWalletBalance?page=master&wallet_id=BAM@${this.state.bcode}@${this.state.bcode}`,
         { 
           page: 'master',
           token:this.state.token,

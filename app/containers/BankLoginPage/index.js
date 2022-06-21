@@ -91,6 +91,7 @@ export default class BankLoginPage extends Component {
       const res = await postRequest("bankLogin", token, this.state)
       localStorage.setItem('bankLogged', res.data.data.token);
       localStorage.setItem('bankName', res.data.data.name);
+      localStorage.setItem('bankCode', res.data.data.code);
       localStorage.setItem('bankUserName', res.data.data.username);
       localStorage.setItem('bankContract', res.data.data.contract);
       localStorage.setItem('bankLogo', res.data.data.logo);

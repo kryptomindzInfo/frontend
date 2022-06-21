@@ -19,6 +19,7 @@ constructor() {
       token: localStorage.getItem('bankLogged'),
       admin: localStorage.getItem('admin'),
       bname: localStorage.getItem("bankName"),
+      bcode: localStorage.getItem("bankCode"),
     };
   }
   getBalance = () => {
@@ -29,7 +30,7 @@ constructor() {
       user='bankuser'
     }
     axios
-      .post(`${API_URL}/${user}/getWalletBalance?page=escrow&wallet_id=BAM@${this.state.bname}@${this.state.bname}`,
+      .post(`${API_URL}/${user}/getWalletBalance?page=escrow&wallet_id=BAE@${this.state.bcode}@${this.state.bcode}`,
         { 
           page: 'escrow',
           token,

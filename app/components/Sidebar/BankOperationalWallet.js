@@ -26,6 +26,7 @@ toast.configure({
 });
 const token = localStorage.getItem('bankLogged');
 const bname = localStorage.getItem("bankName");
+const bcode = localStorage.getItem("bankCode");
 
 class BankOperationalWallet extends Component {
   constructor() {
@@ -171,7 +172,7 @@ class BankOperationalWallet extends Component {
       user='bankuser'
     }
     axios
-    .post(`${API_URL}/${user}/getWalletBalance?page=operational&wallet_id=BAO@${bname}@${bname}`,
+    .post(`${API_URL}/${user}/getWalletBalance?page=operational&wallet_id=BAO@${bcode}@${bcode}`,
     { page: 'operational',
       wallet_id: `BAO@${bname}@${bname}`,
       token:this.state.token,
