@@ -253,7 +253,7 @@ export default class History extends Component {
                               <td className="right">
                                 <div className="labelGrey">
                                   {
-                                    b.Value.tx_data.tx_type == 'DR'
+                                    b.Value.tx_data[0].tx_type == 'DR'
                                       ?
                                       <span>{CURRENCY} -{b.Value.tx_data[0].amount.toFixed(2)}</span>
                                       :

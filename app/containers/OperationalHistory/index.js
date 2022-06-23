@@ -485,7 +485,7 @@ export default class OperationalHistory extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>Create Fee | INFRA | E-WALLET</title>
+          <title>HISTORY | INFRA | E-WALLET</title>
         </Helmet>
         <TopBar>
           <Welcome infraNav />
@@ -598,7 +598,7 @@ export default class OperationalHistory extends Component {
                         var fulldate =
                           d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
 
-                        return dis.state.filter == b.Value.tx_data.tx_type ||
+                        return dis.state.filter == b.Value.tx_data[0].tx_type ||
                           dis.state.filter == '' ? (
                             <tr key={b.TxId}>
                               <td>
@@ -606,24 +606,24 @@ export default class OperationalHistory extends Component {
                               </td>
                               <td>
                                 <div className="labelBlue">
-                                  {b.Value.tx_data.tx_details}
+                                  {b.Value.tx_data[0].tx_details}
                                 </div>{' '}
                                 {/* <div className="labelSmallGrey">Completed</div> */}
-                                {b.Value.tx_data.tx_type == 'DR' &&
+                                {b.Value.tx_data[0].tx_type == 'DR' &&
                                   <div className="labelSmallGrey">Debit</div>
                                 }
-                                {b.Value.tx_data.tx_type == 'CR' &&
+                                {b.Value.tx_data[0].tx_type == 'CR' &&
                                   <div className="labelSmallGrey">Credit</div>
                                 }
                               </td>
                               <td className="right">
                                 <div className="labelGrey">
                                   {
-                                    b.Value.tx_data.tx_type == 'DR'
+                                    b.Value.tx_data[0].tx_type == 'DR'
                                       ?
-                                      <span>{CURRENCY} -{b.Value.amount}</span>
+                                      <span>{CURRENCY} -{b.Value.tx_data[0].amount.toFixed(2)}</span>
                                       :
-                                      <span>{CURRENCY} {b.Value.amount}</span>
+                                      <span>{CURRENCY} {b.Value.tx_data[0].amount.toFixed(2)}</span>
                                   }
 
                                 </div>

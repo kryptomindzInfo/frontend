@@ -487,7 +487,7 @@ export default class BankCreateFee extends Component {
                           required
                           list="ttype"
                         >
-                          {/* <option value="">Transaction Type*</option> */}
+                          <option value="">Transaction Type*</option>
                           <option>Wallet to Wallet</option>
                           <option>Non Wallet to Non Wallet</option>
                           <option>Non Wallet to Wallet</option>

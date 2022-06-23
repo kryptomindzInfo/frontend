@@ -596,7 +596,7 @@ export default class MasterHistory extends Component {
                         var fulldate =
                           d + ' ' + mlong + ' ' + y + ' ' + h + ':' + mi;
 
-                        return dis.state.filter == b.Value.tx_data.tx_type ||
+                        return dis.state.filter == b.Value.tx_data[0].tx_type ||
                           dis.state.filter == '' ? (
                             <tr key={b.TxId}>
                               <td>
@@ -604,19 +604,19 @@ export default class MasterHistory extends Component {
                               </td>
                               <td>
                                 <div className="labelBlue">
-                                  {b.Value.tx_data.tx_details}
+                                  {b.Value.tx_data[0].tx_details}
                                 </div>{' '}
-                                {b.Value.tx_data.tx_type == 'DR' &&
+                                {b.Value.tx_data[0].tx_type == 'DR' &&
                                   <div className="labelSmallGrey">Debit</div>
                                 }
-                                {b.Value.tx_data.tx_type == 'CR' &&
+                                {b.Value.tx_data[0].tx_type == 'CR' &&
                                   <div className="labelSmallGrey">Credit</div>
                                 }
                                 {/* <div className="labelSmallGrey">Completed</div> */}
                               </td>
                               <td>
                                 <div className="labelGrey">
-                                  <span>{CURRENCY} {b.Value.amount}</span>
+                                  <span>{CURRENCY} {b.Value.tx_data[0].amount.toFixed(2)}</span>
                                 </div>
                               </td>
                             </tr>

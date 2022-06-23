@@ -268,7 +268,7 @@ export default class BankOperationalHistory extends Component {
       <Wrapper>
         <Helmet>
           <meta charSet="utf-8" />
-          <title>Create Fee | INFRA | E-WALLET</title>
+          <title>HISTORY | INFRA | E-WALLET</title>
         </Helmet>
         <BankHeader />
         <Container verticalMargin>
@@ -339,7 +339,7 @@ export default class BankOperationalHistory extends Component {
                         var fulldate =
                           d + ' ' + h + ':' + mi;
 
-                        return dis.state.filter == b.Value.tx_data.tx_type ||
+                        return dis.state.filter == b.Value.tx_data[0].tx_type ||
                           dis.state.filter == '' ? (
                             <tr key={b.TxId}>
                               <td>
@@ -347,13 +347,13 @@ export default class BankOperationalHistory extends Component {
                               </td>
                               <td>
                                 <div className="labelBlue">
-                                  {b.Value.tx_data.tx_details}
+                                  {b.Value.tx_data[0].tx_details}
                                 </div>{' '}
                                 <div className="labelSmallGrey">
-                                  {b.Value.tx_data.tx_type == 'DR' &&
+                                  {b.Value.tx_data[0].tx_type == 'DR' &&
                                     "Debit"
                                   }
-                                  {b.Value.tx_data.tx_type == 'CR' &&
+                                  {b.Value.tx_data[0].tx_type == 'CR' &&
                                     "Credit"
                                   }
 
@@ -362,11 +362,11 @@ export default class BankOperationalHistory extends Component {
                               <td className="right">
                                 <div className="labelGrey">
                                   {
-                                    b.Value.tx_data.tx_type == 'DR'
+                                    b.Value.tx_data[0].tx_type == 'DR'
                                       ?
-                                      <span>{CURRENCY} -{b.Value[0].tx_data[0].amount.toFixed(2)}</span>
+                                      <span>{CURRENCY} -{b.Value.tx_data[0].amount.toFixed(2)}</span>
                                       :
-                                      <span>{CURRENCY} {b.Value[0].tx_data[0].amount.toFixed(2)}</span>
+                                      <span>{CURRENCY} {b.Value.tx_data[0].amount.toFixed(2)}</span>
                                   }
 
                                 </div>
