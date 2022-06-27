@@ -19,12 +19,11 @@ export const DEFAULT_LOCALE = 'en';
 
 // production config k8s
 // export const SERVER_URL = '91d90ac373dc.sn.mynetname.net:2020';
-export const SERVER_IP = '164.92.97.182';
-export const SERVER_URL = `http://${SERVER_IP}:31080`;
-export const API_URL = `https://backend.kmindzwallet.com/api`;
+export const SERVER_URL = `http://165.227.198.78:31080`;
+export const API_URL = `http://165.227.198.78:30301/api`;
 export const STATIC_URL =
-`https://backend.kmindzwallet.com/api/uploads/`;
-export const CONTRACT_URL = `http://${SERVER_IP}:30880/ipfs/`;
+`http://165.227.198.78:30301/api/uploads/`;
+export const CONTRACT_URL = `http://165.227.198.78:30880/ipfs/`;
 // export const API_URL = 'http://91d90ac373dc.sn.mynetname.net:2020/api';
 // export const STATIC_URL = 'http://91d90ac373dc.sn.mynetname.net:2020/api/uploads/';
 // export const CONTRACT_URL = 'http://91d90ac373dc.sn.mynetname.net:2020/ipfs/';
