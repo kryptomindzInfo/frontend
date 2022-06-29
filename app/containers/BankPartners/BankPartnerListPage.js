@@ -58,7 +58,7 @@ function BankPartnerListPage(props) {
   const token = localStorage.getItem('bankLogged');
   const bankName = localStorage.getItem('bankName');
   const bankLogo = localStorage.getItem('bankLogo');
-  const bank_id = localStorage.getItem('bankId'); 
+  const bank_id = localStorage.getItem('bankId');
   const admin =  localStorage.getItem('admin');
 
   const handlePartnerPopupClick = (type, partner) => {
@@ -118,8 +118,10 @@ function BankPartnerListPage(props) {
     let API = '';
     if (apiType === 'update') {
       API = '/bank/editPartner';
+      values.page = 'editPartner'
     } else {
       API = '/bank/addPartner';
+      values.page = 'addPartner'
     }
     try {
       const res = await axios.post(`${API_URL}${API}`, {
@@ -152,7 +154,7 @@ function BankPartnerListPage(props) {
         {
           token: token,
           username:  obj.mobile,
-          page: 'editPartner',
+          page: obj.page,
           name: obj.name,
           email: obj.email,
           mobile: obj.mobile,
@@ -266,7 +268,7 @@ function BankPartnerListPage(props) {
       <td className="tac">{(partnerStats[i].feeGenerated+partnerStats[i].commissionGenerated).toFixed(2)}</td>
       <td className="tac">{partnerStats[i].cashInHand.toFixed(2)}</td>
       <td className="tac">{partnerStats[i].closingBalance.toFixed(2)}</td>
-     
+
       <td className="tac">
         <div
           style={{
@@ -283,8 +285,8 @@ function BankPartnerListPage(props) {
                                   );
                                 history.push(`/bank/partnerreports/${partner._id}`);
                                 }}
-                              >                    
-                                Reports                  
+                              >
+                                Reports
                               </Button>
           </td>
           <span
@@ -458,10 +460,10 @@ function BankPartnerListPage(props) {
                       <div className="cardValue">{CURRENCY}: {(parseFloat(commissionGenerated,10)+ parseFloat(feeGenerated,10)).toFixed(2)}</div>
                     </Col>
                   </Row>
-                  
+
                 </Card>
               </Col>
-              
+
             </Row>
             <Row>
               <Col>
@@ -499,7 +501,7 @@ function BankPartnerListPage(props) {
                   <div className="cardValue">{CURRENCY}: {cashInHand}</div>
                 </Card>
               </Col>
-              
+
               <Col>
                 <Card
                   style={{height:'130px'}}
@@ -516,7 +518,7 @@ function BankPartnerListPage(props) {
             </Row>
           </Main>
         <Main fullWidth>
-          
+
           <Card bigPadding>
           { admin === false || admin === 'false' ? (
           <Button
